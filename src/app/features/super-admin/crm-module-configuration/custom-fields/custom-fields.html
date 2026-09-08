@@ -1,0 +1,1701 @@
+<div class="page-container">
+
+
+    <!-- ================================= -->
+    <!-- Page Header -->
+    <!-- ================================= -->
+
+
+    <div class="page-header">
+
+
+        <div>
+
+
+            <p class="page-subtitle">
+
+                CRM MODULE CONFIGURATION
+
+            </p>
+
+
+
+            <h1>
+
+                Custom Fields
+
+            </h1>
+
+
+
+            <p class="page-description">
+
+                Configure additional fields, validations and data customization for CRM modules.
+
+            </p>
+
+
+        </div>
+
+
+
+
+
+        <div class="header-buttons">
+
+
+
+            <button
+
+                class="btn btn-light"
+
+                (click)="refresh()">
+
+
+
+                <i class="fa-solid fa-rotate"></i>
+
+
+                Refresh
+
+
+
+            </button>
+
+
+
+
+
+
+
+            <button
+
+                class="btn btn-danger"
+
+                (click)="openAddModal()">
+
+
+
+                <i class="fa-solid fa-plus"></i>
+
+
+                Add Custom Field
+
+
+
+            </button>
+
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+    <!-- ================================= -->
+    <!-- Statistics -->
+    <!-- ================================= -->
+
+
+    <div class="stats-grid">
+
+
+
+
+
+        <div class="stat-card">
+
+
+
+            <span>
+
+                Total Fields
+
+            </span>
+
+
+
+            <h2>
+
+                {{customFields.length}}
+
+            </h2>
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+        <div class="stat-card">
+
+
+
+            <span>
+
+                Active Fields
+
+            </span>
+
+
+
+            <h2>
+
+                {{activeCount}}
+
+            </h2>
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+        <div class="stat-card">
+
+
+
+            <span>
+
+                Inactive Fields
+
+            </span>
+
+
+
+            <h2>
+
+                {{inactiveCount}}
+
+            </h2>
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+        <div class="stat-card">
+
+
+
+            <span>
+
+                Mandatory Fields
+
+            </span>
+
+
+
+            <h2>
+
+                {{mandatoryCount}}
+
+            </h2>
+
+
+
+        </div>
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+    <!-- ================================= -->
+    <!-- Search Section -->
+    <!-- ================================= -->
+
+
+    <div class="search-panel">
+
+
+
+
+
+        <div class="search-box">
+
+
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+
+
+
+
+            <input
+
+
+                type="text"
+
+
+                placeholder="Search custom field..."
+
+
+                [(ngModel)]="searchText">
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+        <select
+
+
+            class="form-control"
+
+
+            [(ngModel)]="statusFilter">
+
+
+
+
+
+            <option value="">
+
+
+                All Status
+
+
+            </option>
+
+
+
+
+
+            <option value="Active">
+
+
+                Active
+
+
+            </option>
+
+
+
+
+
+            <option value="Inactive">
+
+
+                Inactive
+
+
+            </option>
+
+
+
+
+
+        </select>
+
+
+
+
+
+
+
+
+
+        <button
+
+
+            class="btn btn-secondary"
+
+
+            (click)="clearFilters()">
+
+
+
+            Clear
+
+
+
+        </button>
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+    <!-- ================================= -->
+    <!-- Custom Fields Table -->
+    <!-- ================================= -->
+
+
+    <div class="table-card">
+
+
+
+
+
+        <div class="table-header">
+
+
+
+            <h3>
+
+
+                Custom Fields List
+
+
+            </h3>
+
+
+
+
+
+            <span>
+
+
+                {{filteredFields.length}} Records
+
+
+            </span>
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+        <table>
+
+
+
+
+            <thead>
+
+
+
+                <tr>
+
+
+
+
+                    <th>
+
+                        Field Name
+
+                    </th>
+
+
+
+
+
+                    <th>
+
+                        Module
+
+                    </th>
+
+
+
+
+
+                    <th>
+
+                        Field Type
+
+                    </th>
+
+
+
+
+
+                    <th>
+
+                        Display Label
+
+                    </th>
+
+
+
+
+
+                    <th>
+
+                        Default Value
+
+                    </th>
+
+
+
+
+
+                    <th>
+
+                        Required
+
+                    </th>
+
+
+
+
+
+                    <th>
+
+                        Status
+
+                    </th>
+
+
+
+
+
+                    <th width="170">
+
+                        Actions
+
+                    </th>
+
+
+
+
+                </tr>
+
+
+
+            </thead>
+
+
+
+
+
+
+
+
+
+            <tbody>
+
+
+
+
+
+                <tr
+
+
+                    *ngFor="let item of filteredFields">
+
+
+
+
+
+
+
+                    <!-- Field Name -->
+
+
+                    <td>
+
+
+
+
+                        <div class="provider-info">
+
+
+
+
+
+                            <div class="provider-icon">
+
+
+
+                                <i class="fa-solid fa-list-check"></i>
+
+
+
+                            </div>
+
+
+
+
+
+
+                            <div>
+
+
+
+                                <strong>
+
+
+                                    {{item.fieldName}}
+
+
+                                </strong>
+
+
+
+
+                                <small>
+
+
+                                    {{item.placeholder}}
+
+
+                                </small>
+
+
+
+                            </div>
+
+
+
+
+
+                        </div>
+
+
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <!-- Module -->
+
+
+                    <td>
+
+
+                        <span class="module-badge">
+
+
+                            {{item.moduleName}}
+
+
+                        </span>
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <!-- Field Type -->
+
+
+                    <td>
+
+
+                        <span class="type-badge">
+
+
+                            {{item.fieldType}}
+
+
+                        </span>
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <!-- Display Label -->
+
+
+                    <td>
+
+
+                        {{item.displayLabel}}
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <!-- Default Value -->
+
+
+                    <td>
+
+
+                        {{item.defaultValue || '-'}}
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <!-- Required -->
+
+
+                    <td>
+
+
+
+
+                        <span
+
+                            *ngIf="item.isRequired"
+
+                            class="required-badge">
+
+
+
+                            Required
+
+
+
+                        </span>
+
+
+
+
+                        <span
+
+                            *ngIf="!item.isRequired">
+
+
+                            No
+
+
+                        </span>
+
+
+
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <!-- Status -->
+
+
+                    <td>
+
+
+
+
+                        <span
+
+
+                            class="status"
+
+
+                            [ngClass]="item.status.toLowerCase()">
+
+
+
+
+
+                            {{item.status}}
+
+
+
+
+
+                        </span>
+
+
+
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <!-- Actions -->
+
+
+                    <td>
+
+
+
+
+                        <button
+
+
+                            class="icon-btn"
+
+
+                            (click)="edit(item)">
+
+
+
+                            <i class="fa-solid fa-pen"></i>
+
+
+
+                        </button>
+
+
+
+
+
+
+
+
+
+                        <button
+
+
+                            class="icon-btn danger"
+
+
+                            (click)="delete(item.id)">
+
+
+
+                            <i class="fa-solid fa-trash"></i>
+
+
+
+                        </button>
+
+
+
+
+
+                    </td>
+
+
+
+
+
+                </tr>
+
+
+
+
+
+            </tbody>
+
+
+
+
+
+        </table>
+
+
+
+
+
+    </div>
+
+
+
+
+
+</div>
+<!-- ======================================= -->
+<!-- Add / Edit Custom Field Modal -->
+<!-- ======================================= -->
+
+
+<div
+
+    class="modal-overlay"
+
+    *ngIf="showModal">
+
+
+
+
+
+    <div class="modal-box">
+
+
+
+
+
+
+        <!-- ========================= -->
+        <!-- Modal Header -->
+        <!-- ========================= -->
+
+
+        <div class="modal-header">
+
+
+
+            <h3>
+
+
+                {{isEdit ? 'Edit Custom Field' : 'Add Custom Field'}}
+
+
+            </h3>
+
+
+
+
+
+            <button
+
+
+                class="close-btn"
+
+
+                (click)="closeModal()">
+
+
+
+                ×
+
+
+
+            </button>
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+        <!-- ========================= -->
+        <!-- Modal Body -->
+        <!-- ========================= -->
+
+
+        <div class="modal-body">
+
+
+
+
+
+            <div class="form-grid">
+
+
+
+
+
+
+
+                <!-- Field Name -->
+
+
+                <div>
+
+
+
+                    <label>
+
+                        Field Name
+
+                    </label>
+
+
+
+
+
+                    <input
+
+
+                        type="text"
+
+
+                        placeholder="Example: Customer Priority"
+
+
+                        [(ngModel)]="model.fieldName">
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Display Label -->
+
+
+                <div>
+
+
+
+                    <label>
+
+                        Display Label
+
+                    </label>
+
+
+
+
+
+                    <input
+
+
+                        type="text"
+
+
+                        placeholder="Example: Priority"
+
+
+                        [(ngModel)]="model.displayLabel">
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Module Name -->
+
+
+                <div>
+
+
+
+                    <label>
+
+                        Module Name
+
+                    </label>
+
+
+
+
+
+                    <select
+
+
+                        [(ngModel)]="model.moduleName">
+
+
+
+
+
+                        <option>
+
+                            Lead
+
+                        </option>
+
+
+
+
+
+                        <option>
+
+                            Contact
+
+                        </option>
+
+
+
+
+
+                        <option>
+
+                            Opportunity
+
+                        </option>
+
+
+
+
+
+                        <option>
+
+                            Deal
+
+                        </option>
+
+
+
+
+
+                        <option>
+
+                            Account
+
+                        </option>
+
+
+
+
+
+                        <option>
+
+                            Customer
+
+                        </option>
+
+
+
+
+
+                    </select>
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Field Type -->
+
+
+                <div>
+
+
+
+                    <label>
+
+                        Field Type
+
+                    </label>
+
+
+
+
+
+                    <select
+
+
+                        [(ngModel)]="model.fieldType">
+
+
+
+
+
+                        <option>
+
+                            Text
+
+                        </option>
+
+
+
+
+
+                        <option>
+
+                            Number
+
+                        </option>
+
+
+
+
+
+                        <option>
+
+                            Date
+
+                        </option>
+
+
+
+
+
+                        <option>
+
+                            Dropdown
+
+                        </option>
+
+
+
+
+
+                        <option>
+
+                            Checkbox
+
+                        </option>
+
+
+
+
+
+                        <option>
+
+                            Email
+
+                        </option>
+
+
+
+
+
+                        <option>
+
+                            Phone
+
+                        </option>
+
+
+
+
+
+                    </select>
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Default Value -->
+
+
+                <div>
+
+
+
+                    <label>
+
+                        Default Value
+
+                    </label>
+
+
+
+
+
+                    <input
+
+
+                        type="text"
+
+
+                        placeholder="Enter default value"
+
+
+                        [(ngModel)]="model.defaultValue">
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Placeholder -->
+
+
+                <div>
+
+
+
+                    <label>
+
+                        Placeholder
+
+                    </label>
+
+
+
+
+
+                    <input
+
+
+                        type="text"
+
+
+                        placeholder="Enter placeholder text"
+
+
+                        [(ngModel)]="model.placeholder">
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Status -->
+
+
+                <div>
+
+
+
+                    <label>
+
+                        Status
+
+                    </label>
+
+
+
+
+
+                    <select
+
+
+                        [(ngModel)]="model.status">
+
+
+
+
+
+                        <option>
+
+                            Active
+
+                        </option>
+
+
+
+
+
+                        <option>
+
+                            Inactive
+
+                        </option>
+
+
+
+
+
+                    </select>
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Field Order -->
+
+
+                <div>
+
+
+
+                    <label>
+
+                        Field Order
+
+                    </label>
+
+
+
+
+
+                    <input
+
+
+                        type="number"
+
+
+                        placeholder="Display order"
+
+
+                        [(ngModel)]="model.fieldOrder">
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Description -->
+
+
+                <div class="full-width">
+
+
+
+                    <label>
+
+                        Description
+
+                    </label>
+
+
+
+
+
+                    <textarea
+
+
+                        rows="4"
+
+
+                        placeholder="Enter field description"
+
+
+                        [(ngModel)]="model.description">
+
+
+
+                    </textarea>
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Required Field -->
+
+
+                <div class="checkbox-group">
+
+
+
+
+
+                    <label>
+
+
+
+
+
+
+                        <input
+
+
+                            type="checkbox"
+
+
+                            [(ngModel)]="model.isRequired">
+
+
+
+
+
+                        Required Field
+
+
+
+
+
+                    </label>
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Unique Field -->
+
+
+                <div class="checkbox-group">
+
+
+
+
+
+                    <label>
+
+
+
+
+
+
+                        <input
+
+
+                            type="checkbox"
+
+
+                            [(ngModel)]="model.isUnique">
+
+
+
+
+
+                        Unique Field
+
+
+
+
+
+                    </label>
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+        <!-- ========================= -->
+        <!-- Modal Footer -->
+        <!-- ========================= -->
+
+
+        <div class="modal-footer">
+
+
+
+
+
+            <button
+
+
+                class="btn-secondary"
+
+
+                (click)="closeModal()">
+
+
+
+
+
+                Cancel
+
+
+
+
+
+            </button>
+
+
+
+
+
+
+
+
+
+            <button
+
+
+                class="btn-primary"
+
+
+                (click)="saveField()">
+
+
+
+
+
+                {{isEdit ? 'Update Field' : 'Save Field'}}
+
+
+
+
+
+            </button>
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+</div>

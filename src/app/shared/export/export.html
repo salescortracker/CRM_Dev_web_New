@@ -1,0 +1,31 @@
+<div class="export-dropdown">
+
+  <button
+      class="btn btn-success"
+      (click)="toggleMenu()">
+
+      Export ▼
+
+  </button>
+
+  <div class="export-menu" *ngIf="showMenu">
+
+      <button
+          type="button"
+          (click)="exportExcel()">
+
+          Download Excel
+
+      </button>
+
+      <button
+          type="button"
+          (click)="exportPdf()">
+
+          Download PDF
+
+      </button>
+
+  </div>
+
+</div>

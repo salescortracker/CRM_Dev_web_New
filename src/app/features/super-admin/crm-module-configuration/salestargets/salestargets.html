@@ -1,0 +1,1626 @@
+<div class="page-container">
+
+
+    <!-- ================================= -->
+    <!-- Page Header -->
+    <!-- ================================= -->
+
+
+    <div class="page-header">
+
+
+        <div>
+
+
+            <p class="page-subtitle">
+
+                CRM MODULE CONFIGURATION
+
+            </p>
+
+
+
+            <h1>
+
+                Sales Targets
+
+            </h1>
+
+
+
+            <p class="page-description">
+
+                Manage sales targets, employee goals, achievements and performance tracking.
+
+            </p>
+
+
+        </div>
+
+
+
+
+
+        <div class="header-buttons">
+
+
+
+            <button
+
+                class="btn btn-light"
+
+                (click)="refresh()">
+
+
+
+                <i class="fa-solid fa-rotate"></i>
+
+
+                Refresh
+
+
+            </button>
+
+
+
+
+
+            <button
+
+                class="btn btn-danger"
+
+                (click)="openAddModal()">
+
+
+
+                <i class="fa-solid fa-plus"></i>
+
+
+                Add Sales Target
+
+
+            </button>
+
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+    <!-- ================================= -->
+    <!-- Statistics -->
+    <!-- ================================= -->
+
+
+    <div class="stats-grid">
+
+
+
+
+
+        <div class="stat-card">
+
+
+            <span>
+
+                Total Targets
+
+            </span>
+
+
+            <h2>
+
+                {{salesTargets.length}}
+
+            </h2>
+
+
+        </div>
+
+
+
+
+
+
+
+
+        <div class="stat-card">
+
+
+            <span>
+
+                Active Targets
+
+            </span>
+
+
+            <h2>
+
+                {{activeCount}}
+
+            </h2>
+
+
+        </div>
+
+
+
+
+
+
+
+
+        <div class="stat-card">
+
+
+            <span>
+
+                Completed Targets
+
+            </span>
+
+
+            <h2>
+
+                {{completedCount}}
+
+            </h2>
+
+
+        </div>
+
+
+
+
+
+
+
+
+        <div class="stat-card">
+
+
+            <span>
+
+                Default Target
+
+            </span>
+
+
+            <h2>
+
+                {{defaultTarget}}
+
+            </h2>
+
+
+        </div>
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+    <!-- ================================= -->
+    <!-- Search & Filter -->
+    <!-- ================================= -->
+
+
+    <div class="search-panel">
+
+
+
+
+
+        <div class="search-box">
+
+
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+
+
+
+
+            <input
+
+
+                type="text"
+
+
+                placeholder="Search sales target..."
+
+
+                [(ngModel)]="searchText">
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+        <select
+
+
+            class="form-control"
+
+
+            [(ngModel)]="statusFilter">
+
+
+
+
+
+            <option value="">
+
+
+                All Status
+
+
+            </option>
+
+
+
+
+
+            <option value="Active">
+
+
+                Active
+
+
+            </option>
+
+
+
+
+
+            <option value="Pending">
+
+
+                Pending
+
+
+            </option>
+
+
+
+
+
+            <option value="Completed">
+
+
+                Completed
+
+
+            </option>
+
+
+
+
+
+        </select>
+
+
+
+
+
+
+
+
+        <button
+
+
+            class="btn btn-secondary"
+
+
+            (click)="clearFilters()">
+
+
+
+
+
+            Clear
+
+
+
+
+
+        </button>
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+    <!-- ================================= -->
+    <!-- Sales Targets Table -->
+    <!-- ================================= -->
+
+
+
+    <div class="table-card">
+
+
+
+
+
+        <div class="table-header">
+
+
+
+            <h3>
+
+
+                Sales Target Management
+
+
+            </h3>
+
+
+
+
+
+            <span>
+
+
+                {{filteredTargets.length}} Records
+
+
+            </span>
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+        <table>
+
+
+
+            <thead>
+
+
+
+                <tr>
+
+
+
+
+                    <th>
+
+                        Target Name
+
+                    </th>
+
+
+
+
+
+                    <th>
+
+                        Employee
+
+                    </th>
+
+
+
+
+
+                    <th>
+
+                        Department
+
+                    </th>
+
+
+
+
+
+                    <th>
+
+                        Target Amount
+
+                    </th>
+
+
+
+
+
+                    <th>
+
+                        Achieved
+
+                    </th>
+
+
+
+
+
+                    <th>
+
+                        Period
+
+                    </th>
+
+
+
+
+
+                    <th>
+
+                        Status
+
+                    </th>
+
+
+
+
+
+                    <th>
+
+                        Default
+
+                    </th>
+
+
+
+
+
+                    <th width="170">
+
+                        Actions
+
+                    </th>
+
+
+
+
+                </tr>
+
+
+
+            </thead>
+
+
+
+
+
+
+
+
+
+            <tbody>
+
+
+
+
+
+                <tr
+
+
+                    *ngFor="let item of filteredTargets">
+
+
+
+
+
+
+
+                    <!-- Target Name -->
+
+
+                    <td>
+
+
+
+
+                        <div class="provider-info">
+
+
+
+
+
+                            <div class="provider-icon">
+
+
+
+                                <i class="fa-solid fa-bullseye"></i>
+
+
+
+                            </div>
+
+
+
+
+
+
+
+
+                            <div>
+
+
+
+                                <strong>
+
+
+
+                                    {{item.targetName}}
+
+
+
+                                </strong>
+
+
+
+                                <small>
+
+
+
+                                    {{item.targetCode}}
+
+
+
+                                </small>
+
+
+
+                            </div>
+
+
+
+
+
+                        </div>
+
+
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <!-- Employee -->
+
+
+                    <td>
+
+
+                        {{item.employeeName}}
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <!-- Department -->
+
+
+                    <td>
+
+
+                        {{item.department}}
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <!-- Target Amount -->
+
+
+                    <td>
+
+
+
+                        {{item.targetAmount | currency}}
+
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <!-- Achieved -->
+
+
+                    <td>
+
+
+
+                        {{item.achievedAmount | currency}}
+
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <!-- Period -->
+
+
+                    <td>
+
+
+
+                        <span class="period-badge">
+
+
+                            {{item.period}}
+
+
+                        </span>
+
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <!-- Status -->
+
+
+                    <td>
+
+
+
+                        <span
+
+
+                            class="status"
+
+
+                            [ngClass]="item.status.toLowerCase()">
+
+
+
+                            {{item.status}}
+
+
+
+                        </span>
+
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <!-- Default -->
+
+
+                    <td>
+
+
+
+                        <span
+
+
+                            *ngIf="item.isDefault"
+
+
+                            class="default-badge">
+
+
+
+                            Default
+
+
+
+                        </span>
+
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <!-- Actions -->
+
+
+                    <td>
+
+
+
+
+
+                        <button
+
+
+                            class="icon-btn"
+
+
+                            (click)="edit(item)">
+
+
+
+                            <i class="fa-solid fa-pen"></i>
+
+
+
+                        </button>
+
+
+
+
+
+
+
+
+                        <button
+
+
+                            class="icon-btn danger"
+
+
+                            (click)="delete(item.id)">
+
+
+
+                            <i class="fa-solid fa-trash"></i>
+
+
+
+                        </button>
+
+
+
+
+
+                    </td>
+
+
+
+
+
+
+                </tr>
+
+
+
+
+
+            </tbody>
+
+
+
+
+
+
+        </table>
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+</div>
+<!-- ======================================= -->
+<!-- Add / Edit Sales Target Modal -->
+<!-- ======================================= -->
+
+
+<div
+
+    class="modal-overlay"
+
+    *ngIf="showModal">
+
+
+
+
+
+    <div class="modal-box">
+
+
+
+
+
+
+        <!-- ========================= -->
+        <!-- Modal Header -->
+        <!-- ========================= -->
+
+
+        <div class="modal-header">
+
+
+
+
+
+            <h3>
+
+
+
+                {{isEdit ? 'Edit Sales Target' : 'Add Sales Target'}}
+
+
+
+            </h3>
+
+
+
+
+
+
+            <button
+
+
+                class="close-btn"
+
+
+                (click)="closeModal()">
+
+
+
+                ×
+
+
+
+            </button>
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+        <!-- ========================= -->
+        <!-- Modal Body -->
+        <!-- ========================= -->
+
+
+        <div class="modal-body">
+
+
+
+
+
+            <div class="form-grid">
+
+
+
+
+
+
+
+                <!-- Target Name -->
+
+
+                <div>
+
+
+
+                    <label>
+
+                        Target Name
+
+                    </label>
+
+
+
+
+
+                    <input
+
+
+                        type="text"
+
+
+                        placeholder="Enter target name"
+
+
+                        [(ngModel)]="model.targetName">
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Target Code -->
+
+
+                <div>
+
+
+
+                    <label>
+
+                        Target Code
+
+                    </label>
+
+
+
+
+
+                    <input
+
+
+                        type="text"
+
+
+                        placeholder="Example: Q1-SALES-001"
+
+
+                        [(ngModel)]="model.targetCode">
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Employee Name -->
+
+
+                <div>
+
+
+
+                    <label>
+
+                        Employee Name
+
+                    </label>
+
+
+
+
+
+                    <input
+
+
+                        type="text"
+
+
+                        placeholder="Enter employee name"
+
+
+                        [(ngModel)]="model.employeeName">
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Department -->
+
+
+                <div>
+
+
+
+                    <label>
+
+                        Department
+
+                    </label>
+
+
+
+
+
+                    <select
+
+
+                        [(ngModel)]="model.department">
+
+
+
+
+
+                        <option>
+
+                            Sales
+
+                        </option>
+
+
+
+
+
+                        <option>
+
+                            Enterprise Sales
+
+                        </option>
+
+
+
+
+
+                        <option>
+
+                            Business Development
+
+                        </option>
+
+
+
+
+
+                        <option>
+
+                            Marketing
+
+                        </option>
+
+
+
+
+
+                    </select>
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Target Amount -->
+
+
+                <div>
+
+
+
+                    <label>
+
+                        Target Amount
+
+                    </label>
+
+
+
+
+
+                    <input
+
+
+                        type="number"
+
+
+                        placeholder="Enter target amount"
+
+
+                        [(ngModel)]="model.targetAmount">
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Achieved Amount -->
+
+
+                <div>
+
+
+
+                    <label>
+
+                        Achieved Amount
+
+                    </label>
+
+
+
+
+
+                    <input
+
+
+                        type="number"
+
+
+                        placeholder="Enter achieved amount"
+
+
+                        [(ngModel)]="model.achievedAmount">
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Target Period -->
+
+
+                <div>
+
+
+
+                    <label>
+
+                        Target Period
+
+                    </label>
+
+
+
+
+
+                    <select
+
+
+                        [(ngModel)]="model.period">
+
+
+
+
+
+                        <option>
+
+                            Monthly
+
+                        </option>
+
+
+
+
+
+                        <option>
+
+                            Quarterly
+
+                        </option>
+
+
+
+
+
+                        <option>
+
+                            Half Yearly
+
+                        </option>
+
+
+
+
+
+                        <option>
+
+                            Yearly
+
+                        </option>
+
+
+
+
+
+                    </select>
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Status -->
+
+
+                <div>
+
+
+
+                    <label>
+
+                        Status
+
+                    </label>
+
+
+
+
+
+                    <select
+
+
+                        [(ngModel)]="model.status">
+
+
+
+
+
+                        <option>
+
+                            Active
+
+                        </option>
+
+
+
+
+
+                        <option>
+
+                            Pending
+
+                        </option>
+
+
+
+
+
+                        <option>
+
+                            Completed
+
+                        </option>
+
+
+
+
+
+                    </select>
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Description -->
+
+
+                <div class="full-width">
+
+
+
+                    <label>
+
+                        Description
+
+                    </label>
+
+
+
+
+
+                    <textarea
+
+
+                        rows="4"
+
+
+                        placeholder="Enter target description"
+
+
+                        [(ngModel)]="model.description">
+
+
+
+                    </textarea>
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Default Target -->
+
+
+                <div class="checkbox-group">
+
+
+
+
+
+                    <label>
+
+
+
+
+
+
+                        <input
+
+
+                            type="checkbox"
+
+
+                            [(ngModel)]="model.isDefault">
+
+
+
+
+
+                        Default Sales Target
+
+
+
+
+
+                    </label>
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+        <!-- ========================= -->
+        <!-- Modal Footer -->
+        <!-- ========================= -->
+
+
+        <div class="modal-footer">
+
+
+
+
+
+            <button
+
+
+                class="btn-secondary"
+
+
+                (click)="closeModal()">
+
+
+
+
+
+                Cancel
+
+
+
+
+
+            </button>
+
+
+
+
+
+
+
+
+
+            <button
+
+
+                class="btn-primary"
+
+
+                (click)="saveTarget()">
+
+
+
+
+
+                {{isEdit ? 'Update Target' : 'Save Target'}}
+
+
+
+
+
+            </button>
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+</div>

@@ -1,0 +1,1877 @@
+<div class="container-fluid mt-4">
+
+    <!-- ========================================= -->
+    <!-- Page Header -->
+    <!-- ========================================= -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h3 class="fw-bold text-danger mb-1">
+                <i class="fa-solid fa-gear me-2"></i>
+                Company Settings
+            </h3>
+
+            <p class="text-muted mb-0">
+                Configure company profile, localization, security, integrations and CRM preferences.
+            </p>
+        </div>
+
+        <div>
+
+            <button class="btn btn-outline-secondary me-2" (click)="clear()">
+                <i class="fa-solid fa-rotate"></i>
+                Reset
+            </button>
+
+            <button class="btn btn-danger" (click)="saveSettings()">
+                <i class="fa-solid fa-floppy-disk me-2"></i>
+                Save Settings
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Statistics -->
+    <!-- ========================================= -->
+
+    <div class="row mb-4">
+
+        <div class="col-lg-3 col-md-6 mb-3">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <h6 class="text-muted">
+                                Company Status
+                            </h6>
+
+                            <h4 class="fw-bold text-success">
+                                Active
+                            </h4>
+
+                        </div>
+
+                        <i class="fa-solid fa-building fa-2x text-success"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-3">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <h6 class="text-muted">
+                                Active Users
+                            </h6>
+
+                            <h4 class="fw-bold">
+                                {{activeUsers}}
+                            </h4>
+
+                        </div>
+
+                        <i class="fa-solid fa-users fa-2x text-primary"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-3">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <h6 class="text-muted">
+                                Storage Used
+                            </h6>
+
+                            <h4 class="fw-bold">
+                                18 GB
+                            </h4>
+
+                        </div>
+
+                        <i class="fa-solid fa-database fa-2x text-warning"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-3">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <h6 class="text-muted">
+                                Last Backup
+                            </h6>
+
+                            <h5 class="fw-bold">
+                                Today
+                            </h5>
+
+                        </div>
+
+                        <i class="fa-solid fa-cloud-arrow-up fa-2x text-danger"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Company Information -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm border-0 mb-4">
+
+        <div class="card-header bg-danger text-white">
+
+            <h5 class="mb-0">
+
+                <i class="fa-solid fa-building me-2"></i>
+
+                Company Information
+
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <!-- Company Name -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Company Name
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input class="form-control" [(ngModel)]="settings.companyName">
+
+                </div>
+
+                <!-- Company Code -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Company Code
+
+                    </label>
+
+                    <input class="form-control" [(ngModel)]="settings.companyCode">
+
+                </div>
+
+                <!-- Industry -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Industry
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="settings.industry">
+
+                        <option>Information Technology</option>
+                        <option>Healthcare</option>
+                        <option>Finance</option>
+                        <option>Manufacturing</option>
+                        <option>Education</option>
+                        <option>Retail</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Email -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Company Email
+
+                    </label>
+
+                    <input type="email" class="form-control" [(ngModel)]="settings.companyEmail">
+
+                </div>
+
+                <!-- Phone -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Company Phone
+
+                    </label>
+
+                    <input class="form-control" [(ngModel)]="settings.companyPhone">
+
+                </div>
+
+                <!-- Website -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Website
+
+                    </label>
+
+                    <input class="form-control" [(ngModel)]="settings.website">
+
+                </div>
+
+                <!-- GST -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        GST Number
+
+                    </label>
+
+                    <input class="form-control" [(ngModel)]="settings.gstNumber">
+
+                </div>
+
+                <!-- PAN -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        PAN Number
+
+                    </label>
+
+                    <input class="form-control" [(ngModel)]="settings.panNumber">
+
+                </div>
+
+                <!-- Headquarters -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Headquarters
+
+                    </label>
+
+                    <input class="form-control" [(ngModel)]="settings.headquarters">
+
+                </div>
+
+                <!-- Logo -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Company Logo
+
+                    </label>
+
+                    <input type="file" class="form-control">
+
+                </div>
+
+                <!-- Status -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Status
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="settings.status">
+
+                        <option>Active</option>
+                        <option>Inactive</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Address -->
+
+                <div class="col-md-12 mb-3">
+
+                    <label class="form-label">
+
+                        Company Address
+
+                    </label>
+
+                    <textarea rows="4" class="form-control" [(ngModel)]="settings.address">
+
+                    </textarea>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    <!-- ========================================= -->
+    <!-- Localization Settings -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm border-0 mb-4">
+
+        <div class="card-header bg-danger text-white">
+
+            <h5 class="mb-0">
+
+                <i class="fa-solid fa-earth-asia me-2"></i>
+
+                Localization Settings
+
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <!-- Country -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Country
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="settings.country">
+
+                        <option>India</option>
+                        <option>United States</option>
+                        <option>United Kingdom</option>
+                        <option>Australia</option>
+                        <option>Canada</option>
+
+                    </select>
+
+                </div>
+
+                <!-- State -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        State
+
+                    </label>
+
+                    <input class="form-control" [(ngModel)]="settings.state">
+
+                </div>
+
+                <!-- City -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        City
+
+                    </label>
+
+                    <input class="form-control" [(ngModel)]="settings.city">
+
+                </div>
+
+                <!-- Currency -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Currency
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="settings.currency">
+
+                        <option>INR</option>
+                        <option>USD</option>
+                        <option>EUR</option>
+                        <option>AED</option>
+                        <option>GBP</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Currency Symbol -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Currency Symbol
+
+                    </label>
+
+                    <input class="form-control" [(ngModel)]="settings.currencySymbol">
+
+                </div>
+
+                <!-- Time Zone -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Time Zone
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="settings.timeZone">
+
+                        <option>Asia/Kolkata</option>
+                        <option>UTC</option>
+                        <option>Europe/London</option>
+                        <option>America/New_York</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Language -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Language
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="settings.language">
+
+                        <option>English</option>
+                        <option>Hindi</option>
+                        <option>Telugu</option>
+                        <option>Tamil</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Date Format -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Date Format
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="settings.dateFormat">
+
+                        <option>dd/MM/yyyy</option>
+                        <option>MM/dd/yyyy</option>
+                        <option>yyyy-MM-dd</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Time Format -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Time Format
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="settings.timeFormat">
+
+                        <option>12 Hours</option>
+                        <option>24 Hours</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Week Start -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Week Starts On
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="settings.weekStart">
+
+                        <option>Sunday</option>
+                        <option>Monday</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Financial Year -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Financial Year
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="settings.financialYear">
+
+                        <option>April - March</option>
+                        <option>January - December</option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Security Settings -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm border-0 mb-4">
+
+        <div class="card-header bg-danger text-white">
+
+            <h5 class="mb-0">
+
+                <i class="fa-solid fa-shield-halved me-2"></i>
+
+                Security Settings
+
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <!-- Password Length -->
+
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Minimum Password Length
+
+                    </label>
+
+                    <input type="number" class="form-control" [(ngModel)]="settings.passwordLength">
+
+                </div>
+
+                <!-- Expiry -->
+
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Password Expiry (Days)
+
+                    </label>
+
+                    <input type="number" class="form-control" [(ngModel)]="settings.passwordExpiry">
+
+                </div>
+
+                <!-- Session -->
+
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Session Timeout (Minutes)
+
+                    </label>
+
+                    <input type="number" class="form-control" [(ngModel)]="settings.sessionTimeout">
+
+                </div>
+
+                <!-- Login Attempts -->
+
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Failed Login Attempts
+
+                    </label>
+
+                    <input type="number" class="form-control" [(ngModel)]="settings.failedLoginAttempts">
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <div class="row">
+
+                <div class="col-md-3 mb-3">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="settings.enable2FA">
+
+                        <label class="form-check-label">
+
+                            Enable Two Factor Authentication
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-3 mb-3">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="settings.passwordHistory">
+
+                        <label class="form-check-label">
+
+                            Enable Password History
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-3 mb-3">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="settings.ipRestriction">
+
+                        <label class="form-check-label">
+
+                            Enable IP Restriction
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-3 mb-3">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="settings.deviceVerification">
+
+                        <label class="form-check-label">
+
+                            Device Verification
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="settings.captchaLogin">
+
+                        <label class="form-check-label">
+
+                            Enable Login CAPTCHA
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="settings.accountLock">
+
+                        <label class="form-check-label">
+
+                            Lock Account After Failed Attempts
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="settings.forcePasswordChange">
+
+                        <label class="form-check-label">
+
+                            Force Password Change on First Login
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    <!-- ========================================= -->
+    <!-- Email Configuration -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm border-0 mb-4">
+
+        <div class="card-header bg-danger text-white">
+
+            <h5 class="mb-0">
+                <i class="fa-solid fa-envelope me-2"></i>
+                Email Configuration
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">SMTP Host</label>
+                    <input class="form-control" [(ngModel)]="settings.smtpHost">
+                </div>
+
+                <div class="col-md-2 mb-3">
+                    <label class="form-label">SMTP Port</label>
+                    <input type="number" class="form-control" [(ngModel)]="settings.smtpPort">
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">SMTP Username</label>
+                    <input class="form-control" [(ngModel)]="settings.smtpUser">
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">SMTP Password</label>
+                    <input type="password" class="form-control" [(ngModel)]="settings.smtpPassword">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Sender Email</label>
+                    <input class="form-control" [(ngModel)]="settings.senderEmail">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Sender Name</label>
+                    <input class="form-control" [(ngModel)]="settings.senderName">
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">Encryption</label>
+
+                    <select class="form-select" [(ngModel)]="settings.smtpEncryption">
+
+                        <option>SSL</option>
+                        <option>TLS</option>
+                        <option>None</option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-3 mb-3">
+
+                    <div class="form-check mt-4">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="settings.smtpSSL">
+
+                        <label class="form-check-label">
+                            Enable SSL
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-3 mb-3">
+
+                    <button class="btn btn-primary mt-4 w-100">
+
+                        <i class="fa-solid fa-paper-plane me-2"></i>
+
+                        Send Test Email
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Notification Settings -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm border-0 mb-4">
+
+        <div class="card-header bg-danger text-white">
+
+            <h5 class="mb-0">
+
+                <i class="fa-solid fa-bell me-2"></i>
+
+                Notification Settings
+
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="settings.emailNotifications">
+
+                        <label class="form-check-label">
+
+                            Enable Email Notifications
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="settings.smsNotifications">
+
+                        <label class="form-check-label">
+
+                            Enable SMS Notifications
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="settings.whatsAppNotifications">
+
+                        <label class="form-check-label">
+
+                            Enable WhatsApp Notifications
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="settings.pushNotifications">
+
+                        <label class="form-check-label">
+
+                            Push Notifications
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="settings.browserNotifications">
+
+                        <label class="form-check-label">
+
+                            Browser Notifications
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="settings.desktopNotifications">
+
+                        <label class="form-check-label">
+
+                            Desktop Notifications
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- CRM Preferences -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm border-0 mb-4">
+
+        <div class="card-header bg-danger text-white">
+
+            <h5 class="mb-0">
+
+                <i class="fa-solid fa-sliders me-2"></i>
+
+                CRM Preferences
+
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Default Dashboard
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="settings.defaultDashboard">
+
+                        <option>Admin Dashboard</option>
+                        <option>Sales Dashboard</option>
+                        <option>HR Dashboard</option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Theme
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="settings.theme">
+
+                        <option>Light</option>
+                        <option>Dark</option>
+                        <option>Blue</option>
+                        <option>Red</option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Landing Page
+
+                    </label>
+
+                    <input class="form-control" [(ngModel)]="settings.landingPage">
+
+                </div>
+
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Default Currency
+
+                    </label>
+
+                    <input class="form-control" [(ngModel)]="settings.defaultCurrency">
+
+                </div>
+
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Lead Number Prefix
+
+                    </label>
+
+                    <input class="form-control" [(ngModel)]="settings.leadPrefix">
+
+                </div>
+
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Customer Prefix
+
+                    </label>
+
+                    <input class="form-control" [(ngModel)]="settings.customerPrefix">
+
+                </div>
+
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Invoice Prefix
+
+                    </label>
+
+                    <input class="form-control" [(ngModel)]="settings.invoicePrefix">
+
+                </div>
+
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Employee Prefix
+
+                    </label>
+
+                    <input class="form-control" [(ngModel)]="settings.employeePrefix">
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Workflow Settings -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm border-0 mb-4">
+
+        <div class="card-header bg-danger text-white">
+
+            <h5 class="mb-0">
+
+                <i class="fa-solid fa-diagram-project me-2"></i>
+
+                Workflow Automation
+
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="settings.autoLeadAssignment">
+
+                        <label class="form-check-label">
+
+                            Auto Lead Assignment
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="settings.autoFollowup">
+
+                        <label class="form-check-label">
+
+                            Auto Follow-up Reminder
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="settings.autoOpportunity">
+
+                        <label class="form-check-label">
+
+                            Auto Opportunity Creation
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="settings.autoQuotation">
+
+                        <label class="form-check-label">
+
+                            Auto Quote Generation
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="settings.autoInvoice">
+
+                        <label class="form-check-label">
+
+                            Auto Invoice Generation
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="settings.autoEmail">
+
+                        <label class="form-check-label">
+
+                            Send Email Automatically
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    <!-- ========================================= -->
+    <!-- File Upload Settings -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm border-0 mb-4">
+
+        <div class="card-header bg-danger text-white">
+
+            <h5 class="mb-0">
+
+                <i class="fa-solid fa-folder-open me-2"></i>
+
+                File Upload Settings
+
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Maximum Upload Size (MB)
+
+                    </label>
+
+                    <input type="number" class="form-control" [(ngModel)]="settings.maxUploadSize">
+
+                </div>
+
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Profile Image Size (MB)
+
+                    </label>
+
+                    <input type="number" class="form-control" [(ngModel)]="settings.profileImageSize">
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Allowed File Types
+
+                    </label>
+
+                    <input class="form-control" placeholder=".pdf,.docx,.xlsx,.jpg,.png"
+                        [(ngModel)]="settings.allowedFileTypes">
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Document Storage Path
+
+                    </label>
+
+                    <input class="form-control" [(ngModel)]="settings.storagePath">
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Backup Storage Path
+
+                    </label>
+
+                    <input class="form-control" [(ngModel)]="settings.backupPath">
+
+                </div>
+
+                <div class="col-md-3 mb-3">
+
+                    <div class="form-check mt-4">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="settings.compressUploads">
+
+                        <label class="form-check-label">
+
+                            Compress Uploaded Files
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-3 mb-3">
+
+                    <div class="form-check mt-4">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="settings.enableCloudStorage">
+
+                        <label class="form-check-label">
+
+                            Enable Cloud Storage
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- AI Settings -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm border-0 mb-4">
+
+        <div class="card-header bg-danger text-white">
+
+            <h5 class="mb-0">
+
+                <i class="fa-solid fa-robot me-2"></i>
+
+                AI Settings
+
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="settings.enableAI">
+
+                        <label class="form-check-label">
+
+                            Enable AI Features
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="settings.aiLeadScoring">
+
+                        <label class="form-check-label">
+
+                            AI Lead Scoring
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="settings.aiSalesPrediction">
+
+                        <label class="form-check-label">
+
+                            AI Sales Prediction
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="settings.aiEmailSuggestions">
+
+                        <label class="form-check-label">
+
+                            AI Email Suggestions
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="settings.aiChatAssistant">
+
+                        <label class="form-check-label">
+
+                            AI Chat Assistant
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        AI Provider
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="settings.aiProvider">
+
+                        <option>OpenAI</option>
+                        <option>Azure OpenAI</option>
+                        <option>Google Gemini</option>
+                        <option>Anthropic Claude</option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-12 mb-3">
+
+                    <label class="form-label">
+
+                        AI API Key
+
+                    </label>
+
+                    <input type="password" class="form-control" [(ngModel)]="settings.aiApiKey">
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Third Party Integrations -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm border-0 mb-4">
+
+        <div class="card-header bg-danger text-white">
+
+            <h5 class="mb-0">
+
+                <i class="fa-solid fa-plug me-2"></i>
+
+                Third-Party Integrations
+
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-3 mb-3">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="settings.googleCalendar">
+
+                        <label class="form-check-label">
+
+                            Google Calendar
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-3 mb-3">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="settings.microsoft365">
+
+                        <label class="form-check-label">
+
+                            Microsoft 365
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-3 mb-3">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="settings.zoom">
+
+                        <label class="form-check-label">
+
+                            Zoom Meetings
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-3 mb-3">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="settings.microsoftTeams">
+
+                        <label class="form-check-label">
+
+                            Microsoft Teams
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-3 mb-3">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="settings.slack">
+
+                        <label class="form-check-label">
+
+                            Slack
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-3 mb-3">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="settings.whatsApp">
+
+                        <label class="form-check-label">
+
+                            WhatsApp Business
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-3 mb-3">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="settings.paymentGateway">
+
+                        <label class="form-check-label">
+
+                            Payment Gateway
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-3 mb-3">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="settings.smsGateway">
+
+                        <label class="form-check-label">
+
+                            SMS Gateway
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Public API Key
+
+                    </label>
+
+                    <input class="form-control" [(ngModel)]="settings.publicApiKey">
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Secret API Key
+
+                    </label>
+
+                    <input type="password" class="form-control" [(ngModel)]="settings.secretApiKey">
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    <!-- ============================================= -->
+    <!-- Settings History -->
+    <!-- ============================================= -->
+
+    <div class="card shadow-sm border-0 mt-4">
+
+        <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+
+            <h5 class="mb-0">
+                <i class="fa-solid fa-clock-rotate-left me-2"></i>
+                Company Settings History
+            </h5>
+
+            <span class="badge bg-light text-dark">
+                Total Records : {{filteredSettings.length}}
+            </span>
+
+        </div>
+
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover table-bordered align-middle mb-0">
+
+                    <thead class="table-danger">
+
+                        <tr>
+
+                            <th width="70">#</th>
+
+                            <th>Company</th>
+
+                            <th>Timezone</th>
+
+                            <th>Language</th>
+
+                            <th>Currency</th>
+
+                            <th>Date Format</th>
+
+                            <th>Financial Year</th>
+
+                            <th>Status</th>
+
+                            <th width="170">Action</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr *ngFor="let item of pagedSettings; let i=index">
+
+                            <td>
+                                {{((page-1)*pageSize)+i+1}}
+                            </td>
+
+                            <td>
+
+                                <div class="fw-bold">
+                                    {{item.companyName}}
+                                </div>
+
+                                <small class="text-muted">
+                                    {{item.companyCode}}
+                                </small>
+
+                            </td>
+
+                            <td>{{item.timeZone}}</td>
+
+                            <td>{{item.language}}</td>
+
+                            <td>{{item.currency}}</td>
+
+                            <td>{{item.dateFormat}}</td>
+
+                            <td>{{item.financialYear}}</td>
+
+                            <td>
+
+                                <span class="badge" [ngClass]="item.isActive ? 'bg-success' : 'bg-secondary'">
+
+                                    {{item.isActive ? 'Active' : 'Inactive'}}
+
+                                </span>
+
+                            </td>
+
+                            <td>
+
+                                <button class="btn btn-warning btn-sm me-2" (click)="edit(item.settingId)">
+
+                                    <i class="fa-solid fa-pen"></i>
+
+                                    Edit
+
+                                </button>
+
+                                <button class="btn btn-danger btn-sm" (click)="delete(item.settingId)">
+
+                                    <i class="fa-solid fa-trash"></i>
+
+                                    Delete
+
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+                        <tr *ngIf="pagedSettings.length==0">
+
+                            <td colspan="9" class="text-center py-5 text-muted">
+
+                                <i class="fa-solid fa-gears fa-3x mb-3"></i>
+
+                                <br>
+
+                                No Company Settings Available.
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ============================================= -->
+    <!-- Pagination -->
+    <!-- ============================================= -->
+
+    <div class="mt-3">
+
+        <app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredSettings.length"
+            (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
+
+        </app-pagination>
+
+    </div>

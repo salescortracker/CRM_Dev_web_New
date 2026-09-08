@@ -1,0 +1,481 @@
+<div class="container mt-4">
+
+    <!-- ========================================= -->
+    <!-- Payment Form -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4 class="mb-0">
+                <i class="fa fa-credit-card me-2"></i>
+                Payment Management
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <!-- Payment Number -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Payment Number
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Payment Number"
+                        [(ngModel)]="payment.paymentNumber">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !payment.paymentNumber">
+
+                        Payment Number is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Payment Reference -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Payment Reference
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Payment Reference"
+                        [(ngModel)]="payment.paymentReference">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !payment.paymentReference">
+
+                        Payment Reference is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Invoice -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Invoice
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="payment.invoice">
+
+                        <option value="">Select Invoice</option>
+                        <option>INV1001 - CRM Software Invoice</option>
+                        <option>INV1002 - HRMS Invoice</option>
+                        <option>INV1003 - ERP Integration Invoice</option>
+                        <option>INV1004 - Cloud Migration Invoice</option>
+                        <option>INV1005 - Digital Marketing Invoice</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !payment.invoice">
+
+                        Invoice is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Account -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Account
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="payment.account">
+
+                        <option value="">Select Account</option>
+                        <option>ABC Technologies</option>
+                        <option>XYZ Solutions</option>
+                        <option>Future Vision</option>
+                        <option>Global InfoTech</option>
+                        <option>NextGen Pvt Ltd</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !payment.account">
+
+                        Account is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Contact -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Contact
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="payment.contact">
+
+                        <option value="">Select Contact</option>
+                        <option>Rahul Sharma</option>
+                        <option>Priya Reddy</option>
+                        <option>Arjun Kumar</option>
+                        <option>Sneha Patel</option>
+                        <option>Kiran Verma</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !payment.contact">
+
+                        Contact is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Payment Date -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Payment Date
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="date" class="form-control" [(ngModel)]="payment.paymentDate">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !payment.paymentDate">
+
+                        Payment Date is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Payment Method -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Payment Method
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="payment.paymentMethod">
+
+                        <option value="">Select Payment Method</option>
+                        <option>Cash</option>
+                        <option>UPI</option>
+                        <option>Credit Card</option>
+                        <option>Debit Card</option>
+                        <option>Bank Transfer</option>
+                        <option>Cheque</option>
+                        <option>NEFT</option>
+                        <option>RTGS</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !payment.paymentMethod">
+
+                        Payment Method is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Transaction ID -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Transaction ID
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Transaction ID"
+                        [(ngModel)]="payment.transactionId">
+
+                </div>
+
+                <!-- Amount -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Amount
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="number" class="form-control" placeholder="Enter Amount" [(ngModel)]="payment.amount">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !payment.amount">
+
+                        Amount is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Tax Deducted -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Tax Deducted
+                    </label>
+
+                    <input type="number" class="form-control" placeholder="Enter Tax Deducted"
+                        [(ngModel)]="payment.taxDeducted">
+
+                </div>
+
+                <!-- Payment Status -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Payment Status
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="payment.paymentStatus">
+
+                        <option value="">Select Payment Status</option>
+                        <option>Pending</option>
+                        <option>Successful</option>
+                        <option>Failed</option>
+                        <option>Refunded</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !payment.paymentStatus">
+
+                        Payment Status is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Received By -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Received By
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Received By" [(ngModel)]="payment.receivedBy">
+
+                </div>
+
+                <!-- Notes -->
+                <div class="col-md-8 mb-3">
+
+                    <label class="form-label">
+                        Notes
+                    </label>
+
+                    <textarea rows="3" class="form-control" placeholder="Enter Notes" [(ngModel)]="payment.notes">
+
+                    </textarea>
+
+                </div>
+
+                <!-- Active -->
+                <div class="col-md-4 mb-3 d-flex align-items-end">
+
+                    <div class="form-check">
+
+                        <input type="checkbox" class="form-check-input" id="paymentActive"
+                            [(ngModel)]="payment.isActive">
+
+                        <label class="form-check-label ms-2" for="paymentActive">
+
+                            Active
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <button class="btn btn-danger me-2" (click)="savePayment()">
+
+                <i class="fa fa-save me-1"></i>
+
+                {{ isEdit ? 'Update' : 'Save' }}
+
+            </button>
+
+            <button class="btn btn-secondary" (click)="clear()">
+
+                <i class="fa fa-eraser me-1"></i>
+
+                Clear
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Search -->
+    <!-- ========================================= -->
+
+    <div class="row mt-4 mb-3">
+
+        <div class="col-md-4">
+
+            <input type="text" class="form-control" placeholder="Search Payment..." [(ngModel)]="searchText">
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Payments Table -->
+    <!-- ========================================= -->
+
+    <div class="table-responsive">
+
+        <table class="table table-bordered table-hover">
+
+            <thead class="table-danger">
+
+                <tr>
+
+                    <th>#</th>
+                    <th>Payment No.</th>
+                    <th>Reference</th>
+                    <th>Invoice</th>
+                    <th>Account</th>
+                    <th>Contact</th>
+                    <th>Payment Date</th>
+                    <th>Method</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th width="150">Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr *ngIf="pagedPayments.length == 0">
+
+                    <td colspan="11" class="text-center text-muted">
+
+                        No Payments Found
+
+                    </td>
+
+                </tr>
+
+                <tr *ngFor="let item of pagedPayments; let i = index">
+
+                    <td>
+
+                        {{ ((page - 1) * pageSize) + i + 1 }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.paymentNumber }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.paymentReference }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.invoice }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.account }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.contact }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.paymentDate }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.paymentMethod }}
+
+                    </td>
+
+                    <td>
+
+                        ₹ {{ item.amount | number }}
+
+                    </td>
+
+                    <td>
+
+                        <span class="badge" [ngClass]="{
+                                'bg-warning text-dark': item.paymentStatus == 'Pending',
+                                'bg-success': item.paymentStatus == 'Successful',
+                                'bg-danger': item.paymentStatus == 'Failed',
+                                'bg-secondary': item.paymentStatus == 'Refunded'
+                            }">
+
+                            {{ item.paymentStatus }}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <button class="btn btn-warning btn-sm me-2" (click)="edit(item.paymentId)">
+
+                            <i class="fa fa-edit"></i>
+
+                        </button>
+
+                        <button class="btn btn-danger btn-sm" (click)="delete(item.paymentId)">
+
+                            <i class="fa fa-trash"></i>
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Pagination -->
+    <!-- ========================================= -->
+
+    <app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredPayments.length"
+        (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
+
+    </app-pagination>
+
+</div>

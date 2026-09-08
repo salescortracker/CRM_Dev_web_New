@@ -1,0 +1,445 @@
+<div class="container mt-4">
+
+    <!-- ========================================= -->
+    <!-- Price Book Form -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4 class="mb-0">
+
+                <i class="fa fa-book me-2"></i>
+
+                Price Book Management
+
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <!-- Price Book Name -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Price Book Name
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Price Book Name"
+                        [(ngModel)]="priceBook.priceBookName">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !priceBook.priceBookName">
+
+                        Price Book Name is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Price Book Code -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Price Book Code
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Price Book Code"
+                        [(ngModel)]="priceBook.priceBookCode">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !priceBook.priceBookCode">
+
+                        Price Book Code is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Currency -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Currency
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="priceBook.currency">
+
+                        <option value="">Select Currency</option>
+
+                        <option>INR</option>
+                        <option>USD</option>
+                        <option>EUR</option>
+                        <option>GBP</option>
+                        <option>AED</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !priceBook.currency">
+
+                        Currency is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Applicable For -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Applicable For
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="priceBook.applicableFor">
+
+                        <option value="">Select Customer Type</option>
+
+                        <option>Retail Customers</option>
+                        <option>Wholesale Customers</option>
+                        <option>Corporate Customers</option>
+                        <option>Dealers</option>
+                        <option>Distributors</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !priceBook.applicableFor">
+
+                        Applicable For is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Effective From -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Effective From
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="date" class="form-control" [(ngModel)]="priceBook.effectiveFrom">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !priceBook.effectiveFrom">
+
+                        Effective From is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Expiry Date -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Expiry Date
+
+                    </label>
+
+                    <input type="date" class="form-control" [(ngModel)]="priceBook.expiryDate">
+
+                </div>
+
+                <!-- Price Type -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Price Type
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="priceBook.priceType">
+
+                        <option value="">Select Price Type</option>
+
+                        <option>Standard</option>
+                        <option>Promotional</option>
+                        <option>Seasonal</option>
+                        <option>Special Offer</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !priceBook.priceType">
+
+                        Price Type is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Discount -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Discount (%)
+
+                    </label>
+
+                    <input type="number" class="form-control" placeholder="Enter Discount"
+                        [(ngModel)]="priceBook.discount">
+
+                </div>
+
+                <!-- Status -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Status
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="priceBook.status">
+
+                        <option value="">Select Status</option>
+
+                        <option>Active</option>
+                        <option>Inactive</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !priceBook.status">
+
+                        Status is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Description -->
+                <div class="col-md-8 mb-3">
+
+                    <label class="form-label">
+
+                        Description
+
+                    </label>
+
+                    <textarea rows="4" class="form-control" placeholder="Enter Description"
+                        [(ngModel)]="priceBook.description">
+
+                    </textarea>
+
+                </div>
+
+                <!-- Active -->
+                <div class="col-md-4 mb-3 d-flex align-items-end">
+
+                    <div class="form-check">
+
+                        <input type="checkbox" class="form-check-input" id="priceBookActive"
+                            [(ngModel)]="priceBook.isActive">
+
+                        <label class="form-check-label ms-2" for="priceBookActive">
+
+                            Active
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <button class="btn btn-danger me-2" (click)="savePriceBook()">
+
+                <i class="fa fa-save me-1"></i>
+
+                {{ isEdit ? 'Update' : 'Save' }}
+
+            </button>
+
+            <button class="btn btn-secondary" (click)="clear()">
+
+                <i class="fa fa-eraser me-1"></i>
+
+                Clear
+
+            </button>
+
+        </div>
+
+    </div>
+    <!-- ========================================= -->
+    <!-- Search -->
+    <!-- ========================================= -->
+
+    <div class="row mt-4 mb-3">
+
+        <div class="col-md-4">
+
+            <input type="text" class="form-control" placeholder="Search Price Book..." [(ngModel)]="searchText">
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Price Books Listing -->
+    <!-- ========================================= -->
+
+    <div class="table-responsive">
+
+        <table class="table table-bordered table-hover">
+
+            <thead class="table-danger">
+
+                <tr>
+
+                    <th>#</th>
+                    <th>Price Book</th>
+                    <th>Code</th>
+                    <th>Currency</th>
+                    <th>Applicable For</th>
+                    <th>Price Type</th>
+                    <th>Discount</th>
+                    <th>Status</th>
+                    <th width="140">Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr *ngIf="pagedPriceBooks.length == 0">
+
+                    <td colspan="9" class="text-center text-muted">
+
+                        No Price Books Found
+
+                    </td>
+
+                </tr>
+
+                <tr *ngFor="let item of pagedPriceBooks; let i = index">
+
+                    <td>
+
+                        {{ ((page - 1) * pageSize) + i + 1 }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.priceBookName }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.priceBookCode }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.currency }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.applicableFor }}
+
+                    </td>
+
+                    <td>
+
+                        <span class="badge" [ngClass]="{
+                                'bg-primary': item.priceType == 'Standard',
+                                'bg-success': item.priceType == 'Promotional',
+                                'bg-warning text-dark': item.priceType == 'Seasonal',
+                                'bg-info text-dark': item.priceType == 'Special Offer'
+                            }">
+
+                            {{ item.priceType }}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        {{ item.discount }}%
+
+                    </td>
+
+                    <td>
+
+                        <span class="badge" [ngClass]="{
+                                'bg-success': item.status == 'Active',
+                                'bg-danger': item.status == 'Inactive'
+                            }">
+
+                            {{ item.status }}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <button class="btn btn-warning btn-sm me-2" (click)="edit(item.priceBookId)">
+
+                            <i class="fa fa-edit"></i>
+
+                        </button>
+
+                        <button class="btn btn-danger btn-sm" (click)="delete(item.priceBookId)">
+
+                            <i class="fa fa-trash"></i>
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Pagination -->
+    <!-- ========================================= -->
+
+    <app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredPriceBooks.length"
+        (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
+
+    </app-pagination>
+
+</div>

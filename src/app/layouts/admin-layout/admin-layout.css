@@ -1,0 +1,1302 @@
+/* =========================================================
+   CORCRM ADMIN / CRM APPLICATION SHELL
+   PREMIUM ENTERPRISE SAAS — LIGHT RED THEME
+   Primary: #f0444a
+   Accent:  #ee6b6e
+========================================================= */
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.crm-shell {
+  min-height: 100vh;
+  width: 100%;
+  background: #fdf7f7;
+  color: #172033;
+
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Arial,
+    sans-serif;
+}
+
+
+/* =========================================================
+   TOP CORPORATE BAR
+========================================================= */
+
+.crm-topbar {
+  height: 68px;
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0 22px;
+
+  /* PREMIUM RED TOP BAR */
+  background: #b4232b;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+
+  color: #ffffff;
+
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+
+/* =========================================================
+   BRAND
+========================================================= */
+
+.top-brand {
+  width: 235px;
+  min-width: 235px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 11px;
+}
+
+.brand-mark {
+  width: 38px;
+  height: 38px;
+
+  border-radius: 11px;
+
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    linear-gradient(
+      145deg,
+      #f9787c,
+      #d83a42
+    );
+
+  box-shadow:
+    0 7px 18px rgba(90, 15, 20, 0.28);
+}
+
+.brand-mark-main {
+  font-size: 21px;
+  line-height: 1;
+
+  font-weight: 800;
+
+  color: #ffffff;
+
+  position: relative;
+  z-index: 2;
+}
+
+.brand-mark-line {
+  position: absolute;
+
+  width: 20px;
+  height: 3px;
+
+  right: 5px;
+  bottom: 6px;
+
+  border-radius: 10px;
+
+  background: #ffc6c8;
+
+  transform: rotate(-30deg);
+}
+
+.brand-content {
+  min-width: 0;
+}
+
+.brand-name {
+  font-size: 20px;
+  line-height: 20px;
+
+  letter-spacing: -0.7px;
+
+  font-weight: 800;
+
+  color: #ffffff;
+}
+
+.brand-name span {
+  color: #ffd2d4;
+}
+
+.brand-caption {
+  margin-top: 4px;
+
+  font-size: 7px;
+
+  letter-spacing: 1.15px;
+
+  font-weight: 700;
+
+  color: #f3b7ba;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   TOP MENU
+========================================================= */
+
+.top-menu {
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+
+  gap: 4px;
+}
+
+.top-menu-item {
+  position: relative;
+
+  height: 42px;
+
+  padding: 0 15px;
+
+  border-radius: 9px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  text-decoration: none;
+
+  color: #f3c5c7;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.top-menu-item i {
+  font-size: 13px;
+}
+
+.top-menu-item:hover {
+  background: rgba(255, 255, 255, 0.09);
+  color: #ffffff;
+}
+
+.top-menu-item.active {
+  color: #ffffff;
+
+  background: rgba(255, 255, 255, 0.13);
+}
+
+.top-menu-item.active::after {
+  content: "";
+
+  position: absolute;
+
+  left: 15px;
+  right: 15px;
+
+  bottom: -13px;
+
+  height: 2px;
+
+  border-radius: 10px;
+
+  background: #ffb4b7;
+}
+
+
+/* =========================================================
+   DASHBOARD ACTIVE
+========================================================= */
+
+.dashboard-tab.active {
+  background: #ffffff;
+  color: #6f1720;
+}
+
+.dashboard-tab.active::after {
+  display: none;
+}
+
+.dashboard-tab.active i {
+  color: #f0444a;
+}
+
+.menu-arrow {
+  margin-left: 1px;
+
+  font-size: 8px !important;
+
+  opacity: 0.55;
+}
+
+
+/* =========================================================
+   TOP ACTIONS
+========================================================= */
+
+.top-actions {
+  margin-left: auto;
+
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+}
+
+
+/* =========================================================
+   GLOBAL SEARCH
+========================================================= */
+
+.global-search {
+  width: 205px;
+  height: 37px;
+
+  border: 1px solid rgba(255, 255, 255, 0.14);
+
+  border-radius: 8px;
+
+  background: rgba(255, 255, 255, 0.075);
+
+  color: #ffffff;
+
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  padding: 0 9px;
+
+  cursor: pointer;
+
+  text-align: left;
+
+  transition: all 0.2s ease;
+}
+
+.global-search:hover {
+  background: rgba(255, 255, 255, 0.12);
+
+  border-color:
+    rgba(255, 255, 255, 0.22);
+}
+
+.global-search > i {
+  color: #f3c2c5;
+
+  font-size: 12px;
+}
+
+.search-placeholder {
+  flex: 1;
+
+  color: #efb8bb;
+
+  font-size: 11px;
+}
+
+.search-shortcut {
+  padding: 4px 6px;
+
+  border-radius: 5px;
+
+  border: 1px solid rgba(255, 255, 255, 0.11);
+
+  background: rgba(255, 255, 255, 0.055);
+
+  color: #e8aeb1;
+
+  font-size: 8px;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   QUICK CREATE
+========================================================= */
+
+.quick-create {
+  height: 37px;
+
+  padding: 0 13px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  border: 0;
+
+  border-radius: 8px;
+
+  background: #f0444a;
+
+  color: #ffffff;
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 5px 14px rgba(240, 68, 74, 0.28);
+
+  transition: all 0.2s ease;
+}
+
+.quick-create:hover {
+  background: #d9363e;
+
+  transform: translateY(-1px);
+}
+
+.quick-create i {
+  font-size: 10px;
+}
+
+
+/* =========================================================
+   TOP ICON BUTTONS
+========================================================= */
+
+.top-icon {
+  width: 36px;
+  height: 36px;
+
+  border: 0;
+
+  border-radius: 8px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  position: relative;
+
+  background: transparent;
+
+  color: #f1bfc2;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.top-icon:hover {
+  background: rgba(255, 255, 255, 0.09);
+
+  color: #ffffff;
+}
+
+.top-icon i {
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   NOTIFICATION
+========================================================= */
+
+.notification-count {
+  position: absolute;
+
+  top: 2px;
+  right: 1px;
+
+  min-width: 15px;
+  height: 15px;
+
+  padding: 0 4px;
+
+  border-radius: 20px;
+
+  background: #f0444a;
+
+  border: 2px solid #b4232b;
+
+  color: #ffffff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 7px;
+
+  font-weight: 800;
+}
+
+
+/* =========================================================
+   USER AREA
+========================================================= */
+
+.top-user {
+  height: 43px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  margin-left: 3px;
+
+  padding: 3px 8px 3px 4px;
+
+  border: 0;
+
+  border-radius: 9px;
+
+  background: transparent;
+
+  color: #ffffff;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease;
+}
+
+.top-user:hover {
+  background:
+    rgba(255, 255, 255, 0.08);
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+
+  border-radius: 9px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    linear-gradient(
+      145deg,
+      #fff1f2,
+      #ffd1d3
+    );
+
+  color: #a51e27;
+
+  font-size: 10px;
+
+  font-weight: 800;
+}
+
+.user-info {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: flex-start;
+
+  min-width: 92px;
+}
+
+.user-info strong {
+  color: #ffffff;
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  line-height: 13px;
+
+  white-space: nowrap;
+}
+
+.user-info span {
+  color: #efb5b8;
+
+  font-size: 8px;
+
+  line-height: 12px;
+
+  white-space: nowrap;
+}
+
+.user-arrow {
+  color: #e5a8ab;
+
+  font-size: 8px;
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+.logout-button {
+  width: 35px;
+  height: 35px;
+
+  border: 0;
+
+  border-radius: 8px;
+
+  background: transparent;
+
+  color: #efb5b8;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.logout-button:hover {
+  background:
+    rgba(255, 255, 255, 0.09);
+
+  color: #ffffff;
+}
+
+.logout-button i {
+  font-size: 13px;
+}
+
+
+/* =========================================================
+   SECONDARY NAVIGATION
+========================================================= */
+
+.crm-secondary-nav {
+  min-height: 62px;
+
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0 22px;
+
+  background: #ffffff;
+
+  border-bottom:
+    1px solid #f0dfe0;
+
+  position: sticky;
+
+  top: 68px;
+
+  z-index: 900;
+}
+
+
+/* =========================================================
+   WORKSPACE
+========================================================= */
+
+.secondary-left {
+  width: 235px;
+  min-width: 235px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+}
+
+.workspace-icon {
+  width: 34px;
+  height: 34px;
+
+  border-radius: 9px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #fff0f1;
+
+  color: #f0444a;
+}
+
+.workspace-icon i {
+  font-size: 13px;
+}
+
+.workspace-name {
+  display: flex;
+
+  flex-direction: column;
+}
+
+.workspace-name strong {
+  font-size: 11px;
+
+  color: #172033;
+
+  font-weight: 700;
+}
+
+.workspace-name span {
+  margin-top: 2px;
+
+  color: #98a2b3;
+
+  font-size: 8px;
+}
+
+
+/* =========================================================
+   SECONDARY MENU
+========================================================= */
+
+.secondary-menu {
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+
+  gap: 3px;
+}
+
+.secondary-item {
+  height: 62px;
+
+  padding: 0 12px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  position: relative;
+
+  text-decoration: none;
+
+  color: #667085;
+
+  font-size: 10px;
+
+  font-weight: 600;
+
+  white-space: nowrap;
+
+  transition:
+    color 0.2s ease,
+    background 0.2s ease;
+}
+
+.secondary-item i {
+  font-size: 11px;
+
+  color: #98a2b3;
+
+  transition: color 0.2s ease;
+}
+
+.secondary-item:hover {
+  color: #f0444a;
+
+  background: #fffafa;
+}
+
+.secondary-item:hover i {
+  color: #f0444a;
+}
+
+.secondary-item.active {
+  color: #d92f38;
+}
+
+.secondary-item.active i {
+  color: #f0444a;
+}
+
+.secondary-item.active::after {
+  content: "";
+
+  position: absolute;
+
+  left: 11px;
+  right: 11px;
+
+  bottom: 0;
+
+  height: 2px;
+
+  border-radius: 4px 4px 0 0;
+
+  background: #f0444a;
+}
+
+
+/* =========================================================
+   NAV COUNTS
+========================================================= */
+
+.nav-count {
+  min-width: 18px;
+  height: 18px;
+
+  padding: 0 5px;
+
+  border-radius: 20px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #fff0f1;
+
+  color: #d9363e;
+
+  font-size: 8px;
+
+  font-weight: 800;
+}
+
+.nav-count.blue {
+  background: #fff0f1;
+
+  color: #d9363e;
+}
+
+.prospect-count {
+  background: #fff0f1;
+
+  color: #d9363e;
+}
+
+
+/* =========================================================
+   SECONDARY ACTIONS
+========================================================= */
+
+.secondary-actions {
+  margin-left: auto;
+
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+}
+
+.secondary-action {
+  height: 34px;
+
+  padding: 0 10px;
+
+  border:
+    1px solid #ead7d8;
+
+  border-radius: 7px;
+
+  background: #ffffff;
+
+  color: #667085;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  font-size: 9px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.secondary-action:hover {
+  border-color: #f2b7ba;
+
+  background: #fff7f7;
+
+  color: #d9363e;
+}
+
+.secondary-action i {
+  font-size: 10px;
+}
+
+.settings-action {
+  width: 34px;
+
+  padding: 0;
+}
+
+
+/* =========================================================
+   MAIN CONTENT
+========================================================= */
+
+.crm-content {
+  width: 100%;
+
+  min-height:
+    calc(100vh - 130px);
+
+  background:
+    #fdf7f7;
+}
+
+
+/* =========================================================
+   GLOBAL LIGHT RED ACCENTS
+========================================================= */
+
+.crm-shell ::selection {
+  background: #ffd8da;
+  color: #7f1d1d;
+}
+
+
+/* =========================================================
+   MOBILE BOTTOM NAV
+========================================================= */
+
+.mobile-bottom-nav {
+  display: none;
+}
+
+
+/* =========================================================
+   RESPONSIVE — 1500px
+========================================================= */
+
+@media (max-width: 1500px) {
+
+  .top-brand,
+  .secondary-left {
+    width: 205px;
+    min-width: 205px;
+  }
+
+  .top-menu-item {
+    padding: 0 11px;
+  }
+
+  .global-search {
+    width: 175px;
+  }
+
+  .secondary-item {
+    padding: 0 9px;
+  }
+}
+
+
+/* =========================================================
+   RESPONSIVE — 1250px
+========================================================= */
+
+@media (max-width: 1250px) {
+
+  .brand-caption {
+    display: none;
+  }
+
+  .top-brand,
+  .secondary-left {
+    width: 185px;
+    min-width: 185px;
+  }
+
+  .top-menu-item {
+    padding: 0 9px;
+
+    gap: 6px;
+  }
+
+  .top-menu-item span {
+    font-size: 10px;
+  }
+
+  .global-search {
+    width: 145px;
+  }
+
+  .user-info {
+    display: none;
+  }
+
+  .secondary-item {
+    padding: 0 7px;
+  }
+
+  .secondary-item span:not(.nav-count) {
+    font-size: 9px;
+  }
+}
+
+
+/* =========================================================
+   RESPONSIVE — 1050px
+========================================================= */
+
+@media (max-width: 1050px) {
+
+  .crm-topbar {
+    padding: 0 14px;
+  }
+
+  .top-brand {
+    width: 160px;
+    min-width: 160px;
+  }
+
+  .top-menu-item span,
+  .menu-arrow {
+    display: none;
+  }
+
+  .top-menu-item {
+    width: 40px;
+
+    justify-content: center;
+
+    padding: 0;
+  }
+
+  .global-search {
+    width: 40px;
+
+    padding: 0;
+
+    justify-content: center;
+  }
+
+  .search-placeholder,
+  .search-shortcut {
+    display: none;
+  }
+
+  .crm-secondary-nav {
+    padding: 0 14px;
+  }
+
+  .secondary-left {
+    width: 170px;
+    min-width: 170px;
+  }
+
+  .secondary-item {
+    padding: 0 6px;
+  }
+
+  .secondary-item span:not(.nav-count) {
+    display: none;
+  }
+}
+
+
+/* =========================================================
+   RESPONSIVE — 800px
+========================================================= */
+
+@media (max-width: 800px) {
+
+  .crm-topbar {
+    height: 62px;
+  }
+
+  .top-brand {
+    width: auto;
+
+    min-width: auto;
+  }
+
+  .brand-content {
+    display: none;
+  }
+
+  .top-menu {
+    margin-left: 8px;
+  }
+
+  .top-menu-item {
+    width: 36px;
+
+    height: 38px;
+  }
+
+  .quick-create span {
+    display: none;
+  }
+
+  .quick-create {
+    width: 36px;
+
+    padding: 0;
+
+    justify-content: center;
+  }
+
+  .top-user {
+    display: none;
+  }
+
+  .logout-button {
+    display: none;
+  }
+
+  .crm-secondary-nav {
+    top: 62px;
+
+    min-height: 54px;
+
+    overflow-x: auto;
+  }
+
+  .secondary-left {
+    width: auto;
+
+    min-width: auto;
+
+    padding-right: 15px;
+  }
+
+  .workspace-name {
+    display: none;
+  }
+
+  .secondary-menu {
+    flex-shrink: 0;
+  }
+
+  .secondary-item {
+    height: 54px;
+
+    padding: 0 10px;
+  }
+
+  .secondary-actions {
+    display: none;
+  }
+
+  .crm-content {
+    min-height:
+      calc(100vh - 116px);
+  }
+}
+
+
+/* =========================================================
+   RESPONSIVE — 600px
+========================================================= */
+
+@media (max-width: 600px) {
+
+  .crm-topbar {
+    height: 58px;
+
+    padding: 0 10px;
+  }
+
+  .brand-mark {
+    width: 34px;
+    height: 34px;
+
+    border-radius: 9px;
+  }
+
+  .brand-mark-main {
+    font-size: 18px;
+  }
+
+  .top-menu {
+    flex: 1;
+
+    justify-content: space-around;
+  }
+
+  .top-menu-item {
+    width: 34px;
+  }
+
+  .top-actions {
+    gap: 3px;
+  }
+
+  .top-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .crm-secondary-nav {
+    display: none;
+  }
+
+  .crm-content {
+    min-height:
+      calc(100vh - 58px);
+
+    padding-bottom: 65px;
+  }
+
+
+  /* =======================================================
+     MOBILE BOTTOM NAV
+  ======================================================= */
+
+  .mobile-bottom-nav {
+    position: fixed;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: space-around;
+
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    height: 62px;
+
+    background: #ffffff;
+
+    border-top:
+      1px solid #f0dfe0;
+
+    box-shadow:
+      0 -6px 20px
+      rgba(127, 29, 29, 0.07);
+
+    z-index: 2000;
+  }
+
+  .mobile-bottom-nav a,
+  .mobile-bottom-nav button {
+    width: 20%;
+
+    height: 100%;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 4px;
+
+    border: 0;
+
+    background: transparent;
+
+    color: #98a2b3;
+
+    text-decoration: none;
+
+    font-size: 8px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+  }
+
+  .mobile-bottom-nav i {
+    font-size: 15px;
+  }
+
+  .mobile-bottom-nav a.active {
+    color: #f0444a;
+  }
+
+  .mobile-bottom-nav button {
+    color: #f0444a;
+  }
+
+  .mobile-bottom-nav button i {
+    width: 29px;
+    height: 29px;
+
+    border-radius: 9px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: #f0444a;
+
+    color: #ffffff;
+
+    box-shadow:
+      0 5px 12px
+      rgba(240, 68, 74, 0.25);
+  }
+}
+
+
+/* =========================================================
+   VERY SMALL DEVICES
+========================================================= */
+
+@media (max-width: 380px) {
+
+  .top-menu {
+    display: none;
+  }
+
+  .top-actions {
+    margin-left: auto;
+  }
+
+  .top-icon {
+    display: none;
+  }
+}
+
+/* =========================================================
+   CONSOLE MODE (ADMIN / SUPER ADMIN)
+   Used instead of the CRM top-nav above when the logged-in
+   user's role is Admin or Super Admin.
+========================================================= */
+
+.console-body {
+  margin-left: 240px;
+  min-height: 100vh;
+  background: #f5f6f8;
+  transition: margin-left .3s;
+}
+
+.console-body.collapsed {
+  margin-left: 70px;
+}
+
+.console-content {
+  min-height: calc(100vh - 72px);
+}
+
+@media (max-width: 768px) {
+  .console-body,
+  .console-body.collapsed {
+    margin-left: 0;
+  }
+}

@@ -1,0 +1,440 @@
+<div class="container-fluid mt-3">
+
+    <!-- ========================================= -->
+    <!-- WhatsApp Communication Form -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-header bg-success text-white">
+
+            <h4 class="mb-0">
+
+                <i class="fab fa-whatsapp me-2"></i>
+
+                WhatsApp Communication
+
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <!-- Recipient Name -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Recipient Name
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Recipient Name"
+                        [(ngModel)]="message.recipientName">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !message.recipientName">
+
+                        Recipient Name is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Mobile Number -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Mobile Number
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="text" class="form-control" maxlength="10" placeholder="Enter Mobile Number"
+                        [(ngModel)]="message.mobileNumber">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !message.mobileNumber">
+
+                        Mobile Number is required.
+
+                    </div>
+
+                </div>
+
+                <!-- WhatsApp Template -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        WhatsApp Template
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="message.template">
+
+                        <option value="">Select Template</option>
+                        <option>Welcome Message</option>
+                        <option>Follow-up</option>
+                        <option>Payment Reminder</option>
+                        <option>Meeting Reminder</option>
+                        <option>Product Information</option>
+                        <option>Quotation</option>
+                        <option>Invoice Reminder</option>
+                        <option>Thank You</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Related Module -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Related Module
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="message.relatedModule">
+
+                        <option value="">Select Module</option>
+                        <option>Lead</option>
+                        <option>Customer</option>
+                        <option>Contact</option>
+                        <option>Opportunity</option>
+                        <option>Deal</option>
+                        <option>Invoice</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Media Type -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Media Type
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="message.mediaType">
+
+                        <option value="">Select Media Type</option>
+                        <option>Text</option>
+                        <option>Image</option>
+                        <option>PDF</option>
+                        <option>Video</option>
+                        <option>Document</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Priority -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Priority
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="message.priority">
+
+                        <option value="">Select Priority</option>
+                        <option>Low</option>
+                        <option>Medium</option>
+                        <option>High</option>
+                        <option>Urgent</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Status -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Status
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="message.status">
+
+                        <option value="">Select Status</option>
+                        <option>Draft</option>
+                        <option>Scheduled</option>
+                        <option>Sent</option>
+                        <option>Delivered</option>
+                        <option>Read</option>
+                        <option>Failed</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !message.status">
+
+                        Status is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Scheduled Date -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Scheduled Date
+
+                    </label>
+
+                    <input type="date" class="form-control" [(ngModel)]="message.scheduledDate">
+
+                </div>
+
+                <!-- Active -->
+                <div class="col-md-2 mb-3 d-flex align-items-end">
+
+                    <div class="form-check">
+
+                        <input id="whatsAppActive" type="checkbox" class="form-check-input"
+                            [(ngModel)]="message.isActive">
+
+                        <label for="whatsAppActive" class="form-check-label ms-2">
+
+                            Active
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <!-- Attachment -->
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Attachment
+
+                    </label>
+
+                    <input type="file" class="form-control" (change)="onFileSelected($event)">
+
+                </div>
+
+                <!-- Message -->
+                <div class="col-md-12 mb-3">
+
+                    <label class="form-label">
+
+                        WhatsApp Message
+
+                    </label>
+
+                    <textarea rows="6" class="form-control" placeholder="Type your WhatsApp message..."
+                        [(ngModel)]="message.messageBody">
+
+                    </textarea>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <button class="btn btn-success me-2" (click)="saveMessage()">
+
+                <i class="fa fa-paper-plane me-1"></i>
+
+                {{ isEdit ? 'Update' : 'Send Message' }}
+
+            </button>
+
+            <button class="btn btn-secondary" (click)="clear()">
+
+                <i class="fa fa-eraser me-1"></i>
+
+                Clear
+
+            </button>
+
+        </div>
+
+    </div>
+    <!-- ========================================= -->
+    <!-- Search -->
+    <!-- ========================================= -->
+
+    <div class="row mt-4 mb-3">
+
+        <div class="col-md-4">
+
+            <input type="text" class="form-control" placeholder="Search WhatsApp Message..." [(ngModel)]="searchText">
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- WhatsApp Messages Table -->
+    <!-- ========================================= -->
+
+    <div class="table-responsive">
+
+        <table class="table table-bordered table-hover align-middle">
+
+            <thead class="table-success">
+
+                <tr>
+
+                    <th>#</th>
+                    <th>Recipient</th>
+                    <th>Mobile</th>
+                    <th>Template</th>
+                    <th>Module</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                    <th>Scheduled Date</th>
+                    <th width="150">Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr *ngIf="pagedMessages.length == 0">
+
+                    <td colspan="9" class="text-center text-muted">
+
+                        No WhatsApp Messages Found
+
+                    </td>
+
+                </tr>
+
+                <tr *ngFor="let item of pagedMessages; let i = index">
+
+                    <td>
+
+                        {{ ((page - 1) * pageSize) + i + 1 }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.recipientName }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.mobileNumber }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.template }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.relatedModule }}
+
+                    </td>
+
+                    <td>
+
+                        <span class="badge" [ngClass]="{
+
+                                'bg-success': item.priority == 'Low',
+
+                                'bg-info': item.priority == 'Medium',
+
+                                'bg-warning text-dark': item.priority == 'High',
+
+                                'bg-danger': item.priority == 'Urgent'
+
+                            }">
+
+                            {{ item.priority }}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <span class="badge" [ngClass]="{
+
+                                'bg-secondary': item.status == 'Draft',
+
+                                'bg-primary': item.status == 'Scheduled',
+
+                                'bg-success': item.status == 'Sent',
+
+                                'bg-info': item.status == 'Delivered',
+
+                                'bg-dark': item.status == 'Read',
+
+                                'bg-danger': item.status == 'Failed'
+
+                            }">
+
+                            {{ item.status }}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        {{ item.scheduledDate }}
+
+                    </td>
+
+                    <td>
+
+                        <button class="btn btn-warning btn-sm me-2" (click)="edit(item.messageId)">
+
+                            <i class="fa fa-edit"></i>
+
+                        </button>
+
+                        <button class="btn btn-danger btn-sm" (click)="delete(item.messageId)">
+
+                            <i class="fa fa-trash"></i>
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Pagination -->
+    <!-- ========================================= -->
+
+    <app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredMessages.length"
+        (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
+    </app-pagination>
+
+</div>

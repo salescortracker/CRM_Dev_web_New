@@ -1,0 +1,251 @@
+<div class="container mt-4">
+
+    <div class="card">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4>API Logs</h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+                    <label>API Service</label>
+                    <select class="form-select">
+                        <option>All Services</option>
+                        <option>Authentication API</option>
+                        <option>Lead API</option>
+                        <option>Sales API</option>
+                        <option>Payment API</option>
+                        <option>WhatsApp API</option>
+                        <option>Email API</option>
+                        <option>SMS API</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>HTTP Method</label>
+                    <select class="form-select">
+                        <option>All</option>
+                        <option>GET</option>
+                        <option>POST</option>
+                        <option>PUT</option>
+                        <option>DELETE</option>
+                        <option>PATCH</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Status</label>
+                    <select class="form-select">
+                        <option>All</option>
+                        <option>Success</option>
+                        <option>Failed</option>
+                        <option>Unauthorized</option>
+                        <option>Timeout</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Enable API Logging
+                    </label>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Log Request Payload
+                    </label>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Log Response Payload
+                    </label>
+                </div>
+
+            </div>
+
+            <button class="btn btn-danger me-2">
+                Save
+            </button>
+
+            <button class="btn btn-secondary me-2">
+                Clear
+            </button>
+
+            <button class="btn btn-success">
+                Export Logs
+            </button>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="row mb-3">
+
+        <div class="col-md-3">
+            <input class="form-control"
+                   placeholder="Search Endpoint...">
+        </div>
+
+        <div class="col-md-3">
+            <select class="form-select">
+                <option>All Services</option>
+                <option>Authentication</option>
+                <option>Payments</option>
+                <option>WhatsApp</option>
+                <option>Email</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <input type="date"
+                   class="form-control">
+        </div>
+
+        <div class="col-md-3">
+            <button class="btn btn-danger w-100">
+                Search
+            </button>
+        </div>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-danger">
+
+            <tr>
+
+                <th>#</th>
+                <th>Date & Time</th>
+                <th>API Name</th>
+                <th>Method</th>
+                <th>Endpoint</th>
+                <th>Status Code</th>
+                <th>Response Time</th>
+                <th>Status</th>
+                <th width="180">Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+
+                <td>1</td>
+                <td>27-Jul-2026 10:05 AM</td>
+                <td>Authentication API</td>
+                <td><span class="badge bg-primary">POST</span></td>
+                <td>/api/auth/login</td>
+                <td>200</td>
+                <td>120 ms</td>
+                <td><span class="badge bg-success">Success</span></td>
+
+                <td>
+
+                    <button class="btn btn-info btn-sm me-1">
+                        View
+                    </button>
+
+                    <button class="btn btn-secondary btn-sm">
+                        Payload
+                    </button>
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>2</td>
+                <td>27-Jul-2026 09:55 AM</td>
+                <td>Lead API</td>
+                <td><span class="badge bg-success">GET</span></td>
+                <td>/api/leads</td>
+                <td>200</td>
+                <td>65 ms</td>
+                <td><span class="badge bg-success">Success</span></td>
+
+                <td>
+
+                    <button class="btn btn-info btn-sm me-1">
+                        View
+                    </button>
+
+                    <button class="btn btn-secondary btn-sm">
+                        Payload
+                    </button>
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>3</td>
+                <td>27-Jul-2026 09:45 AM</td>
+                <td>Payment API</td>
+                <td><span class="badge bg-warning">POST</span></td>
+                <td>/api/payments/process</td>
+                <td>500</td>
+                <td>950 ms</td>
+                <td><span class="badge bg-danger">Failed</span></td>
+
+                <td>
+
+                    <button class="btn btn-info btn-sm me-1">
+                        View
+                    </button>
+
+                    <button class="btn btn-secondary btn-sm">
+                        Payload
+                    </button>
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>4</td>
+                <td>27-Jul-2026 09:20 AM</td>
+                <td>WhatsApp API</td>
+                <td><span class="badge bg-primary">POST</span></td>
+                <td>/api/whatsapp/send</td>
+                <td>202</td>
+                <td>340 ms</td>
+                <td><span class="badge bg-info">Accepted</span></td>
+
+                <td>
+
+                    <button class="btn btn-info btn-sm me-1">
+                        View
+                    </button>
+
+                    <button class="btn btn-secondary btn-sm">
+                        Payload
+                    </button>
+
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+
+
+</div>

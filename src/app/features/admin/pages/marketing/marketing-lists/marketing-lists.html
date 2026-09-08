@@ -1,0 +1,1033 @@
+<div class="container mt-4">
+
+
+    <!-- ========================================= -->
+    <!-- Marketing List Form -->
+    <!-- ========================================= -->
+
+
+    <div class="card shadow-sm">
+
+
+        <div class="card-header bg-danger text-white">
+
+
+            <h4 class="mb-0">
+
+                <i class="fa fa-list me-2"></i>
+
+                Marketing Lists Management
+
+            </h4>
+
+
+        </div>
+
+
+
+        <div class="card-body">
+
+
+
+            <div class="row">
+
+
+
+
+
+                <!-- List Name -->
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+                        List Name
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+
+
+                    <input type="text" class="form-control" placeholder="Enter List Name"
+                        [(ngModel)]="marketingList.listName">
+
+
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !marketingList.listName">
+
+                        List Name is required.
+
+                    </div>
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <!-- List Code -->
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+
+                        List Code
+
+                        <span class="text-danger">*</span>
+
+
+                    </label>
+
+
+
+
+                    <input type="text" class="form-control" placeholder="Enter List Code"
+                        [(ngModel)]="marketingList.listCode">
+
+
+
+
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !marketingList.listCode">
+
+
+                        List Code is required.
+
+
+                    </div>
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <!-- List Type -->
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+
+                        List Type
+
+                        <span class="text-danger">*</span>
+
+
+                    </label>
+
+
+
+
+                    <select class="form-select" [(ngModel)]="marketingList.listType">
+
+
+
+                        <option value="">
+
+                            Select List Type
+
+                        </option>
+
+
+
+                        <option>
+
+                            Customer List
+
+                        </option>
+
+
+
+                        <option>
+
+                            Lead List
+
+                        </option>
+
+
+
+                        <option>
+
+                            Contact List
+
+                        </option>
+
+
+
+                        <option>
+
+                            Campaign List
+
+                        </option>
+
+
+
+                        <option>
+
+                            Prospect List
+
+                        </option>
+
+
+
+                    </select>
+
+
+
+
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !marketingList.listType">
+
+
+                        List Type is required.
+
+
+                    </div>
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <!-- Target Audience -->
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+
+                        Target Audience
+
+                        <span class="text-danger">*</span>
+
+
+                    </label>
+
+
+
+
+                    <select class="form-select" [(ngModel)]="marketingList.targetAudience">
+
+
+
+                        <option value="">
+
+                            Select Target Audience
+
+                        </option>
+
+
+
+
+                        <option>
+
+                            Existing Customers
+
+                        </option>
+
+
+
+
+                        <option>
+
+                            New Leads
+
+                        </option>
+
+
+
+
+                        <option>
+
+                            Potential Customers
+
+                        </option>
+
+
+
+
+                        <option>
+
+                            Business Partners
+
+                        </option>
+
+
+
+
+                        <option>
+
+                            All Contacts
+
+                        </option>
+
+
+
+                    </select>
+
+
+
+
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !marketingList.targetAudience">
+
+
+                        Target Audience is required.
+
+
+                    </div>
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <!-- Total Members -->
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+
+                        Total Members
+
+
+                    </label>
+
+
+
+
+                    <input type="number" class="form-control" placeholder="Enter Total Members"
+                        [(ngModel)]="marketingList.totalMembers">
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <!-- Created Date -->
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+
+                        Created Date
+
+
+                    </label>
+
+
+
+
+                    <input type="date" class="form-control" [(ngModel)]="marketingList.createdDate">
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <!-- Owner -->
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+
+                        Owner
+
+
+                    </label>
+
+
+
+
+                    <select class="form-select" [(ngModel)]="marketingList.owner">
+
+
+
+                        <option value="">
+
+                            Select Owner
+
+                        </option>
+
+
+
+
+                        <option>
+
+                            Karishma
+
+                        </option>
+
+
+
+
+                        <option>
+
+                            Rahul
+
+                        </option>
+
+
+
+
+                        <option>
+
+                            Sneha
+
+                        </option>
+
+
+
+
+                        <option>
+
+                            Arun
+
+                        </option>
+
+
+
+                    </select>
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <!-- Status -->
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+
+                        Status
+
+                        <span class="text-danger">*</span>
+
+
+                    </label>
+
+
+
+
+                    <select class="form-select" [(ngModel)]="marketingList.status">
+
+
+
+                        <option value="">
+
+                            Select Status
+
+                        </option>
+
+
+
+
+                        <option>
+
+                            Active
+
+                        </option>
+
+
+
+
+                        <option>
+
+                            Inactive
+
+                        </option>
+
+
+
+
+                        <option>
+
+                            Draft
+
+                        </option>
+
+
+
+
+                        <option>
+
+                            Archived
+
+                        </option>
+
+
+
+                    </select>
+
+
+
+
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !marketingList.status">
+
+
+                        Status is required.
+
+
+                    </div>
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <!-- Description -->
+                <div class="col-md-8 mb-3">
+
+
+                    <label class="form-label">
+
+
+                        Description
+
+
+                    </label>
+
+
+
+
+                    <textarea rows="4" class="form-control" placeholder="Enter Description"
+                        [(ngModel)]="marketingList.description">
+
+
+                    </textarea>
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <!-- Active -->
+                <div class="col-md-4 mb-3 d-flex align-items-end">
+
+
+                    <div class="form-check">
+
+
+
+                        <input type="checkbox" class="form-check-input" id="marketingListActive"
+                            [(ngModel)]="marketingList.isActive">
+
+
+
+                        <label class="form-check-label ms-2" for="marketingListActive">
+
+
+                            Active
+
+
+                        </label>
+
+
+
+                    </div>
+
+
+                </div>
+
+
+
+
+
+            </div>
+
+
+
+
+
+            <hr>
+
+
+
+
+
+            <button class="btn btn-danger me-2" (click)="saveMarketingList()">
+
+
+
+                <i class="fa fa-save me-1"></i>
+
+
+
+                {{ isEdit ? 'Update' : 'Save' }}
+
+
+
+            </button>
+
+
+
+
+
+
+
+            <button class="btn btn-secondary" (click)="clear()">
+
+
+
+                <i class="fa fa-eraser me-1"></i>
+
+
+
+                Clear
+
+
+
+            </button>
+
+
+
+
+
+        </div>
+
+
+
+    </div>
+    <!-- ========================================= -->
+    <!-- Search -->
+    <!-- ========================================= -->
+
+
+    <div class="row mt-4 mb-3">
+
+
+        <div class="col-md-4">
+
+
+            <input type="text" class="form-control" placeholder="Search Marketing List..." [(ngModel)]="searchText">
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+    <!-- ========================================= -->
+    <!-- Marketing Lists Table -->
+    <!-- ========================================= -->
+
+
+    <div class="table-responsive">
+
+
+
+        <table class="table table-bordered table-hover">
+
+
+
+            <thead class="table-danger">
+
+
+
+                <tr>
+
+
+                    <th>#</th>
+
+
+                    <th>List Code</th>
+
+
+                    <th>List Name</th>
+
+
+                    <th>List Type</th>
+
+
+                    <th>Target Audience</th>
+
+
+                    <th>Total Members</th>
+
+
+                    <th>Owner</th>
+
+
+                    <th>Status</th>
+
+
+                    <th width="140">
+
+                        Action
+
+                    </th>
+
+
+
+                </tr>
+
+
+
+            </thead>
+
+
+
+
+
+            <tbody>
+
+
+
+
+
+                <tr *ngIf="pagedMarketingLists.length == 0">
+
+
+                    <td colspan="9" class="text-center text-muted">
+
+
+
+                        No Marketing Lists Found
+
+
+
+                    </td>
+
+
+                </tr>
+
+
+
+
+
+
+
+                <tr *ngFor="let item of pagedMarketingLists; let i=index">
+
+
+
+
+
+                    <td>
+
+
+                        {{ ((page - 1) * pageSize) + i + 1 }}
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+                        {{ item.listCode }}
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+                        {{ item.listName }}
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+                        <span class="badge" [ngClass]="{
+
+
+                                'bg-primary':
+
+                                item.listType == 'Customer List',
+
+
+
+                                'bg-success':
+
+                                item.listType == 'Lead List',
+
+
+
+                                'bg-info text-dark':
+
+                                item.listType == 'Contact List',
+
+
+
+                                'bg-warning text-dark':
+
+                                item.listType == 'Campaign List',
+
+
+
+                                'bg-secondary':
+
+                                item.listType == 'Prospect List'
+
+
+
+                            }">
+
+
+                            {{ item.listType }}
+
+
+                        </span>
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+                        {{ item.targetAudience }}
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+                        {{ item.totalMembers | number }}
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+                        {{ item.owner }}
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+
+                        <span class="badge" [ngClass]="{
+
+
+                                'bg-success':
+
+                                item.status == 'Active',
+
+
+
+                                'bg-secondary':
+
+                                item.status == 'Inactive',
+
+
+
+                                'bg-warning text-dark':
+
+                                item.status == 'Draft',
+
+
+
+                                'bg-danger':
+
+                                item.status == 'Archived'
+
+
+
+                            }">
+
+
+
+                            {{ item.status }}
+
+
+
+                        </span>
+
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+
+
+
+                        <button class="btn btn-warning btn-sm me-2" (click)="edit(item.marketingListId)">
+
+
+
+                            <i class="fa fa-edit"></i>
+
+
+
+                        </button>
+
+
+
+
+
+
+
+                        <button class="btn btn-danger btn-sm" (click)="delete(item.marketingListId)">
+
+
+
+                            <i class="fa fa-trash"></i>
+
+
+
+                        </button>
+
+
+
+
+
+                    </td>
+
+
+
+
+
+                </tr>
+
+
+
+
+
+            </tbody>
+
+
+
+
+
+        </table>
+
+
+
+
+    </div>
+
+
+
+
+
+
+    <!-- ========================================= -->
+    <!-- Pagination -->
+    <!-- ========================================= -->
+
+
+
+    <app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredMarketingLists.length"
+        (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
+
+
+
+    </app-pagination>
+
+
+
+
+
+</div>

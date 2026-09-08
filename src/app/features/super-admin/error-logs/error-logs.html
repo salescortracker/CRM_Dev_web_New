@@ -1,0 +1,277 @@
+<div class="container mt-4">
+
+    <div class="card">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4>Error Logs</h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+                    <label>Application Module</label>
+                    <select class="form-select">
+                        <option>All Modules</option>
+                        <option>Authentication</option>
+                        <option>Leads</option>
+                        <option>Sales</option>
+                        <option>Support</option>
+                        <option>Billing</option>
+                        <option>Projects</option>
+                        <option>Reports</option>
+                        <option>Notifications</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Error Severity</label>
+                    <select class="form-select">
+                        <option>All</option>
+                        <option>Critical</option>
+                        <option>Error</option>
+                        <option>Warning</option>
+                        <option>Information</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Status</label>
+                    <select class="form-select">
+                        <option>All</option>
+                        <option>Open</option>
+                        <option>Resolved</option>
+                        <option>Ignored</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Enable Error Logging
+                    </label>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Capture Stack Trace
+                    </label>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Email Critical Errors
+                    </label>
+                </div>
+
+            </div>
+
+            <button class="btn btn-danger me-2">
+                Save
+            </button>
+
+            <button class="btn btn-secondary me-2">
+                Clear
+            </button>
+
+            <button class="btn btn-success">
+                Export Logs
+            </button>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="row mb-3">
+
+        <div class="col-md-3">
+            <input class="form-control"
+                   placeholder="Search Error...">
+        </div>
+
+        <div class="col-md-3">
+            <select class="form-select">
+                <option>All Modules</option>
+                <option>Authentication</option>
+                <option>Sales</option>
+                <option>Billing</option>
+                <option>Reports</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <input type="date"
+                   class="form-control">
+        </div>
+
+        <div class="col-md-3">
+            <button class="btn btn-danger w-100">
+                Search
+            </button>
+        </div>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-danger">
+
+            <tr>
+
+                <th>#</th>
+                <th>Date & Time</th>
+                <th>Module</th>
+                <th>Error Code</th>
+                <th>Error Message</th>
+                <th>Severity</th>
+                <th>Status</th>
+                <th width="200">Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+
+                <td>1</td>
+                <td>27-Jul-2026 10:35 AM</td>
+                <td>Authentication</td>
+                <td>AUTH5001</td>
+                <td>Invalid JWT Token</td>
+                <td>
+                    <span class="badge bg-danger">
+                        Critical
+                    </span>
+                </td>
+                <td>
+                    <span class="badge bg-warning">
+                        Open
+                    </span>
+                </td>
+
+                <td>
+
+                    <button class="btn btn-info btn-sm me-1">
+                        View
+                    </button>
+
+                    <button class="btn btn-success btn-sm">
+                        Resolve
+                    </button>
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>2</td>
+                <td>27-Jul-2026 10:15 AM</td>
+                <td>Billing</td>
+                <td>DB3002</td>
+                <td>Database Timeout</td>
+                <td>
+                    <span class="badge bg-warning">
+                        Error
+                    </span>
+                </td>
+                <td>
+                    <span class="badge bg-success">
+                        Resolved
+                    </span>
+                </td>
+
+                <td>
+
+                    <button class="btn btn-info btn-sm me-1">
+                        View
+                    </button>
+
+                    <button class="btn btn-secondary btn-sm">
+                        Details
+                    </button>
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>3</td>
+                <td>27-Jul-2026 09:55 AM</td>
+                <td>Email Service</td>
+                <td>SMTP1004</td>
+                <td>SMTP Authentication Failed</td>
+                <td>
+                    <span class="badge bg-warning">
+                        Error
+                    </span>
+                </td>
+                <td>
+                    <span class="badge bg-warning">
+                        Open
+                    </span>
+                </td>
+
+                <td>
+
+                    <button class="btn btn-info btn-sm me-1">
+                        View
+                    </button>
+
+                    <button class="btn btn-success btn-sm">
+                        Resolve
+                    </button>
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>4</td>
+                <td>27-Jul-2026 09:30 AM</td>
+                <td>Reports</td>
+                <td>RPT2007</td>
+                <td>Report Generation Failed</td>
+                <td>
+                    <span class="badge bg-info">
+                        Warning
+                    </span>
+                </td>
+                <td>
+                    <span class="badge bg-secondary">
+                        Ignored
+                    </span>
+                </td>
+
+                <td>
+
+                    <button class="btn btn-info btn-sm me-1">
+                        View
+                    </button>
+
+                    <button class="btn btn-secondary btn-sm">
+                        Details
+                    </button>
+
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+    
+
+</div>

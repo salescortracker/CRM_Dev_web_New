@@ -1,0 +1,387 @@
+<div class="container mt-4">
+
+    <!-- ========================================= -->
+    <!-- Lead Source Form -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4 class="mb-0">
+
+                <i class="fa fa-bullhorn me-2"></i>
+
+                Lead Source Management
+
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <!-- Lead Source Name -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Lead Source Name
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Lead Source Name"
+                        [(ngModel)]="leadSource.sourceName">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !leadSource.sourceName">
+
+                        Lead Source Name is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Source Code -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Source Code
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Source Code"
+                        [(ngModel)]="leadSource.sourceCode">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !leadSource.sourceCode">
+
+                        Source Code is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Source Category -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Source Category
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="leadSource.sourceCategory">
+
+                        <option value="">Select Category</option>
+
+                        <option>Digital Marketing</option>
+                        <option>Social Media</option>
+                        <option>Referral</option>
+                        <option>Advertisement</option>
+                        <option>Website</option>
+                        <option>Email Marketing</option>
+                        <option>Events & Exhibition</option>
+                        <option>Tele Calling</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !leadSource.sourceCategory">
+
+                        Source Category is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Priority -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Priority
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="leadSource.priority">
+
+                        <option value="">Select Priority</option>
+
+                        <option>High</option>
+                        <option>Medium</option>
+                        <option>Low</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Cost Per Lead -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Cost Per Lead (₹)
+
+                    </label>
+
+                    <input type="number" class="form-control" placeholder="Enter Cost Per Lead"
+                        [(ngModel)]="leadSource.costPerLead">
+
+                </div>
+
+                <!-- Conversion Rate -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Conversion Rate (%)
+
+                    </label>
+
+                    <input type="number" class="form-control" placeholder="Enter Conversion Rate"
+                        [(ngModel)]="leadSource.conversionRate">
+
+                </div>
+
+                <!-- Status -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Status
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="leadSource.status">
+
+                        <option value="">Select Status</option>
+
+                        <option>Active</option>
+                        <option>Inactive</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !leadSource.status">
+
+                        Status is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Description -->
+                <div class="col-md-8 mb-3">
+
+                    <label class="form-label">
+
+                        Description
+
+                    </label>
+
+                    <textarea rows="4" class="form-control" placeholder="Enter Description"
+                        [(ngModel)]="leadSource.description">
+
+                    </textarea>
+
+                </div>
+
+                <!-- Active -->
+                <div class="col-md-4 mb-3 d-flex align-items-end">
+
+                    <div class="form-check">
+
+                        <input type="checkbox" id="leadSourceActive" class="form-check-input"
+                            [(ngModel)]="leadSource.isActive">
+
+                        <label class="form-check-label ms-2" for="leadSourceActive">
+
+                            Active
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <button class="btn btn-danger me-2" (click)="saveLeadSource()">
+
+                <i class="fa fa-save me-1"></i>
+
+                {{ isEdit ? 'Update' : 'Save' }}
+
+            </button>
+
+            <button class="btn btn-secondary" (click)="clear()">
+
+                <i class="fa fa-eraser me-1"></i>
+
+                Clear
+
+            </button>
+
+        </div>
+
+    </div>
+    <!-- ========================================= -->
+    <!-- Search -->
+    <!-- ========================================= -->
+
+    <div class="row mt-4 mb-3">
+
+        <div class="col-md-4">
+
+            <input type="text" class="form-control" placeholder="Search Lead Source..." [(ngModel)]="searchText">
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Lead Sources Listing -->
+    <!-- ========================================= -->
+
+    <div class="table-responsive">
+
+        <table class="table table-bordered table-hover">
+
+            <thead class="table-danger">
+
+                <tr>
+
+                    <th>#</th>
+                    <th>Lead Source</th>
+                    <th>Source Code</th>
+                    <th>Category</th>
+                    <th>Priority</th>
+                    <th>Cost / Lead</th>
+                    <th>Conversion %</th>
+                    <th>Status</th>
+                    <th width="140">Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr *ngIf="pagedLeadSources.length == 0">
+
+                    <td colspan="9" class="text-center text-muted">
+
+                        No Lead Sources Found
+
+                    </td>
+
+                </tr>
+
+                <tr *ngFor="let item of pagedLeadSources; let i = index">
+
+                    <td>
+
+                        {{ ((page - 1) * pageSize) + i + 1 }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.sourceName }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.sourceCode }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.sourceCategory }}
+
+                    </td>
+
+                    <td>
+
+                        <span class="badge" [ngClass]="{
+                                'bg-danger': item.priority == 'High',
+                                'bg-warning text-dark': item.priority == 'Medium',
+                                'bg-secondary': item.priority == 'Low'
+                            }">
+
+                            {{ item.priority }}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        ₹ {{ item.costPerLead | number }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.conversionRate }}%
+
+                    </td>
+
+                    <td>
+
+                        <span class="badge" [ngClass]="{
+                                'bg-success': item.status == 'Active',
+                                'bg-danger': item.status == 'Inactive'
+                            }">
+
+                            {{ item.status }}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <button class="btn btn-warning btn-sm me-2" (click)="edit(item.leadSourceId)">
+
+                            <i class="fa fa-edit"></i>
+
+                        </button>
+
+                        <button class="btn btn-danger btn-sm" (click)="delete(item.leadSourceId)">
+
+                            <i class="fa fa-trash"></i>
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Pagination -->
+    <!-- ========================================= -->
+
+    <app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredLeadSources.length"
+        (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
+
+    </app-pagination>
+
+</div>

@@ -1,0 +1,1 @@
+import{Pa as o,fb as s,gb as n,xb as a}from"./chunk-FHTTNS4L.js";var r=class t{static \u0275fac=function(e){return new(e||t)};static \u0275cmp=o({type:t,selectors:[["app-roles"]],decls:2,vars:0,template:function(e,i){e&1&&(s(0,"p"),a(1,"roles works!"),n())},encapsulation:2})};export{r as Roles};

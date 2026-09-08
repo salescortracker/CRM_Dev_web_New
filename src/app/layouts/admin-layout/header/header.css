@@ -1,0 +1,121 @@
+:host {
+  display: block;
+  position: sticky;
+  top: 0;
+  z-index: 1020;
+}
+
+.crm-header {
+  background: #fff;
+  border-bottom: 1px solid #dce2ea;
+}
+
+.status-strip {
+  min-height: 28px;
+  padding: 0 24px;
+  background: #f5f6f8;
+  color: #334155;
+  font-size: 12px;
+}
+
+.status-strip strong {
+  color: #020617;
+}
+
+.workspace-bar {
+  min-height: 72px;
+  padding: 0 24px;
+}
+
+.workspace-title {
+  color: #020617;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.header-actions {
+  min-width: 0;
+}
+
+.search-box {
+  width: 200px;
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid #d8dee8;
+  border-radius: 6px;
+  background: #f8fafc;
+  color: #64748b;
+}
+
+.search-box .form-control {
+  height: 32px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  font-size: 13px;
+}
+
+.icon-btn {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #5b6b80;
+}
+
+.icon-btn:hover,
+.icon-btn:focus {
+  background: #f1f5f9;
+  color: #c8103e;
+}
+
+.badge-btn {
+  overflow: visible;
+}
+
+.count-badge {
+  position: absolute;
+  top: -8px;
+  right: -6px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 99px;
+  background: #c8103e;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 18px;
+}
+
+.welcome-text {
+  color: #020617;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #c8103e;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+@media (max-width: 767.98px) {
+  .status-strip {
+    flex-wrap: wrap;
+    gap: 8px !important;
+    padding: 7px 14px;
+  }
+
+  .workspace-bar {
+    padding: 0 14px;
+  }
+}

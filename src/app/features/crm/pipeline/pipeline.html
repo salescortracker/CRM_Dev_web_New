@@ -1,0 +1,1078 @@
+<div class="pipeline-page">
+
+  <!-- ======================================================
+       HEADER
+  ======================================================= -->
+
+  <div class="page-header">
+
+    <div>
+
+      <div class="breadcrumb">
+        CRM
+        <span>›</span>
+        Sales
+        <span>›</span>
+        <strong>Pipeline</strong>
+      </div>
+
+      <div class="title-row">
+
+        <div>
+
+          <h1>Sales Pipeline</h1>
+
+          <p>
+            Manage opportunities and track your sales journey.
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="header-actions">
+
+      <select
+        [(ngModel)]="selectedPipeline"
+        class="pipeline-select">
+
+        <option
+          *ngFor="let pipeline of pipelines">
+
+          {{ pipeline.name }}
+
+        </option>
+
+      </select>
+
+
+      <button
+        class="btn-secondary"
+        (click)="activeView = 'list'">
+
+        <i class="bi bi-list-ul"></i>
+
+        List
+
+      </button>
+
+
+      <button
+        class="btn-secondary"
+        (click)="activeView = 'kanban'">
+
+        <i class="bi bi-kanban"></i>
+
+        Pipeline
+
+      </button>
+
+
+      <button
+        class="btn-primary"
+        (click)="openCreateOpportunity()">
+
+        <i class="bi bi-plus-lg"></i>
+
+        New Opportunity
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- ======================================================
+       SUMMARY CARDS
+  ======================================================= -->
+
+  <div class="summary-grid">
+
+    <div class="summary-card">
+
+      <div class="summary-icon pipeline-icon">
+        <i class="bi bi-funnel"></i>
+      </div>
+
+      <div>
+
+        <span>Open Pipeline</span>
+
+        <strong>
+          {{ formatCurrency(pipelineTotal) }}
+        </strong>
+
+        <small>
+          {{ openOpportunityCount }}
+          open opportunities
+        </small>
+
+      </div>
+
+    </div>
+
+
+    <div class="summary-card">
+
+      <div class="summary-icon weighted-icon">
+        <i class="bi bi-graph-up-arrow"></i>
+      </div>
+
+      <div>
+
+        <span>Weighted Pipeline</span>
+
+        <strong>
+          {{ formatCurrency(weightedPipeline) }}
+        </strong>
+
+        <small>
+          Based on probability
+        </small>
+
+      </div>
+
+    </div>
+
+
+    <div class="summary-card">
+
+      <div class="summary-icon won-icon">
+        <i class="bi bi-check-circle"></i>
+      </div>
+
+      <div>
+
+        <span>Won</span>
+
+        <strong>
+          {{ formatCurrency(wonTotal) }}
+        </strong>
+
+        <small>
+          {{ wonOpportunityCount }}
+          opportunities
+        </small>
+
+      </div>
+
+    </div>
+
+
+    <div class="summary-card">
+
+      <div class="summary-icon lost-icon">
+        <i class="bi bi-x-circle"></i>
+      </div>
+
+      <div>
+
+        <span>Lost</span>
+
+        <strong>
+          {{ formatCurrency(lostTotal) }}
+        </strong>
+
+        <small>
+          Closed lost
+        </small>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- ======================================================
+       FILTER BAR
+  ======================================================= -->
+
+  <div class="filter-bar">
+
+    <div class="search-box">
+
+      <i class="bi bi-search"></i>
+
+      <input
+        type="text"
+        [(ngModel)]="searchText"
+        placeholder="Search opportunities, customer, lead...">
+
+    </div>
+
+
+    <select
+      [(ngModel)]="selectedOwner">
+
+      <option
+        *ngFor="let owner of owners"
+        [value]="owner">
+
+        Owner: {{ owner }}
+
+      </option>
+
+    </select>
+
+
+    <select
+      [(ngModel)]="selectedSource">
+
+      <option
+        *ngFor="let source of sources"
+        [value]="source">
+
+        Source: {{ source }}
+
+      </option>
+
+    </select>
+
+
+    <select
+      [(ngModel)]="selectedPriority">
+
+      <option
+        *ngFor="let priority of priorities"
+        [value]="priority">
+
+        Priority: {{ priority }}
+
+      </option>
+
+    </select>
+
+
+    <button
+      class="filter-reset"
+      (click)="resetFilters()">
+
+      <i class="bi bi-arrow-counterclockwise"></i>
+
+      Reset
+
+    </button>
+
+  </div>
+
+
+
+  <!-- ======================================================
+       KANBAN
+  ======================================================= -->
+
+  <div
+    class="pipeline-board"
+    *ngIf="activeView === 'kanban'">
+
+    <div
+      class="pipeline-column"
+      *ngFor="let stage of stages">
+
+
+      <!-- COLUMN HEADER -->
+
+      <div class="column-header">
+
+        <div class="stage-title">
+
+          <span
+            class="stage-dot"
+            [style.background]="stage.color">
+          </span>
+
+          <strong>
+            {{ stage.name }}
+          </strong>
+
+          <span class="stage-count">
+            {{ getStageOpportunities(stage.id).length }}
+          </span>
+
+        </div>
+
+
+        <div class="stage-value">
+
+          {{ formatCurrency(
+            getStageTotal(stage.id)
+          ) }}
+
+        </div>
+
+      </div>
+
+
+
+      <!-- DROP AREA -->
+
+      <div
+        class="column-content"
+        (dragover)="onDragOver($event)"
+        (drop)="onDrop(stage.id)">
+
+
+        <!-- OPPORTUNITY -->
+
+        <div
+          class="opportunity-card"
+          *ngFor="
+            let opportunity of getStageOpportunities(stage.id);
+            trackBy: trackById
+          "
+          draggable="true"
+          (dragstart)="onDragStart(opportunity)"
+          (click)="viewOpportunity(opportunity)">
+
+
+          <div class="card-top">
+
+            <span class="opportunity-number">
+
+              {{ opportunity.number }}
+
+            </span>
+
+
+            <button
+              class="card-menu"
+              (click)="$event.stopPropagation()">
+
+              <i class="bi bi-three-dots"></i>
+
+            </button>
+
+          </div>
+
+
+          <h3>
+
+            {{ opportunity.name }}
+
+          </h3>
+
+
+          <div class="customer">
+
+            <div class="customer-avatar">
+
+              {{ opportunity.customer
+                .charAt(0)
+                .toUpperCase()
+              }}
+
+            </div>
+
+            <div>
+
+              <strong>
+                {{ opportunity.customer }}
+              </strong>
+
+              <span>
+                {{ opportunity.leadName }}
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <div class="amount-row">
+
+            <strong>
+
+              {{ formatCurrency(
+                opportunity.amount
+              ) }}
+
+            </strong>
+
+            <span>
+
+              {{ opportunity.probability }}%
+
+            </span>
+
+          </div>
+
+
+          <div class="probability-bar">
+
+            <span
+              [style.width.%]="opportunity.probability">
+            </span>
+
+          </div>
+
+
+          <div class="card-footer">
+
+            <span
+              class="priority"
+              [ngClass]="
+                getPriorityClass(
+                  opportunity.priority
+                )
+              ">
+
+              {{ opportunity.priority }}
+
+            </span>
+
+
+            <span class="close-date">
+
+              <i class="bi bi-calendar3"></i>
+
+              {{ opportunity.expectedCloseDate }}
+
+            </span>
+
+          </div>
+
+
+          <div class="card-owner">
+
+            <div class="owner-avatar">
+
+              {{ opportunity.owner
+                .charAt(0)
+                .toUpperCase()
+              }}
+
+            </div>
+
+            <span>
+
+              {{ opportunity.owner }}
+
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <!-- EMPTY -->
+
+        <div
+          class="empty-stage"
+          *ngIf="
+            getStageOpportunities(stage.id).length === 0
+          ">
+
+          <i class="bi bi-inbox"></i>
+
+          <span>
+            No opportunities
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <!-- ADD -->
+
+      <button
+        class="add-stage-button"
+        (click)="openCreateOpportunity()">
+
+        <i class="bi bi-plus"></i>
+
+        Add opportunity
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- ======================================================
+       LIST VIEW
+  ======================================================= -->
+
+  <div
+    class="list-container"
+    *ngIf="activeView === 'list'">
+
+    <table>
+
+      <thead>
+
+        <tr>
+
+          <th>Opportunity</th>
+
+          <th>Customer</th>
+
+          <th>Stage</th>
+
+          <th>Amount</th>
+
+          <th>Probability</th>
+
+          <th>Expected Close</th>
+
+          <th>Owner</th>
+
+        </tr>
+
+      </thead>
+
+
+      <tbody>
+
+        <tr
+          *ngFor="
+            let opportunity of filteredOpportunities;
+            trackBy: trackById
+          "
+          (click)="viewOpportunity(opportunity)">
+
+          <td>
+
+            <div class="list-opportunity">
+
+              <strong>
+                {{ opportunity.name }}
+              </strong>
+
+              <span>
+                {{ opportunity.number }}
+              </span>
+
+            </div>
+
+          </td>
+
+
+          <td>
+
+            <strong>
+              {{ opportunity.customer }}
+            </strong>
+
+            <small>
+              {{ opportunity.leadName }}
+            </small>
+
+          </td>
+
+
+          <td>
+
+            <span class="stage-badge">
+
+              {{
+                getStage(
+                  opportunity.stageId
+                )?.name
+              }}
+
+            </span>
+
+          </td>
+
+
+          <td>
+
+            <strong>
+              {{ formatCurrency(
+                opportunity.amount
+              ) }}
+            </strong>
+
+          </td>
+
+
+          <td>
+
+            {{ opportunity.probability }}%
+
+          </td>
+
+
+          <td>
+
+            {{ opportunity.expectedCloseDate }}
+
+          </td>
+
+
+          <td>
+
+            {{ opportunity.owner }}
+
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+
+
+  <!-- ======================================================
+       OPPORTUNITY SIDE PANEL
+  ======================================================= -->
+
+  <div
+    class="drawer-overlay"
+    *ngIf="showOpportunityPanel"
+    (click)="closeOpportunityPanel()">
+
+  </div>
+
+
+  <aside
+    class="opportunity-drawer"
+    *ngIf="
+      showOpportunityPanel &&
+      selectedOpportunity
+    ">
+
+
+    <div class="drawer-header">
+
+      <div>
+
+        <span>
+          {{ selectedOpportunity.number }}
+        </span>
+
+        <h2>
+          {{ selectedOpportunity.name }}
+        </h2>
+
+      </div>
+
+
+      <button
+        (click)="closeOpportunityPanel()">
+
+        <i class="bi bi-x-lg"></i>
+
+      </button>
+
+    </div>
+
+
+    <div class="drawer-body">
+
+
+      <div class="drawer-amount">
+
+        <span>Opportunity Value</span>
+
+        <strong>
+
+          {{ formatCurrency(
+            selectedOpportunity.amount
+          ) }}
+
+        </strong>
+
+      </div>
+
+
+      <div class="detail-section">
+
+        <h4>Opportunity Details</h4>
+
+
+        <div class="detail-row">
+
+          <span>Customer</span>
+
+          <strong>
+            {{ selectedOpportunity.customer }}
+          </strong>
+
+        </div>
+
+
+        <div class="detail-row">
+
+          <span>Lead</span>
+
+          <strong>
+            {{ selectedOpportunity.leadName }}
+          </strong>
+
+        </div>
+
+
+        <div class="detail-row">
+
+          <span>Owner</span>
+
+          <strong>
+            {{ selectedOpportunity.owner }}
+          </strong>
+
+        </div>
+
+
+        <div class="detail-row">
+
+          <span>Source</span>
+
+          <strong>
+            {{ selectedOpportunity.source }}
+          </strong>
+
+        </div>
+
+
+        <div class="detail-row">
+
+          <span>Probability</span>
+
+          <strong>
+            {{ selectedOpportunity.probability }}%
+          </strong>
+
+        </div>
+
+
+        <div class="detail-row">
+
+          <span>Expected Close</span>
+
+          <strong>
+            {{ selectedOpportunity.expectedCloseDate }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="detail-section">
+
+        <h4>Current Stage</h4>
+
+        <select
+          [ngModel]="selectedOpportunity.stageId"
+          (ngModelChange)="
+            moveOpportunity(
+              selectedOpportunity!,
+              +$event
+            )
+          ">
+
+          <option
+            *ngFor="let stage of stages"
+            [ngValue]="stage.id">
+
+            {{ stage.name }}
+
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div class="detail-section">
+
+        <h4>Description</h4>
+
+        <p class="description">
+
+          {{ selectedOpportunity.description }}
+
+        </p>
+
+      </div>
+
+
+      <div class="drawer-actions">
+
+        <button class="btn-secondary">
+
+          <i class="bi bi-pencil"></i>
+
+          Edit
+
+        </button>
+
+        <button class="btn-primary">
+
+          <i class="bi bi-file-earmark-text"></i>
+
+          Create Quotation
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </aside>
+
+
+
+  <!-- ======================================================
+       CREATE OPPORTUNITY MODAL
+  ======================================================= -->
+
+  <div
+    class="modal-overlay"
+    *ngIf="showCreateModal">
+
+
+    <div class="create-modal">
+
+
+      <div class="modal-header">
+
+        <div>
+
+          <span>SALES</span>
+
+          <h2>
+            New Opportunity
+          </h2>
+
+        </div>
+
+
+        <button
+          (click)="closeCreateOpportunity()">
+
+          <i class="bi bi-x-lg"></i>
+
+        </button>
+
+      </div>
+
+
+      <div class="modal-body">
+
+
+        <div class="form-grid">
+
+
+          <div class="form-group full">
+
+            <label>
+              Opportunity Name *
+            </label>
+
+            <input
+              type="text"
+              [(ngModel)]="
+                opportunityForm.name
+              "
+              placeholder="Enter opportunity name">
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Customer *
+            </label>
+
+            <input
+              type="text"
+              [(ngModel)]="
+                opportunityForm.customer
+              "
+              placeholder="Customer name">
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Lead / Contact
+            </label>
+
+            <input
+              type="text"
+              [(ngModel)]="
+                opportunityForm.leadName
+              "
+              placeholder="Lead or contact">
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Amount *
+            </label>
+
+            <input
+              type="number"
+              [(ngModel)]="
+                opportunityForm.amount
+              "
+              placeholder="0">
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Expected Close
+            </label>
+
+            <input
+              type="date"
+              [(ngModel)]="
+                opportunityForm.expectedCloseDate
+              ">
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Stage
+            </label>
+
+            <select
+              [(ngModel)]="
+                opportunityForm.stageId
+              ">
+
+              <option
+                *ngFor="let stage of stages"
+                [ngValue]="stage.id">
+
+                {{ stage.name }}
+
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Priority
+            </label>
+
+            <select
+              [(ngModel)]="
+                opportunityForm.priority
+              ">
+
+              <option>
+                High
+              </option>
+
+              <option>
+                Medium
+              </option>
+
+              <option>
+                Low
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Source
+            </label>
+
+            <select
+              [(ngModel)]="
+                opportunityForm.source
+              ">
+
+              <option>
+                Website
+              </option>
+
+              <option>
+                Referral
+              </option>
+
+              <option>
+                LinkedIn
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group full">
+
+            <label>
+              Description
+            </label>
+
+            <textarea
+              rows="4"
+              [(ngModel)]="
+                opportunityForm.description
+              "
+              placeholder="Opportunity description">
+            </textarea>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="modal-footer">
+
+        <button
+          class="btn-secondary"
+          (click)="closeCreateOpportunity()">
+
+          Cancel
+
+        </button>
+
+
+        <button
+          class="btn-primary"
+          (click)="saveOpportunity()">
+
+          <i class="bi bi-check-lg"></i>
+
+          Create Opportunity
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

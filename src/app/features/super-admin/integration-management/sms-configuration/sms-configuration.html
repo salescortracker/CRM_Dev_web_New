@@ -1,0 +1,533 @@
+<div class="page-container">
+
+    <!-- ====================================== -->
+    <!-- Page Header -->
+    <!-- ====================================== -->
+
+    <div class="page-header">
+
+        <div>
+
+            <p class="page-subtitle">
+
+                INTEGRATION MANAGEMENT
+
+            </p>
+
+            <h1>
+
+                SMS Configuration
+
+            </h1>
+
+            <p class="page-description">
+
+                Configure SMS providers, API credentials and monitor SMS
+                integration status across all companies.
+
+            </p>
+
+        </div>
+
+        <div class="header-buttons">
+
+            <button class="btn btn-light" (click)="refresh()">
+
+                <i class="fa-solid fa-rotate"></i>
+
+                Refresh
+
+            </button>
+
+            <button class="btn btn-danger" (click)="openAddModal()">
+
+                <i class="fa-solid fa-plus"></i>
+
+                Add Configuration
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- ====================================== -->
+    <!-- Statistics -->
+    <!-- ====================================== -->
+
+    <div class="stats-grid">
+
+        <div class="stat-card">
+
+            <span>
+
+                Total Providers
+
+            </span>
+
+            <h2>
+
+                {{smsConfigurations.length}}
+
+            </h2>
+
+        </div>
+
+        <div class="stat-card">
+
+            <span>
+
+                Connected
+
+            </span>
+
+            <h2>
+
+                {{connectedCount}}
+
+            </h2>
+
+        </div>
+
+        <div class="stat-card">
+
+            <span>
+
+                Disconnected
+
+            </span>
+
+            <h2>
+
+                {{disconnectedCount}}
+
+            </h2>
+
+        </div>
+
+        <div class="stat-card">
+
+            <span>
+
+                Default Provider
+
+            </span>
+
+            <h2>
+
+                {{defaultProvider}}
+
+            </h2>
+
+        </div>
+
+    </div>
+
+    <!-- ====================================== -->
+    <!-- Search Panel -->
+    <!-- ====================================== -->
+
+    <div class="search-panel">
+
+        <div class="search-box">
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input type="text" placeholder="Search Provider..." [(ngModel)]="searchText">
+
+        </div>
+
+        <select class="form-control" [(ngModel)]="statusFilter">
+
+            <option value="">
+
+                All Status
+
+            </option>
+
+            <option value="Connected">
+
+                Connected
+
+            </option>
+
+            <option value="Disconnected">
+
+                Disconnected
+
+            </option>
+
+        </select>
+
+        <button class="btn btn-secondary" (click)="clearFilters()">
+
+            Clear
+
+        </button>
+
+    </div>
+
+    <!-- ====================================== -->
+    <!-- Table -->
+    <!-- ====================================== -->
+
+    <div class="table-card">
+
+        <div class="table-header">
+
+            <h3>
+
+                SMS Providers
+
+            </h3>
+
+            <span>
+
+                {{filteredProviders.length}} Records
+
+            </span>
+
+        </div>
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Provider</th>
+
+                    <th>Sender ID</th>
+
+                    <th>API URL</th>
+
+                    <th>Route</th>
+
+                    <th>Status</th>
+
+                    <th>Default</th>
+
+                    <th width="170">
+
+                        Actions
+
+                    </th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr *ngFor="let item of filteredProviders">
+
+                    <td>
+
+                        <div class="provider-info">
+
+                            <div class="provider-icon">
+
+                                <i class="fa-solid fa-comment-sms"></i>
+
+                            </div>
+
+                            <div>
+
+                                <strong>
+
+                                    {{item.provider}}
+
+                                </strong>
+
+                                <small>
+
+                                    {{item.apiKey}}
+
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    </td>
+
+                    <td>
+
+                        {{item.senderId}}
+
+                    </td>
+
+                    <td>
+
+                        {{item.apiUrl}}
+
+                    </td>
+
+                    <td>
+
+                        {{item.route}}
+
+                    </td>
+
+                    <td>
+
+                        <span class="status" [ngClass]="item.status.toLowerCase()">
+
+                            {{item.status}}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <span *ngIf="item.isDefault" class="default-badge">
+
+                            Default
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <button class="icon-btn" (click)="edit(item)">
+
+                            <i class="fa-solid fa-pen"></i>
+
+                        </button>
+
+                        <button class="icon-btn danger" (click)="delete(item.id)">
+
+                            <i class="fa-solid fa-trash"></i>
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+<!-- ======================================= -->
+<!-- Add / Edit SMS Configuration Popup -->
+<!-- ======================================= -->
+
+<div class="modal-overlay" *ngIf="showModal">
+
+    <div class="modal-box">
+
+        <!-- ========================= -->
+        <!-- Modal Header -->
+        <!-- ========================= -->
+
+        <div class="modal-header">
+
+            <h3>
+
+                {{isEdit ? 'Edit SMS Configuration' : 'Add SMS Configuration'}}
+
+            </h3>
+
+            <button class="close-btn" (click)="closeModal()">
+
+                ×
+
+            </button>
+
+        </div>
+
+        <!-- ========================= -->
+        <!-- Modal Body -->
+        <!-- ========================= -->
+
+        <div class="modal-body">
+
+            <div class="form-grid">
+
+                <!-- Provider -->
+
+                <div>
+
+                    <label>
+
+                        Provider Name
+
+                    </label>
+
+                    <input type="text" [(ngModel)]="model.provider">
+
+                </div>
+
+                <!-- Sender ID -->
+
+                <div>
+
+                    <label>
+
+                        Sender ID
+
+                    </label>
+
+                    <input type="text" [(ngModel)]="model.senderId">
+
+                </div>
+
+                <!-- API URL -->
+
+                <div>
+
+                    <label>
+
+                        API URL
+
+                    </label>
+
+                    <input type="text" [(ngModel)]="model.apiUrl">
+
+                </div>
+
+                <!-- Route -->
+
+                <div>
+
+                    <label>
+
+                        Route
+
+                    </label>
+
+                    <input type="text" [(ngModel)]="model.route">
+
+                </div>
+
+                <!-- API Key -->
+
+                <div>
+
+                    <label>
+
+                        API Key
+
+                    </label>
+
+                    <input type="text" [(ngModel)]="model.apiKey">
+
+                </div>
+
+                <!-- API Secret -->
+
+                <div>
+
+                    <label>
+
+                        API Secret
+
+                    </label>
+
+                    <input type="password" [(ngModel)]="model.apiSecret">
+
+                </div>
+
+                <!-- Status -->
+
+                <div>
+
+                    <label>
+
+                        Status
+
+                    </label>
+
+                    <select [(ngModel)]="model.status">
+
+                        <option>
+
+                            Connected
+
+                        </option>
+
+                        <option>
+
+                            Disconnected
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <!-- Company -->
+
+                <div>
+
+                    <label>
+
+                        Company
+
+                    </label>
+
+                    <input type="text" [(ngModel)]="model.company">
+
+                </div>
+
+                <!-- Default -->
+
+                <div class="checkbox-group">
+
+                    <label>
+
+                        <input type="checkbox" [(ngModel)]="model.isDefault">
+
+                        Default Provider
+
+                    </label>
+
+                </div>
+
+                <!-- Active -->
+
+                <div class="checkbox-group">
+
+                    <label>
+
+                        <input type="checkbox" [(ngModel)]="model.active">
+
+                        Active
+
+                    </label>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ========================= -->
+        <!-- Modal Footer -->
+        <!-- ========================= -->
+
+        <div class="modal-footer">
+
+            <button class="btn-secondary" (click)="closeModal()">
+
+                Cancel
+
+            </button>
+
+            <button class="btn-primary" (click)="saveConfiguration()">
+
+                {{isEdit ? 'Update Configuration' : 'Save Configuration'}}
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>

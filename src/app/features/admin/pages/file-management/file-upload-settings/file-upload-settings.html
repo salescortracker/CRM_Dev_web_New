@@ -1,0 +1,441 @@
+<div class="container mt-4">
+
+    <!-- ========================================= -->
+    <!-- File Upload Settings Form -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4 class="mb-0">
+
+                <i class="fa fa-upload me-2"></i>
+
+                File Upload Settings
+
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <!-- Setting Name -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Setting Name
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Setting Name"
+                        [(ngModel)]="fileUpload.settingName">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !fileUpload.settingName">
+
+                        Setting Name is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Allowed File Types -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Allowed File Types
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="PDF, DOCX, JPG, PNG"
+                        [(ngModel)]="fileUpload.allowedFileTypes">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !fileUpload.allowedFileTypes">
+
+                        Allowed File Types are required.
+
+                    </div>
+
+                </div>
+
+                <!-- Maximum File Size -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Maximum File Size (MB)
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="number" class="form-control" placeholder="Enter Maximum File Size"
+                        [(ngModel)]="fileUpload.maxFileSize">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !fileUpload.maxFileSize">
+
+                        Maximum File Size is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Maximum Files -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Maximum Files Per Upload
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="number" class="form-control" placeholder="Enter Maximum Files"
+                        [(ngModel)]="fileUpload.maxFiles">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !fileUpload.maxFiles">
+
+                        Maximum Files Per Upload is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Storage Location -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Storage Location
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="fileUpload.storageLocation">
+
+                        <option value="">Select Storage</option>
+                        <option>Local Storage</option>
+                        <option>Azure Blob Storage</option>
+                        <option>Amazon S3</option>
+                        <option>Google Cloud Storage</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !fileUpload.storageLocation">
+
+                        Storage Location is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Virus Scan -->
+                <div class="col-md-4 mb-3 d-flex align-items-end">
+
+                    <div class="form-check">
+
+                        <input type="checkbox" class="form-check-input" id="virusScan"
+                            [(ngModel)]="fileUpload.virusScanEnabled">
+
+                        <label class="form-check-label ms-2" for="virusScan">
+
+                            Virus Scan Enabled
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <!-- Auto Rename -->
+                <div class="col-md-4 mb-3 d-flex align-items-end">
+
+                    <div class="form-check">
+
+                        <input type="checkbox" class="form-check-input" id="autoRename"
+                            [(ngModel)]="fileUpload.autoRenameFiles">
+
+                        <label class="form-check-label ms-2" for="autoRename">
+
+                            Auto Rename Files
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <!-- Active -->
+                <div class="col-md-4 mb-3 d-flex align-items-end">
+
+                    <div class="form-check">
+
+                        <input type="checkbox" class="form-check-input" id="active" [(ngModel)]="fileUpload.isActive">
+
+                        <label class="form-check-label ms-2" for="active">
+
+                            Active
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <!-- Description -->
+                <div class="col-md-12 mb-3">
+
+                    <label class="form-label">
+
+                        Description
+
+                    </label>
+
+                    <textarea rows="4" class="form-control" placeholder="Enter Description"
+                        [(ngModel)]="fileUpload.description">
+
+                    </textarea>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <button class="btn btn-danger me-2" (click)="saveFileUploadSetting()">
+
+                <i class="fa fa-save me-1"></i>
+
+                {{ isEdit ? 'Update' : 'Save' }}
+
+            </button>
+
+            <button class="btn btn-secondary" (click)="clear()">
+
+                <i class="fa fa-eraser me-1"></i>
+
+                Clear
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- ========================================= -->
+<!-- Search -->
+<!-- ========================================= -->
+
+<div class="row mt-4 mb-3">
+
+    <div class="col-md-4">
+
+        <input type="text" class="form-control" placeholder="Search File Upload Settings..." [(ngModel)]="searchText">
+
+    </div>
+
+</div>
+
+
+
+
+
+<!-- ========================================= -->
+<!-- File Upload Settings Listing -->
+<!-- ========================================= -->
+
+<div class="table-responsive">
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-danger">
+
+            <tr>
+
+                <th>#</th>
+
+                <th>Setting Name</th>
+
+                <th>Allowed File Types</th>
+
+                <th>Max File Size</th>
+
+                <th>Max Files</th>
+
+                <th>Storage Location</th>
+
+                <th>Virus Scan</th>
+
+                <th>Active</th>
+
+                <th width="140">
+
+                    Action
+
+                </th>
+
+            </tr>
+
+        </thead>
+
+
+
+
+
+        <tbody>
+
+            <tr *ngIf="pagedFileUploadSettings.length == 0">
+
+                <td colspan="9" class="text-center text-muted">
+
+                    No File Upload Settings Found
+
+                </td>
+
+            </tr>
+
+
+
+
+
+            <tr *ngFor="let item of pagedFileUploadSettings; let i = index">
+
+                <td>
+
+                    {{ ((page - 1) * pageSize) + i + 1 }}
+
+                </td>
+
+
+
+
+
+                <td>
+
+                    {{ item.settingName }}
+
+                </td>
+
+
+
+
+
+                <td>
+
+                    {{ item.allowedFileTypes }}
+
+                </td>
+
+
+
+
+
+                <td>
+
+                    {{ item.maxFileSize }} MB
+
+                </td>
+
+
+
+
+
+                <td>
+
+                    {{ item.maxFiles }}
+
+                </td>
+
+
+
+
+
+                <td>
+
+                    <span class="badge" [ngClass]="{
+
+                                'bg-primary': item.storageLocation == 'Local Storage',
+
+                                'bg-success': item.storageLocation == 'Azure Blob Storage',
+
+                                'bg-warning text-dark': item.storageLocation == 'Amazon S3',
+
+                                'bg-info text-dark': item.storageLocation == 'Google Cloud Storage'
+
+                            }">
+
+                        {{ item.storageLocation }}
+
+                    </span>
+
+                </td>
+
+
+
+
+
+                <td>
+
+                    <span class="badge" [ngClass]="item.virusScanEnabled ? 'bg-success' : 'bg-danger'">
+
+                        {{ item.virusScanEnabled ? 'Enabled' : 'Disabled' }}
+
+                    </span>
+
+                </td>
+
+
+
+
+
+                <td>
+
+                    <span class="badge" [ngClass]="item.isActive ? 'bg-success' : 'bg-danger'">
+
+                        {{ item.isActive ? 'Yes' : 'No' }}
+
+                    </span>
+
+                </td>
+
+
+
+
+
+                <td>
+
+                    <button class="btn btn-warning btn-sm me-2" (click)="edit(item.fileUploadSettingId)">
+
+                        <i class="fa fa-edit"></i>
+
+                    </button>
+
+
+
+
+
+                    <button class="btn btn-danger btn-sm" (click)="delete(item.fileUploadSettingId)">
+
+                        <i class="fa fa-trash"></i>
+
+                    </button>
+
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+
+
+
+
+
+<!-- ========================================= -->
+<!-- Pagination -->
+<!-- ========================================= -->
+
+<app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredFileUploadSettings.length"
+    (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
+
+</app-pagination>
+

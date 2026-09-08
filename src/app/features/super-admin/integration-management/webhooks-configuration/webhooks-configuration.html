@@ -1,0 +1,1086 @@
+<div class="page-container">
+
+    <!-- ========================= -->
+    <!-- Page Header -->
+    <!-- ========================= -->
+
+    <div class="page-header">
+
+        <div>
+
+            <p class="page-subtitle">
+                INTEGRATION MANAGEMENT
+            </p>
+
+            <h1>
+                Webhooks Configuration
+            </h1>
+
+            <p class="page-description">
+                Configure webhook endpoints, events, authentication and monitor real-time CRM integrations.
+            </p>
+
+        </div>
+
+
+        <div class="header-buttons">
+
+
+            <button
+                class="btn btn-light"
+                (click)="refresh()">
+
+                <i class="fa-solid fa-rotate"></i>
+
+                Refresh
+
+            </button>
+
+
+            <button
+                class="btn btn-danger"
+                (click)="openAddModal()">
+
+                <i class="fa-solid fa-plus"></i>
+
+                Add Webhook
+
+            </button>
+
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ========================= -->
+    <!-- Statistics -->
+    <!-- ========================= -->
+
+
+    <div class="stats-grid">
+
+
+        <div class="stat-card">
+
+
+            <span>
+                Total Webhooks
+            </span>
+
+
+            <h2>
+                {{webhooks.length}}
+            </h2>
+
+
+        </div>
+
+
+
+        <div class="stat-card">
+
+
+            <span>
+                Active
+            </span>
+
+
+            <h2>
+                {{activeCount}}
+            </h2>
+
+
+        </div>
+
+
+
+        <div class="stat-card">
+
+
+            <span>
+                Inactive
+            </span>
+
+
+            <h2>
+                {{inactiveCount}}
+            </h2>
+
+
+        </div>
+
+
+
+        <div class="stat-card">
+
+
+            <span>
+                Default Webhook
+            </span>
+
+
+            <h2>
+                {{defaultWebhook}}
+            </h2>
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+    <!-- ========================= -->
+    <!-- Search Filter -->
+    <!-- ========================= -->
+
+
+    <div class="search-panel">
+
+
+        <div class="search-box">
+
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+
+            <input
+
+                type="text"
+
+                placeholder="Search webhook..."
+
+                [(ngModel)]="searchText">
+
+
+        </div>
+
+
+
+
+        <select
+
+            class="form-control"
+
+            [(ngModel)]="statusFilter">
+
+
+            <option value="">
+                All Status
+            </option>
+
+
+            <option value="Active">
+                Active
+            </option>
+
+
+            <option value="Inactive">
+                Inactive
+            </option>
+
+
+        </select>
+
+
+
+
+        <button
+
+            class="btn btn-secondary"
+
+            (click)="clearFilters()">
+
+
+            Clear
+
+
+        </button>
+
+
+
+    </div>
+
+
+
+
+
+    <!-- ========================= -->
+    <!-- Webhook Table -->
+    <!-- ========================= -->
+
+
+    <div class="table-card">
+
+
+
+        <div class="table-header">
+
+
+            <h3>
+                Webhook Endpoints
+            </h3>
+
+
+            <span>
+
+                {{filteredWebhooks.length}} Records
+
+            </span>
+
+
+        </div>
+
+
+
+
+
+        <table>
+
+
+            <thead>
+
+
+                <tr>
+
+
+                    <th>
+                        Webhook Name
+                    </th>
+
+
+                    <th>
+                        Event
+                    </th>
+
+
+                    <th>
+                        Endpoint URL
+                    </th>
+
+
+                    <th>
+                        Method
+                    </th>
+
+
+                    <th>
+                        Authentication
+                    </th>
+
+
+                    <th>
+                        Status
+                    </th>
+
+
+                    <th>
+                        Default
+                    </th>
+
+
+                    <th width="170">
+                        Actions
+                    </th>
+
+
+                </tr>
+
+
+            </thead>
+
+
+
+
+
+            <tbody>
+
+
+
+                <tr
+
+                    *ngFor="let item of filteredWebhooks">
+
+
+
+
+
+                    <td>
+
+
+                        <div class="provider-info">
+
+
+                            <div class="provider-icon">
+
+
+                                <i class="fa-solid fa-bolt"></i>
+
+
+                            </div>
+
+
+
+                            <div>
+
+
+                                <strong>
+
+                                    {{item.webhookName}}
+
+                                </strong>
+
+
+                                <small>
+
+                                    {{item.secretKey}}
+
+                                </small>
+
+
+                            </div>
+
+
+
+                        </div>
+
+
+                    </td>
+
+
+
+
+
+                    <td>
+
+
+                        <span class="event-badge">
+
+                            {{item.eventName}}
+
+                        </span>
+
+
+                    </td>
+
+
+
+
+
+                    <td>
+
+
+                        {{item.endpointUrl}}
+
+
+                    </td>
+
+
+
+
+
+                    <td>
+
+
+                        <span class="method-badge">
+
+                            {{item.httpMethod}}
+
+                        </span>
+
+
+                    </td>
+
+
+
+
+
+                    <td>
+
+
+                        {{item.authType}}
+
+
+                    </td>
+
+
+
+
+
+                    <td>
+
+
+                        <span
+
+                            class="status"
+
+                            [ngClass]="item.status.toLowerCase()">
+
+
+
+                            {{item.status}}
+
+
+
+                        </span>
+
+
+                    </td>
+
+
+
+
+
+                    <td>
+
+
+
+                        <span
+
+                            *ngIf="item.isDefault"
+
+                            class="default-badge">
+
+
+                            Default
+
+
+                        </span>
+
+
+                    </td>
+
+
+
+
+
+                    <td>
+
+
+
+                        <button
+
+                            class="icon-btn"
+
+                            (click)="edit(item)">
+
+
+
+                            <i class="fa-solid fa-pen"></i>
+
+
+
+                        </button>
+
+
+
+
+
+                        <button
+
+                            class="icon-btn danger"
+
+                            (click)="delete(item.id)">
+
+
+
+                            <i class="fa-solid fa-trash"></i>
+
+
+
+                        </button>
+
+
+
+                    </td>
+
+
+
+                </tr>
+
+
+
+
+            </tbody>
+
+
+
+        </table>
+
+
+
+
+    </div>
+
+
+</div>
+<!-- ======================================= -->
+<!-- Add / Edit Webhook Configuration Modal -->
+<!-- ======================================= -->
+
+
+<div 
+    class="modal-overlay" 
+    *ngIf="showModal">
+
+
+    <div class="modal-box">
+
+
+
+        <!-- ========================= -->
+        <!-- Modal Header -->
+        <!-- ========================= -->
+
+
+        <div class="modal-header">
+
+
+            <h3>
+
+                {{isEdit ? 'Edit Webhook Configuration' : 'Add Webhook Configuration'}}
+
+            </h3>
+
+
+
+            <button
+
+                class="close-btn"
+
+                (click)="closeModal()">
+
+
+                ×
+
+
+            </button>
+
+
+
+        </div>
+
+
+
+
+
+        <!-- ========================= -->
+        <!-- Modal Body -->
+        <!-- ========================= -->
+
+
+        <div class="modal-body">
+
+
+
+            <div class="form-grid">
+
+
+
+
+
+                <!-- Webhook Name -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Webhook Name
+
+                    </label>
+
+
+
+                    <input
+
+                        type="text"
+
+                        placeholder="Enter webhook name"
+
+                        [(ngModel)]="model.webhookName">
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <!-- Event Name -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Event
+
+                    </label>
+
+
+
+                    <select
+
+                        [(ngModel)]="model.eventName">
+
+
+                        <option>
+                            Lead Created
+                        </option>
+
+
+                        <option>
+                            Lead Updated
+                        </option>
+
+
+                        <option>
+                            Contact Created
+                        </option>
+
+
+                        <option>
+                            Deal Closed
+                        </option>
+
+
+                        <option>
+                            User Created
+                        </option>
+
+
+                        <option>
+                            Invoice Generated
+                        </option>
+
+
+                    </select>
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <!-- Endpoint URL -->
+
+
+                <div class="full-width">
+
+
+                    <label>
+
+                        Endpoint URL
+
+                    </label>
+
+
+
+                    <input
+
+                        type="text"
+
+                        placeholder="https://example.com/webhook"
+
+                        [(ngModel)]="model.endpointUrl">
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <!-- HTTP Method -->
+
+
+                <div>
+
+
+                    <label>
+
+                        HTTP Method
+
+                    </label>
+
+
+
+                    <select
+
+                        [(ngModel)]="model.httpMethod">
+
+
+
+                        <option>
+                            POST
+                        </option>
+
+
+                        <option>
+                            PUT
+                        </option>
+
+
+                        <option>
+                            PATCH
+                        </option>
+
+
+                        <option>
+                            GET
+                        </option>
+
+
+                    </select>
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <!-- Authentication Type -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Authentication Type
+
+                    </label>
+
+
+
+                    <select
+
+                        [(ngModel)]="model.authType">
+
+
+
+                        <option>
+                            None
+                        </option>
+
+
+                        <option>
+                            API Key
+                        </option>
+
+
+                        <option>
+                            Bearer Token
+                        </option>
+
+
+                        <option>
+                            Basic Authentication
+                        </option>
+
+
+
+                    </select>
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <!-- Secret Key -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Secret Key
+
+                    </label>
+
+
+
+                    <input
+
+                        type="password"
+
+                        placeholder="Webhook secret key"
+
+                        [(ngModel)]="model.secretKey">
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <!-- Retry Count -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Retry Attempts
+
+                    </label>
+
+
+
+                    <input
+
+                        type="number"
+
+                        [(ngModel)]="model.retryCount">
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <!-- Timeout -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Timeout (Seconds)
+
+                    </label>
+
+
+
+                    <input
+
+                        type="number"
+
+                        [(ngModel)]="model.timeout">
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <!-- Status -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Status
+
+                    </label>
+
+
+
+                    <select
+
+                        [(ngModel)]="model.status">
+
+
+
+                        <option>
+                            Active
+                        </option>
+
+
+                        <option>
+                            Inactive
+                        </option>
+
+
+
+                    </select>
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <!-- SSL Verification -->
+
+
+                <div class="checkbox-group">
+
+
+
+                    <label>
+
+
+
+                        <input
+
+                            type="checkbox"
+
+                            [(ngModel)]="model.sslVerification">
+
+
+
+                        Enable SSL Verification
+
+
+
+                    </label>
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <!-- Default Webhook -->
+
+
+                <div class="checkbox-group">
+
+
+
+                    <label>
+
+
+
+                        <input
+
+                            type="checkbox"
+
+                            [(ngModel)]="model.isDefault">
+
+
+
+                        Default Webhook
+
+
+
+                    </label>
+
+
+
+                </div>
+
+
+
+
+
+
+            </div>
+
+
+
+        </div>
+
+
+
+
+
+
+
+        <!-- ========================= -->
+        <!-- Modal Footer -->
+        <!-- ========================= -->
+
+
+        <div class="modal-footer">
+
+
+
+            <button
+
+                class="btn-secondary"
+
+                (click)="closeModal()">
+
+
+
+                Cancel
+
+
+
+            </button>
+
+
+
+
+
+            <button
+
+                class="btn-primary"
+
+                (click)="saveWebhook()">
+
+
+
+                {{isEdit ? 'Update Webhook' : 'Save Webhook'}}
+
+
+
+            </button>
+
+
+
+        </div>
+
+
+
+
+
+    </div>
+
+
+
+</div>

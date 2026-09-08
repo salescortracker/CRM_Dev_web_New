@@ -1,0 +1,705 @@
+<div class="admin-dashboard">
+
+  <!-- =====================================================
+       PAGE HEADER
+  ====================================================== -->
+
+  <div class="dashboard-header">
+
+    <div class="header-left">
+
+      <div class="breadcrumb">
+        <span>Administration</span>
+        <i class="bi bi-chevron-right"></i>
+        <strong>Admin Dashboard</strong>
+      </div>
+
+      <h1>Admin Dashboard</h1>
+
+      <p>
+        Monitor your company's users, sales pipeline,
+        subscription and day-to-day CRM activity.
+      </p>
+
+    </div>
+
+
+    <div class="header-right">
+
+      <div class="date-box">
+
+        <i class="bi bi-calendar3"></i>
+
+        <span>
+          {{ currentDate | date:'dd MMM yyyy' }}
+        </span>
+
+      </div>
+
+      <button
+        type="button"
+        class="refresh-btn">
+
+        <i class="bi bi-arrow-clockwise"></i>
+
+      </button>
+
+      <button
+        type="button"
+        class="add-company-btn"
+        (click)="navigate('/users')">
+
+        <i class="bi bi-person-plus"></i>
+
+        Add User
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       MAIN STATISTICS
+  ====================================================== -->
+
+  <div class="stats-grid">
+
+    <div
+      class="stat-card"
+      *ngFor="let stat of statCards">
+
+      <div class="stat-card-top">
+
+        <div
+          class="stat-icon"
+          [ngClass]="stat.cssClass">
+
+          <i [class]="stat.icon"></i>
+
+        </div>
+
+        <span
+          class="trend"
+          [ngClass]="stat.trendUp
+            ? 'trend-up'
+            : 'trend-down'">
+
+          <i
+            [class]="stat.trendUp
+              ? 'bi bi-arrow-up'
+              : 'bi bi-arrow-down'">
+          </i>
+
+          {{ stat.trend }}
+
+        </span>
+
+      </div>
+
+
+      <div class="stat-content">
+
+        <span class="stat-title">
+          {{ stat.title }}
+        </span>
+
+        <strong class="stat-value">
+          {{ stat.value }}
+        </strong>
+
+        <small>
+          {{ stat.subtitle }}
+        </small>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       SECONDARY METRICS
+  ====================================================== -->
+
+  <div class="secondary-grid">
+
+    <div
+      class="secondary-card"
+      *ngFor="let stat of secondaryStats">
+
+      <div
+        class="secondary-icon"
+        [ngClass]="stat.cssClass">
+
+        <i [class]="stat.icon"></i>
+
+      </div>
+
+      <div>
+
+        <span>
+          {{ stat.title }}
+        </span>
+
+        <strong>
+          {{ stat.value }}
+        </strong>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       MAIN CONTENT GRID
+  ====================================================== -->
+
+  <div class="main-grid">
+
+
+    <!-- =================================================
+         REVENUE CHART
+    ================================================== -->
+
+    <div class="panel revenue-panel">
+
+      <div class="panel-header">
+
+        <div>
+
+          <span class="panel-label">
+            FINANCIAL OVERVIEW
+          </span>
+
+          <h2>
+            Revenue Overview
+          </h2>
+
+          <p>
+            Monthly sales revenue for your company
+          </p>
+
+        </div>
+
+        <button
+          type="button"
+          class="view-report-btn"
+          (click)="navigate('/my-reports')">
+
+          View Report
+
+          <i class="bi bi-arrow-right"></i>
+
+        </button>
+
+      </div>
+
+
+      <div class="revenue-summary">
+
+        <strong>
+          ₹6.85L
+        </strong>
+
+        <span class="positive">
+          <i class="bi bi-arrow-up"></i>
+          6.4%
+        </span>
+
+        <small>
+          vs previous month
+        </small>
+
+      </div>
+
+
+      <div class="chart-area">
+
+        <div class="chart-y-axis">
+
+          <span>7L</span>
+          <span>5.25L</span>
+          <span>3.5L</span>
+          <span>1.75L</span>
+          <span>0</span>
+
+        </div>
+
+
+        <div class="chart">
+
+          <div class="chart-grid-line line-1"></div>
+          <div class="chart-grid-line line-2"></div>
+          <div class="chart-grid-line line-3"></div>
+          <div class="chart-grid-line line-4"></div>
+          <div class="chart-grid-line line-5"></div>
+
+
+          <div
+            class="chart-column"
+            *ngFor="let item of revenueData">
+
+            <div class="bar-wrapper">
+
+              <div
+                class="revenue-bar"
+                [style.height.%]="getRevenueHeight(item.value)"
+                [title]="item.value + 'L'">
+              </div>
+
+            </div>
+
+            <span>
+              {{ item.month }}
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- =================================================
+         SUBSCRIPTION SNAPSHOT
+    ================================================== -->
+
+    <div class="panel subscription-panel">
+
+      <div class="panel-header">
+
+        <div>
+
+          <span class="panel-label">
+            SUBSCRIPTION
+          </span>
+
+          <h2>
+            My Plan
+          </h2>
+
+          <p>
+            Current subscription usage
+          </p>
+
+        </div>
+
+        <button
+          type="button"
+          class="icon-action"
+          (click)="navigate('/subscriptions')">
+
+          <i class="bi bi-three-dots"></i>
+
+        </button>
+
+      </div>
+
+
+      <div class="subscription-total">
+
+        <strong>
+          {{ currentPlan }}
+        </strong>
+
+        <span>
+          Current plan
+        </span>
+
+      </div>
+
+
+      <div class="plan-list">
+
+        <div class="plan-item">
+
+          <div class="plan-info">
+
+            <div>
+
+              <span class="plan-dot professional"></span>
+
+              <strong>
+                Users
+              </strong>
+
+            </div>
+
+            <span>
+              {{ planUsersUsed }} / {{ planUsersLimit }}
+            </span>
+
+          </div>
+
+
+          <div class="plan-progress">
+
+            <span
+              class="professional"
+              [style.width.%]="planUsagePercent">
+            </span>
+
+          </div>
+
+
+          <small>
+            {{ planUsagePercent }}% of user limit used
+          </small>
+
+        </div>
+
+        <div class="plan-item">
+
+          <div class="plan-info">
+
+            <div>
+
+              <span class="plan-dot enterprise"></span>
+
+              <strong>
+                Renewal Date
+              </strong>
+
+            </div>
+
+            <span>
+              {{ planRenewalDate }}
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       QUICK ACTIONS
+  ====================================================== -->
+
+  <div class="quick-actions">
+
+    <div class="section-title">
+
+      <div>
+
+        <span>
+          ADMINISTRATION
+        </span>
+
+        <h2>
+          Quick Actions
+        </h2>
+
+      </div>
+
+    </div>
+
+
+    <div class="quick-action-grid">
+
+      <button
+        type="button"
+        class="quick-action"
+        *ngFor="let action of quickActions"
+        (click)="navigate(action.route)">
+
+        <div
+          class="quick-action-icon"
+          [ngClass]="action.cssClass">
+
+          <i [class]="action.icon"></i>
+
+        </div>
+
+        <span>
+          {{ action.title }}
+        </span>
+
+        <i class="bi bi-arrow-up-right"></i>
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       LOWER GRID
+  ====================================================== -->
+
+  <div class="lower-grid">
+
+
+    <!-- =================================================
+         TEAM
+    ================================================== -->
+
+    <div class="panel companies-panel">
+
+      <div class="panel-header">
+
+        <div>
+
+          <span class="panel-label">
+            TEAM PERFORMANCE
+          </span>
+
+          <h2>
+            Team Overview
+          </h2>
+
+          <p>
+            Leads and deals handled by your team
+          </p>
+
+        </div>
+
+        <button
+          type="button"
+          class="view-all-btn"
+          (click)="navigate('/users')">
+
+          View All
+
+          <i class="bi bi-arrow-right"></i>
+
+        </button>
+
+      </div>
+
+
+      <div class="company-table">
+
+        <div class="table-header">
+
+          <span>Team Member</span>
+          <span>Role</span>
+          <span>Leads</span>
+          <span>Status</span>
+          <span>Deals Won</span>
+
+        </div>
+
+
+        <div
+          class="company-row"
+          *ngFor="let member of teamMembers"
+          (click)="navigate('/users')">
+
+          <div class="company-info">
+
+            <div class="company-avatar">
+
+              {{ member.name.charAt(0).toUpperCase() }}
+
+            </div>
+
+            <div>
+
+              <strong>
+                {{ member.name }}
+              </strong>
+
+              <span>
+                {{ member.role }}
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <span
+            class="plan-badge plan-professional">
+
+            {{ member.role }}
+
+          </span>
+
+
+          <span class="user-count">
+
+            <i class="bi bi-person-plus"></i>
+
+            {{ member.leads }}
+
+          </span>
+
+
+          <span
+            class="status-badge"
+            [ngClass]="getStatusClass(member.status)">
+
+            <span></span>
+
+            {{ member.status }}
+
+          </span>
+
+
+          <strong class="company-revenue">
+
+            {{ member.deals }}
+
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- =================================================
+         RECENT ACTIVITY
+    ================================================== -->
+
+    <div class="panel activity-panel">
+
+      <div class="panel-header">
+
+        <div>
+
+          <span class="panel-label">
+            COMPANY
+          </span>
+
+          <h2>
+            Recent Activity
+          </h2>
+
+          <p>
+            Latest activity across your workspace
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="activity-list">
+
+        <div
+          class="activity-item"
+          *ngFor="let activity of activities">
+
+          <div
+            class="activity-icon"
+            [ngClass]="activity.cssClass">
+
+            <i [class]="activity.icon"></i>
+
+          </div>
+
+
+          <div class="activity-content">
+
+            <strong>
+              {{ activity.title }}
+            </strong>
+
+            <span>
+              {{ activity.description }}
+            </span>
+
+            <small>
+              {{ activity.time }}
+            </small>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       MODULE USAGE
+  ====================================================== -->
+
+  <div class="panel system-panel">
+
+    <div class="panel-header">
+
+      <div>
+
+        <span class="panel-label">
+          ADOPTION
+        </span>
+
+        <h2>
+          Module Usage
+        </h2>
+
+        <p>
+          How actively your team is using each CRM module
+        </p>
+
+      </div>
+
+      <span class="system-status">
+
+        <span></span>
+
+        4 Modules Active
+
+      </span>
+
+    </div>
+
+
+    <div class="health-grid">
+
+      <div
+        class="health-card"
+        *ngFor="let module of moduleUsage">
+
+        <div class="health-left">
+
+          <div class="health-check">
+            <i class="bi bi-check-lg"></i>
+          </div>
+
+          <div>
+
+            <strong>
+              {{ module.name }}
+            </strong>
+
+            <span>
+              {{ module.status }}
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <strong class="uptime">
+          {{ module.value }}%
+        </strong>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

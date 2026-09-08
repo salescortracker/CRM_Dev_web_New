@@ -1,0 +1,1812 @@
+<div class="accounts-page">
+
+  <!-- ============================================================
+       PAGE HEADER
+  ============================================================= -->
+
+  <div class="page-header">
+
+    <div>
+
+      <div class="breadcrumb">
+        <span>CRM</span>
+        <span>›</span>
+        <strong>Accounts</strong>
+      </div>
+
+      <h1>Accounts</h1>
+
+      <p>
+        Manage customer accounts, sales pipeline, billing and profitability.
+      </p>
+
+    </div>
+
+    <div class="header-actions">
+
+      <button
+        type="button"
+        class="btn-secondary"
+        (click)="resetFilters()">
+
+        <i class="bi bi-arrow-clockwise"></i>
+
+        Refresh
+
+      </button>
+
+      <button
+        type="button"
+        class="btn-primary"
+        (click)="openNewAccount()">
+
+        <i class="bi bi-plus-lg"></i>
+
+        New Account
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- ============================================================
+       KPI CARDS
+  ============================================================= -->
+
+  <div class="kpi-grid">
+
+    <div class="kpi-card">
+
+      <div class="kpi-icon accounts-icon">
+        <i class="bi bi-building"></i>
+      </div>
+
+      <div>
+        <span>Total Accounts</span>
+
+        <strong>
+          {{ totalAccounts }}
+        </strong>
+
+        <small>
+          {{ activeAccounts }} active accounts
+        </small>
+      </div>
+
+    </div>
+
+
+    <div class="kpi-card">
+
+      <div class="kpi-icon revenue-icon">
+        <i class="bi bi-currency-rupee"></i>
+      </div>
+
+      <div>
+        <span>Revenue</span>
+
+        <strong>
+          {{ formatCurrency(totalRevenue) }}
+        </strong>
+
+        <small>
+          From invoiced sales
+        </small>
+      </div>
+
+    </div>
+
+
+    <div class="kpi-card">
+
+      <div class="kpi-icon profit-icon">
+        <i class="bi bi-graph-up-arrow"></i>
+      </div>
+
+      <div>
+        <span>Gross Profit</span>
+
+        <strong>
+          {{ formatCurrency(totalGrossProfit) }}
+        </strong>
+
+        <small>
+          {{ overallGrossMargin | number:'1.0-1' }}% margin
+        </small>
+      </div>
+
+    </div>
+
+
+    <div class="kpi-card">
+
+      <div class="kpi-icon outstanding-icon">
+        <i class="bi bi-wallet2"></i>
+      </div>
+
+      <div>
+        <span>Outstanding</span>
+
+        <strong>
+          {{ formatCurrency(totalOutstanding) }}
+        </strong>
+
+        <small>
+          Customer receivables
+        </small>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ============================================================
+       SECONDARY SUMMARY
+  ============================================================= -->
+
+  <div class="financial-summary">
+
+    <div class="financial-item">
+
+      <span>Open Pipeline</span>
+
+      <strong>
+        {{ formatCurrency(totalOpenPipeline) }}
+      </strong>
+
+    </div>
+
+    <div class="financial-item">
+
+      <span>Won Opportunities</span>
+
+      <strong>
+        {{ formatCurrency(totalWonValue) }}
+      </strong>
+
+    </div>
+
+    <div class="financial-item">
+
+      <span>Total Opportunity</span>
+
+      <strong>
+        {{ formatCurrency(totalOpportunityValue) }}
+      </strong>
+
+    </div>
+
+    <div class="financial-item">
+
+      <span>Paid</span>
+
+      <strong>
+        {{ formatCurrency(totalPaid) }}
+      </strong>
+
+    </div>
+
+    <div class="financial-item">
+
+      <span>Cost</span>
+
+      <strong>
+        {{ formatCurrency(totalCost) }}
+      </strong>
+
+    </div>
+
+  </div>
+
+
+  <!-- ============================================================
+       TABS
+  ============================================================= -->
+
+  <div class="account-tabs">
+
+    <button
+      type="button"
+      [class.active]="activeTab === 'overview'"
+      (click)="setAccountTab('overview')">
+
+      <i class="bi bi-grid"></i>
+
+      Overview
+
+    </button>
+
+
+    <button
+      type="button"
+      [class.active]="activeTab === 'accounts'"
+      (click)="setAccountTab('accounts')">
+
+      <i class="bi bi-building"></i>
+
+      Accounts
+
+    </button>
+
+
+    <button
+      type="button"
+      [class.active]="activeTab === 'profit-loss'"
+      (click)="setAccountTab('profit-loss')">
+
+      <i class="bi bi-bar-chart"></i>
+
+      Profit & Loss
+
+    </button>
+
+
+    <button
+      type="button"
+      [class.active]="activeTab === 'opportunities'"
+      (click)="setAccountTab('opportunities')">
+
+      <i class="bi bi-funnel"></i>
+
+      Opportunities
+
+    </button>
+
+
+    <button
+      type="button"
+      [class.active]="activeTab === 'invoices'"
+      (click)="setAccountTab('invoices')">
+
+      <i class="bi bi-receipt"></i>
+
+      Invoices
+
+    </button>
+
+
+    <button
+      type="button"
+      [class.active]="activeTab === 'payments'"
+      (click)="setAccountTab('payments')">
+
+      <i class="bi bi-credit-card"></i>
+
+      Payments
+
+    </button>
+
+
+    <button
+      type="button"
+      [class.active]="activeTab === 'activities'"
+      (click)="setAccountTab('activities')">
+
+      <i class="bi bi-activity"></i>
+
+      Activities
+
+    </button>
+
+  </div>
+
+
+  <!-- ============================================================
+       OVERVIEW
+  ============================================================= -->
+
+  <div
+    class="overview-section"
+    *ngIf="activeTab === 'overview'">
+
+    <div class="section-header">
+
+      <div>
+
+        <h2>Account Overview</h2>
+
+        <p>
+          Customer portfolio and financial performance.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <div class="overview-grid">
+
+      <div class="overview-card">
+
+        <span>Customers</span>
+
+        <strong>
+          {{ customerCount }}
+        </strong>
+
+      </div>
+
+
+      <div class="overview-card">
+
+        <span>Prospects</span>
+
+        <strong>
+          {{ prospectCount }}
+        </strong>
+
+      </div>
+
+
+      <div class="overview-card">
+
+        <span>Revenue</span>
+
+        <strong>
+          {{ formatCurrency(totalRevenue) }}
+        </strong>
+
+      </div>
+
+
+      <div class="overview-card">
+
+        <span>Gross Profit</span>
+
+        <strong>
+          {{ formatCurrency(totalGrossProfit) }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="table-card">
+
+      <div class="table-header">
+
+        <div>
+
+          <h3>Top Accounts</h3>
+
+          <p>
+            Accounts contributing to CRM revenue.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="table-responsive">
+
+        <table>
+
+          <thead>
+
+            <tr>
+              <th>Account</th>
+              <th>Industry</th>
+              <th>Revenue</th>
+              <th>Profit</th>
+              <th>Margin</th>
+              <th>Outstanding</th>
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            <tr
+              *ngFor="
+                let item of accounts;
+                trackBy: trackByAccountId
+              "
+              (click)="viewAccount(item)">
+
+              <td>
+
+                <div class="account-name">
+
+                  <div class="account-avatar">
+                    {{ item.accountName.charAt(0) }}
+                  </div>
+
+                  <div>
+
+                    <strong>
+                      {{ item.accountName }}
+                    </strong>
+
+                    <small>
+                      {{ item.accountNumber }}
+                    </small>
+
+                  </div>
+
+                </div>
+
+              </td>
+
+              <td>
+                {{ item.industry }}
+              </td>
+
+              <td>
+                {{ formatCurrency(item.invoiceValue) }}
+              </td>
+
+              <td class="profit-text">
+                {{ formatCurrency(item.grossProfit) }}
+              </td>
+
+              <td>
+                {{ getAccountMargin(item) | number:'1.0-1' }}%
+              </td>
+
+              <td class="outstanding-text">
+                {{ formatCurrency(item.outstandingValue) }}
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ============================================================
+       ACCOUNT LIST
+  ============================================================= -->
+
+  <div
+    class="accounts-section"
+    *ngIf="activeTab === 'accounts'">
+
+    <div class="filter-panel">
+
+      <div class="search-box">
+
+        <i class="bi bi-search"></i>
+
+        <input
+          type="text"
+          [(ngModel)]="searchText"
+          placeholder="Search account, number, email...">
+
+      </div>
+
+
+      <select [(ngModel)]="selectedType">
+
+        <option
+          *ngFor="let type of accountTypes"
+          [value]="type">
+
+          Type: {{ type }}
+
+        </option>
+
+      </select>
+
+
+      <select [(ngModel)]="selectedIndustry">
+
+        <option
+          *ngFor="let industry of industries"
+          [value]="industry">
+
+          Industry: {{ industry }}
+
+        </option>
+
+      </select>
+
+
+      <select [(ngModel)]="selectedOwner">
+
+        <option
+          *ngFor="let owner of owners"
+          [value]="owner">
+
+          Owner: {{ owner }}
+
+        </option>
+
+      </select>
+
+
+      <select [(ngModel)]="selectedStatus">
+
+        <option
+          *ngFor="let status of statuses"
+          [value]="status">
+
+          Status: {{ status }}
+
+        </option>
+
+      </select>
+
+
+      <button
+        type="button"
+        class="reset-button"
+        (click)="resetFilters()">
+
+        <i class="bi bi-arrow-counterclockwise"></i>
+
+        Reset
+
+      </button>
+
+    </div>
+
+
+    <div class="table-card">
+
+      <div class="table-responsive">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>#</th>
+
+              <th>Account</th>
+
+              <th>Type</th>
+
+              <th>Industry</th>
+
+              <th>Owner</th>
+
+              <th>Revenue</th>
+
+              <th>Profit</th>
+
+              <th>Outstanding</th>
+
+              <th>Status</th>
+
+              <th>Action</th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            <tr
+              *ngIf="pagedAccounts.length === 0">
+
+              <td
+                colspan="10"
+                class="empty-table">
+
+                <i class="bi bi-building"></i>
+
+                <span>No accounts found.</span>
+
+              </td>
+
+            </tr>
+
+
+            <tr
+              *ngFor="
+                let item of pagedAccounts;
+                let i = index;
+                trackBy: trackByAccountId
+              ">
+
+              <td>
+                {{ ((page - 1) * pageSize) + i + 1 }}
+              </td>
+
+
+              <td>
+
+                <div class="account-name">
+
+                  <div class="account-avatar">
+                    {{ item.accountName.charAt(0) }}
+                  </div>
+
+                  <div>
+
+                    <strong>
+                      {{ item.accountName }}
+                    </strong>
+
+                    <small>
+                      {{ item.accountNumber }}
+                    </small>
+
+                  </div>
+
+                </div>
+
+              </td>
+
+
+              <td>
+                {{ item.accountType }}
+              </td>
+
+
+              <td>
+                {{ item.industry }}
+              </td>
+
+
+              <td>
+                {{ item.owner }}
+              </td>
+
+
+              <td>
+                {{ formatCurrency(item.invoiceValue) }}
+              </td>
+
+
+              <td class="profit-text">
+                {{ formatCurrency(item.grossProfit) }}
+              </td>
+
+
+              <td class="outstanding-text">
+                {{ formatCurrency(item.outstandingValue) }}
+              </td>
+
+
+              <td>
+
+                <span
+                  class="status-badge"
+                  [ngClass]="
+                    getStatusClass(item.status)
+                  ">
+
+                  {{ item.status }}
+
+                </span>
+
+              </td>
+
+
+              <td>
+
+                <div class="action-buttons">
+
+                  <button
+                    type="button"
+                    title="View"
+                    (click)="viewAccount(item)">
+
+                    <i class="bi bi-eye"></i>
+
+                  </button>
+
+
+                  <button
+                    type="button"
+                    title="Edit"
+                    (click)="editAccount(item.accountId)">
+
+                    <i class="bi bi-pencil"></i>
+
+                  </button>
+
+
+                  <button
+                    type="button"
+                    title="Delete"
+                    (click)="deleteAccount(item.accountId)">
+
+                    <i class="bi bi-trash"></i>
+
+                  </button>
+
+                </div>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+
+      <!-- PAGINATION -->
+
+      <div class="pagination">
+
+        <button
+          type="button"
+          [disabled]="page <= 1"
+          (click)="changePage(page - 1)">
+
+          <i class="bi bi-chevron-left"></i>
+
+        </button>
+
+
+        <button
+          type="button"
+          *ngFor="let p of paginationPages"
+          [class.active]="page === p"
+          (click)="changePage(p)">
+
+          {{ p }}
+
+        </button>
+
+
+        <button
+          type="button"
+          [disabled]="page >= totalPages"
+          (click)="changePage(page + 1)">
+
+          <i class="bi bi-chevron-right"></i>
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ============================================================
+       PROFIT & LOSS
+  ============================================================= -->
+
+  <div
+    class="profit-loss-section"
+    *ngIf="activeTab === 'profit-loss'">
+
+    <div class="section-header">
+
+      <div>
+
+        <h2>Accounts Profit & Loss</h2>
+
+        <p>
+          Revenue, cost and gross profitability by account.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <div class="pl-grid">
+
+      <div class="pl-card revenue">
+
+        <span>Revenue</span>
+
+        <strong>
+          {{ formatCurrency(totalRevenue) }}
+        </strong>
+
+      </div>
+
+
+      <div class="pl-card cost">
+
+        <span>Cost of Sales</span>
+
+        <strong>
+          {{ formatCurrency(totalCost) }}
+        </strong>
+
+      </div>
+
+
+      <div class="pl-card profit">
+
+        <span>Gross Profit</span>
+
+        <strong>
+          {{ formatCurrency(totalGrossProfit) }}
+        </strong>
+
+      </div>
+
+
+      <div class="pl-card margin">
+
+        <span>Gross Margin</span>
+
+        <strong>
+          {{ overallGrossMargin | number:'1.0-1' }}%
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="table-card">
+
+      <div class="table-header">
+
+        <div>
+
+          <h3>Account Profitability</h3>
+
+          <p>
+            Profit contribution from each customer account.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="table-responsive">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>Account</th>
+              <th>Revenue</th>
+              <th>Cost</th>
+              <th>Gross Profit</th>
+              <th>Margin</th>
+              <th>Outstanding</th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            <tr
+              *ngFor="
+                let item of accounts;
+                trackBy: trackByAccountId
+              ">
+
+              <td>
+                <strong>
+                  {{ item.accountName }}
+                </strong>
+              </td>
+
+              <td>
+                {{ formatCurrency(item.invoiceValue) }}
+              </td>
+
+              <td>
+                {{ formatCurrency(item.costValue) }}
+              </td>
+
+              <td class="profit-text">
+                {{ formatCurrency(item.grossProfit) }}
+              </td>
+
+              <td>
+
+                <div class="margin-cell">
+
+                  <div class="margin-bar">
+
+                    <span
+                      [style.width.%]="
+                        getAccountMargin(item)
+                      ">
+                    </span>
+
+                  </div>
+
+                  <strong>
+                    {{ getAccountMargin(item) | number:'1.0-1' }}%
+                  </strong>
+
+                </div>
+
+              </td>
+
+              <td class="outstanding-text">
+                {{ formatCurrency(item.outstandingValue) }}
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ============================================================
+       OPPORTUNITIES
+  ============================================================= -->
+
+  <div
+    class="placeholder-section"
+    *ngIf="activeTab === 'opportunities'">
+
+    <i class="bi bi-funnel"></i>
+
+    <h2>Account Opportunities</h2>
+
+    <p>
+      Opportunities related to accounts will appear here.
+    </p>
+
+    <strong>
+      Open Pipeline:
+      {{ formatCurrency(totalOpenPipeline) }}
+    </strong>
+
+  </div>
+
+
+  <!-- ============================================================
+       INVOICES
+  ============================================================= -->
+
+  <div
+    class="placeholder-section"
+    *ngIf="activeTab === 'invoices'">
+
+    <i class="bi bi-receipt"></i>
+
+    <h2>Account Invoices</h2>
+
+    <p>
+      Invoices generated for customer accounts.
+    </p>
+
+    <strong>
+      Invoiced:
+      {{ formatCurrency(totalRevenue) }}
+    </strong>
+
+  </div>
+
+
+  <!-- ============================================================
+       PAYMENTS
+  ============================================================= -->
+
+  <div
+    class="placeholder-section"
+    *ngIf="activeTab === 'payments'">
+
+    <i class="bi bi-credit-card"></i>
+
+    <h2>Account Payments</h2>
+
+    <p>
+      Customer payment and collection information.
+    </p>
+
+    <strong>
+      Paid:
+      {{ formatCurrency(totalPaid) }}
+    </strong>
+
+  </div>
+
+
+  <!-- ============================================================
+       ACTIVITIES
+  ============================================================= -->
+
+  <div
+    class="placeholder-section"
+    *ngIf="activeTab === 'activities'">
+
+    <i class="bi bi-calendar-check"></i>
+
+    <h2>Account Activities</h2>
+
+    <p>
+      Calls, emails, meetings, tasks and notes related to accounts.
+    </p>
+
+  </div>
+
+
+  <!-- ============================================================
+       ACCOUNT DRAWER
+  ============================================================= -->
+
+  <div
+    class="drawer-overlay"
+    *ngIf="showAccountDrawer"
+    (click)="closeAccountDrawer()">
+  </div>
+
+
+  <aside
+    class="account-drawer"
+    *ngIf="showAccountDrawer && selectedAccount">
+
+    <div class="drawer-header">
+
+      <div class="drawer-account">
+
+        <div class="large-avatar">
+
+          {{ selectedAccount.accountName.charAt(0) }}
+
+        </div>
+
+        <div>
+
+          <span>
+            {{ selectedAccount.accountNumber }}
+          </span>
+
+          <h2>
+            {{ selectedAccount.accountName }}
+          </h2>
+
+        </div>
+
+      </div>
+
+
+      <button
+        type="button"
+        (click)="closeAccountDrawer()">
+
+        <i class="bi bi-x-lg"></i>
+
+      </button>
+
+    </div>
+
+
+    <div class="drawer-content">
+
+      <!-- Financial summary -->
+
+      <div class="drawer-financial">
+
+        <div>
+
+          <span>Revenue</span>
+
+          <strong>
+            {{ formatCurrency(
+              selectedAccount.invoiceValue
+            ) }}
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span>Profit</span>
+
+          <strong class="profit-text">
+
+            {{ formatCurrency(
+              selectedAccount.grossProfit
+            ) }}
+
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span>Outstanding</span>
+
+          <strong class="outstanding-text">
+
+            {{ formatCurrency(
+              selectedAccount.outstandingValue
+            ) }}
+
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <!-- Account information -->
+
+      <div class="drawer-section">
+
+        <h3>Account Information</h3>
+
+
+        <div class="drawer-row">
+
+          <span>Account Type</span>
+
+          <strong>
+            {{ selectedAccount.accountType }}
+          </strong>
+
+        </div>
+
+
+        <div class="drawer-row">
+
+          <span>Industry</span>
+
+          <strong>
+            {{ selectedAccount.industry }}
+          </strong>
+
+        </div>
+
+
+        <div class="drawer-row">
+
+          <span>Owner</span>
+
+          <strong>
+            {{ selectedAccount.owner }}
+          </strong>
+
+        </div>
+
+
+        <div class="drawer-row">
+
+          <span>Email</span>
+
+          <strong>
+            {{ selectedAccount.email }}
+          </strong>
+
+        </div>
+
+
+        <div class="drawer-row">
+
+          <span>Phone</span>
+
+          <strong>
+            {{ selectedAccount.phone }}
+          </strong>
+
+        </div>
+
+
+        <div class="drawer-row">
+
+          <span>Location</span>
+
+          <strong>
+            {{ selectedAccount.city }},
+            {{ selectedAccount.state }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <!-- CRM metrics -->
+
+      <div class="drawer-section">
+
+        <h3>CRM Activity</h3>
+
+
+        <div class="metric-grid">
+
+          <div>
+
+            <span>Contacts</span>
+
+            <strong>
+              {{ selectedAccount.contactCount }}
+            </strong>
+
+          </div>
+
+
+          <div>
+
+            <span>Opportunities</span>
+
+            <strong>
+              {{ selectedAccount.opportunityCount }}
+            </strong>
+
+          </div>
+
+
+          <div>
+
+            <span>Quotations</span>
+
+            <strong>
+              {{ selectedAccount.quotationCount }}
+            </strong>
+
+          </div>
+
+
+          <div>
+
+            <span>Orders</span>
+
+            <strong>
+              {{ selectedAccount.orderCount }}
+            </strong>
+
+          </div>
+
+
+          <div>
+
+            <span>Invoices</span>
+
+            <strong>
+              {{ selectedAccount.invoiceCount }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- P&L -->
+
+      <div class="drawer-section">
+
+        <h3>Profit & Loss</h3>
+
+
+        <div class="pl-detail">
+
+          <div>
+
+            <span>Revenue</span>
+
+            <strong>
+              {{ formatCurrency(
+                getAccountRevenue(selectedAccount)
+              ) }}
+            </strong>
+
+          </div>
+
+
+          <div>
+
+            <span>Cost</span>
+
+            <strong>
+              {{ formatCurrency(
+                getAccountCost(selectedAccount)
+              ) }}
+            </strong>
+
+          </div>
+
+
+          <div>
+
+            <span>Gross Profit</span>
+
+            <strong class="profit-text">
+              {{ formatCurrency(
+                getAccountProfit(selectedAccount)
+              ) }}
+            </strong>
+
+          </div>
+
+
+          <div>
+
+            <span>Gross Margin</span>
+
+            <strong>
+              {{ getAccountMargin(selectedAccount) | number:'1.0-1' }}%
+            </strong>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- Actions -->
+
+      <div class="drawer-actions">
+
+        <button
+          type="button"
+          class="action-primary"
+          (click)="createOpportunity(selectedAccount)">
+
+          <i class="bi bi-funnel"></i>
+
+          Opportunity
+
+        </button>
+
+
+        <button
+          type="button"
+          class="action-secondary"
+          (click)="createQuotation(selectedAccount)">
+
+          <i class="bi bi-file-text"></i>
+
+          Quotation
+
+        </button>
+
+
+        <button
+          type="button"
+          class="action-secondary"
+          (click)="createInvoice(selectedAccount)">
+
+          <i class="bi bi-receipt"></i>
+
+          Invoice
+
+        </button>
+
+
+        <button
+          type="button"
+          class="action-secondary"
+          (click)="recordPayment(selectedAccount)">
+
+          <i class="bi bi-credit-card"></i>
+
+          Payment
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </aside>
+
+
+  <!-- ============================================================
+       ACCOUNT FORM MODAL
+  ============================================================= -->
+
+  <div
+    class="modal-overlay"
+    *ngIf="showAccountForm">
+
+    <div class="account-modal">
+
+      <div class="modal-header">
+
+        <div>
+
+          <span>CRM</span>
+
+          <h2>
+            {{ isEdit ? 'Edit Account' : 'New Account' }}
+          </h2>
+
+        </div>
+
+
+        <button
+          type="button"
+          (click)="closeAccountForm()">
+
+          <i class="bi bi-x-lg"></i>
+
+        </button>
+
+      </div>
+
+
+      <div class="modal-body">
+
+        <div class="form-grid">
+
+          <div class="form-group full">
+
+            <label>
+              Account Name *
+            </label>
+
+            <input
+              type="text"
+              [(ngModel)]="account.accountName"
+              placeholder="Enter account name">
+
+            <small
+              class="error"
+              *ngIf="
+                submitted &&
+                !account.accountName.trim()
+              ">
+
+              Account Name is required.
+
+            </small>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Account Number *
+            </label>
+
+            <input
+              type="text"
+              [(ngModel)]="account.accountNumber"
+              placeholder="ACC-0001">
+
+            <small
+              class="error"
+              *ngIf="
+                submitted &&
+                !account.accountNumber.trim()
+              ">
+
+              Account Number is required.
+
+            </small>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Account Type *
+            </label>
+
+            <select
+              [(ngModel)]="account.accountType">
+
+              <option value="">
+                Select Type
+              </option>
+
+              <option value="Customer">
+                Customer
+              </option>
+
+              <option value="Partner">
+                Partner
+              </option>
+
+              <option value="Vendor">
+                Vendor
+              </option>
+
+              <option value="Prospect">
+                Prospect
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Industry
+            </label>
+
+            <select
+              [(ngModel)]="account.industry">
+
+              <option value="">
+                Select Industry
+              </option>
+
+              <option
+                *ngFor="let industry of industries"
+                [value]="industry"
+                [disabled]="industry === 'All'">
+
+                {{ industry }}
+
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Account Owner
+            </label>
+
+            <select
+              [(ngModel)]="account.owner">
+
+              <option
+                *ngFor="let owner of owners"
+                [value]="owner"
+                [disabled]="owner === 'All'">
+
+                {{ owner }}
+
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Email
+            </label>
+
+            <input
+              type="email"
+              [(ngModel)]="account.email"
+              placeholder="company@example.com">
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Phone
+            </label>
+
+            <input
+              type="text"
+              [(ngModel)]="account.phone"
+              placeholder="Phone number">
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Website
+            </label>
+
+            <input
+              type="text"
+              [(ngModel)]="account.website"
+              placeholder="https://">
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Employees
+            </label>
+
+            <input
+              type="number"
+              [(ngModel)]="account.employees">
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Annual Revenue
+            </label>
+
+            <input
+              type="number"
+              [(ngModel)]="account.revenue">
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Rating
+            </label>
+
+            <select
+              [(ngModel)]="account.rating">
+
+              <option value="Hot">
+                Hot
+              </option>
+
+              <option value="Warm">
+                Warm
+              </option>
+
+              <option value="Cold">
+                Cold
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Status
+            </label>
+
+            <select
+              [(ngModel)]="account.status">
+
+              <option value="Active">
+                Active
+              </option>
+
+              <option value="Inactive">
+                Inactive
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              City
+            </label>
+
+            <input
+              type="text"
+              [(ngModel)]="account.city">
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              State
+            </label>
+
+            <input
+              type="text"
+              [(ngModel)]="account.state">
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Country
+            </label>
+
+            <input
+              type="text"
+              [(ngModel)]="account.country">
+
+          </div>
+
+
+          <div class="form-group full">
+
+            <label>
+              Billing Address
+            </label>
+
+            <textarea
+              rows="3"
+              [(ngModel)]="account.billingAddress">
+            </textarea>
+
+          </div>
+
+
+          <div class="form-group full">
+
+            <label>
+              Shipping Address
+            </label>
+
+            <textarea
+              rows="3"
+              [(ngModel)]="account.shippingAddress">
+            </textarea>
+
+          </div>
+
+
+          <div class="checkbox-group full">
+
+            <label>
+
+              <input
+                type="checkbox"
+                [(ngModel)]="account.isActive">
+
+              Active Account
+
+            </label>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="modal-footer">
+
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="closeAccountForm()">
+
+          Cancel
+
+        </button>
+
+
+        <button
+          type="button"
+          class="btn-primary"
+          (click)="saveAccount()">
+
+          <i class="bi bi-check-lg"></i>
+
+          {{ isEdit ? 'Update Account' : 'Create Account' }}
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

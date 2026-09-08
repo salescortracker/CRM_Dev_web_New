@@ -1,0 +1,525 @@
+<div class="container mt-4">
+
+    <!-- ========================================= -->
+    <!-- Microsoft Teams Integration Form -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4 class="mb-0">
+
+                <i class="fa fa-users me-2"></i>
+
+                Microsoft Teams Integration
+
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <!-- Integration Name -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Integration Name
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Integration Name"
+                        [(ngModel)]="teams.integrationName">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !teams.integrationName">
+
+                        Integration Name is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Team Name -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Team Name
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Team Name" [(ngModel)]="teams.teamName">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !teams.teamName">
+
+                        Team Name is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Team ID -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Team ID
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Team ID" [(ngModel)]="teams.teamId">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !teams.teamId">
+
+                        Team ID is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Tenant ID -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Tenant ID
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Tenant ID" [(ngModel)]="teams.tenantId">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !teams.tenantId">
+
+                        Tenant ID is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Client ID -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Client ID
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Client ID" [(ngModel)]="teams.clientId">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !teams.clientId">
+
+                        Client ID is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Client Secret -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Client Secret
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="password" class="form-control" placeholder="Enter Client Secret"
+                        [(ngModel)]="teams.clientSecret">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !teams.clientSecret">
+
+                        Client Secret is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Redirect URI -->
+                <div class="col-md-8 mb-3">
+
+                    <label class="form-label">
+                        Redirect URI
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="https://yourdomain.com/auth/teams/callback"
+                        [(ngModel)]="teams.redirectUri">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !teams.redirectUri">
+
+                        Redirect URI is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Notification Channel -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Notification Channel
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="General"
+                        [(ngModel)]="teams.notificationChannel">
+
+                </div>
+
+                <!-- Sync Frequency -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Sync Frequency
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="teams.syncFrequency">
+
+                        <option value="">Select Frequency</option>
+                        <option>Every 5 Minutes</option>
+                        <option>Every 15 Minutes</option>
+                        <option>Every 30 Minutes</option>
+                        <option>Hourly</option>
+                        <option>Daily</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !teams.syncFrequency">
+
+                        Sync Frequency is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Last Sync Date -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Last Sync Date
+
+                    </label>
+
+                    <input type="datetime-local" class="form-control" [(ngModel)]="teams.lastSyncDate">
+
+                </div>
+
+                <!-- Status -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Status
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="teams.status">
+
+                        <option value="">Select Status</option>
+                        <option>Connected</option>
+                        <option>Disconnected</option>
+                        <option>Pending</option>
+                        <option>Error</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !teams.status">
+
+                        Status is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Active -->
+                <div class="col-md-4 mb-3 d-flex align-items-end">
+
+                    <div class="form-check">
+
+                        <input type="checkbox" class="form-check-input" id="teamsActive" [(ngModel)]="teams.isActive">
+
+                        <label class="form-check-label ms-2" for="teamsActive">
+
+                            Active
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <!-- Description -->
+                <div class="col-md-12 mb-3">
+
+                    <label class="form-label">
+
+                        Description
+
+                    </label>
+
+                    <textarea rows="4" class="form-control" placeholder="Enter Description"
+                        [(ngModel)]="teams.description">
+
+                    </textarea>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <button class="btn btn-danger me-2" (click)="saveMicrosoftTeams()">
+
+                <i class="fa fa-save me-1"></i>
+
+                {{ isEdit ? 'Update' : 'Save' }}
+
+            </button>
+
+            <button class="btn btn-secondary" (click)="clear()">
+
+                <i class="fa fa-eraser me-1"></i>
+
+                Clear
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- ========================================= -->
+<!-- Search -->
+<!-- ========================================= -->
+
+<div class="row mt-4 mb-3">
+
+    <div class="col-md-4">
+
+        <input type="text" class="form-control" placeholder="Search Microsoft Teams Integrations..."
+            [(ngModel)]="searchText">
+
+    </div>
+
+</div>
+
+
+
+
+
+<!-- ========================================= -->
+<!-- Microsoft Teams Listing -->
+<!-- ========================================= -->
+
+<div class="table-responsive">
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-danger">
+
+            <tr>
+
+                <th>#</th>
+
+                <th>Integration Name</th>
+
+                <th>Team Name</th>
+
+                <th>Notification Channel</th>
+
+                <th>Sync Frequency</th>
+
+                <th>Last Sync</th>
+
+                <th>Status</th>
+
+                <th>Active</th>
+
+                <th width="140">
+
+                    Action
+
+                </th>
+
+            </tr>
+
+        </thead>
+
+
+
+
+
+        <tbody>
+
+            <tr *ngIf="pagedMicrosoftTeams.length == 0">
+
+                <td colspan="9" class="text-center text-muted">
+
+                    No Microsoft Teams Integrations Found
+
+                </td>
+
+            </tr>
+
+
+
+
+
+            <tr *ngFor="let item of pagedMicrosoftTeams; let i = index">
+
+                <td>
+
+                    {{ ((page - 1) * pageSize) + i + 1 }}
+
+                </td>
+
+
+
+
+
+                <td>
+
+                    {{ item.integrationName }}
+
+                </td>
+
+
+
+
+
+                <td>
+
+                    {{ item.teamName }}
+
+                </td>
+
+
+
+
+
+                <td>
+
+                    {{ item.notificationChannel }}
+
+                </td>
+
+
+
+
+
+                <td>
+
+                    <span class="badge" [ngClass]="{
+
+                                'bg-success': item.syncFrequency == 'Every 5 Minutes',
+
+                                'bg-primary': item.syncFrequency == 'Every 15 Minutes',
+
+                                'bg-info text-dark': item.syncFrequency == 'Every 30 Minutes',
+
+                                'bg-warning text-dark': item.syncFrequency == 'Hourly',
+
+                                'bg-secondary': item.syncFrequency == 'Daily'
+
+                            }">
+
+                        {{ item.syncFrequency }}
+
+                    </span>
+
+                </td>
+
+
+
+
+
+                <td>
+
+                    {{ item.lastSyncDate | date:'dd-MM-yyyy HH:mm' }}
+
+                </td>
+
+
+
+
+
+                <td>
+
+                    <span class="badge" [ngClass]="{
+
+                                'bg-success': item.status == 'Connected',
+
+                                'bg-secondary': item.status == 'Disconnected',
+
+                                'bg-warning text-dark': item.status == 'Pending',
+
+                                'bg-danger': item.status == 'Error'
+
+                            }">
+
+                        {{ item.status }}
+
+                    </span>
+
+                </td>
+
+
+
+
+
+                <td>
+
+                    <span class="badge" [ngClass]="item.isActive ? 'bg-success' : 'bg-danger'">
+
+                        {{ item.isActive ? 'Yes' : 'No' }}
+
+                    </span>
+
+                </td>
+
+
+
+
+
+                <td>
+
+                    <button class="btn btn-warning btn-sm me-2" (click)="edit(item.teamsIntegrationId)">
+
+                        <i class="fa fa-edit"></i>
+
+                    </button>
+
+
+
+
+
+                    <button class="btn btn-danger btn-sm" (click)="delete(item.teamsIntegrationId)">
+
+                        <i class="fa fa-trash"></i>
+
+                    </button>
+
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+
+
+
+
+
+<!-- ========================================= -->
+<!-- Pagination -->
+<!-- ========================================= -->
+
+<app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredMicrosoftTeams.length"
+    (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
+
+</app-pagination>
+

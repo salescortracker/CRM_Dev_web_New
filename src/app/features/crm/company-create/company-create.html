@@ -1,0 +1,1110 @@
+<div class="company-create-page">
+
+  <!-- =====================================================
+       PAGE HEADER
+  ====================================================== -->
+
+  <div class="page-header">
+
+    <div>
+
+      <div class="breadcrumb">
+
+        <span>CRM</span>
+
+        <i class="fa-solid fa-chevron-right"></i>
+
+        <span>Companies</span>
+
+        <i class="fa-solid fa-chevron-right"></i>
+
+        <strong>Create Company</strong>
+
+      </div>
+
+
+      <div class="title-section">
+
+        <div class="title-icon">
+
+          <i class="fa-solid fa-building-circle-plus"></i>
+
+        </div>
+
+
+        <div>
+
+          <h1>Create Company</h1>
+
+          <p>
+            Add a new company to your CORCRM prospect database.
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="header-actions">
+
+      <button
+        type="button"
+        class="btn-secondary"
+        (click)="cancel()">
+
+        <i class="fa-solid fa-arrow-left"></i>
+
+        Cancel
+
+      </button>
+
+
+      <button
+        type="button"
+        class="btn-primary"
+        [disabled]="isSaving"
+        (click)="createCompany()">
+
+        <i
+          class="fa-solid"
+          [ngClass]="
+            isSaving
+              ? 'fa-spinner fa-spin'
+              : 'fa-check'
+          ">
+        </i>
+
+        {{ isSaving ? 'Saving...' : 'Create Company' }}
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       FORM LAYOUT
+  ====================================================== -->
+
+  <div class="create-layout">
+
+
+    <!-- ===================================================
+         LEFT NAVIGATION
+    ==================================================== -->
+
+    <aside class="form-navigation">
+
+      <div class="navigation-title">
+        COMPANY SETUP
+      </div>
+
+
+      <button
+        type="button"
+        [class.active]="currentSection === 'basic'"
+        (click)="setSection('basic')">
+
+        <span class="nav-icon">
+
+          <i class="fa-solid fa-building"></i>
+
+        </span>
+
+        <span>
+
+          <strong>Company Information</strong>
+
+          <small>
+            Basic company details
+          </small>
+
+        </span>
+
+      </button>
+
+
+      <button
+        type="button"
+        [class.active]="currentSection === 'address'"
+        (click)="setSection('address')">
+
+        <span class="nav-icon">
+
+          <i class="fa-solid fa-location-dot"></i>
+
+        </span>
+
+        <span>
+
+          <strong>Address</strong>
+
+          <small>
+            Company location
+          </small>
+
+        </span>
+
+      </button>
+
+
+      <button
+        type="button"
+        [class.active]="currentSection === 'business'"
+        (click)="setSection('business')">
+
+        <span class="nav-icon">
+
+          <i class="fa-solid fa-chart-line"></i>
+
+        </span>
+
+        <span>
+
+          <strong>Business Details</strong>
+
+          <small>
+            Revenue and employees
+          </small>
+
+        </span>
+
+      </button>
+
+
+      <button
+        type="button"
+        [class.active]="currentSection === 'registration'"
+        (click)="setSection('registration')">
+
+        <span class="nav-icon">
+
+          <i class="fa-solid fa-file-certificate"></i>
+
+        </span>
+
+        <span>
+
+          <strong>Registration</strong>
+
+          <small>
+            GST, PAN and social
+          </small>
+
+        </span>
+
+      </button>
+
+
+      <button
+        type="button"
+        [class.active]="currentSection === 'contact'"
+        (click)="setSection('contact')">
+
+        <span class="nav-icon">
+
+          <i class="fa-solid fa-user-tie"></i>
+
+        </span>
+
+        <span>
+
+          <strong>Primary Contact</strong>
+
+          <small>
+            Main company contact
+          </small>
+
+        </span>
+
+      </button>
+
+
+      <!-- INFO CARD -->
+
+      <div class="navigation-info">
+
+        <div class="info-icon">
+
+          <i class="fa-solid fa-lightbulb"></i>
+
+        </div>
+
+        <div>
+
+          <strong>Sales Tip</strong>
+
+          <p>
+            Add a primary contact now so your sales team
+            can immediately start a conversation.
+          </p>
+
+        </div>
+
+      </div>
+
+    </aside>
+
+
+    <!-- ===================================================
+         MAIN FORM
+    ==================================================== -->
+
+    <main class="form-content">
+
+
+      <!-- =================================================
+           COMPANY INFORMATION
+      ================================================== -->
+
+      <section
+        id="basic"
+        class="form-card">
+
+        <div class="card-header">
+
+          <div class="card-header-icon blue">
+
+            <i class="fa-solid fa-building"></i>
+
+          </div>
+
+          <div>
+
+            <h2>Company Information</h2>
+
+            <p>
+              Enter the primary information about this company.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="form-grid">
+
+
+          <!-- COMPANY NAME -->
+
+          <div class="form-group full">
+
+            <label>
+
+              Company Name
+
+              <span>*</span>
+
+            </label>
+
+            <div class="input-wrapper">
+
+              <i class="fa-solid fa-building"></i>
+
+              <input
+                type="text"
+                [(ngModel)]="company.companyName"
+                name="companyName"
+                placeholder="e.g. ABC Technologies"
+                [class.invalid]="
+                  isRequiredInvalid(company.companyName)
+                ">
+
+            </div>
+
+            <small
+              class="error"
+              *ngIf="
+                isRequiredInvalid(company.companyName)
+              ">
+
+              Company name is required.
+
+            </small>
+
+          </div>
+
+
+          <!-- LEGAL NAME -->
+
+          <div class="form-group">
+
+            <label>
+              Legal Company Name
+            </label>
+
+            <input
+              type="text"
+              [(ngModel)]="company.legalName"
+              name="legalName"
+              placeholder="Registered legal name">
+
+          </div>
+
+
+          <!-- INDUSTRY -->
+
+          <div class="form-group">
+
+            <label>
+
+              Industry
+
+              <span>*</span>
+
+            </label>
+
+            <select
+              [(ngModel)]="company.industry"
+              name="industry"
+              [class.invalid]="
+                submitted && !company.industry
+              ">
+
+              <option value="">
+                Select industry
+              </option>
+
+              <option
+                *ngFor="let industry of industries"
+                [value]="industry">
+
+                {{ industry }}
+
+              </option>
+
+            </select>
+
+            <small
+              class="error"
+              *ngIf="
+                submitted && !company.industry
+              ">
+
+              Industry is required.
+
+            </small>
+
+          </div>
+
+
+          <!-- COMPANY TYPE -->
+
+          <div class="form-group">
+
+            <label>
+
+              Company Type
+
+              <span>*</span>
+
+            </label>
+
+            <select
+              [(ngModel)]="company.companyType"
+              name="companyType"
+              [class.invalid]="
+                submitted && !company.companyType
+              ">
+
+              <option value="">
+                Select company type
+              </option>
+
+              <option
+                *ngFor="let type of companyTypes"
+                [value]="type">
+
+                {{ type }}
+
+              </option>
+
+            </select>
+
+            <small
+              class="error"
+              *ngIf="
+                submitted && !company.companyType
+              ">
+
+              Company type is required.
+
+            </small>
+
+          </div>
+
+
+          <!-- WEBSITE -->
+
+          <div class="form-group">
+
+            <label>
+              Website
+            </label>
+
+            <div class="input-wrapper">
+
+              <i class="fa-solid fa-globe"></i>
+
+              <input
+                type="text"
+                [(ngModel)]="company.website"
+                name="website"
+                (blur)="normalizeWebsite()"
+                placeholder="www.example.com">
+
+            </div>
+
+          </div>
+
+
+          <!-- PHONE -->
+
+          <div class="form-group">
+
+            <label>
+              Company Phone
+            </label>
+
+            <div class="input-wrapper">
+
+              <i class="fa-solid fa-phone"></i>
+
+              <input
+                type="text"
+                [(ngModel)]="company.phone"
+                name="phone"
+                placeholder="+91 98765 43210">
+
+            </div>
+
+          </div>
+
+
+          <!-- EMAIL -->
+
+          <div class="form-group">
+
+            <label>
+              Company Email
+            </label>
+
+            <div class="input-wrapper">
+
+              <i class="fa-regular fa-envelope"></i>
+
+              <input
+                type="email"
+                [(ngModel)]="company.email"
+                name="email"
+                placeholder="info@example.com">
+
+            </div>
+
+            <small
+              class="error"
+              *ngIf="
+                company.email &&
+                !isValidEmail(company.email)
+              ">
+
+              Enter a valid email address.
+
+            </small>
+
+          </div>
+
+
+          <!-- DESCRIPTION -->
+
+          <div class="form-group full">
+
+            <label>
+              Company Description
+            </label>
+
+            <textarea
+              rows="4"
+              [(ngModel)]="company.description"
+              name="description"
+              placeholder="Brief description about the company...">
+            </textarea>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =================================================
+           ADDRESS
+      ================================================== -->
+
+      <section
+        id="address"
+        class="form-card">
+
+        <div class="card-header">
+
+          <div class="card-header-icon green">
+
+            <i class="fa-solid fa-location-dot"></i>
+
+          </div>
+
+          <div>
+
+            <h2>Company Address</h2>
+
+            <p>
+              Add the primary business location.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="form-grid">
+
+
+          <!-- ADDRESS LINE 1 -->
+
+          <div class="form-group full">
+
+            <label>
+              Address Line 1
+            </label>
+
+            <div class="input-wrapper">
+
+              <i class="fa-solid fa-location-dot"></i>
+
+              <input
+                type="text"
+                [(ngModel)]="company.address.addressLine1"
+                name="addressLine1"
+                placeholder="Building / Street / Area">
+
+            </div>
+
+          </div>
+
+
+          <!-- ADDRESS LINE 2 -->
+
+          <div class="form-group full">
+
+            <label>
+              Address Line 2
+            </label>
+
+            <input
+              type="text"
+              [(ngModel)]="company.address.addressLine2"
+              name="addressLine2"
+              placeholder="Landmark / Suite / Floor">
+
+          </div>
+
+
+          <!-- CITY -->
+
+          <div class="form-group">
+
+            <label>
+
+              City
+
+              <span>*</span>
+
+            </label>
+
+            <input
+              type="text"
+              [(ngModel)]="company.address.city"
+              name="city"
+              placeholder="e.g. Hyderabad"
+              [class.invalid]="
+                submitted &&
+                !company.address.city
+              ">
+
+            <small
+              class="error"
+              *ngIf="
+                submitted &&
+                !company.address.city
+              ">
+
+              City is required.
+
+            </small>
+
+          </div>
+
+
+          <!-- STATE -->
+
+          <div class="form-group">
+
+            <label>
+              State
+            </label>
+
+            <select
+              [(ngModel)]="company.address.state"
+              name="state">
+
+              <option value="">
+                Select state
+              </option>
+
+              <option
+                *ngFor="let state of states"
+                [value]="state">
+
+                {{ state }}
+
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <!-- COUNTRY -->
+
+          <div class="form-group">
+
+            <label>
+
+              Country
+
+              <span>*</span>
+
+            </label>
+
+            <select
+              [(ngModel)]="company.address.country"
+              name="country">
+
+              <option
+                *ngFor="let country of countries"
+                [value]="country">
+
+                {{ country }}
+
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <!-- POSTAL CODE -->
+
+          <div class="form-group">
+
+            <label>
+              Postal Code
+            </label>
+
+            <input
+              type="text"
+              [(ngModel)]="company.address.postalCode"
+              name="postalCode"
+              placeholder="500001">
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =================================================
+           BUSINESS DETAILS
+      ================================================== -->
+
+      <section
+        id="business"
+        class="form-card">
+
+        <div class="card-header">
+
+          <div class="card-header-icon purple">
+
+            <i class="fa-solid fa-chart-line"></i>
+
+          </div>
+
+          <div>
+
+            <h2>Business Details</h2>
+
+            <p>
+              Capture company size and business information.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="form-grid">
+
+
+          <!-- EMPLOYEES -->
+
+          <div class="form-group">
+
+            <label>
+              Number of Employees
+            </label>
+
+            <select
+              [(ngModel)]="company.employees"
+              name="employees">
+
+              <option value="">
+                Select employee range
+              </option>
+
+              <option
+                *ngFor="let range of employeeRanges"
+                [value]="range">
+
+                {{ range }}
+
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <!-- REVENUE -->
+
+          <div class="form-group">
+
+            <label>
+              Annual Revenue
+            </label>
+
+            <select
+              [(ngModel)]="company.annualRevenue"
+              name="annualRevenue">
+
+              <option value="">
+                Select revenue range
+              </option>
+
+              <option
+                *ngFor="let revenue of revenueRanges"
+                [value]="revenue">
+
+                {{ revenue }}
+
+              </option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =================================================
+           REGISTRATION
+      ================================================== -->
+
+      <section
+        id="registration"
+        class="form-card">
+
+        <div class="card-header">
+
+          <div class="card-header-icon orange">
+
+            <i class="fa-solid fa-file-lines"></i>
+
+          </div>
+
+          <div>
+
+            <h2>Registration & Social</h2>
+
+            <p>
+              Add registration and company social information.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="form-grid">
+
+
+          <!-- GST -->
+
+          <div class="form-group">
+
+            <label>
+              GST Number
+            </label>
+
+            <div class="input-wrapper">
+
+              <i class="fa-solid fa-file-invoice"></i>
+
+              <input
+                type="text"
+                [(ngModel)]="company.gstNumber"
+                name="gstNumber"
+                placeholder="GSTIN">
+
+            </div>
+
+          </div>
+
+
+          <!-- PAN -->
+
+          <div class="form-group">
+
+            <label>
+              PAN Number
+            </label>
+
+            <div class="input-wrapper">
+
+              <i class="fa-solid fa-id-card"></i>
+
+              <input
+                type="text"
+                [(ngModel)]="company.panNumber"
+                name="panNumber"
+                placeholder="PAN Number">
+
+            </div>
+
+          </div>
+
+
+          <!-- LINKEDIN -->
+
+          <div class="form-group full">
+
+            <label>
+              LinkedIn Company URL
+            </label>
+
+            <div class="input-wrapper">
+
+              <i class="fa-brands fa-linkedin"></i>
+
+              <input
+                type="text"
+                [(ngModel)]="company.linkedin"
+                name="linkedin"
+                placeholder="https://linkedin.com/company/example">
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =================================================
+           PRIMARY CONTACT
+      ================================================== -->
+
+      <section
+        id="contact"
+        class="form-card">
+
+        <div class="card-header">
+
+          <div class="card-header-icon blue">
+
+            <i class="fa-solid fa-user-tie"></i>
+
+          </div>
+
+          <div>
+
+            <h2>Primary Contact</h2>
+
+            <p>
+              Add the main person your sales team should contact.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="form-grid">
+
+
+          <!-- CONTACT NAME -->
+
+          <div class="form-group">
+
+            <label>
+              Contact Name
+            </label>
+
+            <div class="input-wrapper">
+
+              <i class="fa-solid fa-user"></i>
+
+              <input
+                type="text"
+                [(ngModel)]="company.primaryContactName"
+                name="primaryContactName"
+                placeholder="e.g. Rajesh Kumar">
+
+            </div>
+
+          </div>
+
+
+          <!-- DESIGNATION -->
+
+          <div class="form-group">
+
+            <label>
+              Designation
+            </label>
+
+            <input
+              type="text"
+              [(ngModel)]="company.primaryContactDesignation"
+              name="primaryContactDesignation"
+              placeholder="CEO / Director / Manager">
+
+          </div>
+
+
+          <!-- EMAIL -->
+
+          <div class="form-group">
+
+            <label>
+              Email
+            </label>
+
+            <div class="input-wrapper">
+
+              <i class="fa-regular fa-envelope"></i>
+
+              <input
+                type="email"
+                [(ngModel)]="company.primaryContactEmail"
+                name="primaryContactEmail"
+                placeholder="contact@example.com">
+
+            </div>
+
+          </div>
+
+
+          <!-- PHONE -->
+
+          <div class="form-group">
+
+            <label>
+              Phone
+            </label>
+
+            <div class="input-wrapper">
+
+              <i class="fa-solid fa-phone"></i>
+
+              <input
+                type="text"
+                [(ngModel)]="company.primaryContactPhone"
+                name="primaryContactPhone"
+                placeholder="+91 98765 43210">
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =================================================
+           BOTTOM ACTION BAR
+      ================================================== -->
+
+      <div class="bottom-actions">
+
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="cancel()">
+
+          Cancel
+
+        </button>
+
+
+        <div class="bottom-right">
+
+          <button
+            type="button"
+            class="btn-outline"
+            [disabled]="isSaving"
+            (click)="saveAndCreateAnother()">
+
+            <i class="fa-solid fa-plus"></i>
+
+            Save & Create Another
+
+          </button>
+
+
+          <button
+            type="button"
+            class="btn-primary"
+            [disabled]="isSaving"
+            (click)="createCompany()">
+
+            <i
+              class="fa-solid"
+              [ngClass]="
+                isSaving
+                  ? 'fa-spinner fa-spin'
+                  : 'fa-check'
+              ">
+            </i>
+
+            {{ isSaving ? 'Creating...' : 'Create Company' }}
+
+          </button>
+
+        </div>
+
+      </div>
+
+
+    </main>
+
+  </div>
+
+</div>

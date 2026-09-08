@@ -1,0 +1,496 @@
+<div class="container mt-4">
+
+    <!-- ========================================= -->
+    <!-- Company Webhooks Form -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4 class="mb-0">
+
+                <i class="fa fa-link me-2"></i>
+
+                Company Webhooks
+
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <!-- Webhook Name -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Webhook Name
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Webhook Name"
+                        [(ngModel)]="webhook.webhookName">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !webhook.webhookName">
+
+                        Webhook Name is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Webhook Code -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Webhook Code
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Webhook Code"
+                        [(ngModel)]="webhook.webhookCode">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !webhook.webhookCode">
+
+                        Webhook Code is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Event Type -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Event Type
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="webhook.eventType">
+
+                        <option value="">Select Event</option>
+                        <option>Lead Created</option>
+                        <option>Lead Updated</option>
+                        <option>Contact Created</option>
+                        <option>Deal Won</option>
+                        <option>Deal Lost</option>
+                        <option>Ticket Created</option>
+                        <option>Invoice Paid</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !webhook.eventType">
+
+                        Event Type is required.
+
+                    </div>
+
+                </div>
+
+                <!-- HTTP Method -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        HTTP Method
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="webhook.httpMethod">
+
+                        <option value="">Select Method</option>
+                        <option>POST</option>
+                        <option>PUT</option>
+                        <option>PATCH</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !webhook.httpMethod">
+
+                        HTTP Method is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Endpoint URL -->
+                <div class="col-md-8 mb-3">
+
+                    <label class="form-label">
+                        Endpoint URL
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="https://example.com/webhook"
+                        [(ngModel)]="webhook.endpointUrl">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !webhook.endpointUrl">
+
+                        Endpoint URL is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Secret Token -->
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Secret Token
+
+                    </label>
+
+                    <input type="password" class="form-control" placeholder="Enter Secret Token"
+                        [(ngModel)]="webhook.secretToken">
+
+                </div>
+
+                <!-- Retry Count -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Retry Count
+
+                    </label>
+
+                    <input type="number" class="form-control" placeholder="0" [(ngModel)]="webhook.retryCount">
+
+                </div>
+
+                <!-- Timeout -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Timeout (Seconds)
+
+                    </label>
+
+                    <input type="number" class="form-control" placeholder="30" [(ngModel)]="webhook.timeoutSeconds">
+
+                </div>
+
+                <!-- Status -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Status
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="webhook.status">
+
+                        <option value="">Select Status</option>
+                        <option>Active</option>
+                        <option>Inactive</option>
+                        <option>Failed</option>
+                        <option>Disabled</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !webhook.status">
+
+                        Status is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Description -->
+                <div class="col-md-8 mb-3">
+
+                    <label class="form-label">
+
+                        Description
+
+                    </label>
+
+                    <textarea rows="4" class="form-control" placeholder="Enter Description"
+                        [(ngModel)]="webhook.description">
+
+                    </textarea>
+
+                </div>
+
+                <!-- Active -->
+                <div class="col-md-4 mb-3 d-flex align-items-end">
+
+                    <div class="form-check">
+
+                        <input type="checkbox" class="form-check-input" id="webhookActive"
+                            [(ngModel)]="webhook.isActive">
+
+                        <label class="form-check-label ms-2" for="webhookActive">
+
+                            Active
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <button class="btn btn-danger me-2" (click)="saveCompanyWebhook()">
+
+                <i class="fa fa-save me-1"></i>
+
+                {{ isEdit ? 'Update' : 'Save' }}
+
+            </button>
+
+            <button class="btn btn-secondary" (click)="clear()">
+
+                <i class="fa fa-eraser me-1"></i>
+
+                Clear
+
+            </button>
+
+        </div>
+
+    </div>
+    <!-- ========================================= -->
+    <!-- Search -->
+    <!-- ========================================= -->
+
+    <div class="row mt-4 mb-3">
+
+        <div class="col-md-4">
+
+            <input type="text" class="form-control" placeholder="Search Company Webhooks..." [(ngModel)]="searchText">
+
+        </div>
+
+    </div>
+
+
+
+
+
+    <!-- ========================================= -->
+    <!-- Company Webhooks Listing -->
+    <!-- ========================================= -->
+
+    <div class="table-responsive">
+
+        <table class="table table-bordered table-hover">
+
+            <thead class="table-danger">
+
+                <tr>
+
+                    <th>#</th>
+
+                    <th>Webhook Code</th>
+
+                    <th>Webhook Name</th>
+
+                    <th>Event Type</th>
+
+                    <th>HTTP Method</th>
+
+                    <th>Endpoint URL</th>
+
+                    <th>Status</th>
+
+                    <th width="140">
+
+                        Action
+
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+
+
+
+            <tbody>
+
+                <tr *ngIf="pagedCompanyWebhooks.length == 0">
+
+                    <td colspan="8" class="text-center text-muted">
+
+                        No Company Webhooks Found
+
+                    </td>
+
+                </tr>
+
+
+
+
+
+                <tr *ngFor="let item of pagedCompanyWebhooks; let i = index">
+
+                    <td>
+
+                        {{ ((page - 1) * pageSize) + i + 1 }}
+
+                    </td>
+
+
+
+
+
+                    <td>
+
+                        {{ item.webhookCode }}
+
+                    </td>
+
+
+
+
+
+                    <td>
+
+                        {{ item.webhookName }}
+
+                    </td>
+
+
+
+
+
+                    <td>
+
+                        <span class="badge" [ngClass]="{
+
+                                'bg-primary': item.eventType == 'Lead Created',
+
+                                'bg-success': item.eventType == 'Lead Updated',
+
+                                'bg-info text-dark': item.eventType == 'Contact Created',
+
+                                'bg-warning text-dark': item.eventType == 'Deal Won',
+
+                                'bg-danger': item.eventType == 'Deal Lost',
+
+                                'bg-secondary': item.eventType == 'Ticket Created',
+
+                                'bg-dark': item.eventType == 'Invoice Paid'
+
+                            }">
+
+                            {{ item.eventType }}
+
+                        </span>
+
+                    </td>
+
+
+
+
+
+                    <td>
+
+                        <span class="badge" [ngClass]="{
+
+                                'bg-success': item.httpMethod == 'POST',
+
+                                'bg-primary': item.httpMethod == 'PUT',
+
+                                'bg-warning text-dark': item.httpMethod == 'PATCH'
+
+                            }">
+
+                            {{ item.httpMethod }}
+
+                        </span>
+
+                    </td>
+
+
+
+
+
+                    <td>
+
+                        <small>
+
+                            {{ item.endpointUrl }}
+
+                        </small>
+
+                    </td>
+
+
+
+
+
+                    <td>
+
+                        <span class="badge" [ngClass]="{
+
+                                'bg-success': item.status == 'Active',
+
+                                'bg-secondary': item.status == 'Inactive',
+
+                                'bg-warning text-dark': item.status == 'Failed',
+
+                                'bg-danger': item.status == 'Disabled'
+
+                            }">
+
+                            {{ item.status }}
+
+                        </span>
+
+                    </td>
+
+
+
+
+
+                    <td>
+
+                        <button class="btn btn-warning btn-sm me-2" (click)="edit(item.webhookId)">
+
+                            <i class="fa fa-edit"></i>
+
+                        </button>
+
+
+
+
+
+                        <button class="btn btn-danger btn-sm" (click)="delete(item.webhookId)">
+
+                            <i class="fa fa-trash"></i>
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+
+
+
+    <!-- ========================================= -->
+    <!-- Pagination -->
+    <!-- ========================================= -->
+
+    <app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredCompanyWebhooks.length"
+        (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
+
+    </app-pagination>
+
+</div>

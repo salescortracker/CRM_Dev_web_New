@@ -1,0 +1,565 @@
+<div class="container-fluid mt-3">
+
+    <!-- ========================================= -->
+    <!-- Ticket Management Form -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4 class="mb-0">
+
+                <i class="fa fa-ticket me-2"></i>
+
+                Customer Support Tickets
+
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <!-- Ticket Number -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Ticket Number
+
+                    </label>
+
+                    <input type="text" class="form-control" [(ngModel)]="ticket.ticketNumber" readonly>
+
+                </div>
+
+                <!-- Customer Name -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Customer Name
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Customer Name"
+                        [(ngModel)]="ticket.customerName">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !ticket.customerName">
+
+                        Customer Name is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Contact Person -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Contact Person
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Contact Person"
+                        [(ngModel)]="ticket.contactPerson">
+
+                </div>
+
+                <!-- Email -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Email
+
+                    </label>
+
+                    <input type="email" class="form-control" placeholder="Enter Email Address"
+                        [(ngModel)]="ticket.email">
+
+                </div>
+
+                <!-- Mobile Number -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Mobile Number
+
+                    </label>
+
+                    <input type="text" maxlength="10" class="form-control" placeholder="Enter Mobile Number"
+                        [(ngModel)]="ticket.mobileNumber">
+
+                </div>
+
+                <!-- Subject -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Subject
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Ticket Subject"
+                        [(ngModel)]="ticket.subject">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !ticket.subject">
+
+                        Subject is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Category -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Category
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="ticket.category">
+
+                        <option value="">Select Category</option>
+                        <option>Technical Issue</option>
+                        <option>Billing</option>
+                        <option>Product Support</option>
+                        <option>Login Issue</option>
+                        <option>Bug Report</option>
+                        <option>Feature Request</option>
+                        <option>Complaint</option>
+                        <option>General Inquiry</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !ticket.category">
+
+                        Category is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Priority -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Priority
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="ticket.priority">
+
+                        <option value="">Select Priority</option>
+                        <option>Low</option>
+                        <option>Medium</option>
+                        <option>High</option>
+                        <option>Critical</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !ticket.priority">
+
+                        Priority is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Status -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Status
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="ticket.status">
+
+                        <option value="">Select Status</option>
+                        <option>Open</option>
+                        <option>In Progress</option>
+                        <option>Waiting for Customer</option>
+                        <option>Resolved</option>
+                        <option>Closed</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !ticket.status">
+
+                        Status is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Assigned To -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Assigned To
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Support Executive"
+                        [(ngModel)]="ticket.assignedTo">
+
+                </div>
+
+                <!-- Source -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Source
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="ticket.source">
+
+                        <option value="">Select Source</option>
+                        <option>Web</option>
+                        <option>Email</option>
+                        <option>Phone</option>
+                        <option>WhatsApp</option>
+                        <option>Live Chat</option>
+                        <option>Mobile App</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Related Module -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Related Module
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="ticket.relatedModule">
+
+                        <option value="">Select Module</option>
+                        <option>Customer</option>
+                        <option>Lead</option>
+                        <option>Deal</option>
+                        <option>Order</option>
+                        <option>Invoice</option>
+                        <option>Product</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Due Date -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Due Date
+
+                    </label>
+
+                    <input type="date" class="form-control" [(ngModel)]="ticket.dueDate">
+
+                </div>
+
+                <!-- Description -->
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Description
+
+                    </label>
+
+                    <textarea rows="5" class="form-control" placeholder="Describe the issue..."
+                        [(ngModel)]="ticket.description">
+
+                    </textarea>
+
+                </div>
+
+                <!-- Resolution Notes -->
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Resolution Notes
+
+                    </label>
+
+                    <textarea rows="5" class="form-control" placeholder="Enter resolution notes..."
+                        [(ngModel)]="ticket.resolutionNotes">
+
+                    </textarea>
+
+                </div>
+
+                <!-- Active -->
+                <div class="col-md-2 mb-3 d-flex align-items-end">
+
+                    <div class="form-check">
+
+                        <input id="ticketActive" type="checkbox" class="form-check-input" [(ngModel)]="ticket.isActive">
+
+                        <label for="ticketActive" class="form-check-label ms-2">
+
+                            Active
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <button class="btn btn-danger me-2" (click)="saveTicket()">
+
+                <i class="fa fa-save me-1"></i>
+
+                {{ isEdit ? 'Update Ticket' : 'Save Ticket' }}
+
+            </button>
+
+            <button class="btn btn-secondary" (click)="clear()">
+
+                <i class="fa fa-eraser me-1"></i>
+
+                Clear
+
+            </button>
+
+        </div>
+
+    </div>
+    <!-- ========================================= -->
+    <!-- Search Section -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm border-0 mt-4">
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4">
+
+                    <input type="text" class="form-control" placeholder="Search Ticket No, Customer, Subject..."
+                        [(ngModel)]="searchText">
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Tickets List -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm border-0 mt-3">
+
+        <div class="card-header bg-danger text-white">
+
+            <h5 class="mb-0">
+
+                <i class="fa fa-ticket me-2"></i>
+
+                Customer Support Tickets
+
+            </h5>
+
+        </div>
+
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+
+                <table class="table table-bordered table-hover table-striped mb-0">
+
+                    <thead class="table-danger">
+
+                        <tr>
+
+                            <th width="60">#</th>
+                            <th>Ticket No</th>
+                            <th>Customer</th>
+                            <th>Subject</th>
+                            <th>Category</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Assigned To</th>
+                            <th>Due Date</th>
+                            <th width="140" class="text-center">Action</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr *ngIf="pagedTickets.length == 0">
+
+                            <td colspan="10" class="text-center text-muted py-4">
+
+                                No Tickets Found
+
+                            </td>
+
+                        </tr>
+
+                        <tr *ngFor="let item of pagedTickets; let i = index">
+
+                            <td>
+
+                                {{ ((page - 1) * pageSize) + i + 1 }}
+
+                            </td>
+
+                            <td>
+
+                                {{ item.ticketNumber }}
+
+                            </td>
+
+                            <td>
+
+                                {{ item.customerName }}
+
+                            </td>
+
+                            <td>
+
+                                {{ item.subject }}
+
+                            </td>
+
+                            <td>
+
+                                {{ item.category }}
+
+                            </td>
+
+                            <td>
+
+                                <span class="badge" [ngClass]="{
+
+                                        'bg-success': item.priority == 'Low',
+
+                                        'bg-info': item.priority == 'Medium',
+
+                                        'bg-warning text-dark': item.priority == 'High',
+
+                                        'bg-danger': item.priority == 'Critical'
+
+                                    }">
+
+                                    {{ item.priority }}
+
+                                </span>
+
+                            </td>
+
+                            <td>
+
+                                <span class="badge" [ngClass]="{
+
+                                        'bg-primary': item.status == 'Open',
+
+                                        'bg-warning text-dark': item.status == 'In Progress',
+
+                                        'bg-info': item.status == 'Waiting for Customer',
+
+                                        'bg-success': item.status == 'Resolved',
+
+                                        'bg-secondary': item.status == 'Closed'
+
+                                    }">
+
+                                    {{ item.status }}
+
+                                </span>
+
+                            </td>
+
+                            <td>
+
+                                {{ item.assignedTo }}
+
+                            </td>
+
+                            <td>
+
+                                {{ item.dueDate }}
+
+                            </td>
+
+                            <td class="text-center">
+
+                                <button class="btn btn-warning btn-sm me-2" (click)="edit(item.ticketId)">
+
+                                    <i class="fa fa-edit"></i>
+
+                                </button>
+
+                                <button class="btn btn-danger btn-sm" (click)="delete(item.ticketId)">
+
+                                    <i class="fa fa-trash"></i>
+
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Pagination -->
+    <!-- ========================================= -->
+
+    <div class="mt-3">
+
+        <app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredTickets.length"
+            (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
+        </app-pagination>
+
+    </div>
+
+</div>

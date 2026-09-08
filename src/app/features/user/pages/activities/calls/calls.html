@@ -1,0 +1,569 @@
+<div class="container mt-4">
+
+    <!-- ========================================= -->
+    <!-- Call Form -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4 class="mb-0">
+
+                <i class="fa fa-phone me-2"></i>
+
+                Call Management
+
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <!-- Call Subject -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Call Subject
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Call Subject"
+                        [(ngModel)]="call.callSubject">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !call.callSubject">
+
+                        Call Subject is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Call Type -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Call Type
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="call.callType">
+
+                        <option value="">Select Call Type</option>
+                        <option>Follow-up Call</option>
+                        <option>Sales Call</option>
+                        <option>Support Call</option>
+                        <option>Demo Call</option>
+                        <option>Reminder Call</option>
+                        <option>Internal Call</option>
+                        <option>Customer Discussion</option>
+                        <option>Other</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !call.callType">
+
+                        Call Type is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Related To -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Related To
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="call.relatedTo">
+
+                        <option value="">Select Module</option>
+                        <option>Lead</option>
+                        <option>Account</option>
+                        <option>Contact</option>
+                        <option>Opportunity</option>
+                        <option>Quotation</option>
+                        <option>Order</option>
+                        <option>Invoice</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Customer -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Customer / Account
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="call.customer">
+
+                        <option value="">Select Customer</option>
+                        <option>ABC Technologies</option>
+                        <option>XYZ Solutions</option>
+                        <option>Future Vision</option>
+                        <option>Global InfoTech</option>
+                        <option>NextGen Pvt Ltd</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Contact Person -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Contact Person
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="call.contactPerson">
+
+                        <option value="">Select Contact</option>
+                        <option>Rahul Sharma</option>
+                        <option>Priya Reddy</option>
+                        <option>Arjun Kumar</option>
+                        <option>Sneha Patel</option>
+                        <option>Kiran Verma</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Assigned To -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Assigned To
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Assigned Employee"
+                        [(ngModel)]="call.assignedTo">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !call.assignedTo">
+
+                        Assigned To is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Call Direction -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+                        Call Direction
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="call.direction">
+
+                        <option value="">Select Direction</option>
+                        <option>Inbound</option>
+                        <option>Outbound</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !call.direction">
+
+                        Call Direction is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Call Date -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+                        Call Date
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="date" class="form-control" [(ngModel)]="call.callDate">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !call.callDate">
+
+                        Call Date is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Call Time -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+                        Call Time
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="time" class="form-control" [(ngModel)]="call.callTime">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !call.callTime">
+
+                        Call Time is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Duration -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Duration (Minutes)
+
+                    </label>
+
+                    <input type="number" class="form-control" placeholder="Duration" [(ngModel)]="call.duration">
+
+                </div>
+
+                <!-- Priority -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Priority
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="call.priority">
+
+                        <option value="">Select Priority</option>
+                        <option>High</option>
+                        <option>Medium</option>
+                        <option>Low</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Outcome -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Call Outcome
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="call.outcome">
+
+                        <option value="">Select Outcome</option>
+                        <option>Connected</option>
+                        <option>No Answer</option>
+                        <option>Busy</option>
+                        <option>Voicemail</option>
+                        <option>Interested</option>
+                        <option>Not Interested</option>
+                        <option>Callback Requested</option>
+                        <option>Follow-up Required</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Follow-up Date -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Follow-up Date
+
+                    </label>
+
+                    <input type="date" class="form-control" [(ngModel)]="call.followUpDate">
+
+                </div>
+
+                <!-- Status -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+                        Status
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="call.status">
+
+                        <option value="">Select Status</option>
+                        <option>Scheduled</option>
+                        <option>Completed</option>
+                        <option>Missed</option>
+                        <option>Cancelled</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !call.status">
+
+                        Status is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Active -->
+                <div class="col-md-2 mb-3 d-flex align-items-end">
+
+                    <div class="form-check">
+
+                        <input id="callActive" type="checkbox" class="form-check-input" [(ngModel)]="call.isActive">
+
+                        <label class="form-check-label ms-2" for="callActive">
+
+                            Active
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <!-- Notes -->
+                <div class="col-md-12 mb-3">
+
+                    <label class="form-label">
+
+                        Call Notes
+
+                    </label>
+
+                    <textarea rows="3" class="form-control" placeholder="Enter Call Notes" [(ngModel)]="call.notes">
+
+                    </textarea>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <button class="btn btn-danger me-2" (click)="saveCall()">
+
+                <i class="fa fa-save me-1"></i>
+
+                {{isEdit ? 'Update' : 'Save'}}
+
+            </button>
+
+            <button class="btn btn-secondary" (click)="clear()">
+
+                <i class="fa fa-eraser me-1"></i>
+
+                Clear
+
+            </button>
+
+        </div>
+
+    </div>
+    <!-- ========================================= -->
+    <!-- Search -->
+    <!-- ========================================= -->
+
+    <div class="row mt-4 mb-3">
+
+        <div class="col-md-4">
+
+            <input type="text" class="form-control" placeholder="Search Call..." [(ngModel)]="searchText">
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Calls Table -->
+    <!-- ========================================= -->
+
+    <div class="table-responsive">
+
+        <table class="table table-bordered table-hover">
+
+            <thead class="table-danger">
+
+                <tr>
+
+                    <th>#</th>
+
+                    <th>Call Subject</th>
+
+                    <th>Customer</th>
+
+                    <th>Assigned To</th>
+
+                    <th>Direction</th>
+
+                    <th>Call Date</th>
+
+                    <th>Call Time</th>
+
+                    <th>Outcome</th>
+
+                    <th>Status</th>
+
+                    <th width="150">Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr *ngIf="pagedCalls.length==0">
+
+                    <td colspan="10" class="text-center text-muted">
+
+                        No Calls Found
+
+                    </td>
+
+                </tr>
+
+                <tr *ngFor="let item of pagedCalls; let i=index">
+
+                    <td>
+
+                        {{((page-1)*pageSize)+i+1}}
+
+                    </td>
+
+                    <td>
+
+                        {{item.callSubject}}
+
+                    </td>
+
+                    <td>
+
+                        {{item.customer}}
+
+                    </td>
+
+                    <td>
+
+                        {{item.assignedTo}}
+
+                    </td>
+
+                    <td>
+
+                        <span class="badge" [ngClass]="{
+
+                                'bg-primary': item.direction=='Inbound',
+
+                                'bg-success': item.direction=='Outbound'
+
+                            }">
+
+                            {{item.direction}}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        {{item.callDate}}
+
+                    </td>
+
+                    <td>
+
+                        {{item.callTime}}
+
+                    </td>
+
+                    <td>
+
+                        <span class="badge" [ngClass]="{
+
+                                'bg-success': item.outcome=='Connected',
+
+                                'bg-primary': item.outcome=='Interested',
+
+                                'bg-warning text-dark': item.outcome=='Callback Requested',
+
+                                'bg-info text-dark': item.outcome=='Follow-up Required',
+
+                                'bg-secondary': item.outcome=='Busy',
+
+                                'bg-dark': item.outcome=='Voicemail',
+
+                                'bg-danger': item.outcome=='No Answer',
+
+                                'bg-light text-dark': item.outcome=='Not Interested'
+
+                            }">
+
+                            {{item.outcome}}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <span class="badge" [ngClass]="{
+
+                                'bg-primary': item.status=='Scheduled',
+
+                                'bg-success': item.status=='Completed',
+
+                                'bg-warning text-dark': item.status=='Missed',
+
+                                'bg-danger': item.status=='Cancelled'
+
+                            }">
+
+                            {{item.status}}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <button class="btn btn-warning btn-sm me-2" (click)="edit(item.callId)">
+
+                            <i class="fa fa-edit"></i>
+
+                        </button>
+
+                        <button class="btn btn-danger btn-sm" (click)="delete(item.callId)">
+
+                            <i class="fa fa-trash"></i>
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Pagination -->
+    <!-- ========================================= -->
+
+    <app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredCalls.length"
+        (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
+    </app-pagination>
+
+</div>

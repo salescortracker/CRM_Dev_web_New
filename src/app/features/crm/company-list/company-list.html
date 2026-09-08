@@ -1,0 +1,388 @@
+<div class="company-list-page">
+
+  <!-- ================================================= -->
+  <!-- PAGE HEADER -->
+  <!-- ================================================= -->
+
+  <div class="page-header">
+
+    <div>
+
+      <div class="breadcrumb">
+        <span>CRM</span>
+        <i class="fa-solid fa-chevron-right"></i>
+        <span>Companies</span>
+      </div>
+
+      <div class="title-section">
+
+        <div class="title-icon">
+          <i class="fa-solid fa-building"></i>
+        </div>
+
+        <div>
+          <h1>Companies</h1>
+
+          <p>
+            Manage organizations, business relationships and prospect accounts.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="header-actions">
+
+      <button
+        class="btn-secondary"
+        type="button"
+        (click)="exportCompanies()">
+
+        <i class="fa-solid fa-download"></i>
+
+        Export
+
+      </button>
+
+      <button
+        class="btn-primary"
+        type="button"
+        (click)="createCompany()">
+
+        <i class="fa-solid fa-plus"></i>
+
+        New Company
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- ================================================= -->
+  <!-- SUMMARY -->
+  <!-- ================================================= -->
+
+  <div class="summary-grid">
+
+    <div class="summary-card">
+
+      <div class="summary-icon blue">
+        <i class="fa-solid fa-building"></i>
+      </div>
+
+      <div>
+        <span>Total Companies</span>
+        <strong>{{ companies.length }}</strong>
+      </div>
+
+    </div>
+
+
+    <div class="summary-card">
+
+      <div class="summary-icon green">
+        <i class="fa-solid fa-user-group"></i>
+      </div>
+
+      <div>
+        <span>Total Contacts</span>
+        <strong>{{ totalContacts }}</strong>
+      </div>
+
+    </div>
+
+
+    <div class="summary-card">
+
+      <div class="summary-icon orange">
+        <i class="fa-solid fa-bullseye"></i>
+      </div>
+
+      <div>
+        <span>Active Prospects</span>
+        <strong>{{ activeProspects }}</strong>
+      </div>
+
+    </div>
+
+
+    <div class="summary-card">
+
+      <div class="summary-icon purple">
+        <i class="fa-solid fa-user-plus"></i>
+      </div>
+
+      <div>
+        <span>Converted Leads</span>
+        <strong>{{ convertedLeads }}</strong>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ================================================= -->
+  <!-- FILTER PANEL -->
+  <!-- ================================================= -->
+
+  <div class="filter-panel">
+
+    <div class="search-field">
+
+      <i class="fa-solid fa-magnifying-glass"></i>
+
+      <input
+        type="text"
+        [(ngModel)]="searchText"
+        placeholder="Search company name, industry, city or website..." />
+
+    </div>
+
+
+    <select [(ngModel)]="industryFilter">
+
+      <option value="">All Industries</option>
+      <option value="Technology">Technology</option>
+      <option value="Finance">Finance</option>
+      <option value="Healthcare">Healthcare</option>
+      <option value="Manufacturing">Manufacturing</option>
+      <option value="Retail">Retail</option>
+
+    </select>
+
+
+    <select [(ngModel)]="statusFilter">
+
+      <option value="">All Status</option>
+      <option value="Active">Active</option>
+      <option value="Prospect">Prospect</option>
+      <option value="Inactive">Inactive</option>
+
+    </select>
+
+
+    <button
+      class="filter-button"
+      type="button"
+      (click)="clearFilters()">
+
+      <i class="fa-solid fa-rotate-left"></i>
+
+      Reset
+
+    </button>
+
+  </div>
+
+
+  <!-- ================================================= -->
+  <!-- COMPANY TABLE -->
+  <!-- ================================================= -->
+
+  <div class="companies-card">
+
+    <div class="table-header">
+
+      <div>
+
+        <h2>Company Directory</h2>
+
+        <span>
+          {{ filteredCompanies.length }} companies
+        </span>
+
+      </div>
+
+      <button
+        class="view-button"
+        type="button">
+
+        <i class="fa-solid fa-sliders"></i>
+
+        View
+
+      </button>
+
+    </div>
+
+
+    <div class="company-table">
+
+      <!-- HEADER -->
+
+      <div class="table-row table-heading">
+
+        <div>Company</div>
+        <div>Industry</div>
+        <div>Location</div>
+        <div>Contacts</div>
+        <div>Status</div>
+        <div>Owner</div>
+        <div></div>
+
+      </div>
+
+
+      <!-- ROWS -->
+
+      <div
+        class="table-row"
+        *ngFor="let company of filteredCompanies"
+        (click)="openCompany()">
+
+
+        <!-- COMPANY -->
+
+        <div class="company-cell">
+
+          <div
+            class="company-avatar"
+            [ngClass]="company.color">
+
+            {{ company.initials }}
+
+          </div>
+
+          <div>
+
+            <strong>
+              {{ company.name }}
+            </strong>
+
+            <span>
+              {{ company.id }}
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <!-- INDUSTRY -->
+
+        <div class="industry-cell">
+
+          <i class="fa-solid fa-layer-group"></i>
+
+          {{ company.industry }}
+
+        </div>
+
+
+        <!-- LOCATION -->
+
+        <div class="location-cell">
+
+          <i class="fa-solid fa-location-dot"></i>
+
+          <span>
+            {{ company.city }}, {{ company.country }}
+          </span>
+
+        </div>
+
+
+        <!-- CONTACTS -->
+
+        <div class="contacts-cell">
+
+          <strong>
+            {{ company.contacts }}
+          </strong>
+
+          <span>
+            contacts
+          </span>
+
+        </div>
+
+
+        <!-- STATUS -->
+
+        <div>
+
+          <span
+            class="status"
+            [ngClass]="company.status.toLowerCase()">
+
+            <span class="status-dot"></span>
+
+            {{ company.status }}
+
+          </span>
+
+        </div>
+
+
+        <!-- OWNER -->
+
+        <div class="owner-cell">
+
+          <div class="owner-avatar">
+            {{ company.ownerInitials }}
+          </div>
+
+          <span>
+            {{ company.owner }}
+          </span>
+
+        </div>
+
+
+        <!-- ACTION -->
+
+        <div class="row-action">
+
+          <button
+            type="button"
+            (click)="openCompany(); $event.stopPropagation()">
+
+            <i class="fa-solid fa-chevron-right"></i>
+
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- EMPTY -->
+
+      <div
+        class="empty-state"
+        *ngIf="filteredCompanies.length === 0">
+
+        <div class="empty-icon">
+
+          <i class="fa-solid fa-building-circle-xmark"></i>
+
+        </div>
+
+        <h3>No companies found</h3>
+
+        <p>
+          Try changing your search or create a new company.
+        </p>
+
+        <button
+          class="btn-primary"
+          type="button"
+          (click)="createCompany()">
+
+          <i class="fa-solid fa-plus"></i>
+
+          Create Company
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

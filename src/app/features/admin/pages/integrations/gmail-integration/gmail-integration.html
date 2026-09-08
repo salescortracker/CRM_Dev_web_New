@@ -1,0 +1,463 @@
+<div class="container mt-4">
+
+    <!-- ========================================= -->
+    <!-- Gmail Integration Form -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4 class="mb-0">
+
+                <i class="fa fa-envelope me-2"></i>
+
+                Gmail Integration
+
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <!-- Integration Name -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Integration Name
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Integration Name"
+                        [(ngModel)]="gmail.integrationName">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !gmail.integrationName">
+
+                        Integration Name is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Gmail Account -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Gmail Account
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="email" class="form-control" placeholder="Enter Gmail Account"
+                        [(ngModel)]="gmail.gmailAccount">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !gmail.gmailAccount">
+
+                        Gmail Account is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Sync Frequency -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Sync Frequency
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="gmail.syncFrequency">
+
+                        <option value="">Select Frequency</option>
+                        <option>Every 5 Minutes</option>
+                        <option>Every 15 Minutes</option>
+                        <option>Every 30 Minutes</option>
+                        <option>Hourly</option>
+                        <option>Daily</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !gmail.syncFrequency">
+
+                        Sync Frequency is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Client ID -->
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+                        Client ID
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Google Client ID"
+                        [(ngModel)]="gmail.clientId">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !gmail.clientId">
+
+                        Client ID is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Client Secret -->
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+                        Client Secret
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="password" class="form-control" placeholder="Enter Client Secret"
+                        [(ngModel)]="gmail.clientSecret">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !gmail.clientSecret">
+
+                        Client Secret is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Redirect URI -->
+                <div class="col-md-8 mb-3">
+
+                    <label class="form-label">
+                        Redirect URI
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="https://yourdomain.com/auth/google/callback"
+                        [(ngModel)]="gmail.redirectUri">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !gmail.redirectUri">
+
+                        Redirect URI is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Status -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Status
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="gmail.status">
+
+                        <option value="">Select Status</option>
+                        <option>Connected</option>
+                        <option>Disconnected</option>
+                        <option>Pending</option>
+                        <option>Error</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !gmail.status">
+
+                        Status is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Last Sync -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Last Sync Date
+
+                    </label>
+
+                    <input type="datetime-local" class="form-control" [(ngModel)]="gmail.lastSyncDate">
+
+                </div>
+
+                <!-- Active -->
+                <div class="col-md-4 mb-3 d-flex align-items-end">
+
+                    <div class="form-check">
+
+                        <input type="checkbox" class="form-check-input" id="gmailActive" [(ngModel)]="gmail.isActive">
+
+                        <label class="form-check-label ms-2" for="gmailActive">
+
+                            Active
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <!-- Description -->
+                <div class="col-md-12 mb-3">
+
+                    <label class="form-label">
+
+                        Description
+
+                    </label>
+
+                    <textarea rows="4" class="form-control" placeholder="Enter Description"
+                        [(ngModel)]="gmail.description">
+
+                    </textarea>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <button class="btn btn-danger me-2" (click)="saveGmailIntegration()">
+
+                <i class="fa fa-save me-1"></i>
+
+                {{ isEdit ? 'Update' : 'Save' }}
+
+            </button>
+
+            <button class="btn btn-secondary" (click)="clear()">
+
+                <i class="fa fa-eraser me-1"></i>
+
+                Clear
+
+            </button>
+
+        </div>
+
+    </div>
+    <!-- ========================================= -->
+    <!-- Search -->
+    <!-- ========================================= -->
+
+    <div class="row mt-4 mb-3">
+
+        <div class="col-md-4">
+
+            <input type="text" class="form-control" placeholder="Search Gmail Integration..." [(ngModel)]="searchText">
+
+        </div>
+
+    </div>
+
+
+
+
+
+    <!-- ========================================= -->
+    <!-- Gmail Integration Listing -->
+    <!-- ========================================= -->
+
+    <div class="table-responsive">
+
+        <table class="table table-bordered table-hover">
+
+            <thead class="table-danger">
+
+                <tr>
+
+                    <th>#</th>
+
+                    <th>Integration Name</th>
+
+                    <th>Gmail Account</th>
+
+                    <th>Sync Frequency</th>
+
+                    <th>Last Sync</th>
+
+                    <th>Status</th>
+
+                    <th>Active</th>
+
+                    <th width="140">
+
+                        Action
+
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+
+
+
+            <tbody>
+
+                <tr *ngIf="pagedGmailIntegrations.length == 0">
+
+                    <td colspan="8" class="text-center text-muted">
+
+                        No Gmail Integrations Found
+
+                    </td>
+
+                </tr>
+
+
+
+
+
+                <tr *ngFor="let item of pagedGmailIntegrations; let i = index">
+
+                    <td>
+
+                        {{ ((page - 1) * pageSize) + i + 1 }}
+
+                    </td>
+
+
+
+
+
+                    <td>
+
+                        {{ item.integrationName }}
+
+                    </td>
+
+
+
+
+
+                    <td>
+
+                        {{ item.gmailAccount }}
+
+                    </td>
+
+
+
+
+
+                    <td>
+
+                        <span class="badge" [ngClass]="{
+
+                                'bg-success': item.syncFrequency == 'Every 5 Minutes',
+
+                                'bg-primary': item.syncFrequency == 'Every 15 Minutes',
+
+                                'bg-info text-dark': item.syncFrequency == 'Every 30 Minutes',
+
+                                'bg-warning text-dark': item.syncFrequency == 'Hourly',
+
+                                'bg-secondary': item.syncFrequency == 'Daily'
+
+                            }">
+
+                            {{ item.syncFrequency }}
+
+                        </span>
+
+                    </td>
+
+
+
+
+
+                    <td>
+
+                        {{ item.lastSyncDate | date:'dd-MM-yyyy HH:mm' }}
+
+                    </td>
+
+
+
+
+
+                    <td>
+
+                        <span class="badge" [ngClass]="{
+
+                                'bg-success': item.status == 'Connected',
+
+                                'bg-secondary': item.status == 'Disconnected',
+
+                                'bg-warning text-dark': item.status == 'Pending',
+
+                                'bg-danger': item.status == 'Error'
+
+                            }">
+
+                            {{ item.status }}
+
+                        </span>
+
+                    </td>
+
+
+
+
+
+                    <td>
+
+                        <span class="badge" [ngClass]="item.isActive ? 'bg-success' : 'bg-danger'">
+
+                            {{ item.isActive ? 'Yes' : 'No' }}
+
+                        </span>
+
+                    </td>
+
+
+
+
+
+                    <td>
+
+                        <button class="btn btn-warning btn-sm me-2" (click)="edit(item.gmailIntegrationId)">
+
+                            <i class="fa fa-edit"></i>
+
+                        </button>
+
+
+
+
+
+                        <button class="btn btn-danger btn-sm" (click)="delete(item.gmailIntegrationId)">
+
+                            <i class="fa fa-trash"></i>
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+
+
+
+    <!-- ========================================= -->
+    <!-- Pagination -->
+    <!-- ========================================= -->
+
+    <app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredGmailIntegrations.length"
+        (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
+
+    </app-pagination>
+
+</div>

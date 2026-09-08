@@ -1,0 +1,1334 @@
+<div class="page-container">
+
+
+    <!-- ========================= -->
+    <!-- PAGE HEADER -->
+    <!-- ========================= -->
+
+
+    <div class="page-header">
+
+
+        <div>
+
+
+            <p class="page-subtitle">
+                USER & ACCESS MANAGEMENT
+            </p>
+
+
+            <h1>
+                Users Management
+            </h1>
+
+
+            <p class="page-description">
+                Manage system users, roles, access permissions and login controls across CRM organizations.
+            </p>
+
+
+        </div>
+
+
+
+        <div class="header-buttons">
+
+
+            <button
+                class="btn btn-light"
+                (click)="refresh()">
+
+
+                <i class="fa-solid fa-rotate"></i>
+
+                Refresh
+
+
+            </button>
+
+
+
+
+            <button
+                class="btn btn-danger"
+                (click)="openAddModal()">
+
+
+                <i class="fa-solid fa-user-plus"></i>
+
+                Add User
+
+
+            </button>
+
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+    <!-- ========================= -->
+    <!-- STATISTICS -->
+    <!-- ========================= -->
+
+
+    <div class="stats-grid">
+
+
+
+        <div class="stat-card">
+
+
+            <span>
+                Total Users
+            </span>
+
+
+            <h2>
+                {{users.length}}
+            </h2>
+
+
+        </div>
+
+
+
+
+
+        <div class="stat-card">
+
+
+            <span>
+                Active Users
+            </span>
+
+
+            <h2>
+                {{activeUsers}}
+            </h2>
+
+
+        </div>
+
+
+
+
+
+        <div class="stat-card">
+
+
+            <span>
+                Inactive Users
+            </span>
+
+
+            <h2>
+                {{inactiveUsers}}
+            </h2>
+
+
+        </div>
+
+
+
+
+
+        <div class="stat-card">
+
+
+            <span>
+                Admin Users
+            </span>
+
+
+            <h2>
+                {{adminUsers}}
+            </h2>
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+    <!-- ========================= -->
+    <!-- SEARCH FILTER -->
+    <!-- ========================= -->
+
+
+    <div class="search-panel">
+
+
+        <div class="search-box">
+
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+
+
+            <input
+
+                type="text"
+
+                placeholder="Search user..."
+
+                [(ngModel)]="searchText">
+
+
+        </div>
+
+
+
+
+
+        <select
+
+            class="form-control"
+
+            [(ngModel)]="roleFilter">
+
+
+
+            <option value="">
+
+                All Roles
+
+            </option>
+
+
+            <option value="Super Admin">
+
+                Super Admin
+
+            </option>
+
+
+            <option value="Admin">
+
+                Admin
+
+            </option>
+
+
+            <option value="User">
+
+                User
+
+            </option>
+
+
+
+        </select>
+
+
+
+
+
+
+
+        <select
+
+            class="form-control"
+
+            [(ngModel)]="statusFilter">
+
+
+
+            <option value="">
+
+                All Status
+
+            </option>
+
+
+
+            <option value="Active">
+
+                Active
+
+            </option>
+
+
+
+            <option value="Inactive">
+
+                Inactive
+
+            </option>
+
+
+
+        </select>
+
+
+
+
+
+
+        <button
+
+            class="btn btn-secondary"
+
+            (click)="clearFilters()">
+
+
+
+            Clear
+
+
+
+        </button>
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+    <!-- ========================= -->
+    <!-- USERS TABLE -->
+    <!-- ========================= -->
+
+
+    <div class="table-card">
+
+
+
+
+
+        <div class="table-header">
+
+
+            <h3>
+
+                System Users
+
+            </h3>
+
+
+
+            <span>
+
+                {{filteredUsers.length}} Records
+
+            </span>
+
+
+
+        </div>
+
+
+
+
+
+
+
+        <table>
+
+
+            <thead>
+
+
+                <tr>
+
+
+                    <th>
+                        User
+                    </th>
+
+
+                    <th>
+                        Email
+                    </th>
+
+
+                    <th>
+                        Phone
+                    </th>
+
+
+                    <th>
+                        Department
+                    </th>
+
+
+                    <th>
+                        Designation
+                    </th>
+
+
+                    <th>
+                        Role
+                    </th>
+
+
+                    <th>
+                        Status
+                    </th>
+
+
+                    <th>
+                        Last Login
+                    </th>
+
+
+                    <th width="170">
+
+                        Actions
+
+                    </th>
+
+
+
+                </tr>
+
+
+            </thead>
+
+
+
+
+
+
+
+            <tbody>
+
+
+
+                <tr
+
+                    *ngFor="let item of filteredUsers">
+
+
+
+
+
+                    <td>
+
+
+
+                        <div class="provider-info">
+
+
+
+                            <div class="provider-icon">
+
+
+                                <i class="fa-solid fa-user"></i>
+
+
+                            </div>
+
+
+
+
+
+                            <div>
+
+
+                                <strong>
+
+                                    {{item.firstName}} {{item.lastName}}
+
+                                </strong>
+
+
+
+                                <small>
+
+                                    {{item.employeeCode}}
+
+                                </small>
+
+
+
+                            </div>
+
+
+
+                        </div>
+
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+                        {{item.email}}
+
+
+                    </td>
+
+
+
+
+
+
+                    <td>
+
+
+                        {{item.mobile}}
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+                        {{item.department}}
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+                        {{item.designation}}
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+
+                        <span class="role-badge">
+
+
+                            {{item.role}}
+
+
+
+                        </span>
+
+
+
+                    </td>
+
+
+
+
+
+
+
+
+                    <td>
+
+
+
+                        <span
+
+                            class="status"
+
+                            [ngClass]="item.status.toLowerCase()">
+
+
+
+                            {{item.status}}
+
+
+
+                        </span>
+
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+                        {{item.lastLogin}}
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+
+                        <button
+
+                            class="icon-btn"
+
+                            (click)="edit(item)">
+
+
+
+                            <i class="fa-solid fa-pen"></i>
+
+
+
+                        </button>
+
+
+
+
+
+
+                        <button
+
+                            class="icon-btn danger"
+
+                            (click)="delete(item.id)">
+
+
+
+                            <i class="fa-solid fa-trash"></i>
+
+
+
+                        </button>
+
+
+
+                    </td>
+
+
+
+
+                </tr>
+
+
+
+
+
+            </tbody>
+
+
+
+        </table>
+
+
+
+
+
+    </div>
+
+
+
+
+</div>
+<!-- ======================================= -->
+<!-- ADD / EDIT USER MODAL -->
+<!-- ======================================= -->
+
+
+<div 
+    class="modal-overlay"
+    *ngIf="showModal">
+
+
+    <div class="modal-box">
+
+
+
+        <!-- MODAL HEADER -->
+
+        <div class="modal-header">
+
+
+            <h3>
+
+                {{isEdit ? 'Edit User' : 'Add User'}}
+
+
+            </h3>
+
+
+
+            <button
+
+                class="close-btn"
+
+                (click)="closeModal()">
+
+
+                ×
+
+
+            </button>
+
+
+
+        </div>
+
+
+
+
+
+        <!-- MODAL BODY -->
+
+        <div class="modal-body">
+
+
+
+            <div class="form-grid">
+
+
+
+
+
+
+                <!-- FIRST NAME -->
+
+
+                <div>
+
+
+                    <label>
+
+                        First Name
+
+                    </label>
+
+
+
+                    <input
+
+                        type="text"
+
+                        placeholder="Enter first name"
+
+                        [(ngModel)]="model.firstName">
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <!-- LAST NAME -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Last Name
+
+                    </label>
+
+
+
+                    <input
+
+                        type="text"
+
+                        placeholder="Enter last name"
+
+                        [(ngModel)]="model.lastName">
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+                <!-- EMAIL -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Email Address
+
+                    </label>
+
+
+
+                    <input
+
+                        type="email"
+
+                        placeholder="Enter email"
+
+                        [(ngModel)]="model.email">
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+                <!-- MOBILE -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Mobile Number
+
+                    </label>
+
+
+
+                    <input
+
+                        type="text"
+
+                        placeholder="Enter mobile number"
+
+                        [(ngModel)]="model.mobile">
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+                <!-- EMPLOYEE CODE -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Employee Code
+
+                    </label>
+
+
+
+                    <input
+
+                        type="text"
+
+                        placeholder="EMP001"
+
+                        [(ngModel)]="model.employeeCode">
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+                <!-- DEPARTMENT -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Department
+
+                    </label>
+
+
+
+                    <select
+
+                        [(ngModel)]="model.department">
+
+
+
+                        <option>
+
+                            Sales
+
+                        </option>
+
+
+
+                        <option>
+
+                            Marketing
+
+                        </option>
+
+
+
+                        <option>
+
+                            HR
+
+                        </option>
+
+
+
+                        <option>
+
+                            Finance
+
+                        </option>
+
+
+
+                        <option>
+
+                            IT
+
+                        </option>
+
+
+
+                    </select>
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+                <!-- DESIGNATION -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Designation
+
+                    </label>
+
+
+
+                    <select
+
+                        [(ngModel)]="model.designation">
+
+
+
+                        <option>
+
+                            Manager
+
+                        </option>
+
+
+
+                        <option>
+
+                            Team Lead
+
+                        </option>
+
+
+
+                        <option>
+
+                            Executive
+
+                        </option>
+
+
+
+                        <option>
+
+                            Developer
+
+                        </option>
+
+
+
+                    </select>
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+                <!-- ROLE -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Role
+
+                    </label>
+
+
+
+                    <select
+
+                        [(ngModel)]="model.role">
+
+
+
+                        <option>
+
+                            Super Admin
+
+                        </option>
+
+
+
+                        <option>
+
+                            Admin
+
+                        </option>
+
+
+
+                        <option>
+
+                            User
+
+                        </option>
+
+
+
+                    </select>
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+                <!-- USERNAME -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Username
+
+                    </label>
+
+
+
+                    <input
+
+                        type="text"
+
+                        placeholder="Enter username"
+
+                        [(ngModel)]="model.username">
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+                <!-- PASSWORD -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Password
+
+                    </label>
+
+
+
+                    <input
+
+                        type="password"
+
+                        placeholder="Enter password"
+
+                        [(ngModel)]="model.password">
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+                <!-- CONFIRM PASSWORD -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Confirm Password
+
+                    </label>
+
+
+
+                    <input
+
+                        type="password"
+
+                        placeholder="Confirm password"
+
+                        [(ngModel)]="model.confirmPassword">
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+                <!-- STATUS -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Status
+
+                    </label>
+
+
+
+                    <select
+
+                        [(ngModel)]="model.status">
+
+
+
+                        <option>
+
+                            Active
+
+                        </option>
+
+
+
+                        <option>
+
+                            Inactive
+
+                        </option>
+
+
+
+                    </select>
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- LOGIN ACCESS -->
+
+
+                <div class="checkbox-group">
+
+
+
+                    <label>
+
+
+
+                        <input
+
+                            type="checkbox"
+
+                            [(ngModel)]="model.loginAccess">
+
+
+
+                        Enable Login Access
+
+
+
+                    </label>
+
+
+
+                </div>
+
+
+
+
+
+            </div>
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+        <!-- FOOTER -->
+
+
+        <div class="modal-footer">
+
+
+            <button
+
+                class="btn-secondary"
+
+                (click)="closeModal()">
+
+
+
+                Cancel
+
+
+
+            </button>
+
+
+
+
+
+            <button
+
+                class="btn-primary"
+
+                (click)="saveUser()">
+
+
+
+                {{isEdit ? 'Update User' : 'Save User'}}
+
+
+
+            </button>
+
+
+
+        </div>
+
+
+
+
+
+    </div>
+
+
+
+</div>

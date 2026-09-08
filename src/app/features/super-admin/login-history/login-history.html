@@ -1,0 +1,260 @@
+<div class="container mt-4">
+
+    <div class="card">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4>Login History</h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+                    <label>Company</label>
+                    <select class="form-select">
+                        <option>All Companies</option>
+                        <option>ABC Technologies</option>
+                        <option>XYZ Solutions</option>
+                        <option>Demo Company</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Login Status</label>
+                    <select class="form-select">
+                        <option>All</option>
+                        <option>Success</option>
+                        <option>Failed</option>
+                        <option>Locked</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Login Type</label>
+                    <select class="form-select">
+                        <option>All</option>
+                        <option>Web</option>
+                        <option>Mobile</option>
+                        <option>Desktop</option>
+                        <option>API</option>
+                        <option>SSO</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Capture Device Information
+                    </label>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Capture Location
+                    </label>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Active Monitoring
+                    </label>
+                </div>
+
+            </div>
+
+            <button class="btn btn-danger me-2">
+                Save
+            </button>
+
+            <button class="btn btn-secondary me-2">
+                Clear
+            </button>
+
+            <button class="btn btn-success">
+                Export History
+            </button>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="row mb-3">
+
+        <div class="col-md-3">
+            <input class="form-control"
+                   placeholder="Search User...">
+        </div>
+
+        <div class="col-md-3">
+            <select class="form-select">
+                <option>All Companies</option>
+                <option>ABC Technologies</option>
+                <option>XYZ Solutions</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <input type="date"
+                   class="form-control">
+        </div>
+
+        <div class="col-md-3">
+            <button class="btn btn-danger w-100">
+                Search
+            </button>
+        </div>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-danger">
+
+            <tr>
+
+                <th>#</th>
+                <th>Login Time</th>
+                <th>User</th>
+                <th>Company</th>
+                <th>Login Type</th>
+                <th>Device</th>
+                <th>IP Address</th>
+                <th>Location</th>
+                <th>Status</th>
+                <th width="180">Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+
+                <td>1</td>
+                <td>27-Jul-2026 09:15 AM</td>
+                <td>admin@crm.com</td>
+                <td>CorTracker CRM</td>
+                <td>Web</td>
+                <td>Windows 11 / Chrome</td>
+                <td>203.110.25.18</td>
+                <td>Hyderabad, India</td>
+                <td>
+                    <span class="badge bg-success">
+                        Success
+                    </span>
+                </td>
+
+                <td>
+
+                    <button class="btn btn-info btn-sm me-1">
+                        View
+                    </button>
+
+                    <button class="btn btn-warning btn-sm">
+                        Logout
+                    </button>
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>2</td>
+                <td>27-Jul-2026 08:58 AM</td>
+                <td>sales@abc.com</td>
+                <td>ABC Technologies</td>
+                <td>Mobile</td>
+                <td>Android 15</td>
+                <td>122.160.20.45</td>
+                <td>Bangalore, India</td>
+                <td>
+                    <span class="badge bg-success">
+                        Success
+                    </span>
+                </td>
+
+                <td>
+
+                    <button class="btn btn-info btn-sm me-1">
+                        View
+                    </button>
+
+                    <button class="btn btn-warning btn-sm">
+                        Logout
+                    </button>
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>3</td>
+                <td>27-Jul-2026 08:30 AM</td>
+                <td>finance@xyz.com</td>
+                <td>XYZ Solutions</td>
+                <td>Desktop</td>
+                <td>Windows 10 / Edge</td>
+                <td>198.51.100.10</td>
+                <td>Mumbai, India</td>
+                <td>
+                    <span class="badge bg-danger">
+                        Failed
+                    </span>
+                </td>
+
+                <td>
+
+                    <button class="btn btn-info btn-sm">
+                        View
+                    </button>
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>4</td>
+                <td>27-Jul-2026 07:45 AM</td>
+                <td>support@crm.com</td>
+                <td>CorTracker CRM</td>
+                <td>API</td>
+                <td>API Client</td>
+                <td>172.16.10.12</td>
+                <td>Internal Network</td>
+                <td>
+                    <span class="badge bg-primary">
+                        Active
+                    </span>
+                </td>
+
+                <td>
+
+                    <button class="btn btn-info btn-sm me-1">
+                        View
+                    </button>
+
+                    <button class="btn btn-warning btn-sm">
+                        Logout
+                    </button>
+
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+
+</div>

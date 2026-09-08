@@ -1,0 +1,639 @@
+<div class="container mt-4">
+
+    <!-- ========================================= -->
+    <!-- Business Hours Form -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4 class="mb-0">
+
+                <i class="fa fa-business-time me-2"></i>
+
+                Business Hours
+
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <!-- ========================================= -->
+                <!-- Business Hours Name -->
+                <!-- ========================================= -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Business Hours Name
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Business Hours Name"
+                        [(ngModel)]="businessHour.businessHoursName">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !businessHour.businessHoursName">
+
+                        Business Hours Name is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Branch -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Branch
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="businessHour.branch">
+
+                        <option value="">Select Branch</option>
+
+                        <option>Hyderabad Head Office</option>
+                        <option>Bengaluru Branch</option>
+                        <option>Chennai Branch</option>
+                        <option>Mumbai Branch</option>
+                        <option>Vijayawada Branch</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !businessHour.branch">
+
+                        Branch is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Time Zone -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Time Zone
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="businessHour.timeZone">
+
+                        <option value="">Select Time Zone</option>
+
+                        <option>Asia/Kolkata</option>
+                        <option>UTC</option>
+                        <option>America/New_York</option>
+                        <option>Europe/London</option>
+                        <option>Asia/Dubai</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !businessHour.timeZone">
+
+                        Time Zone is required.
+
+                    </div>
+
+                </div>
+
+                <!-- ========================================= -->
+                <!-- Start & End Time -->
+                <!-- ========================================= -->
+
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Start Time
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="time" class="form-control" [(ngModel)]="businessHour.startTime">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !businessHour.startTime">
+
+                        Start Time is required.
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        End Time
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="time" class="form-control" [(ngModel)]="businessHour.endTime">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !businessHour.endTime">
+
+                        End Time is required.
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Break Start
+
+                    </label>
+
+                    <input type="time" class="form-control" [(ngModel)]="businessHour.breakStart">
+
+                </div>
+
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Break End
+
+                    </label>
+
+                    <input type="time" class="form-control" [(ngModel)]="businessHour.breakEnd">
+
+                </div>
+
+                <!-- ========================================= -->
+                <!-- Working Days -->
+                <!-- ========================================= -->
+
+                <div class="col-md-12 mb-3">
+
+                    <label class="form-label">
+
+                        Working Days
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <div class="row">
+
+                        <div class="col-md-2 col-6 mb-2">
+
+                            <div class="form-check">
+
+                                <input class="form-check-input" type="checkbox" id="monday"
+                                    [(ngModel)]="businessHour.monday" name="monday">
+
+                                <label class="form-check-label" for="monday">
+
+                                    Monday
+
+                                </label>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-2 col-6 mb-2">
+
+                            <div class="form-check">
+
+                                <input class="form-check-input" type="checkbox" id="tuesday"
+                                    [(ngModel)]="businessHour.tuesday" name="tuesday">
+
+                                <label class="form-check-label" for="tuesday">
+
+                                    Tuesday
+
+                                </label>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-2 col-6 mb-2">
+
+                            <div class="form-check">
+
+                                <input class="form-check-input" type="checkbox" id="wednesday"
+                                    [(ngModel)]="businessHour.wednesday" name="wednesday">
+
+                                <label class="form-check-label" for="wednesday">
+
+                                    Wednesday
+
+                                </label>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-2 col-6 mb-2">
+
+                            <div class="form-check">
+
+                                <input class="form-check-input" type="checkbox" id="thursday"
+                                    [(ngModel)]="businessHour.thursday" name="thursday">
+
+                                <label class="form-check-label" for="thursday">
+
+                                    Thursday
+
+                                </label>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-2 col-6 mb-2">
+
+                            <div class="form-check">
+
+                                <input class="form-check-input" type="checkbox" id="friday"
+                                    [(ngModel)]="businessHour.friday" name="friday">
+
+                                <label class="form-check-label" for="friday">
+
+                                    Friday
+
+                                </label>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-2 col-6 mb-2">
+
+                            <div class="form-check">
+
+                                <input class="form-check-input" type="checkbox" id="saturday"
+                                    [(ngModel)]="businessHour.saturday" name="saturday">
+
+                                <label class="form-check-label" for="saturday">
+
+                                    Saturday
+
+                                </label>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-2 col-6">
+
+                            <div class="form-check">
+
+                                <input class="form-check-input" type="checkbox" id="sunday"
+                                    [(ngModel)]="businessHour.sunday" name="sunday">
+
+                                <label class="form-check-label" for="sunday">
+
+                                    Sunday
+
+                                </label>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- ========================================= -->
+                <!-- Other Settings -->
+                <!-- ========================================= -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Weekend Policy
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="businessHour.weekendPolicy">
+
+                        <option>Saturday & Sunday</option>
+                        <option>Sunday Only</option>
+                        <option>Friday & Saturday</option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Holiday Calendar
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="businessHour.holidayCalendar">
+
+                        <option>India Holidays 2026</option>
+                        <option>US Holidays</option>
+                        <option>Company Holidays</option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Total Working Hours
+
+                    </label>
+
+                    <input type="text" class="form-control" readonly placeholder="8 Hours"
+                        [(ngModel)]="businessHour.totalHours">
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Late Mark Grace Time (Minutes)
+
+                    </label>
+
+                    <input type="number" class="form-control" placeholder="15" [(ngModel)]="businessHour.graceTime">
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Half Day Threshold (Hours)
+
+                    </label>
+
+                    <input type="number" class="form-control" placeholder="4" [(ngModel)]="businessHour.halfDayHours">
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Flexible Hours
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="businessHour.flexibleHours">
+
+                        <option>No</option>
+                        <option>Yes</option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Overtime Allowed
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="businessHour.overtimeAllowed">
+
+                        <option>No</option>
+                        <option>Yes</option>
+
+                    </select>
+
+                </div>
+
+                <!-- ========================================= -->
+                <!-- Description -->
+                <!-- ========================================= -->
+
+                <div class="col-md-8 mb-3">
+
+                    <label class="form-label">
+
+                        Description
+
+                    </label>
+
+                    <textarea rows="4" class="form-control" placeholder="Enter Description"
+                        [(ngModel)]="businessHour.description">
+
+                    </textarea>
+
+                </div>
+
+                <!-- Active -->
+
+                <div class="col-md-4 mb-3 d-flex align-items-end">
+
+                    <div class="form-check">
+
+                        <input type="checkbox" id="isActive" class="form-check-input"
+                            [(ngModel)]="businessHour.isActive">
+
+                        <label class="form-check-label ms-2" for="isActive">
+
+                            Active
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <button class="btn btn-danger me-2" (click)="saveBusinessHours()">
+
+                <i class="fa fa-save me-1"></i>
+
+                {{ isEdit ? 'Update' : 'Save' }}
+
+            </button>
+
+            <button class="btn btn-secondary" (click)="clear()">
+
+                <i class="fa fa-eraser me-1"></i>
+
+                Clear
+
+            </button>
+
+        </div>
+
+    </div>
+    <!-- ========================================= -->
+    <!-- Search -->
+    <!-- ========================================= -->
+
+    <div class="row mt-4 mb-3">
+
+        <div class="col-md-4">
+
+            <input type="text" class="form-control" placeholder="Search Business Hours..." [(ngModel)]="searchText">
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Business Hours Listing -->
+    <!-- ========================================= -->
+
+    <div class="table-responsive">
+
+        <table class="table table-bordered table-hover">
+
+            <thead class="table-danger">
+
+                <tr>
+
+                    <th width="60">#</th>
+                    <th>Business Hours</th>
+                    <th>Branch</th>
+                    <th>Time Zone</th>
+                    <th>Working Days</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Total Hours</th>
+                    <th>Status</th>
+                    <th width="140">Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr *ngIf="pagedBusinessHours.length == 0">
+
+                    <td colspan="10" class="text-center text-muted">
+
+                        No Business Hours Found
+
+                    </td>
+
+                </tr>
+
+                <tr *ngFor="let item of pagedBusinessHours; let i = index">
+
+                    <td>
+
+                        {{ ((page - 1) * pageSize) + i + 1 }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.businessHoursName }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.branch }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.timeZone }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.workingDays }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.startTime }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.endTime }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.totalHours }}
+
+                    </td>
+
+                    <td>
+
+                        <span class="badge" [ngClass]="item.isActive ? 'bg-success' : 'bg-danger'">
+
+                            {{ item.isActive ? 'Active' : 'Inactive' }}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <button class="btn btn-warning btn-sm me-2" (click)="edit(item.businessHoursId)">
+
+                            <i class="fa fa-edit"></i>
+
+                        </button>
+
+                        <button class="btn btn-danger btn-sm" (click)="delete(item.businessHoursId)">
+
+                            <i class="fa fa-trash"></i>
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Pagination -->
+    <!-- ========================================= -->
+
+    <app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredBusinessHours.length"
+        (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
+
+    </app-pagination>
+
+</div>

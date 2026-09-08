@@ -1,0 +1,929 @@
+<div class="container mt-4">
+
+    <!-- ========================================= -->
+    <!-- Contract Form -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4 class="mb-0">
+
+                <i class="fa fa-file-signature me-2"></i>
+
+                Contract Management
+
+            </h4>
+
+        </div>
+
+
+        <div class="card-body">
+
+
+            <div class="row">
+
+
+                <!-- Contract Name -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Contract Name
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+
+                    <input type="text" class="form-control" placeholder="Enter Contract Name"
+                        [(ngModel)]="contract.contractName">
+
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !contract.contractName">
+
+                        Contract Name is required.
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- Contract Number -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Contract Number
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+
+                    <input type="text" class="form-control" placeholder="Enter Contract Number"
+                        [(ngModel)]="contract.contractNumber">
+
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !contract.contractNumber">
+
+                        Contract Number is required.
+
+                    </div>
+
+
+                </div>
+
+
+
+
+                <!-- Account -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Account
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+
+                    <select class="form-select" [(ngModel)]="contract.account">
+
+
+                        <option value="">
+                            Select Account
+                        </option>
+
+
+                        <option>
+                            ABC Technologies
+                        </option>
+
+
+                        <option>
+                            XYZ Solutions
+                        </option>
+
+
+                        <option>
+                            Future Vision
+                        </option>
+
+
+                        <option>
+                            Global InfoTech
+                        </option>
+
+
+                        <option>
+                            NextGen Pvt Ltd
+                        </option>
+
+
+                    </select>
+
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !contract.account">
+
+                        Account is required.
+
+                    </div>
+
+
+                </div>
+
+
+
+
+
+                <!-- Contact -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Contact
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+
+                    <select class="form-select" [(ngModel)]="contract.contact">
+
+
+                        <option value="">
+                            Select Contact
+                        </option>
+
+
+                        <option>
+                            Rahul Sharma
+                        </option>
+
+
+                        <option>
+                            Priya Reddy
+                        </option>
+
+
+                        <option>
+                            Arjun Kumar
+                        </option>
+
+
+                        <option>
+                            Sneha Patel
+                        </option>
+
+
+                        <option>
+                            Kiran Verma
+                        </option>
+
+
+                    </select>
+
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !contract.contact">
+
+                        Contact is required.
+
+                    </div>
+
+
+                </div>
+
+
+
+
+
+                <!-- Contract Type -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Contract Type
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+
+                    <select class="form-select" [(ngModel)]="contract.contractType">
+
+
+                        <option value="">
+                            Select Contract Type
+                        </option>
+
+
+                        <option>
+                            Service Contract
+                        </option>
+
+
+                        <option>
+                            AMC Contract
+                        </option>
+
+
+                        <option>
+                            Subscription Contract
+                        </option>
+
+
+                        <option>
+                            Support Contract
+                        </option>
+
+
+                        <option>
+                            License Contract
+                        </option>
+
+
+                    </select>
+
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !contract.contractType">
+
+                        Contract Type is required.
+
+                    </div>
+
+
+                </div>
+
+
+
+
+
+                <!-- Start Date -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Start Date
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+
+                    <input type="date" class="form-control" [(ngModel)]="contract.startDate">
+
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !contract.startDate">
+
+                        Start Date is required.
+
+                    </div>
+
+
+                </div>
+
+
+
+
+
+                <!-- End Date -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        End Date
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+
+                    <input type="date" class="form-control" [(ngModel)]="contract.endDate">
+
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !contract.endDate">
+
+                        End Date is required.
+
+                    </div>
+
+
+                </div>
+
+
+
+
+
+                <!-- Contract Value -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Contract Value
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+
+                    <input type="number" class="form-control" placeholder="Enter Contract Value"
+                        [(ngModel)]="contract.contractValue">
+
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !contract.contractValue">
+
+                        Contract Value is required.
+
+                    </div>
+
+
+                </div>
+
+
+
+
+
+                <!-- Billing Frequency -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Billing Frequency
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+
+                    <select class="form-select" [(ngModel)]="contract.billingFrequency">
+
+
+                        <option value="">
+                            Select Billing Frequency
+                        </option>
+
+
+                        <option>
+                            Monthly
+                        </option>
+
+
+                        <option>
+                            Quarterly
+                        </option>
+
+
+                        <option>
+                            Half Yearly
+                        </option>
+
+
+                        <option>
+                            Yearly
+                        </option>
+
+
+                        <option>
+                            One Time
+                        </option>
+
+
+                    </select>
+
+
+                </div>
+
+
+
+
+
+                <!-- Renewal Type -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Renewal Type
+
+                    </label>
+
+
+                    <select class="form-select" [(ngModel)]="contract.renewalType">
+
+
+                        <option value="">
+                            Select Renewal Type
+                        </option>
+
+
+                        <option>
+                            Manual Renewal
+                        </option>
+
+
+                        <option>
+                            Auto Renewal
+                        </option>
+
+
+                        <option>
+                            No Renewal
+                        </option>
+
+
+                    </select>
+
+
+                </div>
+
+
+
+
+
+                <!-- Status -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Status
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+
+                    <select class="form-select" [(ngModel)]="contract.status">
+
+
+                        <option value="">
+                            Select Status
+                        </option>
+
+
+                        <option>
+                            Draft
+                        </option>
+
+
+                        <option>
+                            Active
+                        </option>
+
+
+                        <option>
+                            Expired
+                        </option>
+
+
+                        <option>
+                            Terminated
+                        </option>
+
+
+                        <option>
+                            Renewed
+                        </option>
+
+
+                    </select>
+
+
+                </div>
+
+
+
+
+
+                <!-- Description -->
+                <div class="col-md-8 mb-3">
+
+                    <label class="form-label">
+
+                        Description
+
+                    </label>
+
+
+                    <textarea rows="4" class="form-control" placeholder="Enter Description"
+                        [(ngModel)]="contract.description">
+
+                    </textarea>
+
+
+                </div>
+
+
+
+
+
+                <!-- Auto Renewal -->
+                <div class="col-md-4 mb-3 d-flex align-items-end">
+
+
+                    <div class="form-check">
+
+
+                        <input type="checkbox" class="form-check-input" id="autoRenewal"
+                            [(ngModel)]="contract.autoRenewal">
+
+
+                        <label class="form-check-label ms-2" for="autoRenewal">
+
+                            Auto Renewal
+
+                        </label>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+
+
+                <!-- Active -->
+                <div class="col-md-4 mb-3">
+
+
+                    <div class="form-check">
+
+
+                        <input type="checkbox" class="form-check-input" id="contractActive"
+                            [(ngModel)]="contract.isActive">
+
+
+                        <label class="form-check-label ms-2" for="contractActive">
+
+                            Active
+
+                        </label>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <hr>
+
+
+
+
+            <button class="btn btn-danger me-2" (click)="saveContract()">
+
+
+                <i class="fa fa-save me-1"></i>
+
+
+                {{ isEdit ? 'Update' : 'Save' }}
+
+
+            </button>
+
+
+
+
+
+            <button class="btn btn-secondary" (click)="clear()">
+
+
+                <i class="fa fa-eraser me-1"></i>
+
+
+                Clear
+
+
+            </button>
+
+
+
+        </div>
+
+
+    </div>
+    <!-- ========================================= -->
+    <!-- Search -->
+    <!-- ========================================= -->
+
+    <div class="row mt-4 mb-3">
+
+        <div class="col-md-4">
+
+            <input type="text" class="form-control" placeholder="Search Contract..." [(ngModel)]="searchText">
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================================= -->
+    <!-- Contracts Listing Table -->
+    <!-- ========================================= -->
+
+    <div class="table-responsive">
+
+
+        <table class="table table-bordered table-hover">
+
+
+            <thead class="table-danger">
+
+
+                <tr>
+
+                    <th>#</th>
+
+                    <th>Contract No.</th>
+
+                    <th>Contract Name</th>
+
+                    <th>Account</th>
+
+                    <th>Contract Type</th>
+
+                    <th>Start Date</th>
+
+                    <th>End Date</th>
+
+                    <th>Contract Value</th>
+
+                    <th>Status</th>
+
+                    <th width="140">
+                        Action
+                    </th>
+
+
+                </tr>
+
+
+            </thead>
+
+
+
+            <tbody>
+
+
+
+                <tr *ngIf="pagedContracts.length == 0">
+
+
+                    <td colspan="10" class="text-center text-muted">
+
+
+                        No Contracts Found
+
+
+                    </td>
+
+
+                </tr>
+
+
+
+
+
+                <tr *ngFor="let item of pagedContracts; let i = index">
+
+
+
+                    <td>
+
+
+                        {{ ((page - 1) * pageSize) + i + 1 }}
+
+
+                    </td>
+
+
+
+
+                    <td>
+
+
+                        {{ item.contractNumber }}
+
+
+                    </td>
+
+
+
+
+                    <td>
+
+
+                        {{ item.contractName }}
+
+
+                    </td>
+
+
+
+
+                    <td>
+
+
+                        {{ item.account }}
+
+
+                    </td>
+
+
+
+
+                    <td>
+
+
+
+                        <span class="badge" [ngClass]="{
+
+
+                                'bg-primary':
+                                item.contractType == 'Service Contract',
+
+
+                                'bg-warning text-dark':
+                                item.contractType == 'AMC Contract',
+
+
+                                'bg-success':
+                                item.contractType == 'Subscription Contract',
+
+
+                                'bg-info text-dark':
+                                item.contractType == 'Support Contract',
+
+
+                                'bg-secondary':
+                                item.contractType == 'License Contract'
+
+
+                            }">
+
+
+                            {{ item.contractType }}
+
+
+                        </span>
+
+
+
+                    </td>
+
+
+
+
+
+                    <td>
+
+
+                        {{ item.startDate }}
+
+
+                    </td>
+
+
+
+
+                    <td>
+
+
+                        {{ item.endDate }}
+
+
+                    </td>
+
+
+
+
+
+                    <td>
+
+
+                        ₹ {{ item.contractValue | number }}
+
+
+                    </td>
+
+
+
+
+
+                    <td>
+
+
+
+                        <span class="badge" [ngClass]="{
+
+
+                                'bg-secondary':
+                                item.status == 'Draft',
+
+
+                                'bg-success':
+                                item.status == 'Active',
+
+
+                                'bg-danger':
+                                item.status == 'Expired',
+
+
+                                'bg-warning text-dark':
+                                item.status == 'Terminated',
+
+
+                                'bg-primary':
+                                item.status == 'Renewed'
+
+
+                            }">
+
+
+                            {{ item.status }}
+
+
+                        </span>
+
+
+
+                    </td>
+
+
+
+
+
+                    <td>
+
+
+
+                        <button class="btn btn-warning btn-sm me-2" (click)="edit(item.contractId)">
+
+
+
+                            <i class="fa fa-edit"></i>
+
+
+
+                        </button>
+
+
+
+
+
+                        <button class="btn btn-danger btn-sm" (click)="delete(item.contractId)">
+
+
+
+                            <i class="fa fa-trash"></i>
+
+
+
+                        </button>
+
+
+
+                    </td>
+
+
+
+                </tr>
+
+
+
+            </tbody>
+
+
+
+        </table>
+
+
+
+    </div>
+
+
+
+
+
+    <!-- ========================================= -->
+    <!-- Pagination -->
+    <!-- ========================================= -->
+
+    <app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredContracts.length"
+        (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
+
+
+    </app-pagination>
+
+
+</div>

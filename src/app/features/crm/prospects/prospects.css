@@ -1,0 +1,787 @@
+/* =========================================================
+   CORCRM PROSPECTS
+   Premium SaaS Prospect Discovery
+   ========================================================= */
+
+.prospects-page {
+  min-height: 100%;
+  padding: 30px 32px 50px;
+  background: #f6f8fc;
+  color: #172033;
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+
+/* =========================================================
+   PAGE HEADER
+   ========================================================= */
+
+.page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 25px;
+  margin-bottom: 24px;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 14px;
+  color: #98a2b3;
+  font-size: 12px;
+}
+
+.breadcrumb i {
+  font-size: 8px;
+  color: #c5cad4;
+}
+
+.breadcrumb strong {
+  color: #475467;
+  font-weight: 600;
+}
+
+.title-section {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.title-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 13px;
+  background: linear-gradient(
+    135deg,
+    #155eef,
+    #3677ee
+  );
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 19px;
+  box-shadow:
+    0 8px 18px rgba(21, 94, 239, 0.18);
+}
+
+.title-section h1 {
+  margin: 0;
+  color: #101828;
+  font-size: 27px;
+  font-weight: 750;
+  letter-spacing: -0.6px;
+}
+
+.title-section p {
+  margin: 5px 0 0;
+  color: #7b8496;
+  font-size: 13px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.btn-primary,
+.btn-secondary {
+  height: 40px;
+  padding: 0 15px;
+  border-radius: 9px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 650;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.btn-primary {
+  border: 1px solid #1455d9;
+  background: #155eef;
+  color: #fff;
+  box-shadow:
+    0 5px 14px rgba(21, 94, 239, 0.18);
+}
+
+.btn-primary:hover {
+  background: #124dcc;
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  border: 1px solid #d9dee8;
+  background: #fff;
+  color: #344054;
+}
+
+.btn-secondary:hover {
+  background: #f9fafb;
+  border-color: #c7cedb;
+}
+
+
+/* =========================================================
+   SEARCH PANEL
+   ========================================================= */
+
+.search-panel {
+  padding: 22px;
+  border: 1px solid #e5e9f1;
+  border-radius: 15px;
+  background: #fff;
+  box-shadow:
+    0 3px 12px rgba(16, 24, 40, 0.035);
+  margin-bottom: 18px;
+}
+
+.search-heading {
+  display: flex;
+  justify-content: space-between;
+}
+
+.search-heading h2 {
+  margin: 0;
+  color: #101828;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.search-heading p {
+  margin: 5px 0 18px;
+  color: #98a2b3;
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   SEARCH TYPE
+   ========================================================= */
+
+.search-type {
+  display: inline-flex;
+  padding: 4px;
+  margin-bottom: 12px;
+  border-radius: 9px;
+  background: #f2f4f7;
+}
+
+.search-type button {
+  height: 32px;
+  padding: 0 13px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #667085;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.search-type button.active {
+  background: #fff;
+  color: #155eef;
+  box-shadow:
+    0 2px 5px rgba(16, 24, 40, 0.08);
+}
+
+
+/* =========================================================
+   SEARCH BOX
+   ========================================================= */
+
+.search-box {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 0 14px;
+  border: 1px solid #d9dee8;
+  border-radius: 10px;
+  background: #fff;
+  transition: 0.2s ease;
+}
+
+.search-box:focus-within {
+  border-color: #84adff;
+  box-shadow:
+    0 0 0 3px rgba(21, 94, 239, 0.08);
+}
+
+.search-box > i {
+  color: #98a2b3;
+  font-size: 15px;
+}
+
+.search-box input {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #344054;
+  font-size: 13px;
+}
+
+.search-box input::placeholder {
+  color: #98a2b3;
+}
+
+.shortcut {
+  white-space: nowrap;
+  padding: 4px 7px;
+  border: 1px solid #e4e7ec;
+  border-radius: 5px;
+  background: #f9fafb;
+  color: #98a2b3;
+  font-size: 9px;
+}
+
+.search-hint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 9px;
+  color: #98a2b3;
+  font-size: 10px;
+}
+
+.search-hint i {
+  color: #84adff;
+}
+
+
+/* =========================================================
+   RESULTS CARD
+   ========================================================= */
+
+.results-card {
+  overflow: hidden;
+  margin-bottom: 18px;
+  border: 1px solid #e5e9f1;
+  border-radius: 15px;
+  background: #fff;
+  box-shadow:
+    0 3px 12px rgba(16, 24, 40, 0.03);
+}
+
+.results-header {
+  min-height: 65px;
+  padding: 12px 18px;
+  border-bottom: 1px solid #edf0f5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.results-header h2 {
+  margin: 0;
+  color: #101828;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.results-header span {
+  display: block;
+  margin-top: 4px;
+  color: #98a2b3;
+  font-size: 10px;
+}
+
+.text-button {
+  border: 0;
+  background: transparent;
+  color: #155eef;
+  font-size: 11px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   COMPANY ROW
+   ========================================================= */
+
+.company-row {
+  min-height: 84px;
+  padding: 14px 18px;
+  border-bottom: 1px solid #f0f2f5;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  transition: 0.18s ease;
+}
+
+.company-row:last-child {
+  border-bottom: 0;
+}
+
+.company-row:hover {
+  background: #fafcff;
+}
+
+.company-avatar {
+  width: 43px;
+  height: 43px;
+  flex-shrink: 0;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.company-avatar.blue,
+.contact-avatar.blue {
+  background: #eaf2ff;
+  color: #155eef;
+}
+
+.company-avatar.purple,
+.contact-avatar.purple {
+  background: #f4ebff;
+  color: #6941c6;
+}
+
+.company-avatar.green,
+.contact-avatar.green {
+  background: #e9f9f0;
+  color: #027a48;
+}
+
+.company-avatar.orange,
+.contact-avatar.orange {
+  background: #fff3e6;
+  color: #c2410c;
+}
+
+.company-avatar.red,
+.contact-avatar.red {
+  background: #fff0f0;
+  color: #c43232;
+}
+
+.company-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.company-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.company-title strong {
+  color: #101828;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.company-id {
+  padding: 3px 6px !important;
+  margin: 0 !important;
+  border-radius: 4px;
+  background: #f2f4f7;
+  color: #98a2b3 !important;
+  font-size: 8px !important;
+}
+
+.company-meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 7px;
+}
+
+.company-meta span {
+  color: #98a2b3;
+  font-size: 9px;
+  white-space: nowrap;
+}
+
+.company-meta i {
+  margin-right: 4px;
+  color: #b1b8c5;
+}
+
+.company-contacts {
+  width: 65px;
+  text-align: center;
+}
+
+.contact-count {
+  color: #344054;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.company-contacts span {
+  margin: 0;
+  color: #98a2b3;
+  font-size: 8px;
+}
+
+.row-arrow {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: #f8fafc;
+  color: #98a2b3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  transition: 0.2s ease;
+}
+
+.company-row:hover .row-arrow,
+.contact-row:hover .row-arrow {
+  background: #eff4ff;
+  color: #155eef;
+  transform: translateX(2px);
+}
+
+
+/* =========================================================
+   CONTACT ROW
+   ========================================================= */
+
+.contact-row {
+  min-height: 82px;
+  padding: 14px 18px;
+  border-bottom: 1px solid #f0f2f5;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  transition: 0.18s ease;
+}
+
+.contact-row:last-child {
+  border-bottom: 0;
+}
+
+.contact-row:hover {
+  background: #fafcff;
+}
+
+.contact-avatar {
+  width: 43px;
+  height: 43px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.contact-main {
+  flex: 1;
+  min-width: 220px;
+}
+
+.contact-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.contact-title strong {
+  color: #101828;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.contact-title span {
+  padding: 3px 6px;
+  border-radius: 4px;
+  background: #f2f4f7;
+  color: #667085;
+  font-size: 8px;
+}
+
+.contact-company {
+  margin-top: 7px;
+  color: #98a2b3;
+  font-size: 9px;
+}
+
+.contact-company i {
+  margin-right: 5px;
+  color: #b1b8c5;
+}
+
+.contact-details {
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.contact-details span {
+  color: #667085;
+  font-size: 9px;
+  white-space: nowrap;
+}
+
+.contact-details i {
+  width: 14px;
+  color: #98a2b3;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.empty-state {
+  padding: 45px 20px;
+  text-align: center;
+}
+
+.empty-icon {
+  width: 48px;
+  height: 48px;
+  margin: auto;
+  border-radius: 12px;
+  background: #f2f4f7;
+  color: #98a2b3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-state h3 {
+  margin: 12px 0 5px;
+  color: #344054;
+  font-size: 13px;
+}
+
+.empty-state p {
+  margin: 0 0 15px;
+  color: #98a2b3;
+  font-size: 10px;
+}
+
+
+/* =========================================================
+   SALES PROCESS
+   ========================================================= */
+
+.process-card {
+  padding: 22px;
+  border: 1px solid #e5e9f1;
+  border-radius: 15px;
+  background: #fff;
+  box-shadow:
+    0 3px 12px rgba(16, 24, 40, 0.03);
+}
+
+.process-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+
+.section-eyebrow {
+  color: #155eef;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.process-header h2 {
+  margin: 4px 0 0;
+  color: #101828;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.process-badge {
+  padding: 6px 9px !important;
+  margin: 0 !important;
+  border: 1px solid #d9e6ff;
+  border-radius: 6px;
+  background: #eff4ff;
+  color: #315ba6 !important;
+  font-size: 9px !important;
+  font-weight: 650;
+}
+
+.process-flow {
+  display: flex;
+  align-items: center;
+}
+
+.process-step {
+  flex: 1;
+  position: relative;
+  text-align: center;
+}
+
+.process-number {
+  position: absolute;
+  top: -4px;
+  right: 17%;
+  color: #c7cedb;
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.process-icon {
+  width: 39px;
+  height: 39px;
+  margin: auto;
+  border-radius: 10px;
+  background: #eff4ff;
+  color: #155eef;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.process-icon.success {
+  background: #ecfdf3;
+  color: #039855;
+}
+
+.process-step strong {
+  display: block;
+  margin-top: 9px;
+  color: #344054;
+  font-size: 10px;
+}
+
+.process-step span:not(.process-number) {
+  display: block;
+  margin-top: 4px;
+  color: #98a2b3;
+  font-size: 8px;
+}
+
+.process-line {
+  width: 45px;
+  height: 1px;
+  flex-shrink: 0;
+  background: #e4e7ec;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+  .company-meta {
+    gap: 9px;
+  }
+
+  .contact-details {
+    width: 230px;
+  }
+
+  .process-line {
+    width: 25px;
+  }
+}
+
+
+@media (max-width: 850px) {
+
+  .prospects-page {
+    padding: 20px 16px 35px;
+  }
+
+  .page-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .header-actions {
+    width: 100%;
+  }
+
+  .header-actions button {
+    flex: 1;
+  }
+
+  .company-meta {
+    flex-wrap: wrap;
+  }
+
+  .contact-details {
+    display: none;
+  }
+
+  .process-flow {
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+
+  .process-step {
+    min-width: 120px;
+  }
+
+  .process-line {
+    min-width: 25px;
+  }
+}
+
+
+@media (max-width: 600px) {
+
+  .title-section {
+    align-items: flex-start;
+  }
+
+  .title-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .title-section h1 {
+    font-size: 23px;
+  }
+
+  .search-panel,
+  .results-card,
+  .process-card {
+    border-radius: 11px;
+  }
+
+  .company-contacts {
+    display: none;
+  }
+
+  .company-row,
+  .contact-row {
+    padding: 13px;
+  }
+}

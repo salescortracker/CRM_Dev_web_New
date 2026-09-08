@@ -1,0 +1,1171 @@
+<div class="page-container">
+
+
+    <!-- ========================= -->
+    <!-- Page Header -->
+    <!-- ========================= -->
+
+    <div class="page-header">
+
+
+        <div>
+
+            <p class="page-subtitle">
+                USER & ACCESS MANAGEMENT
+            </p>
+
+
+            <h1>
+                Roles & Permissions
+            </h1>
+
+
+            <p class="page-description">
+                Manage user roles, access levels and module permissions across CRM.
+            </p>
+
+
+        </div>
+
+
+
+        <div class="header-buttons">
+
+
+            <button class="btn btn-light" (click)="refresh()">
+
+
+                <i class="fa-solid fa-rotate"></i>
+
+                Refresh
+
+
+            </button>
+
+
+
+
+            <button class="btn btn-danger" (click)="openAddModal()">
+
+
+
+                <i class="fa-solid fa-plus"></i>
+
+                Add Role
+
+
+
+            </button>
+
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+    <!-- ========================= -->
+    <!-- Statistics -->
+    <!-- ========================= -->
+
+
+    <div class="stats-grid">
+
+
+
+        <div class="stat-card">
+
+
+            <span>
+                Total Roles
+            </span>
+
+
+            <h2>
+                {{roles.length}}
+            </h2>
+
+
+        </div>
+
+
+
+
+
+        <div class="stat-card">
+
+
+            <span>
+                Active Roles
+            </span>
+
+
+            <h2>
+                {{activeCount}}
+            </h2>
+
+
+        </div>
+
+
+
+
+
+        <div class="stat-card">
+
+
+            <span>
+                Inactive Roles
+            </span>
+
+
+            <h2>
+                {{inactiveCount}}
+            </h2>
+
+
+        </div>
+
+
+
+
+
+        <div class="stat-card">
+
+
+            <span>
+                Assigned Users
+            </span>
+
+
+            <h2>
+                {{assignedUsers}}
+            </h2>
+
+
+        </div>
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+    <!-- ========================= -->
+    <!-- Search Filter -->
+    <!-- ========================= -->
+
+
+    <div class="search-panel">
+
+
+
+        <div class="search-box">
+
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+
+
+            <input type="text" placeholder="Search role..." [(ngModel)]="searchText">
+
+
+
+        </div>
+
+
+
+
+
+
+        <select class="form-control" [(ngModel)]="statusFilter">
+
+
+
+            <option value="">
+
+                All Status
+
+            </option>
+
+
+
+
+            <option value="Active">
+
+                Active
+
+            </option>
+
+
+
+
+            <option value="Inactive">
+
+                Inactive
+
+            </option>
+
+
+
+        </select>
+
+
+
+
+
+
+
+        <button class="btn btn-secondary" (click)="clearFilters()">
+
+
+
+            Clear
+
+
+
+        </button>
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+    <!-- ========================= -->
+    <!-- Roles Table -->
+    <!-- ========================= -->
+
+
+
+    <div class="table-card">
+
+
+
+
+
+        <div class="table-header">
+
+
+            <h3>
+
+                Roles List
+
+            </h3>
+
+
+
+            <span>
+
+                {{filteredRoles.length}} Records
+
+            </span>
+
+
+
+        </div>
+
+
+
+
+
+
+
+        <table>
+
+
+
+            <thead>
+
+
+
+                <tr>
+
+
+                    <th>
+                        Role Name
+                    </th>
+
+
+
+                    <th>
+                        Access Level
+                    </th>
+
+
+
+                    <th>
+                        Users
+                    </th>
+
+
+
+                    <th>
+                        Permissions
+                    </th>
+
+
+
+                    <th>
+                        Description
+                    </th>
+
+
+
+                    <th>
+                        Status
+                    </th>
+
+
+
+                    <th width="170">
+
+                        Actions
+
+                    </th>
+
+
+
+                </tr>
+
+
+
+            </thead>
+
+
+
+
+
+
+
+            <tbody>
+
+
+
+
+
+                <tr *ngFor="let item of filteredRoles">
+
+
+
+
+
+
+
+                    <!-- Role Name -->
+
+
+                    <td>
+
+
+                        <div class="provider-info">
+
+
+
+                            <div class="provider-icon">
+
+
+                                <i class="fa-solid fa-user-shield"></i>
+
+
+                            </div>
+
+
+
+
+
+                            <div>
+
+
+                                <strong>
+
+                                    {{item.roleName}}
+
+                                </strong>
+
+
+
+                                <small>
+
+                                    {{item.description}}
+
+                                </small>
+
+
+
+                            </div>
+
+
+
+                        </div>
+
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <!-- Access Level -->
+
+
+                    <td>
+
+
+                        <span class="access-badge">
+
+
+                            {{item.accessLevel}}
+
+
+                        </span>
+
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <!-- Users -->
+
+
+                    <td>
+
+
+                        <span class="count-badge">
+
+
+                            {{item.userCount}}
+
+
+                        </span>
+
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <!-- Permissions -->
+
+
+                    <td>
+
+
+
+                        <span class="permission-badge">
+
+
+                            {{item.permissions.length}}
+
+
+                            Permissions
+
+
+                        </span>
+
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <!-- Description -->
+
+
+                    <td>
+
+
+                        {{item.description}}
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <!-- Status -->
+
+
+                    <td>
+
+
+
+                        <span class="status" [ngClass]="item.status.toLowerCase()">
+
+
+
+                            {{item.status}}
+
+
+
+                        </span>
+
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <!-- Actions -->
+
+
+                    <td>
+
+
+
+
+                        <button class="icon-btn" (click)="edit(item)">
+
+
+
+                            <i class="fa-solid fa-pen"></i>
+
+
+
+                        </button>
+
+
+
+
+
+
+
+                        <button class="icon-btn danger" (click)="delete(item.id)">
+
+
+
+                            <i class="fa-solid fa-trash"></i>
+
+
+
+                        </button>
+
+
+
+
+
+                    </td>
+
+
+
+
+
+                </tr>
+
+
+
+
+
+
+            </tbody>
+
+
+
+
+
+        </table>
+
+
+
+
+
+    </div>
+
+
+
+
+
+</div>
+<!-- ======================================= -->
+<!-- Add / Edit Role Modal -->
+<!-- ======================================= -->
+
+
+<div class="modal-overlay" *ngIf="showModal">
+
+
+    <div class="modal-box">
+
+
+
+        <!-- Modal Header -->
+
+
+        <div class="modal-header">
+
+
+            <h3>
+
+                {{isEdit ? 'Edit Role' : 'Add Role'}}
+
+            </h3>
+
+
+
+            <button class="close-btn" (click)="closeModal()">
+
+
+
+                ×
+
+
+
+            </button>
+
+
+
+        </div>
+
+
+
+
+
+
+
+        <!-- Modal Body -->
+
+
+        <div class="modal-body">
+
+
+            <div class="form-grid">
+
+
+
+
+
+
+
+                <!-- Role Name -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Role Name
+
+                    </label>
+
+
+
+                    <input type="text" placeholder="Enter role name" [(ngModel)]="model.roleName">
+
+
+                </div>
+
+
+
+
+
+
+
+                <!-- Access Level -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Access Level
+
+                    </label>
+
+
+
+                    <select [(ngModel)]="model.accessLevel">
+
+
+
+                        <option>
+
+                            Full Access
+
+                        </option>
+
+
+
+                        <option>
+
+                            Admin Access
+
+                        </option>
+
+
+
+                        <option>
+
+                            Limited Access
+
+                        </option>
+
+
+
+                        <option>
+
+                            Read Only
+
+                        </option>
+
+
+
+                        <option>
+
+                            Custom
+
+                        </option>
+
+
+
+                    </select>
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- User Count -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Assigned Users
+
+                    </label>
+
+
+
+                    <input type="number" placeholder="Enter user count" [(ngModel)]="model.userCount">
+
+
+                </div>
+
+
+
+
+
+
+
+                <!-- Status -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Status
+
+                    </label>
+
+
+
+                    <select [(ngModel)]="model.status">
+
+
+
+                        <option>
+
+                            Active
+
+                        </option>
+
+
+
+                        <option>
+
+                            Inactive
+
+                        </option>
+
+
+
+                    </select>
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Description -->
+
+
+                <div class="full-width">
+
+
+                    <label>
+
+                        Description
+
+                    </label>
+
+
+
+
+                    <textarea rows="4" placeholder="Enter role description" [(ngModel)]="model.description">
+
+
+                    </textarea>
+
+
+
+                </div>
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+
+
+            <!-- ============================ -->
+            <!-- Permissions Section -->
+            <!-- ============================ -->
+
+
+            <div class="permission-section">
+
+
+                <h4>
+
+                    Module Permissions
+
+                </h4>
+
+
+
+
+
+                <div class="permission-grid">
+
+
+
+                    <label>
+
+
+                        <input type="checkbox" [(ngModel)]="model.permissions.dashboard">
+
+
+                        Dashboard
+
+
+                    </label>
+
+
+
+
+
+
+
+                    <label>
+
+
+                        <input type="checkbox" [(ngModel)]="model.permissions.leads">
+
+
+                        Leads
+
+
+                    </label>
+
+
+
+
+
+
+
+                    <label>
+
+
+                        <input type="checkbox" [(ngModel)]="model.permissions.contacts">
+
+
+                        Contacts
+
+
+                    </label>
+
+
+
+
+
+
+
+                    <label>
+
+
+                        <input type="checkbox" [(ngModel)]="model.permissions.accounts">
+
+
+                        Accounts
+
+
+                    </label>
+
+
+
+
+
+
+
+                    <label>
+
+
+                        <input type="checkbox" [(ngModel)]="model.permissions.opportunities">
+
+
+                        Opportunities
+
+
+                    </label>
+
+
+
+
+
+
+
+                    <label>
+
+
+                        <input type="checkbox" [(ngModel)]="model.permissions.activities">
+
+
+                        Activities
+
+
+                    </label>
+
+
+
+
+
+
+
+                    <label>
+
+
+                        <input type="checkbox" [(ngModel)]="model.permissions.reports">
+
+
+                        Reports
+
+
+                    </label>
+
+
+
+
+
+
+
+                    <label>
+
+
+                        <input type="checkbox" [(ngModel)]="model.permissions.settings">
+
+
+                        Settings
+
+
+                    </label>
+
+
+
+
+
+
+
+                    <label>
+
+
+                        <input type="checkbox" [(ngModel)]="model.permissions.userManagement">
+
+
+                        User Management
+
+
+                    </label>
+
+
+
+
+                </div>
+
+
+            </div>
+
+
+
+
+
+
+
+
+
+            <!-- Default Role -->
+
+
+            <div class="checkbox-group">
+
+
+                <label>
+
+
+
+                    <input type="checkbox" [(ngModel)]="model.isDefault">
+
+
+
+                    Default Role
+
+
+
+                </label>
+
+
+
+            </div>
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+        <!-- Modal Footer -->
+
+
+        <div class="modal-footer">
+
+
+
+
+
+            <button class="btn-secondary" (click)="closeModal()">
+
+
+
+                Cancel
+
+
+
+            </button>
+
+
+
+
+
+
+
+            <button class="btn-primary" (click)="saveRole()">
+
+
+
+                {{isEdit ? 'Update Role' : 'Save Role'}}
+
+
+
+            </button>
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+    </div>
+
+
+
+</div>

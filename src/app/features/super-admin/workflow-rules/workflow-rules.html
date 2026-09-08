@@ -1,0 +1,192 @@
+<div class="container mt-4">
+
+    <div class="card">
+
+        <div class="card-header bg-danger text-white">
+            <h4>Workflow Rules</h4>
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+                    <label>Rule Name <span class="text-danger">*</span></label>
+                    <input class="form-control" placeholder="Enter Rule Name">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Module <span class="text-danger">*</span></label>
+                    <select class="form-select">
+                        <option>Leads</option>
+                        <option>Contacts</option>
+                        <option>Accounts</option>
+                        <option>Opportunities</option>
+                        <option>Quotes</option>
+                        <option>Orders</option>
+                        <option>Invoices</option>
+                        <option>Support Tickets</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Trigger Event</label>
+                    <select class="form-select">
+                        <option>On Create</option>
+                        <option>On Update</option>
+                        <option>On Delete</option>
+                        <option>Scheduled</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label>Condition</label>
+                    <input class="form-control" placeholder="Lead Source = Website">
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label>Action</label>
+                    <select class="form-select">
+                        <option>Assign User</option>
+                        <option>Send Email</option>
+                        <option>Create Task</option>
+                        <option>Update Status</option>
+                        <option>Notify Manager</option>
+                        <option>Create Follow-up</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Priority</label>
+                    <select class="form-select">
+                        <option>High</option>
+                        <option>Medium</option>
+                        <option>Low</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Execution Order</label>
+                    <input type="number" class="form-control" value="1">
+                </div>
+
+                <div class="col-md-4 mt-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Active
+                    </label>
+                </div>
+
+            </div>
+
+            <button class="btn btn-danger me-2">
+                Save
+            </button>
+
+            <button class="btn btn-secondary">
+                Clear
+            </button>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="row mb-3">
+
+        <div class="col-md-4">
+            <input class="form-control"
+                   placeholder="Search Workflow Rule...">
+        </div>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-danger">
+
+            <tr>
+
+                <th>#</th>
+                <th>Rule Name</th>
+                <th>Module</th>
+                <th>Trigger</th>
+                <th>Condition</th>
+                <th>Action</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th width="150">Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>1</td>
+                <td>Website Lead Assignment</td>
+                <td>Leads</td>
+                <td>On Create</td>
+                <td>Lead Source = Website</td>
+                <td>Assign User</td>
+                <td>High</td>
+                <td>Active</td>
+                <td>
+                    <button class="btn btn-warning btn-sm me-2">Edit</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>2</td>
+                <td>Send Welcome Email</td>
+                <td>Contacts</td>
+                <td>On Create</td>
+                <td>Email Verified</td>
+                <td>Send Email</td>
+                <td>Medium</td>
+                <td>Active</td>
+                <td>
+                    <button class="btn btn-warning btn-sm me-2">Edit</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>3</td>
+                <td>Create Follow-up Task</td>
+                <td>Opportunities</td>
+                <td>On Update</td>
+                <td>Stage = Proposal</td>
+                <td>Create Task</td>
+                <td>Medium</td>
+                <td>Active</td>
+                <td>
+                    <button class="btn btn-warning btn-sm me-2">Edit</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>4</td>
+                <td>Notify Sales Manager</td>
+                <td>Orders</td>
+                <td>On Create</td>
+                <td>Order Value > 10000</td>
+                <td>Notify Manager</td>
+                <td>High</td>
+                <td>Inactive</td>
+                <td>
+                    <button class="btn btn-warning btn-sm me-2">Edit</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+
+</div>

@@ -1,0 +1,1403 @@
+<div class="page-container">
+
+
+    <!-- ========================= -->
+    <!-- Page Header -->
+    <!-- ========================= -->
+
+    <div class="page-header">
+
+
+        <div>
+
+
+            <p class="page-subtitle">
+
+                CRM MODULE CONFIGURATION
+
+            </p>
+
+
+            <h1>
+
+                Sources
+
+            </h1>
+
+
+            <p class="page-description">
+
+                Manage lead sources, categories, conversion rates and configure default CRM acquisition channels.
+
+            </p>
+
+
+        </div>
+
+
+
+        <div class="header-buttons">
+
+
+
+            <button class="btn btn-light" (click)="refresh()">
+
+
+
+                <i class="fa-solid fa-rotate"></i>
+
+
+                Refresh
+
+
+
+            </button>
+
+
+
+
+
+            <button class="btn btn-danger" (click)="openAddModal()">
+
+
+
+                <i class="fa-solid fa-plus"></i>
+
+
+                Add Source
+
+
+
+            </button>
+
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+    <!-- ========================= -->
+    <!-- Statistics -->
+    <!-- ========================= -->
+
+
+    <div class="stats-grid">
+
+
+
+
+
+        <div class="stat-card">
+
+
+            <span>
+
+                Total Sources
+
+            </span>
+
+
+
+            <h2>
+
+                {{sources.length}}
+
+            </h2>
+
+
+
+        </div>
+
+
+
+
+
+
+
+        <div class="stat-card">
+
+
+            <span>
+
+                Active Sources
+
+            </span>
+
+
+
+            <h2>
+
+                {{activeCount}}
+
+            </h2>
+
+
+
+        </div>
+
+
+
+
+
+
+
+        <div class="stat-card">
+
+
+            <span>
+
+                Inactive Sources
+
+            </span>
+
+
+
+            <h2>
+
+                {{inactiveCount}}
+
+            </h2>
+
+
+
+        </div>
+
+
+
+
+
+
+
+        <div class="stat-card">
+
+
+            <span>
+
+                Default Source
+
+            </span>
+
+
+
+            <h2 class="small-value">
+
+
+                {{defaultSource}}
+
+
+            </h2>
+
+
+
+        </div>
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+    <!-- ========================= -->
+    <!-- Search Panel -->
+    <!-- ========================= -->
+
+
+    <div class="search-panel">
+
+
+
+
+
+        <div class="search-box">
+
+
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+
+
+            <input type="text" placeholder="Search source..." [(ngModel)]="searchText">
+
+
+
+        </div>
+
+
+
+
+
+
+
+        <select class="form-control" [(ngModel)]="statusFilter">
+
+
+
+
+
+            <option value="">
+
+
+                All Status
+
+
+            </option>
+
+
+
+
+            <option value="Active">
+
+
+                Active
+
+
+            </option>
+
+
+
+
+
+            <option value="Inactive">
+
+
+                Inactive
+
+
+            </option>
+
+
+
+
+
+        </select>
+
+
+
+
+
+
+
+
+        <button class="btn btn-secondary" (click)="clearFilters()">
+
+
+
+            Clear
+
+
+
+        </button>
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+    <!-- ========================= -->
+    <!-- Sources Table -->
+    <!-- ========================= -->
+
+
+
+    <div class="table-card">
+
+
+
+
+
+
+        <div class="table-header">
+
+
+
+            <h3>
+
+                Lead Sources
+
+
+            </h3>
+
+
+
+            <span>
+
+
+                {{filteredSources.length}} Records
+
+
+            </span>
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+        <table>
+
+
+
+
+            <thead>
+
+
+
+                <tr>
+
+
+
+                    <th>
+
+                        Source Name
+
+                    </th>
+
+
+
+                    <th>
+
+                        Source Code
+
+                    </th>
+
+
+
+
+                    <th>
+
+                        Category
+
+                    </th>
+
+
+
+
+                    <th>
+
+                        Conversion %
+
+                    </th>
+
+
+
+
+                    <th>
+
+                        Description
+
+                    </th>
+
+
+
+
+                    <th>
+
+                        Status
+
+                    </th>
+
+
+
+
+                    <th>
+
+                        Default
+
+                    </th>
+
+
+
+
+                    <th width="170">
+
+                        Actions
+
+                    </th>
+
+
+
+                </tr>
+
+
+
+            </thead>
+
+
+
+
+
+
+
+
+
+            <tbody>
+
+
+
+
+
+                <tr *ngFor="let item of filteredSources">
+
+
+
+
+
+                    <td>
+
+
+
+                        <div class="provider-info">
+
+
+
+
+
+                            <div class="provider-icon">
+
+
+
+                                <i class="fa-solid fa-bullseye"></i>
+
+
+
+                            </div>
+
+
+
+
+
+
+
+                            <div>
+
+
+
+                                <strong>
+
+
+                                    {{item.sourceName}}
+
+
+                                </strong>
+
+
+
+
+                                <small>
+
+
+                                    {{item.sourceCode}}
+
+
+                                </small>
+
+
+
+                            </div>
+
+
+
+
+
+                        </div>
+
+
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <td>
+
+
+
+                        <span class="code-badge">
+
+
+                            {{item.sourceCode}}
+
+
+                        </span>
+
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <td>
+
+
+
+                        <span class="category-badge">
+
+
+                            {{item.category}}
+
+
+                        </span>
+
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <td>
+
+
+                        <strong>
+
+
+                            {{item.conversionRate}}%
+
+
+                        </strong>
+
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <td>
+
+
+                        {{item.description}}
+
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <td>
+
+
+
+
+                        <span class="status" [ngClass]="item.status.toLowerCase()">
+
+
+
+
+
+                            {{item.status}}
+
+
+
+
+                        </span>
+
+
+
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <td>
+
+
+
+
+
+                        <span *ngIf="item.isDefault" class="default-badge">
+
+
+
+
+
+                            Default
+
+
+
+
+
+                        </span>
+
+
+
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <td>
+
+
+
+
+
+                        <button class="icon-btn" (click)="edit(item)">
+
+
+
+
+
+                            <i class="fa-solid fa-pen"></i>
+
+
+
+
+                        </button>
+
+
+
+
+
+
+
+
+
+                        <button class="icon-btn danger" (click)="delete(item.id)">
+
+
+
+
+
+                            <i class="fa-solid fa-trash"></i>
+
+
+
+
+                        </button>
+
+
+
+
+
+                    </td>
+
+
+
+
+
+                </tr>
+
+
+
+
+
+
+            </tbody>
+
+
+
+
+
+        </table>
+
+
+
+
+
+    </div>
+
+
+
+
+
+</div>
+
+<!-- ======================================= -->
+<!-- Add / Edit Source Modal -->
+<!-- ======================================= -->
+
+
+<div class="modal-overlay" *ngIf="showModal">
+
+
+
+
+
+    <div class="modal-box">
+
+
+
+
+
+
+        <!-- ========================= -->
+        <!-- Modal Header -->
+        <!-- ========================= -->
+
+
+        <div class="modal-header">
+
+
+
+
+
+            <h3>
+
+
+
+                {{isEdit ? 'Edit Source' : 'Add Source'}}
+
+
+
+            </h3>
+
+
+
+
+
+
+            <button class="close-btn" (click)="closeModal()">
+
+
+
+                ×
+
+
+
+            </button>
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+        <!-- ========================= -->
+        <!-- Modal Body -->
+        <!-- ========================= -->
+
+
+        <div class="modal-body">
+
+
+
+
+
+            <div class="form-grid">
+
+
+
+
+
+
+
+                <!-- Source Name -->
+
+
+                <div>
+
+
+
+                    <label>
+
+
+
+                        Source Name
+
+
+
+                    </label>
+
+
+
+
+
+
+                    <input type="text" placeholder="Enter source name" [(ngModel)]="model.sourceName">
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Source Code -->
+
+
+                <div>
+
+
+
+                    <label>
+
+
+
+                        Source Code
+
+
+
+                    </label>
+
+
+
+
+
+
+                    <input type="text" placeholder="Example: WEBSITE" [(ngModel)]="model.sourceCode">
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Category -->
+
+
+                <div>
+
+
+
+                    <label>
+
+
+
+                        Category
+
+
+
+                    </label>
+
+
+
+
+
+
+                    <select [(ngModel)]="model.category">
+
+
+
+
+
+                        <option>
+
+                            Digital Marketing
+
+                        </option>
+
+
+
+
+
+                        <option>
+
+                            Sales
+
+                        </option>
+
+
+
+
+
+                        <option>
+
+                            Partner
+
+                        </option>
+
+
+
+
+
+                        <option>
+
+                            Referral
+
+                        </option>
+
+
+
+
+
+                        <option>
+
+                            Campaign
+
+                        </option>
+
+
+
+
+
+                        <option>
+
+                            Offline
+
+                        </option>
+
+
+
+
+
+                    </select>
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Conversion Rate -->
+
+
+                <div>
+
+
+
+                    <label>
+
+
+
+                        Conversion Rate (%)
+
+
+
+                    </label>
+
+
+
+
+
+
+                    <input type="number" min="0" max="100" placeholder="Enter conversion percentage"
+                        [(ngModel)]="model.conversionRate">
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Priority -->
+
+
+                <div>
+
+
+
+                    <label>
+
+
+
+                        Priority
+
+
+
+                    </label>
+
+
+
+
+
+
+                    <select [(ngModel)]="model.priority">
+
+
+
+
+
+                        <option value="High">
+
+
+                            High
+
+
+                        </option>
+
+
+
+
+
+                        <option value="Medium">
+
+
+                            Medium
+
+
+                        </option>
+
+
+
+
+
+                        <option value="Low">
+
+
+                            Low
+
+
+                        </option>
+
+
+
+
+
+                    </select>
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Status -->
+
+
+                <div>
+
+
+
+                    <label>
+
+
+
+                        Status
+
+
+
+                    </label>
+
+
+
+
+
+
+                    <select [(ngModel)]="model.status">
+
+
+
+
+
+                        <option>
+
+
+                            Active
+
+
+                        </option>
+
+
+
+
+
+                        <option>
+
+
+                            Inactive
+
+
+                        </option>
+
+
+
+
+
+                    </select>
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Description -->
+
+
+                <div class="full-width">
+
+
+
+                    <label>
+
+
+
+                        Description
+
+
+
+                    </label>
+
+
+
+
+
+
+                    <textarea rows="4" placeholder="Enter source description" [(ngModel)]="model.description">
+
+
+
+                    </textarea>
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Default Source -->
+
+
+                <div class="checkbox-group">
+
+
+
+
+
+                    <label>
+
+
+
+
+
+
+                        <input type="checkbox" [(ngModel)]="model.isDefault">
+
+
+
+
+
+                        Default Source
+
+
+
+
+
+                    </label>
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+        <!-- ========================= -->
+        <!-- Modal Footer -->
+        <!-- ========================= -->
+
+
+        <div class="modal-footer">
+
+
+
+
+
+            <button class="btn-secondary" (click)="closeModal()">
+
+
+
+
+
+                Cancel
+
+
+
+
+
+            </button>
+
+
+
+
+
+
+
+
+
+            <button class="btn-primary" (click)="saveSource()">
+
+
+
+
+
+                {{isEdit ? 'Update Source' : 'Save Source'}}
+
+
+
+
+
+            </button>
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+</div>

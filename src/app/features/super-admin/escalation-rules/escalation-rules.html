@@ -1,0 +1,213 @@
+<div class="container mt-4">
+
+    <div class="card">
+
+        <div class="card-header bg-danger text-white">
+            <h4>Escalation Rules</h4>
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+                    <label>Rule Name <span class="text-danger">*</span></label>
+                    <input class="form-control" placeholder="High Priority Ticket Escalation">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Module <span class="text-danger">*</span></label>
+                    <select class="form-select">
+                        <option>Leads</option>
+                        <option>Opportunities</option>
+                        <option>Support Tickets</option>
+                        <option>Tasks</option>
+                        <option>Orders</option>
+                        <option>Invoices</option>
+                        <option>Approvals</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Priority</label>
+                    <select class="form-select">
+                        <option>Critical</option>
+                        <option>High</option>
+                        <option>Medium</option>
+                        <option>Low</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Escalate After</label>
+                    <input type="number"
+                           class="form-control"
+                           placeholder="24">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Time Unit</label>
+                    <select class="form-select">
+                        <option>Minutes</option>
+                        <option>Hours</option>
+                        <option>Days</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Escalate To</label>
+                    <select class="form-select">
+                        <option>Sales Manager</option>
+                        <option>Support Manager</option>
+                        <option>Regional Manager</option>
+                        <option>Finance Manager</option>
+                        <option>Company Admin</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label>Escalation Condition</label>
+                    <input class="form-control"
+                           placeholder="Status = Pending">
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label>Escalation Action</label>
+                    <select class="form-select">
+                        <option>Send Email</option>
+                        <option>Send SMS</option>
+                        <option>Send WhatsApp</option>
+                        <option>Create Task</option>
+                        <option>Notify Manager</option>
+                        <option>Change Owner</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label>Description</label>
+                    <textarea class="form-control"
+                              rows="2"
+                              placeholder="Enter escalation description"></textarea>
+                </div>
+
+                <div class="col-md-3 mt-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Active
+                    </label>
+                </div>
+
+            </div>
+
+            <button class="btn btn-danger me-2">
+                Save
+            </button>
+
+            <button class="btn btn-secondary">
+                Clear
+            </button>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="row mb-3">
+
+        <div class="col-md-4">
+            <input class="form-control"
+                   placeholder="Search Escalation Rule...">
+        </div>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-danger">
+
+            <tr>
+
+                <th>#</th>
+                <th>Rule Name</th>
+                <th>Module</th>
+                <th>Priority</th>
+                <th>Escalate After</th>
+                <th>Escalate To</th>
+                <th>Action</th>
+                <th>Status</th>
+                <th width="150">Actions</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>1</td>
+                <td>Critical Ticket Escalation</td>
+                <td>Support Tickets</td>
+                <td>Critical</td>
+                <td>30 Minutes</td>
+                <td>Support Manager</td>
+                <td>Send Email</td>
+                <td>Active</td>
+                <td>
+                    <button class="btn btn-warning btn-sm me-2">Edit</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>2</td>
+                <td>Pending Lead Escalation</td>
+                <td>Leads</td>
+                <td>High</td>
+                <td>24 Hours</td>
+                <td>Sales Manager</td>
+                <td>Notify Manager</td>
+                <td>Active</td>
+                <td>
+                    <button class="btn btn-warning btn-sm me-2">Edit</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>3</td>
+                <td>Invoice Approval Delay</td>
+                <td>Approvals</td>
+                <td>Medium</td>
+                <td>2 Days</td>
+                <td>Finance Manager</td>
+                <td>Send Email</td>
+                <td>Active</td>
+                <td>
+                    <button class="btn btn-warning btn-sm me-2">Edit</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>4</td>
+                <td>Overdue Opportunity</td>
+                <td>Opportunities</td>
+                <td>High</td>
+                <td>3 Days</td>
+                <td>Regional Manager</td>
+                <td>Create Task</td>
+                <td>Inactive</td>
+                <td>
+                    <button class="btn btn-warning btn-sm me-2">Edit</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+   
+
+</div>

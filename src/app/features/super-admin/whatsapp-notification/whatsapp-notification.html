@@ -1,0 +1,209 @@
+<div class="container mt-4">
+
+    <div class="card">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4>WhatsApp Templates</h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+                    <label>Module</label>
+                    <select class="form-select">
+                        <option>All Modules</option>
+                        <option>Authentication</option>
+                        <option>Leads</option>
+                        <option>Sales</option>
+                        <option>Support</option>
+                        <option>Billing</option>
+                        <option>Subscription</option>
+                        <option>Marketing</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Template Category</label>
+                    <select class="form-select">
+                        <option>Authentication</option>
+                        <option>Utility</option>
+                        <option>Marketing</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Language</label>
+                    <select class="form-select">
+                        <option>English</option>
+                        <option>Hindi</option>
+                        <option>Telugu</option>
+                        <option>Tamil</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Enable WhatsApp Templates
+                    </label>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Media Attachment Allowed
+                    </label>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Active
+                    </label>
+                </div>
+
+            </div>
+
+            <button class="btn btn-danger me-2">
+                Save
+            </button>
+
+            <button class="btn btn-secondary me-2">
+                Clear
+            </button>
+
+            <button class="btn btn-success">
+                Add Template
+            </button>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="row mb-3">
+
+        <div class="col-md-3">
+            <input class="form-control"
+                   placeholder="Search WhatsApp Template...">
+        </div>
+
+        <div class="col-md-3">
+            <select class="form-select">
+                <option>All Modules</option>
+                <option>Authentication</option>
+                <option>Sales</option>
+                <option>Support</option>
+                <option>Billing</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <select class="form-select">
+                <option>All Status</option>
+                <option>Approved</option>
+                <option>Pending</option>
+                <option>Rejected</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <button class="btn btn-danger w-100">
+                Search
+            </button>
+        </div>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-danger">
+
+            <tr>
+
+                <th>#</th>
+                <th>Template Name</th>
+                <th>Module</th>
+                <th>Category</th>
+                <th>Language</th>
+                <th>Approval Status</th>
+                <th>Active</th>
+                <th width="200">Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>1</td>
+                <td>Login OTP</td>
+                <td>Authentication</td>
+                <td>Authentication</td>
+                <td>English</td>
+                <td><span class="badge bg-success">Approved</span></td>
+                <td><span class="badge bg-success">Active</span></td>
+                <td>
+                    <button class="btn btn-info btn-sm me-1">Preview</button>
+                    <button class="btn btn-warning btn-sm me-1">Edit</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>2</td>
+                <td>Lead Follow-up</td>
+                <td>Leads</td>
+                <td>Utility</td>
+                <td>English</td>
+                <td><span class="badge bg-success">Approved</span></td>
+                <td><span class="badge bg-success">Active</span></td>
+                <td>
+                    <button class="btn btn-info btn-sm me-1">Preview</button>
+                    <button class="btn btn-warning btn-sm me-1">Edit</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>3</td>
+                <td>Payment Reminder</td>
+                <td>Billing</td>
+                <td>Utility</td>
+                <td>English</td>
+                <td><span class="badge bg-warning">Pending</span></td>
+                <td><span class="badge bg-success">Active</span></td>
+                <td>
+                    <button class="btn btn-info btn-sm me-1">Preview</button>
+                    <button class="btn btn-warning btn-sm me-1">Edit</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>4</td>
+                <td>Festival Offer</td>
+                <td>Marketing</td>
+                <td>Marketing</td>
+                <td>English</td>
+                <td><span class="badge bg-danger">Rejected</span></td>
+                <td><span class="badge bg-secondary">Inactive</span></td>
+                <td>
+                    <button class="btn btn-info btn-sm me-1">Preview</button>
+                    <button class="btn btn-warning btn-sm me-1">Edit</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+
+</div>

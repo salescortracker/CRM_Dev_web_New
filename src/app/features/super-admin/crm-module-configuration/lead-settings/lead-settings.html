@@ -1,0 +1,1065 @@
+<div class="page-container">
+
+
+    <!-- ========================= -->
+    <!-- Page Header -->
+    <!-- ========================= -->
+
+
+    <div class="page-header">
+
+
+        <div>
+
+
+            <p class="page-subtitle">
+                CRM MODULE CONFIGURATION
+            </p>
+
+
+            <h1>
+                Lead Settings
+            </h1>
+
+
+            <p class="page-description">
+                Configure lead lifecycle, assignment rules, priorities and automation settings.
+            </p>
+
+
+        </div>
+
+
+
+
+        <div class="header-buttons">
+
+
+
+            <button class="btn btn-light" (click)="refresh()">
+
+
+                <i class="fa-solid fa-rotate"></i>
+
+                Refresh
+
+
+            </button>
+
+
+
+
+
+            <button class="btn btn-danger" (click)="openAddModal()">
+
+
+
+                <i class="fa-solid fa-plus"></i>
+
+                Add Lead Setting
+
+
+
+            </button>
+
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+    <!-- ========================= -->
+    <!-- Statistics -->
+    <!-- ========================= -->
+
+
+    <div class="stats-grid">
+
+
+
+        <div class="stat-card">
+
+
+            <span>
+                Total Settings
+            </span>
+
+
+            <h2>
+                {{leadSettings.length}}
+            </h2>
+
+
+        </div>
+
+
+
+
+
+        <div class="stat-card">
+
+
+            <span>
+                Active
+            </span>
+
+
+            <h2>
+                {{activeCount}}
+            </h2>
+
+
+        </div>
+
+
+
+
+
+        <div class="stat-card">
+
+
+            <span>
+                Inactive
+            </span>
+
+
+            <h2>
+                {{inactiveCount}}
+            </h2>
+
+
+        </div>
+
+
+
+
+
+        <div class="stat-card">
+
+
+            <span>
+                Default Setting
+            </span>
+
+
+            <h2>
+                {{defaultSetting}}
+            </h2>
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+    <!-- ========================= -->
+    <!-- Search Section -->
+    <!-- ========================= -->
+
+
+    <div class="search-panel">
+
+
+
+        <div class="search-box">
+
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+
+
+            <input type="text" placeholder="Search lead settings..." [(ngModel)]="searchText">
+
+
+        </div>
+
+
+
+
+
+        <select class="form-control" [(ngModel)]="statusFilter">
+
+
+
+            <option value="">
+                All Status
+            </option>
+
+
+            <option value="Active">
+                Active
+            </option>
+
+
+            <option value="Inactive">
+                Inactive
+            </option>
+
+
+
+        </select>
+
+
+
+
+
+        <button class="btn btn-secondary" (click)="clearFilters()">
+
+
+
+            Clear
+
+
+
+        </button>
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+    <!-- ========================= -->
+    <!-- Table -->
+    <!-- ========================= -->
+
+
+    <div class="table-card">
+
+
+
+        <div class="table-header">
+
+
+
+            <h3>
+                Lead Configuration Settings
+            </h3>
+
+
+
+            <span>
+
+                {{filteredLeadSettings.length}} Records
+
+            </span>
+
+
+
+        </div>
+
+
+
+
+
+
+
+        <table>
+
+
+            <thead>
+
+
+                <tr>
+
+
+                    <th>
+                        Setting Name
+                    </th>
+
+
+
+                    <th>
+                        Default Status
+                    </th>
+
+
+
+                    <th>
+                        Priority
+                    </th>
+
+
+
+                    <th>
+                        Auto Assignment
+                    </th>
+
+
+
+                    <th>
+                        Follow-up Days
+                    </th>
+
+
+
+                    <th>
+                        Status
+                    </th>
+
+
+
+                    <th>
+                        Default
+                    </th>
+
+
+
+                    <th width="170">
+                        Actions
+                    </th>
+
+
+
+                </tr>
+
+
+            </thead>
+
+
+
+
+
+
+
+
+            <tbody>
+
+
+
+                <tr *ngFor="let item of filteredLeadSettings">
+
+
+
+                    <td>
+
+
+
+                        <div class="provider-info">
+
+
+
+                            <div class="provider-icon">
+
+
+                                <i class="fa-solid fa-user-plus"></i>
+
+
+                            </div>
+
+
+
+
+                            <div>
+
+
+
+                                <strong>
+
+                                    {{item.settingName}}
+
+                                </strong>
+
+
+
+                                <small>
+
+                                    {{item.assignmentRule}}
+
+                                </small>
+
+
+
+                            </div>
+
+
+
+                        </div>
+
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+                        {{item.defaultStatus}}
+
+                    </td>
+
+
+
+
+
+
+                    <td>
+
+
+                        <span class="priority-badge">
+
+                            {{item.priority}}
+
+                        </span>
+
+
+                    </td>
+
+
+
+
+
+
+
+
+                    <td>
+
+
+
+                        <span [ngClass]="item.autoAssignment ? 'active':'inactive'">
+
+
+
+                            {{item.autoAssignment ? 'Enabled':'Disabled'}}
+
+
+
+                        </span>
+
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+                        {{item.followUpDays}}
+
+
+                    </td>
+
+
+
+
+
+
+
+
+                    <td>
+
+
+
+                        <span class="status" [ngClass]="item.status.toLowerCase()">
+
+
+
+                            {{item.status}}
+
+
+
+                        </span>
+
+
+                    </td>
+
+
+
+
+
+
+
+
+                    <td>
+
+
+                        <span *ngIf="item.isDefault" class="default-badge">
+
+
+
+                            Default
+
+
+
+                        </span>
+
+
+                    </td>
+
+
+
+
+
+
+
+
+                    <td>
+
+
+
+
+                        <button class="icon-btn" (click)="edit(item)">
+
+
+
+                            <i class="fa-solid fa-pen"></i>
+
+
+
+                        </button>
+
+
+
+
+
+
+
+                        <button class="icon-btn danger" (click)="delete(item.id)">
+
+
+
+                            <i class="fa-solid fa-trash"></i>
+
+
+
+                        </button>
+
+
+
+
+                    </td>
+
+
+
+
+
+                </tr>
+
+
+
+            </tbody>
+
+
+
+        </table>
+
+
+
+    </div>
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- ===================================== -->
+<!-- Add / Edit Lead Setting Modal -->
+<!-- ===================================== -->
+
+
+<div class="modal-overlay" *ngIf="showModal">
+
+
+
+
+
+    <div class="modal-box">
+
+
+
+
+
+
+        <!-- Modal Header -->
+
+
+        <div class="modal-header">
+
+
+
+            <h3>
+
+
+                {{isEdit ? 'Edit Lead Setting':'Add Lead Setting'}}
+
+
+
+            </h3>
+
+
+
+
+            <button class="close-btn" (click)="closeModal()">
+
+
+
+                ×
+
+
+
+            </button>
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+        <!-- Modal Body -->
+
+
+        <div class="modal-body">
+
+
+
+            <div class="form-grid">
+
+
+
+
+
+
+
+                <!-- Setting Name -->
+
+
+                <div>
+
+
+                    <label>
+                        Setting Name
+                    </label>
+
+
+                    <input type="text" placeholder="Enter setting name" [(ngModel)]="model.settingName">
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Default Status -->
+
+
+                <div>
+
+
+                    <label>
+                        Default Lead Status
+                    </label>
+
+
+
+                    <select [(ngModel)]="model.defaultStatus">
+
+
+
+                        <option>
+                            New
+                        </option>
+
+
+                        <option>
+                            Contacted
+                        </option>
+
+
+                        <option>
+                            Qualified
+                        </option>
+
+
+                        <option>
+                            Converted
+                        </option>
+
+
+
+                    </select>
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Priority -->
+
+
+                <div>
+
+
+                    <label>
+                        Lead Priority
+                    </label>
+
+
+
+                    <select [(ngModel)]="model.priority">
+
+
+
+                        <option>
+                            Low
+                        </option>
+
+
+                        <option>
+                            Medium
+                        </option>
+
+
+                        <option>
+                            High
+                        </option>
+
+
+                        <option>
+                            Critical
+                        </option>
+
+
+
+                    </select>
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Assignment Rule -->
+
+
+                <div>
+
+
+                    <label>
+                        Assignment Rule
+                    </label>
+
+
+
+                    <select [(ngModel)]="model.assignmentRule">
+
+
+
+                        <option>
+                            Round Robin
+                        </option>
+
+
+                        <option>
+                            Manual Assignment
+                        </option>
+
+
+                        <option>
+                            Territory Based
+                        </option>
+
+
+
+                    </select>
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Follow Up Days -->
+
+
+                <div>
+
+
+                    <label>
+                        Follow-up Days
+                    </label>
+
+
+
+                    <input type="number" [(ngModel)]="model.followUpDays">
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Status -->
+
+
+                <div>
+
+
+                    <label>
+                        Status
+                    </label>
+
+
+
+                    <select [(ngModel)]="model.status">
+
+
+
+                        <option>
+                            Active
+                        </option>
+
+
+                        <option>
+                            Inactive
+                        </option>
+
+
+
+                    </select>
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Auto Assignment -->
+
+
+                <div class="checkbox-group">
+
+
+                    <label>
+
+
+
+                        <input type="checkbox" [(ngModel)]="model.autoAssignment">
+
+
+
+                        Enable Auto Assignment
+
+
+
+                    </label>
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Email Notification -->
+
+
+                <div class="checkbox-group">
+
+
+                    <label>
+
+
+
+                        <input type="checkbox" [(ngModel)]="model.emailNotification">
+
+
+
+                        Email Notification
+
+
+
+                    </label>
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Default -->
+
+
+                <div class="checkbox-group">
+
+
+                    <label>
+
+
+
+                        <input type="checkbox" [(ngModel)]="model.isDefault">
+
+
+
+                        Default Setting
+
+
+
+                    </label>
+
+
+
+                </div>
+
+
+
+
+
+            </div>
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+        <!-- Modal Footer -->
+
+
+        <div class="modal-footer">
+
+
+
+            <button class="btn-secondary" (click)="closeModal()">
+
+
+
+                Cancel
+
+
+
+            </button>
+
+
+
+
+
+
+            <button class="btn-primary" (click)="saveLeadSetting()">
+
+
+
+                {{isEdit ? 'Update Setting':'Save Setting'}}
+
+
+
+            </button>
+
+
+
+
+        </div>
+
+
+
+
+
+
+    </div>
+
+
+
+
+</div>

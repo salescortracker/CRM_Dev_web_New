@@ -1,0 +1,405 @@
+<div class="contact-list-page">
+
+  <!-- ================================================= -->
+  <!-- PAGE HEADER -->
+  <!-- ================================================= -->
+
+  <div class="page-header">
+
+    <div>
+
+      <div class="breadcrumb">
+        <span>CRM</span>
+        <i class="fa-solid fa-chevron-right"></i>
+        <span>Contacts</span>
+      </div>
+
+      <div class="title-section">
+
+        <div class="title-icon">
+          <i class="fa-solid fa-address-book"></i>
+        </div>
+
+        <div>
+          <h1>Contacts</h1>
+
+          <p>
+            Manage people, decision makers and business relationships.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="header-actions">
+
+      <button
+        class="btn-secondary"
+        type="button"
+        (click)="exportContacts()">
+
+        <i class="fa-solid fa-download"></i>
+        Export
+
+      </button>
+
+      <button
+        class="btn-primary"
+        type="button"
+        (click)="createContact()">
+
+        <i class="fa-solid fa-user-plus"></i>
+        New Contact
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- ================================================= -->
+  <!-- SUMMARY -->
+  <!-- ================================================= -->
+
+  <div class="summary-grid">
+
+    <div class="summary-card">
+
+      <div class="summary-icon blue">
+        <i class="fa-solid fa-users"></i>
+      </div>
+
+      <div>
+        <span>Total Contacts</span>
+        <strong>{{ contacts.length }}</strong>
+      </div>
+
+    </div>
+
+
+    <div class="summary-card">
+
+      <div class="summary-icon green">
+        <i class="fa-solid fa-user-check"></i>
+      </div>
+
+      <div>
+        <span>Active Contacts</span>
+        <strong>{{ activeContacts }}</strong>
+      </div>
+
+    </div>
+
+
+    <div class="summary-card">
+
+      <div class="summary-icon orange">
+        <i class="fa-solid fa-bullseye"></i>
+      </div>
+
+      <div>
+        <span>Prospects</span>
+        <strong>{{ prospects }}</strong>
+      </div>
+
+    </div>
+
+
+    <div class="summary-card">
+
+      <div class="summary-icon purple">
+        <i class="fa-solid fa-user-plus"></i>
+      </div>
+
+      <div>
+        <span>Leads Created</span>
+        <strong>{{ convertedLeads }}</strong>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ================================================= -->
+  <!-- FILTER PANEL -->
+  <!-- ================================================= -->
+
+  <div class="filter-panel">
+
+    <div class="search-field">
+
+      <i class="fa-solid fa-magnifying-glass"></i>
+
+      <input
+        type="text"
+        [(ngModel)]="searchText"
+        placeholder="Search name, company, email, phone..." />
+
+    </div>
+
+
+    <select [(ngModel)]="companyFilter">
+
+      <option value="">
+        All Companies
+      </option>
+
+      <option
+        *ngFor="let company of companies"
+        [value]="company">
+
+        {{ company }}
+
+      </option>
+
+    </select>
+
+
+    <select [(ngModel)]="statusFilter">
+
+      <option value="">
+        All Status
+      </option>
+
+      <option value="Active">
+        Active
+      </option>
+
+      <option value="Prospect">
+        Prospect
+      </option>
+
+      <option value="Inactive">
+        Inactive
+      </option>
+
+    </select>
+
+
+    <button
+      class="filter-button"
+      type="button"
+      (click)="clearFilters()">
+
+      <i class="fa-solid fa-rotate-left"></i>
+      Reset
+
+    </button>
+
+  </div>
+
+
+  <!-- ================================================= -->
+  <!-- CONTACT DIRECTORY -->
+  <!-- ================================================= -->
+
+  <div class="contacts-card">
+
+    <div class="table-header">
+
+      <div>
+
+        <h2>Contact Directory</h2>
+
+        <span>
+          {{ filteredContacts.length }} contacts
+        </span>
+
+      </div>
+
+      <button
+        class="view-button"
+        type="button">
+
+        <i class="fa-solid fa-sliders"></i>
+        View
+
+      </button>
+
+    </div>
+
+
+    <div class="contact-table">
+
+      <!-- HEADER -->
+
+      <div class="table-row table-heading">
+
+        <div>Contact</div>
+        <div>Company</div>
+        <div>Designation</div>
+        <div>Contact Information</div>
+        <div>Status</div>
+        <div>Owner</div>
+        <div></div>
+
+      </div>
+
+
+      <!-- ROW -->
+
+      <div
+        class="table-row"
+        *ngFor="let contact of filteredContacts"
+        (click)="openContact()">
+
+
+        <!-- CONTACT -->
+
+        <div class="contact-cell">
+
+          <div
+            class="contact-avatar"
+            [ngClass]="contact.color">
+
+            {{ contact.initials }}
+
+          </div>
+
+          <div>
+
+            <strong>
+              {{ contact.name }}
+            </strong>
+
+            <span>
+              {{ contact.id }}
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <!-- COMPANY -->
+
+        <div class="company-cell">
+
+          <i class="fa-solid fa-building"></i>
+
+          <span>
+            {{ contact.company }}
+          </span>
+
+        </div>
+
+
+        <!-- DESIGNATION -->
+
+        <div class="designation-cell">
+
+          <strong>
+            {{ contact.designation }}
+          </strong>
+
+          <span>
+            {{ contact.department }}
+          </span>
+
+        </div>
+
+
+        <!-- INFORMATION -->
+
+        <div class="information-cell">
+
+          <span>
+            <i class="fa-regular fa-envelope"></i>
+            {{ contact.email }}
+          </span>
+
+          <span>
+            <i class="fa-solid fa-phone"></i>
+            {{ contact.phone }}
+          </span>
+
+        </div>
+
+
+        <!-- STATUS -->
+
+        <div>
+
+          <span
+            class="status"
+            [ngClass]="contact.status.toLowerCase()">
+
+            <span class="status-dot"></span>
+
+            {{ contact.status }}
+
+          </span>
+
+        </div>
+
+
+        <!-- OWNER -->
+
+        <div class="owner-cell">
+
+          <div class="owner-avatar">
+            {{ contact.ownerInitials }}
+          </div>
+
+          <span>
+            {{ contact.owner }}
+          </span>
+
+        </div>
+
+
+        <!-- ACTION -->
+
+        <div class="row-action">
+
+          <button
+            type="button"
+            (click)="openContact(); $event.stopPropagation()">
+
+            <i class="fa-solid fa-chevron-right"></i>
+
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- EMPTY -->
+
+      <div
+        class="empty-state"
+        *ngIf="filteredContacts.length === 0">
+
+        <div class="empty-icon">
+
+          <i class="fa-solid fa-user-slash"></i>
+
+        </div>
+
+        <h3>No contacts found</h3>
+
+        <p>
+          Try changing your search or create a new contact.
+        </p>
+
+        <button
+          class="btn-primary"
+          type="button"
+          (click)="createContact()">
+
+          <i class="fa-solid fa-plus"></i>
+          Create Contact
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

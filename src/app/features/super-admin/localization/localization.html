@@ -1,0 +1,237 @@
+<div class="container mt-4">
+
+    <div class="card">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4>Localization Settings</h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+                    <label>Default Language <span class="text-danger">*</span></label>
+                    <select class="form-select">
+                        <option>English</option>
+                        <option>Hindi</option>
+                        <option>French</option>
+                        <option>German</option>
+                        <option>Spanish</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Default Time Zone <span class="text-danger">*</span></label>
+                    <select class="form-select">
+                        <option>(UTC+05:30) India Standard Time</option>
+                        <option>(UTC+00:00) UTC</option>
+                        <option>(UTC-05:00) Eastern Time</option>
+                        <option>(UTC+01:00) Central European Time</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Default Currency</label>
+                    <select class="form-select">
+                        <option>USD ($)</option>
+                        <option>INR (₹)</option>
+                        <option>EUR (€)</option>
+                        <option>GBP (£)</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Date Format</label>
+                    <select class="form-select">
+                        <option>dd-MM-yyyy</option>
+                        <option>MM-dd-yyyy</option>
+                        <option>yyyy-MM-dd</option>
+                        <option>dd/MM/yyyy</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Time Format</label>
+                    <select class="form-select">
+                        <option>12 Hour (AM/PM)</option>
+                        <option>24 Hour</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Number Format</label>
+                    <select class="form-select">
+                        <option>1,234,567.89</option>
+                        <option>1.234.567,89</option>
+                        <option>12,34,567.89</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>First Day of Week</label>
+                    <select class="form-select">
+                        <option>Monday</option>
+                        <option>Sunday</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Default Country</label>
+                    <select class="form-select">
+                        <option>India</option>
+                        <option>United States</option>
+                        <option>United Kingdom</option>
+                        <option>Canada</option>
+                        <option>Australia</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Default Region</label>
+                    <select class="form-select">
+                        <option>Asia Pacific</option>
+                        <option>North America</option>
+                        <option>Europe</option>
+                        <option>Middle East</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Enable Multi Language
+                    </label>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Auto Detect User Time Zone
+                    </label>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox">
+                        Allow Company Override
+                    </label>
+                </div>
+
+            </div>
+
+            <button class="btn btn-danger me-2">
+                Save
+            </button>
+
+            <button class="btn btn-secondary me-2">
+                Reset
+            </button>
+
+            <button class="btn btn-success">
+                Preview
+            </button>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="row mb-3">
+
+        <div class="col-md-6">
+            <input type="text"
+                   class="form-control"
+                   placeholder="Search Localization Settings...">
+        </div>
+
+        <div class="col-md-6">
+            <button class="btn btn-danger w-100">
+                Search
+            </button>
+        </div>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-danger">
+
+            <tr>
+
+                <th>#</th>
+                <th>Setting</th>
+                <th>Value</th>
+                <th>Category</th>
+                <th>Modified By</th>
+                <th>Modified Date</th>
+                <th>Status</th>
+                <th width="170">Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+
+                <td>1</td>
+                <td>Default Language</td>
+                <td>English</td>
+                <td>Language</td>
+                <td>Super Admin</td>
+                <td>28-Jul-2026</td>
+                <td><span class="badge bg-success">Active</span></td>
+
+                <td>
+                    <button class="btn btn-warning btn-sm me-1">Edit</button>
+                    <button class="btn btn-info btn-sm">History</button>
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>2</td>
+                <td>Time Zone</td>
+                <td>India Standard Time</td>
+                <td>Regional</td>
+                <td>Super Admin</td>
+                <td>28-Jul-2026</td>
+                <td><span class="badge bg-success">Configured</span></td>
+
+                <td>
+                    <button class="btn btn-warning btn-sm me-1">Edit</button>
+                    <button class="btn btn-info btn-sm">History</button>
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>3</td>
+                <td>Currency</td>
+                <td>USD ($)</td>
+                <td>Finance</td>
+                <td>Super Admin</td>
+                <td>27-Jul-2026</td>
+                <td><span class="badge bg-success">Configured</span></td>
+
+                <td>
+                    <button class="btn btn-warning btn-sm me-1">Edit</button>
+                    <button class="btn btn-info btn-sm">History</button>
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+ 
+
+</div>

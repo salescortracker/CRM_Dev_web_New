@@ -1,0 +1,849 @@
+<div class="container-fluid mt-4">
+
+    <!-- ========================================= -->
+    <!-- Header -->
+    <!-- ========================================= -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h3 class="fw-bold text-danger mb-1">
+
+                <i class="fa-solid fa-building-user me-2"></i>
+
+                Business Unit Management
+
+            </h3>
+
+            <p class="text-muted mb-0">
+
+                Create and manage Business Units for each company.
+
+            </p>
+
+        </div>
+
+        <div>
+
+            <button class="btn btn-secondary me-2" (click)="clear()">
+
+                <i class="fa-solid fa-rotate"></i>
+
+                Clear
+
+            </button>
+
+            <button class="btn btn-danger" (click)="saveBusinessUnit()">
+
+                <i class="fa-solid" [ngClass]="isEdit ? 'fa-pen' : 'fa-plus'"></i>
+
+                {{isEdit ? ' Update Business Unit' : ' Add Business Unit'}}
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Business Unit Form -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-header bg-danger text-white">
+
+            <h5 class="mb-0">
+
+                Business Unit Information
+
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <!-- Organization -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Organization
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="businessUnit.organization">
+
+                        <option value="">Select Organization</option>
+
+                        <option>OpenVision Technologies</option>
+
+                        <option>ABC Group</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !businessUnit.organization">
+
+                        Organization is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Company -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Company
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="businessUnit.company">
+
+                        <option value="">Select Company</option>
+
+                        <option>ABC Technologies</option>
+
+                        <option>XYZ Solutions</option>
+
+                        <option>Open CRM</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !businessUnit.company">
+
+                        Company is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Business Unit Name -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Business Unit Name
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input class="form-control" [(ngModel)]="businessUnit.businessUnitName">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !businessUnit.businessUnitName">
+
+                        Business Unit Name is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Business Unit Code -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Business Unit Code
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input class="form-control" [(ngModel)]="businessUnit.businessUnitCode">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !businessUnit.businessUnitCode">
+
+                        Business Unit Code is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Parent Business Unit -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Parent Business Unit
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="businessUnit.parentBusinessUnit">
+
+                        <option value="">None</option>
+
+                        <option>Corporate</option>
+
+                        <option>Sales</option>
+
+                        <option>Finance</option>
+
+                        <option>IT Services</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Business Unit Head -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Business Unit Head
+
+                    </label>
+
+                    <input class="form-control" [(ngModel)]="businessUnit.businessUnitHead">
+
+                </div>
+
+                <!-- Email -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Email
+
+                    </label>
+
+                    <input type="email" class="form-control" [(ngModel)]="businessUnit.email">
+
+                </div>
+
+                <!-- Mobile -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Mobile Number
+
+                    </label>
+
+                    <input class="form-control" [(ngModel)]="businessUnit.mobile">
+
+                </div>
+
+                <!-- Region -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Region
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="businessUnit.region">
+
+                        <option>South Region</option>
+
+                        <option>North Region</option>
+
+                        <option>East Region</option>
+
+                        <option>West Region</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Branch -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Branch
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="businessUnit.branch">
+
+                        <option>Hyderabad</option>
+
+                        <option>Bangalore</option>
+
+                        <option>Chennai</option>
+
+                        <option>Delhi</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Description -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Description
+
+                    </label>
+
+                    <textarea rows="3" class="form-control" [(ngModel)]="businessUnit.description"></textarea>
+
+                </div>
+
+                <!-- Remarks -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Remarks
+
+                    </label>
+
+                    <textarea rows="3" class="form-control" [(ngModel)]="businessUnit.remarks"></textarea>
+
+                </div>
+
+                <!-- Status -->
+
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Status
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="businessUnit.status">
+
+                        <option>Active</option>
+
+                        <option>Inactive</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Active -->
+
+                <div class="col-md-3">
+
+                    <div class="form-check mt-4">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="businessUnit.isActive">
+
+                        <label class="form-check-label">
+
+                            Active
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <!-- Default Business Unit -->
+
+                <div class="col-md-3">
+
+                    <div class="form-check mt-4">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="businessUnit.isDefault">
+
+                        <label class="form-check-label">
+
+                            Default Business Unit
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <!-- Billable -->
+
+                <div class="col-md-3">
+
+                    <div class="form-check mt-4">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="businessUnit.isBillable">
+
+                        <label class="form-check-label">
+
+                            Billable Unit
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- Unit Head -->
+<div class="col-md-4 mb-3">
+    <label class="form-label">
+        Unit Head
+    </label>
+
+    <select class="form-select" [(ngModel)]="businessUnit.unitHead">
+
+        <option value="">Select Unit Head</option>
+        <option>John Smith</option>
+        <option>David Wilson</option>
+        <option>Robert King</option>
+        <option>Maria Joseph</option>
+        <option>Sophia Williams</option>
+
+    </select>
+</div>
+
+<!-- Parent Business Unit -->
+
+<div class="col-md-4 mb-3">
+
+    <label class="form-label">
+
+        Parent Business Unit
+
+    </label>
+
+    <select class="form-select" [(ngModel)]="businessUnit.parentBusinessUnit">
+
+        <option value="">None</option>
+        <option>Corporate</option>
+        <option>Sales Division</option>
+        <option>Operations Division</option>
+        <option>Support Division</option>
+
+    </select>
+
+</div>
+
+<!-- Employee Strength -->
+
+<div class="col-md-4 mb-3">
+
+    <label class="form-label">
+
+        Employee Strength
+
+    </label>
+
+    <input type="number" class="form-control" [(ngModel)]="businessUnit.employeeStrength">
+
+</div>
+
+<!-- Cost Center -->
+
+<div class="col-md-4 mb-3">
+
+    <label class="form-label">
+
+        Cost Center Code
+
+    </label>
+
+    <input class="form-control" [(ngModel)]="businessUnit.costCenterCode">
+
+</div>
+
+<!-- Budget -->
+
+<div class="col-md-4 mb-3">
+
+    <label class="form-label">
+
+        Annual Budget
+
+    </label>
+
+    <input type="number" class="form-control" [(ngModel)]="businessUnit.annualBudget">
+
+</div>
+
+<!-- Phone -->
+
+<div class="col-md-4 mb-3">
+
+    <label class="form-label">
+
+        Contact Number
+
+    </label>
+
+    <input class="form-control" [(ngModel)]="businessUnit.phone">
+
+</div>
+
+<!-- Email -->
+
+<div class="col-md-4 mb-3">
+
+    <label class="form-label">
+
+        Email
+
+    </label>
+
+    <input type="email" class="form-control" [(ngModel)]="businessUnit.email">
+
+</div>
+
+<!-- Extension -->
+
+<div class="col-md-4 mb-3">
+
+    <label class="form-label">
+
+        Extension Number
+
+    </label>
+
+    <input class="form-control" [(ngModel)]="businessUnit.extension">
+
+</div>
+
+<!-- Working Hours -->
+
+<div class="col-md-4 mb-3">
+
+    <label class="form-label">
+
+        Working Hours
+
+    </label>
+
+    <select class="form-select" [(ngModel)]="businessUnit.workingHours">
+
+        <option>General Shift</option>
+        <option>Morning Shift</option>
+        <option>Evening Shift</option>
+        <option>Night Shift</option>
+
+    </select>
+
+</div>
+
+<!-- Description -->
+
+<div class="col-md-12 mb-3">
+
+    <label class="form-label">
+
+        Description
+
+    </label>
+
+    <textarea rows="3" class="form-control" [(ngModel)]="businessUnit.description">
+                </textarea>
+
+</div>
+
+<!-- Status -->
+
+<div class="col-md-3 mb-3">
+
+    <div class="form-check mt-4">
+
+        <input class="form-check-input" type="checkbox" [(ngModel)]="businessUnit.isActive">
+
+        <label class="form-check-label">
+
+            Active
+
+        </label>
+
+    </div>
+
+</div>
+
+
+
+<!-- ================================================= -->
+<!-- Buttons -->
+<!-- ================================================= -->
+
+<div class="mb-4">
+
+    <button class="btn btn-danger me-2" (click)="saveBusinessUnit()">
+
+        {{isEdit ? 'Update Business Unit' : 'Save Business Unit'}}
+
+    </button>
+
+    <button class="btn btn-secondary" (click)="clear()">
+
+        Clear
+
+    </button>
+
+</div>
+
+<!-- ================================================= -->
+<!-- Search -->
+<!-- ================================================= -->
+
+<div class="card shadow-sm mb-3">
+
+    <div class="card-body">
+
+        <div class="row">
+
+            <div class="col-md-4">
+
+                <input class="form-control" placeholder="Search Business Unit..." [(ngModel)]="searchText">
+
+            </div>
+
+            <div class="col-md-3">
+
+                <select class="form-select" [(ngModel)]="companyFilter">
+
+                    <option value="">All Companies</option>
+
+                    <option>ABC Technologies</option>
+                    <option>XYZ Solutions</option>
+                    <option>Open CRM</option>
+
+                </select>
+
+            </div>
+
+            <div class="col-md-3">
+
+                <select class="form-select" [(ngModel)]="statusFilter">
+
+                    <option value="">All Status</option>
+
+                    <option>Active</option>
+                    <option>Inactive</option>
+
+                </select>
+
+            </div>
+
+            <div class="col-md-2">
+
+                <button class="btn btn-outline-secondary w-100" (click)="clearFilters()">
+
+                    Clear
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- ========================================================= -->
+<!-- Business Units List -->
+<!-- ========================================================= -->
+
+<div class="card shadow-sm border-0">
+
+    <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+
+        <h5 class="mb-0">
+
+            <i class="fa-solid fa-sitemap me-2"></i>
+
+            Business Units List
+
+        </h5>
+
+        <span class="badge bg-light text-dark">
+
+            Total Records : {{filteredBusinessUnits.length}}
+
+        </span>
+
+    </div>
+
+    <div class="card-body p-0">
+
+        <div class="table-responsive">
+
+            <table class="table table-bordered table-hover align-middle mb-0">
+
+                <thead class="table-danger">
+
+                    <tr>
+
+                        <th width="70">#</th>
+
+                        <th>Business Unit</th>
+
+                        <th>Unit Code</th>
+
+                        <th>Company</th>
+
+                        <th>Branch</th>
+
+                        <th>Head</th>
+
+                        <th>Employees</th>
+
+                        <th>Budget</th>
+
+                        <th>Status</th>
+
+                        <th width="170">Action</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr *ngFor="let item of pagedBusinessUnits; let i=index">
+
+                        <td>
+
+                            {{((page-1)*pageSize)+i+1}}
+
+                        </td>
+
+                        <td>
+
+                            <div class="fw-bold">
+
+                                {{item.businessUnitName}}
+
+                            </div>
+
+                            <small class="text-muted">
+
+                                {{item.department}}
+
+                            </small>
+
+                        </td>
+
+                        <td>
+
+                            {{item.businessUnitCode}}
+
+                        </td>
+
+                        <td>
+
+                            {{item.company}}
+
+                        </td>
+
+                        <td>
+
+                            {{item.branch}}
+
+                        </td>
+
+                        <td>
+
+                            {{item.unitHead}}
+
+                        </td>
+
+                        <td>
+
+                            {{item.employeeStrength}}
+
+                        </td>
+
+                        <td>
+
+                            {{item.annualBudget | number}}
+
+                        </td>
+
+                        <td>
+
+                            <span class="badge" [ngClass]="item.isActive ? 'bg-success' : 'bg-danger'">
+
+                                {{item.isActive ? 'Active' : 'Inactive'}}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <button class="btn btn-warning btn-sm me-2" (click)="edit(item.businessUnitId)">
+
+                                <i class="fa-solid fa-pen"></i>
+
+                                Edit
+
+                            </button>
+
+                            <button class="btn btn-danger btn-sm" (click)="delete(item.businessUnitId)">
+
+                                <i class="fa-solid fa-trash"></i>
+
+                                Delete
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                    <tr *ngIf="pagedBusinessUnits.length==0">
+
+                        <td colspan="10" class="text-center py-5">
+
+                            <i class="fa-solid fa-folder-open fa-3x text-secondary mb-3"></i>
+
+                            <br>
+
+                            <span class="text-muted">
+
+                                No Business Units Available
+
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ========================================================= -->
+<!-- Pagination -->
+<!-- ========================================================= -->
+
+<div class="mt-3">
+
+    <app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredBusinessUnits.length"
+        (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
+
+    </app-pagination>
+
+</div>

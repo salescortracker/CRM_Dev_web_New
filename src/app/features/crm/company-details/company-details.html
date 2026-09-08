@@ -1,0 +1,2470 @@
+<div class="company-details-page">
+
+  <!-- ========================================================= -->
+  <!-- BREADCRUMB -->
+  <!-- ========================================================= -->
+
+  <div class="breadcrumb">
+    <span>CRM</span>
+    <i class="fa-solid fa-chevron-right"></i>
+    <span>Companies</span>
+    <i class="fa-solid fa-chevron-right"></i>
+    <strong>{{ company.name }}</strong>
+  </div>
+
+
+  <!-- ========================================================= -->
+  <!-- COMPANY HEADER -->
+  <!-- ========================================================= -->
+
+  <section class="company-header">
+
+    <div class="company-header-left">
+
+      <div class="company-avatar">
+        {{ company.initials }}
+      </div>
+
+      <div class="company-main-info">
+
+        <div class="company-title-row">
+
+          <h1>{{ company.name }}</h1>
+
+          <span class="status-badge active">
+            <span class="status-dot"></span>
+            {{ company.status }}
+          </span>
+
+        </div>
+
+        <p class="company-id">
+          <i class="fa-regular fa-building"></i>
+          {{ company.id }}
+        </p>
+
+        <div class="company-meta">
+
+          <span>
+            <i class="fa-solid fa-industry"></i>
+            {{ company.industry }}
+          </span>
+
+          <span>
+            <i class="fa-solid fa-location-dot"></i>
+            {{ company.city }}, {{ company.country }}
+          </span>
+
+          <span>
+            <i class="fa-solid fa-users"></i>
+            {{ company.companySize }} Employees
+          </span>
+
+          <span>
+            <i class="fa-regular fa-calendar"></i>
+            Since {{ company.founded }}
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="company-header-actions">
+
+      <button
+        class="btn-outline"
+        (click)="editCompany()">
+
+        <i class="fa-regular fa-pen-to-square"></i>
+        Edit
+
+      </button>
+
+      <button
+        class="btn-outline"
+        (click)="makeCall()">
+
+        <i class="fa-solid fa-phone"></i>
+        Call
+
+      </button>
+
+      <button
+        class="btn-primary"
+        (click)="sendEmail()">
+
+        <i class="fa-regular fa-envelope"></i>
+        Email
+
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- ========================================================= -->
+  <!-- QUICK STATS -->
+  <!-- ========================================================= -->
+
+  <section class="quick-stats">
+
+    <div class="stat-card">
+
+      <div class="stat-icon blue">
+        <i class="fa-solid fa-address-book"></i>
+      </div>
+
+      <div>
+        <span class="stat-label">Contacts</span>
+        <strong>{{ company.contacts }}</strong>
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-icon purple">
+        <i class="fa-solid fa-filter"></i>
+      </div>
+
+      <div>
+        <span class="stat-label">Leads</span>
+        <strong>{{ company.leads }}</strong>
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-icon green">
+        <i class="fa-solid fa-phone"></i>
+      </div>
+
+      <div>
+        <span class="stat-label">Calls</span>
+        <strong>{{ company.calls }}</strong>
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-icon orange">
+        <i class="fa-solid fa-chart-line"></i>
+      </div>
+
+      <div>
+        <span class="stat-label">Activities</span>
+        <strong>{{ company.activities }}</strong>
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ========================================================= -->
+  <!-- MAIN TABS -->
+  <!-- ========================================================= -->
+
+  <section class="tabs-card">
+
+    <div class="main-tabs">
+
+      <button
+        [class.active]="activeTab === 'overview'"
+        (click)="setTab('overview')">
+
+        <i class="fa-solid fa-chart-pie"></i>
+        Overview
+
+      </button>
+
+
+      <button
+        [class.active]="activeTab === 'contacts'"
+        (click)="setTab('contacts')">
+
+        <i class="fa-solid fa-users"></i>
+        Contacts
+
+        <span class="tab-count">
+          {{ company.contacts }}
+        </span>
+
+      </button>
+
+
+      <button
+        [class.active]="activeTab === 'activities'"
+        (click)="setTab('activities')">
+
+        <i class="fa-solid fa-clock-rotate-left"></i>
+        Activities
+
+      </button>
+
+
+      <button
+        [class.active]="activeTab === 'calls'"
+        (click)="setTab('calls')">
+
+        <i class="fa-solid fa-phone"></i>
+        Calls
+
+        <span class="tab-count">
+          {{ company.calls }}
+        </span>
+
+      </button>
+
+
+      <button
+        [class.active]="activeTab === 'emails'"
+        (click)="setTab('emails')">
+
+        <i class="fa-regular fa-envelope"></i>
+        Emails
+
+      </button>
+
+
+      <button
+        [class.active]="activeTab === 'followups'"
+        (click)="setTab('followups')">
+
+        <i class="fa-regular fa-calendar-check"></i>
+        Follow-ups
+
+      </button>
+
+
+      <button
+        [class.active]="activeTab === 'notes'"
+        (click)="setTab('notes')">
+
+        <i class="fa-regular fa-note-sticky"></i>
+        Notes
+
+      </button>
+
+
+      <button
+        [class.active]="activeTab === 'leads'"
+        (click)="setTab('leads')">
+
+        <i class="fa-solid fa-filter"></i>
+        Leads
+
+      </button>
+
+    </div>
+
+
+    <!-- ======================================================= -->
+    <!-- TAB CONTENT -->
+    <!-- ======================================================= -->
+
+    <div class="tab-content">
+
+
+      <!-- ===================================================== -->
+      <!-- OVERVIEW -->
+      <!-- ===================================================== -->
+
+      <div
+        class="tab-panel"
+        *ngIf="activeTab === 'overview'">
+
+        <div class="section-title">
+
+          <div>
+            <h2>Company Overview</h2>
+            <p>Key information about this company.</p>
+          </div>
+
+          <button
+            class="btn-primary"
+            (click)="createLead()">
+
+            <i class="fa-solid fa-plus"></i>
+            Create Lead
+
+          </button>
+
+        </div>
+
+
+        <div class="overview-grid">
+
+          <div class="info-card">
+
+            <h3>
+              <i class="fa-regular fa-building"></i>
+              Company Information
+            </h3>
+
+            <div class="info-list">
+
+              <div class="info-row">
+                <span>Company Name</span>
+                <strong>{{ company.name }}</strong>
+              </div>
+
+              <div class="info-row">
+                <span>Industry</span>
+                <strong>{{ company.industry }}</strong>
+              </div>
+
+              <div class="info-row">
+                <span>Company Size</span>
+                <strong>{{ company.companySize }} Employees</strong>
+              </div>
+
+              <div class="info-row">
+                <span>Founded</span>
+                <strong>{{ company.founded }}</strong>
+              </div>
+
+              <div class="info-row">
+                <span>Website</span>
+                <strong class="link-text">
+                  {{ company.website }}
+                </strong>
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="info-card">
+
+            <h3>
+              <i class="fa-solid fa-address-book"></i>
+              Contact Information
+            </h3>
+
+            <div class="info-list">
+
+              <div class="info-row">
+
+                <span>Phone</span>
+
+                <strong>
+                  {{ company.phone }}
+                </strong>
+
+              </div>
+
+              <div class="info-row">
+
+                <span>Email</span>
+
+                <strong class="link-text">
+                  {{ company.email }}
+                </strong>
+
+              </div>
+
+              <div class="info-row">
+
+                <span>Location</span>
+
+                <strong>
+                  {{ company.city }}, {{ company.country }}
+                </strong>
+
+              </div>
+
+              <div class="info-row">
+
+                <span>Account Owner</span>
+
+                <strong>
+                  {{ company.owner }}
+                </strong>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="info-card primary-contact-card">
+
+            <h3>
+              <i class="fa-solid fa-star"></i>
+              Primary Contact
+            </h3>
+
+            <div class="primary-contact">
+
+              <div class="contact-avatar">
+                {{ primaryContact.initials }}
+              </div>
+
+              <div class="primary-contact-info">
+
+                <strong>
+                  {{ primaryContact.name }}
+                </strong>
+
+                <span>
+                  {{ primaryContact.designation }}
+                </span>
+
+                <span>
+                  {{ primaryContact.department }}
+                </span>
+
+              </div>
+
+            </div>
+
+            <div class="contact-actions">
+
+              <button
+                (click)="makeCall(primaryContact)">
+
+                <i class="fa-solid fa-phone"></i>
+                Call
+
+              </button>
+
+              <button
+                (click)="sendEmail()">
+
+                <i class="fa-regular fa-envelope"></i>
+                Email
+
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- ===================================================== -->
+      <!-- CONTACTS -->
+      <!-- ===================================================== -->
+
+      <div
+        class="tab-panel"
+        *ngIf="activeTab === 'contacts'">
+
+        <div class="section-title">
+
+          <div>
+            <h2>Contacts</h2>
+            <p>People associated with this company.</p>
+          </div>
+
+          <button
+            class="btn-primary"
+            (click)="addContact()">
+
+            <i class="fa-solid fa-plus"></i>
+            Add Contact
+
+          </button>
+
+        </div>
+
+
+        <div class="contacts-grid">
+
+          <div
+            class="contact-card"
+            *ngFor="let contact of contacts">
+
+            <div class="contact-card-top">
+
+              <div class="contact-avatar large">
+                {{ contact.initials }}
+              </div>
+
+              <div class="contact-card-info">
+
+                <h3>{{ contact.name }}</h3>
+
+                <p>{{ contact.designation }}</p>
+
+                <span>
+                  {{ contact.department }}
+                </span>
+
+              </div>
+
+              <button
+                class="more-btn"
+                (click)="openContact(contact)">
+
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+
+              </button>
+
+            </div>
+
+
+            <div class="contact-details">
+
+              <div>
+                <i class="fa-regular fa-envelope"></i>
+                {{ contact.email }}
+              </div>
+
+              <div>
+                <i class="fa-solid fa-phone"></i>
+                {{ contact.phone }}
+              </div>
+
+            </div>
+
+
+            <div class="contact-card-actions">
+
+              <button
+                (click)="makeCall(contact)">
+
+                <i class="fa-solid fa-phone"></i>
+                Call
+
+              </button>
+
+              <button
+                (click)="sendEmail()">
+
+                <i class="fa-regular fa-envelope"></i>
+                Email
+
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- ===================================================== -->
+      <!-- ACTIVITIES -->
+      <!-- ===================================================== -->
+
+      <div
+        class="tab-panel"
+        *ngIf="activeTab === 'activities'">
+
+        <div class="section-title">
+
+          <div>
+            <h2>Activity Timeline</h2>
+            <p>Recent interactions and CRM activities.</p>
+          </div>
+
+          <div class="activity-actions">
+
+            <button
+              class="btn-outline"
+              (click)="addNote()">
+
+              <i class="fa-regular fa-note-sticky"></i>
+              Note
+
+            </button>
+
+            <button
+              class="btn-outline"
+              (click)="addFollowUp()">
+
+              <i class="fa-regular fa-calendar-check"></i>
+              Follow-up
+
+            </button>
+
+            <button
+              class="btn-primary"
+              (click)="makeCall()">
+
+              <i class="fa-solid fa-phone"></i>
+              Call
+
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <div class="timeline">
+
+          <div
+            class="timeline-item"
+            *ngFor="let activity of activities">
+
+            <div
+              class="timeline-icon"
+              [ngClass]="activity.type">
+
+              <i [class]="activity.icon"></i>
+
+            </div>
+
+            <div class="timeline-content">
+
+              <div class="timeline-top">
+
+                <h3>
+                  {{ activity.title }}
+                </h3>
+
+                <span>
+                  {{ activity.time }}
+                </span>
+
+              </div>
+
+              <p>
+                {{ activity.description }}
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- ===================================================== -->
+      <!-- CALLS -->
+      <!-- ===================================================== -->
+
+      <div
+        class="tab-panel"
+        *ngIf="activeTab === 'calls'">
+
+        <div class="section-title">
+
+          <div>
+            <h2>Call History</h2>
+            <p>Track inbound and outbound customer calls.</p>
+          </div>
+
+          <button
+            class="btn-primary"
+            (click)="makeCall()">
+
+            <i class="fa-solid fa-phone"></i>
+            New Call
+
+          </button>
+
+        </div>
+
+
+        <!-- CALL STATS -->
+
+        <div class="activity-stats">
+
+          <div class="mini-stat">
+            <span>All Calls</span>
+            <strong>{{ calls.length }}</strong>
+          </div>
+
+          <div class="mini-stat success">
+            <span>Connected</span>
+            <strong>{{ connectedCalls }}</strong>
+          </div>
+
+          <div class="mini-stat warning">
+            <span>Follow-up</span>
+            <strong>{{ followupCalls }}</strong>
+          </div>
+
+          <div class="mini-stat danger">
+            <span>No Answer</span>
+            <strong>{{ noAnswerCalls }}</strong>
+          </div>
+
+        </div>
+
+
+        <!-- CALL TOOLBAR -->
+
+        <div class="activity-toolbar">
+
+          <div class="search-box">
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input
+              type="text"
+              [(ngModel)]="callSearch"
+              placeholder="Search calls...">
+
+          </div>
+
+
+          <select [(ngModel)]="callFilter">
+
+            <option value="All">
+              All Calls
+            </option>
+
+            <option value="Connected">
+              Connected
+            </option>
+
+            <option value="Interested">
+              Interested
+            </option>
+
+            <option value="Follow-up Required">
+              Follow-up Required
+            </option>
+
+            <option value="No Answer">
+              No Answer
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- CALL TABLE -->
+
+        <div class="activity-table-wrapper">
+
+          <table class="activity-table">
+
+            <thead>
+
+              <tr>
+
+                <th>Contact</th>
+                <th>Type</th>
+                <th>Outcome</th>
+                <th>Duration</th>
+                <th>Date</th>
+                <th>Owner</th>
+                <th>Actions</th>
+
+              </tr>
+
+            </thead>
+
+            <tbody>
+
+              <tr
+                *ngFor="let call of filteredCalls">
+
+                <td>
+
+                  <div class="table-contact">
+
+                    <div class="small-avatar">
+                      {{ call.initials }}
+                    </div>
+
+                    <div>
+                      <strong>{{ call.contact }}</strong>
+                      <span>{{ call.phone }}</span>
+                    </div>
+
+                  </div>
+
+                </td>
+
+
+                <td>
+
+                  <span
+                    class="type-badge"
+                    [class.inbound]="call.type === 'Inbound'">
+
+                    <i
+                      class="fa-solid"
+                      [class.fa-arrow-up]="call.type === 'Outbound'"
+                      [class.fa-arrow-down]="call.type === 'Inbound'">
+                    </i>
+
+                    {{ call.type }}
+
+                  </span>
+
+                </td>
+
+
+                <td>
+
+                  <span
+                    class="outcome-badge"
+                    [ngClass]="{
+                      'success': call.outcome === 'Connected' || call.outcome === 'Interested',
+                      'warning': call.outcome === 'Follow-up Required',
+                      'danger': call.outcome === 'No Answer'
+                    }">
+
+                    {{ call.outcome }}
+
+                  </span>
+
+                </td>
+
+
+                <td>
+                  <strong>{{ call.duration }}</strong>
+                </td>
+
+
+                <td>
+                  {{ call.date }}
+                </td>
+
+
+                <td>
+                  {{ call.owner }}
+                </td>
+
+
+                <td>
+
+                  <button
+                    class="table-action"
+                    (click)="makeCall({
+                      name: call.contact,
+                      initials: call.initials,
+                      phone: call.phone
+                    })">
+
+                    <i class="fa-solid fa-phone"></i>
+
+                  </button>
+
+                </td>
+
+              </tr>
+
+
+              <tr *ngIf="filteredCalls.length === 0">
+
+                <td
+                  colspan="7"
+                  class="empty-state">
+
+                  <i class="fa-solid fa-phone-slash"></i>
+
+                  <h3>No calls found</h3>
+
+                  <p>
+                    Try changing your search or filter.
+                  </p>
+
+                </td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+
+      <!-- ===================================================== -->
+      <!-- EMAILS -->
+      <!-- ===================================================== -->
+
+      <div
+        class="tab-panel"
+        *ngIf="activeTab === 'emails'">
+
+        <div class="section-title">
+
+          <div>
+            <h2>Email History</h2>
+            <p>All email communication with this company.</p>
+          </div>
+
+          <button
+            class="btn-primary"
+            (click)="sendEmail()">
+
+            <i class="fa-regular fa-envelope"></i>
+            Compose Email
+
+          </button>
+
+        </div>
+
+
+        <div class="activity-stats">
+
+          <div class="mini-stat">
+            <span>Total Emails</span>
+            <strong>{{ emails.length }}</strong>
+          </div>
+
+          <div class="mini-stat success">
+            <span>Sent</span>
+            <strong>{{ sentEmails }}</strong>
+          </div>
+
+          <div class="mini-stat purple-stat">
+            <span>Received</span>
+            <strong>{{ receivedEmails }}</strong>
+          </div>
+
+          <div class="mini-stat warning">
+            <span>Opened</span>
+            <strong>{{ openedEmails }}</strong>
+          </div>
+
+        </div>
+
+
+        <div class="activity-toolbar">
+
+          <div class="search-box">
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input
+              type="text"
+              [(ngModel)]="emailSearch"
+              placeholder="Search emails...">
+
+          </div>
+
+
+          <select [(ngModel)]="emailFilter">
+
+            <option value="All">
+              All Emails
+            </option>
+
+            <option value="Sent">
+              Sent
+            </option>
+
+            <option value="Received">
+              Received
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="email-list">
+
+          <div
+            class="email-card"
+            *ngFor="let email of filteredEmails">
+
+            <div class="email-icon">
+
+              <i
+                class="fa-regular"
+                [class.fa-paper-plane]="email.status === 'Sent'"
+                [class.fa-envelope]="email.status === 'Received'">
+              </i>
+
+            </div>
+
+
+            <div class="email-content">
+
+              <div class="email-top">
+
+                <h3>
+                  {{ email.subject }}
+                </h3>
+
+                <span>
+                  {{ email.date }}
+                </span>
+
+              </div>
+
+
+              <div class="email-address">
+
+                <span *ngIf="email.status === 'Sent'">
+                  To: {{ email.to }}
+                </span>
+
+                <span *ngIf="email.status === 'Received'">
+                  From: {{ email.from }}
+                </span>
+
+              </div>
+
+
+              <p class="email-preview">
+                {{ email.body }}
+              </p>
+
+
+              <div class="email-footer">
+
+                <span
+                  class="email-status"
+                  [class.received]="email.status === 'Received'">
+
+                  <i
+                    class="fa-solid"
+                    [class.fa-paper-plane]="email.status === 'Sent'"
+                    [class.fa-inbox]="email.status === 'Received'">
+                  </i>
+
+                  {{ email.status }}
+
+                </span>
+
+
+                <span
+                  *ngIf="email.opened"
+                  class="opened-status">
+
+                  <i class="fa-solid fa-check-double"></i>
+                  Opened
+
+                </span>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div
+            *ngIf="filteredEmails.length === 0"
+            class="empty-state">
+
+            <i class="fa-regular fa-envelope"></i>
+
+            <h3>No emails found</h3>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- ===================================================== -->
+      <!-- FOLLOW UPS -->
+      <!-- ===================================================== -->
+
+      <div
+        class="tab-panel"
+        *ngIf="activeTab === 'followups'">
+
+        <div class="section-title">
+
+          <div>
+            <h2>Follow-ups</h2>
+            <p>Manage upcoming and completed follow-up activities.</p>
+          </div>
+
+          <button
+            class="btn-primary"
+            (click)="addFollowUp()">
+
+            <i class="fa-solid fa-calendar-plus"></i>
+            Schedule Follow-up
+
+          </button>
+
+        </div>
+
+
+        <div class="activity-stats">
+
+          <div class="mini-stat success">
+            <span>Upcoming</span>
+            <strong>{{ upcomingFollowups }}</strong>
+          </div>
+
+          <div class="mini-stat danger">
+            <span>Overdue</span>
+            <strong>{{ overdueFollowups }}</strong>
+          </div>
+
+          <div class="mini-stat">
+            <span>Completed</span>
+            <strong>{{ completedFollowups }}</strong>
+          </div>
+
+          <div class="mini-stat purple-stat">
+            <span>Total</span>
+            <strong>{{ followups.length }}</strong>
+          </div>
+
+        </div>
+
+
+        <div class="filter-pills">
+
+          <button
+            [class.active]="followupFilter === 'Upcoming'"
+            (click)="followupFilter = 'Upcoming'">
+
+            Upcoming
+            <span>{{ upcomingFollowups }}</span>
+
+          </button>
+
+
+          <button
+            [class.active]="followupFilter === 'Overdue'"
+            (click)="followupFilter = 'Overdue'">
+
+            Overdue
+            <span>{{ overdueFollowups }}</span>
+
+          </button>
+
+
+          <button
+            [class.active]="followupFilter === 'Completed'"
+            (click)="followupFilter = 'Completed'">
+
+            Completed
+            <span>{{ completedFollowups }}</span>
+
+          </button>
+
+
+          <button
+            [class.active]="followupFilter === 'All'"
+            (click)="followupFilter = 'All'">
+
+            All
+            <span>{{ followups.length }}</span>
+
+          </button>
+
+        </div>
+
+
+        <div class="followup-list">
+
+          <div
+            class="followup-card"
+            *ngFor="let followup of filteredFollowups">
+
+            <div
+              class="followup-type"
+              [ngClass]="followup.type.toLowerCase()">
+
+              <i
+                class="fa-solid"
+                [class.fa-phone]="followup.type === 'Call'"
+                [class.fa-envelope]="followup.type === 'Email'"
+                [class.fa-users]="followup.type === 'Meeting'"
+                [class.fa-list-check]="followup.type === 'Task'">
+              </i>
+
+            </div>
+
+
+            <div class="followup-main">
+
+              <div class="followup-title-row">
+
+                <h3>
+                  {{ followup.title }}
+                </h3>
+
+                <span
+                  class="priority-badge"
+                  [ngClass]="followup.priority.toLowerCase()">
+
+                  {{ followup.priority }}
+
+                </span>
+
+              </div>
+
+
+              <div class="followup-meta">
+
+                <span>
+                  <i class="fa-solid fa-user"></i>
+                  {{ followup.contact }}
+                </span>
+
+                <span>
+                  <i class="fa-regular fa-calendar"></i>
+                  {{ followup.date }}
+                </span>
+
+                <span>
+                  <i class="fa-regular fa-clock"></i>
+                  {{ followup.time }}
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <div class="followup-status">
+
+              <span
+                [ngClass]="followup.status.toLowerCase()">
+
+                {{ followup.status }}
+
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <div
+            *ngIf="filteredFollowups.length === 0"
+            class="empty-state">
+
+            <i class="fa-regular fa-calendar-xmark"></i>
+
+            <h3>No follow-ups found</h3>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- ===================================================== -->
+      <!-- NOTES -->
+      <!-- ===================================================== -->
+
+      <div
+        class="tab-panel"
+        *ngIf="activeTab === 'notes'">
+
+        <div class="section-title">
+
+          <div>
+            <h2>Notes</h2>
+            <p>Important information recorded by the sales team.</p>
+          </div>
+
+          <button
+            class="btn-primary"
+            (click)="addNote()">
+
+            <i class="fa-solid fa-plus"></i>
+            Add Note
+
+          </button>
+
+        </div>
+
+
+        <div class="activity-toolbar">
+
+          <div class="search-box">
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input
+              type="text"
+              [(ngModel)]="noteSearch"
+              placeholder="Search notes...">
+
+          </div>
+
+        </div>
+
+
+        <div class="notes-grid">
+
+          <div
+            class="note-card"
+            *ngFor="let note of filteredNotes"
+            [class.pinned]="note.pinned">
+
+            <div class="note-card-header">
+
+              <div class="note-symbol">
+
+                <i class="fa-regular fa-note-sticky"></i>
+
+              </div>
+
+              <div class="note-actions">
+
+                <span
+                  *ngIf="note.pinned"
+                  class="pin-label">
+
+                  <i class="fa-solid fa-thumbtack"></i>
+                  Pinned
+
+                </span>
+
+                <button>
+                  <i class="fa-solid fa-ellipsis-vertical"></i>
+                </button>
+
+              </div>
+
+            </div>
+
+
+            <h3>
+              {{ note.title }}
+            </h3>
+
+
+            <p>
+              {{ note.description }}
+            </p>
+
+
+            <div class="note-footer">
+
+              <div>
+
+                <strong>
+                  {{ note.author }}
+                </strong>
+
+                <span>
+                  {{ note.date }}
+                </span>
+
+              </div>
+
+
+              <span class="visibility">
+
+                <i class="fa-solid fa-eye"></i>
+
+                {{ note.visibility }}
+
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <div
+            *ngIf="filteredNotes.length === 0"
+            class="empty-state">
+
+            <i class="fa-regular fa-note-sticky"></i>
+
+            <h3>No notes found</h3>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- ===================================================== -->
+      <!-- LEADS -->
+      <!-- ===================================================== -->
+
+      <div
+        class="tab-panel"
+        *ngIf="activeTab === 'leads'">
+
+        <div class="section-title">
+
+          <div>
+            <h2>Company Leads</h2>
+            <p>Leads generated for this company.</p>
+          </div>
+
+          <button
+            class="btn-primary"
+            (click)="createLead()">
+
+            <i class="fa-solid fa-plus"></i>
+            Create Lead
+
+          </button>
+
+        </div>
+
+
+        <div class="lead-empty">
+
+          <div class="lead-empty-icon">
+
+            <i class="fa-solid fa-filter-circle-dollar"></i>
+
+          </div>
+
+          <h3>
+            {{ company.leads }} Active Leads
+          </h3>
+
+          <p>
+            Lead management can be connected to your CRM Leads module.
+          </p>
+
+          <button
+            class="btn-primary"
+            (click)="createLead()">
+
+            <i class="fa-solid fa-plus"></i>
+            Create New Lead
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- FLOATING CALL PANEL -->
+<!-- ========================================================= -->
+
+<div
+  class="call-floating-panel"
+  *ngIf="callPanelOpen">
+
+  <div class="call-panel-header">
+
+    <div class="call-panel-title">
+
+      <span class="live-indicator"></span>
+
+      <span>
+        {{ callInProgress ? 'Call in progress' : 'Ready to call' }}
+      </span>
+
+    </div>
+
+    <button
+      (click)="closeCallPanel()">
+
+      <i class="fa-solid fa-xmark"></i>
+
+    </button>
+
+  </div>
+
+
+  <div class="call-panel-body">
+
+    <div class="call-avatar">
+      {{ selectedCall?.initials || 'AR' }}
+    </div>
+
+
+    <h3>
+      {{ selectedCall?.name || selectedCall?.contact || primaryContact.name }}
+    </h3>
+
+
+    <p>
+      {{ selectedCall?.phone || primaryContact.phone }}
+    </p>
+
+
+    <div
+      class="call-timer"
+      *ngIf="callInProgress">
+
+      00:00
+
+    </div>
+
+
+    <div
+      class="call-status"
+      *ngIf="!callInProgress">
+
+      <i class="fa-solid fa-phone"></i>
+      Ready to connect
+
+    </div>
+
+
+    <div class="call-controls">
+
+      <button
+        *ngIf="!callInProgress"
+        class="call-start"
+        (click)="startCall()">
+
+        <i class="fa-solid fa-phone"></i>
+
+      </button>
+
+
+      <ng-container *ngIf="callInProgress">
+
+        <button
+          class="call-control"
+          [class.active]="callMuted"
+          (click)="toggleMute()">
+
+          <i
+            class="fa-solid"
+            [class.fa-microphone]="!callMuted"
+            [class.fa-microphone-slash]="callMuted">
+          </i>
+
+        </button>
+
+
+        <button
+          class="call-end"
+          (click)="endCall()">
+
+          <i class="fa-solid fa-phone-slash"></i>
+
+        </button>
+
+      </ng-container>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- CALL MODAL -->
+<!-- ========================================================= -->
+
+<div
+  class="modal-backdrop"
+  *ngIf="activeModal === 'call'">
+
+  <div class="activity-modal">
+
+    <div class="modal-header">
+
+      <div>
+
+        <span class="modal-eyebrow">
+          CRM ACTIVITY
+        </span>
+
+        <h2>
+
+          <i class="fa-solid fa-phone"></i>
+          Log Call
+
+        </h2>
+
+        <p>
+          Record the details and outcome of the customer call.
+        </p>
+
+      </div>
+
+
+      <button
+        class="modal-close"
+        (click)="closeModal()">
+
+        <i class="fa-solid fa-xmark"></i>
+
+      </button>
+
+    </div>
+
+
+    <div class="modal-body">
+
+      <div class="form-grid">
+
+        <div class="form-group">
+
+          <label>Contact</label>
+
+          <select [(ngModel)]="callForm.contact">
+
+            <option
+              *ngFor="let contact of contacts"
+              [value]="contact.name">
+
+              {{ contact.name }}
+
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>Phone</label>
+
+          <input
+            type="text"
+            [value]="primaryContact.phone"
+            readonly>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>Call Type</label>
+
+          <select [(ngModel)]="callForm.type">
+
+            <option value="Outbound">
+              Outbound
+            </option>
+
+            <option value="Inbound">
+              Inbound
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>
+            Outcome
+            <span class="required">*</span>
+          </label>
+
+          <select [(ngModel)]="callForm.outcome">
+
+            <option value="">
+              Select outcome
+            </option>
+
+            <option value="Connected">
+              Connected
+            </option>
+
+            <option value="Interested">
+              Interested
+            </option>
+
+            <option value="Follow-up Required">
+              Follow-up Required
+            </option>
+
+            <option value="No Answer">
+              No Answer
+            </option>
+
+            <option value="Busy">
+              Busy
+            </option>
+
+            <option value="Wrong Number">
+              Wrong Number
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>Duration</label>
+
+          <input
+            type="text"
+            [(ngModel)]="callForm.duration"
+            placeholder="00:00">
+
+        </div>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>Call Notes</label>
+
+        <textarea
+          rows="5"
+          [(ngModel)]="callForm.notes"
+          placeholder="Enter call discussion, customer requirements and feedback...">
+        </textarea>
+
+      </div>
+
+    </div>
+
+
+    <div class="modal-footer">
+
+      <button
+        class="btn-secondary"
+        (click)="closeModal()">
+
+        Cancel
+
+      </button>
+
+      <button
+        class="btn-primary"
+        (click)="saveCall()">
+
+        <i class="fa-solid fa-check"></i>
+        Save Call
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- EMAIL MODAL -->
+<!-- ========================================================= -->
+
+<div
+  class="modal-backdrop"
+  *ngIf="activeModal === 'email'">
+
+  <div class="activity-modal email-modal">
+
+    <div class="modal-header">
+
+      <div>
+
+        <span class="modal-eyebrow">
+          CRM ACTIVITY
+        </span>
+
+        <h2>
+
+          <i class="fa-regular fa-envelope"></i>
+          Compose Email
+
+        </h2>
+
+        <p>
+          Send an email directly to the company contact.
+        </p>
+
+      </div>
+
+
+      <button
+        class="modal-close"
+        (click)="closeModal()">
+
+        <i class="fa-solid fa-xmark"></i>
+
+      </button>
+
+    </div>
+
+
+    <div class="modal-body">
+
+      <div class="form-group">
+
+        <label>
+          To
+          <span class="required">*</span>
+        </label>
+
+        <input
+          type="email"
+          [(ngModel)]="emailForm.to"
+          placeholder="recipient@company.com">
+
+      </div>
+
+
+      <div class="email-extra-actions">
+
+        <button
+          type="button"
+          (click)="emailCcOpen = !emailCcOpen">
+
+          Cc
+
+        </button>
+
+        <button
+          type="button"
+          (click)="emailBccOpen = !emailBccOpen">
+
+          Bcc
+
+        </button>
+
+      </div>
+
+
+      <div
+        class="form-group"
+        *ngIf="emailCcOpen">
+
+        <label>Cc</label>
+
+        <input
+          type="text"
+          [(ngModel)]="emailForm.cc"
+          placeholder="cc@example.com">
+
+      </div>
+
+
+      <div
+        class="form-group"
+        *ngIf="emailBccOpen">
+
+        <label>Bcc</label>
+
+        <input
+          type="text"
+          [(ngModel)]="emailForm.bcc"
+          placeholder="bcc@example.com">
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>
+          Subject
+          <span class="required">*</span>
+        </label>
+
+        <input
+          type="text"
+          [(ngModel)]="emailForm.subject"
+          placeholder="Email subject">
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>
+          Message
+          <span class="required">*</span>
+        </label>
+
+        <textarea
+          rows="9"
+          [(ngModel)]="emailForm.message"
+          placeholder="Write your email...">
+        </textarea>
+
+      </div>
+
+    </div>
+
+
+    <div class="modal-footer">
+
+      <button
+        class="btn-secondary"
+        (click)="closeModal()">
+
+        Cancel
+
+      </button>
+
+      <button
+        class="btn-primary"
+        (click)="sendCompanyEmail()">
+
+        <i class="fa-solid fa-paper-plane"></i>
+        Send Email
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- FOLLOW-UP MODAL -->
+<!-- ========================================================= -->
+
+<div
+  class="modal-backdrop"
+  *ngIf="activeModal === 'followup'">
+
+  <div class="activity-modal">
+
+    <div class="modal-header">
+
+      <div>
+
+        <span class="modal-eyebrow">
+          CRM ACTIVITY
+        </span>
+
+        <h2>
+
+          <i class="fa-regular fa-calendar-check"></i>
+          Schedule Follow-up
+
+        </h2>
+
+        <p>
+          Create a follow-up activity for this company.
+        </p>
+
+      </div>
+
+
+      <button
+        class="modal-close"
+        (click)="closeModal()">
+
+        <i class="fa-solid fa-xmark"></i>
+
+      </button>
+
+    </div>
+
+
+    <div class="modal-body">
+
+      <div class="form-grid">
+
+        <div class="form-group full-width">
+
+          <label>
+            Subject
+            <span class="required">*</span>
+          </label>
+
+          <input
+            type="text"
+            [(ngModel)]="followupForm.subject"
+            placeholder="Example: Discuss Enterprise CRM Proposal">
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>Activity Type</label>
+
+          <select [(ngModel)]="followupForm.type">
+
+            <option value="">
+              Select type
+            </option>
+
+            <option value="Call">
+              Call
+            </option>
+
+            <option value="Email">
+              Email
+            </option>
+
+            <option value="Meeting">
+              Meeting
+            </option>
+
+            <option value="Task">
+              Task
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>Contact</label>
+
+          <select [(ngModel)]="followupForm.contact">
+
+            <option value="">
+              Select contact
+            </option>
+
+            <option
+              *ngFor="let contact of contacts"
+              [value]="contact.name">
+
+              {{ contact.name }}
+
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>
+            Date
+            <span class="required">*</span>
+          </label>
+
+          <input
+            type="date"
+            [(ngModel)]="followupForm.date">
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>
+            Time
+            <span class="required">*</span>
+          </label>
+
+          <input
+            type="time"
+            [(ngModel)]="followupForm.time">
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>Priority</label>
+
+          <select [(ngModel)]="followupForm.priority">
+
+            <option value="Low">
+              Low
+            </option>
+
+            <option value="Medium">
+              Medium
+            </option>
+
+            <option value="High">
+              High
+            </option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>Description</label>
+
+        <textarea
+          rows="4"
+          [(ngModel)]="followupForm.description"
+          placeholder="Add follow-up details...">
+        </textarea>
+
+      </div>
+
+
+      <div class="reminder-box">
+
+        <label class="checkbox-label">
+
+          <input
+            type="checkbox"
+            [(ngModel)]="followupForm.reminder">
+
+          <span>
+            Set reminder
+          </span>
+
+        </label>
+
+
+        <div
+          class="reminder-select"
+          *ngIf="followupForm.reminder">
+
+          <select
+            [(ngModel)]="followupForm.reminderMinutes">
+
+            <option [ngValue]="5">
+              5 minutes before
+            </option>
+
+            <option [ngValue]="15">
+              15 minutes before
+            </option>
+
+            <option [ngValue]="30">
+              30 minutes before
+            </option>
+
+            <option [ngValue]="60">
+              1 hour before
+            </option>
+
+            <option [ngValue]="1440">
+              1 day before
+            </option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="modal-footer">
+
+      <button
+        class="btn-secondary"
+        (click)="closeModal()">
+
+        Cancel
+
+      </button>
+
+      <button
+        class="btn-primary"
+        (click)="saveFollowUp()">
+
+        <i class="fa-solid fa-calendar-plus"></i>
+        Schedule Follow-up
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- NOTE MODAL -->
+<!-- ========================================================= -->
+
+<div
+  class="modal-backdrop"
+  *ngIf="activeModal === 'note'">
+
+  <div class="activity-modal">
+
+    <div class="modal-header">
+
+      <div>
+
+        <span class="modal-eyebrow">
+          CRM ACTIVITY
+        </span>
+
+        <h2>
+
+          <i class="fa-regular fa-note-sticky"></i>
+          Add Note
+
+        </h2>
+
+        <p>
+          Save an internal note against this company.
+        </p>
+
+      </div>
+
+
+      <button
+        class="modal-close"
+        (click)="closeModal()">
+
+        <i class="fa-solid fa-xmark"></i>
+
+      </button>
+
+    </div>
+
+
+    <div class="modal-body">
+
+      <div class="form-grid">
+
+        <div class="form-group">
+
+          <label>
+            Note Title
+            <span class="required">*</span>
+          </label>
+
+          <input
+            type="text"
+            [(ngModel)]="noteForm.title"
+            placeholder="Example: Enterprise CRM Requirement">
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>Category</label>
+
+          <select [(ngModel)]="noteForm.category">
+
+            <option value="General">
+              General
+            </option>
+
+            <option value="Requirement">
+              Requirement
+            </option>
+
+            <option value="Commercial">
+              Commercial
+            </option>
+
+            <option value="Technical">
+              Technical
+            </option>
+
+            <option value="Internal">
+              Internal
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>Visibility</label>
+
+          <select [(ngModel)]="noteForm.visibility">
+
+            <option value="">
+              Select visibility
+            </option>
+
+            <option value="Everyone">
+              Everyone
+            </option>
+
+            <option value="Sales Team">
+              Sales Team
+            </option>
+
+            <option value="Management">
+              Management
+            </option>
+
+            <option value="Private">
+              Private
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="form-group checkbox-form">
+
+          <label class="checkbox-label">
+
+            <input
+              type="checkbox"
+              [(ngModel)]="noteForm.pinned">
+
+            <span>
+              Pin this note
+            </span>
+
+          </label>
+
+        </div>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>
+          Description
+          <span class="required">*</span>
+        </label>
+
+        <textarea
+          rows="7"
+          [(ngModel)]="noteForm.description"
+          placeholder="Write your note here...">
+        </textarea>
+
+      </div>
+
+    </div>
+
+
+    <div class="modal-footer">
+
+      <button
+        class="btn-secondary"
+        (click)="closeModal()">
+
+        Cancel
+
+      </button>
+
+      <button
+        class="btn-primary"
+        (click)="saveNote()">
+
+        <i class="fa-solid fa-note-sticky"></i>
+        Save Note
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- LEAD MODAL PLACEHOLDER -->
+<!-- ========================================================= -->
+
+<div
+  class="modal-backdrop"
+  *ngIf="activeModal === 'lead'">
+
+  <div class="activity-modal lead-modal">
+
+    <div class="modal-header">
+
+      <div>
+
+        <span class="modal-eyebrow">
+          CRM
+        </span>
+
+        <h2>
+          <i class="fa-solid fa-filter"></i>
+          Create Lead
+        </h2>
+
+        <p>
+          Create a new lead for {{ company.name }}.
+        </p>
+
+      </div>
+
+      <button
+        class="modal-close"
+        (click)="closeModal()">
+
+        <i class="fa-solid fa-xmark"></i>
+
+      </button>
+
+    </div>
+
+
+    <div class="modal-body">
+
+      <div class="lead-placeholder">
+
+        <div class="lead-placeholder-icon">
+          <i class="fa-solid fa-user-plus"></i>
+        </div>
+
+        <h3>
+          Lead Creation
+        </h3>
+
+        <p>
+          Connect this section to your Leads create screen/API.
+        </p>
+
+        <div class="lead-company-preview">
+
+          <strong>{{ company.name }}</strong>
+
+          <span>{{ company.email }}</span>
+
+          <span>{{ company.phone }}</span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="modal-footer">
+
+      <button
+        class="btn-secondary"
+        (click)="closeModal()">
+
+        Cancel
+
+      </button>
+
+      <button
+        class="btn-primary"
+        (click)="closeModal()">
+
+        <i class="fa-solid fa-check"></i>
+        Continue
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

@@ -1,0 +1,709 @@
+<div class="container mt-4">
+
+    <!-- ========================================= -->
+    <!-- Product Form -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4 class="mb-0">
+                <i class="fa fa-box-open me-2"></i>
+                Product Management
+            </h4>
+
+        </div>
+
+
+        <div class="card-body">
+
+            <div class="row">
+
+
+                <!-- Product Code -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Product Code
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Product Code"
+                        [(ngModel)]="product.productCode">
+
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !product.productCode">
+
+                        Product Code is required.
+
+                    </div>
+
+                </div>
+
+
+                <!-- Product Name -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Product Name
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Product Name"
+                        [(ngModel)]="product.productName">
+
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !product.productName">
+
+                        Product Name is required.
+
+                    </div>
+
+                </div>
+
+
+                <!-- Category -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Category
+                        <span class="text-danger">*</span>
+                    </label>
+
+
+                    <select class="form-select" [(ngModel)]="product.category">
+
+
+                        <option value="">
+                            Select Category
+                        </option>
+
+                        <option>
+                            Software
+                        </option>
+
+                        <option>
+                            Hardware
+                        </option>
+
+                        <option>
+                            Cloud Services
+                        </option>
+
+                        <option>
+                            Consulting
+                        </option>
+
+                        <option>
+                            Marketing
+                        </option>
+
+                        <option>
+                            Support
+                        </option>
+
+                        <option>
+                            Training
+                        </option>
+
+
+                    </select>
+
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !product.category">
+
+                        Category is required.
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- Product Type -->
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+                        Product Type
+                        <span class="text-danger">*</span>
+                    </label>
+
+
+                    <select class="form-select" [(ngModel)]="product.productType">
+
+
+                        <option value="">
+                            Select Product Type
+                        </option>
+
+                        <option>
+                            Product
+                        </option>
+
+                        <option>
+                            Service
+                        </option>
+
+                        <option>
+                            Subscription
+                        </option>
+
+                        <option>
+                            Package
+                        </option>
+
+
+                    </select>
+
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !product.productType">
+
+                        Product Type is required.
+
+                    </div>
+
+
+                </div>
+
+
+
+
+                <!-- Brand -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Brand
+                    </label>
+
+
+                    <input type="text" class="form-control" placeholder="Enter Brand Name" [(ngModel)]="product.brand">
+
+
+                </div>
+
+
+
+
+                <!-- Unit -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Unit
+                    </label>
+
+
+                    <select class="form-select" [(ngModel)]="product.unit">
+
+
+                        <option value="">
+                            Select Unit
+                        </option>
+
+                        <option>
+                            Piece
+                        </option>
+
+                        <option>
+                            License
+                        </option>
+
+                        <option>
+                            Month
+                        </option>
+
+                        <option>
+                            Year
+                        </option>
+
+
+                    </select>
+
+
+                </div>
+
+
+
+
+
+                <!-- Unit Price -->
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+                        Unit Price
+                        <span class="text-danger">*</span>
+                    </label>
+
+
+                    <input type="number" class="form-control" placeholder="Enter Unit Price"
+                        [(ngModel)]="product.unitPrice">
+
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !product.unitPrice">
+
+                        Unit Price is required.
+
+                    </div>
+
+
+                </div>
+
+
+
+
+
+                <!-- Cost Price -->
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+                        Cost Price
+                    </label>
+
+
+                    <input type="number" class="form-control" placeholder="Enter Cost Price"
+                        [(ngModel)]="product.costPrice">
+
+
+                </div>
+
+
+
+
+
+                <!-- Tax -->
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+                        Tax (%)
+                    </label>
+
+
+                    <input type="number" class="form-control" placeholder="Enter Tax Percentage"
+                        [(ngModel)]="product.tax">
+
+
+                </div>
+
+
+
+
+
+                <!-- Discount -->
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+                        Discount (%)
+                    </label>
+
+
+                    <input type="number" class="form-control" placeholder="Enter Discount Percentage"
+                        [(ngModel)]="product.discount">
+
+
+                </div>
+
+
+
+
+
+                <!-- Stock Quantity -->
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+                        Stock Quantity
+                    </label>
+
+
+                    <input type="number" class="form-control" placeholder="Enter Stock Quantity"
+                        [(ngModel)]="product.stockQuantity">
+
+
+                </div>
+
+
+
+
+
+                <!-- Status -->
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+                        Status
+                        <span class="text-danger">*</span>
+                    </label>
+
+
+                    <select class="form-select" [(ngModel)]="product.status">
+
+
+                        <option value="">
+                            Select Status
+                        </option>
+
+                        <option>
+                            Available
+                        </option>
+
+                        <option>
+                            Out of Stock
+                        </option>
+
+                        <option>
+                            Discontinued
+                        </option>
+
+
+                    </select>
+
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !product.status">
+
+                        Status is required.
+
+                    </div>
+
+
+                </div>
+
+
+
+
+
+                <!-- Description -->
+                <div class="col-md-8 mb-3">
+
+
+                    <label class="form-label">
+                        Description
+                    </label>
+
+
+                    <textarea rows="3" class="form-control" placeholder="Enter Product Description"
+                        [(ngModel)]="product.description">
+
+                    </textarea>
+
+
+                </div>
+
+
+
+
+
+                <!-- Active -->
+                <div class="col-md-4 mb-3 d-flex align-items-end">
+
+
+                    <div class="form-check">
+
+
+                        <input type="checkbox" class="form-check-input" id="productActive"
+                            [(ngModel)]="product.isActive">
+
+
+                        <label class="form-check-label ms-2" for="productActive">
+
+                            Active
+
+                        </label>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+            </div>
+
+
+
+            <hr>
+
+
+
+            <button class="btn btn-danger me-2" (click)="saveProduct()">
+
+
+                <i class="fa fa-save me-1"></i>
+
+
+                {{isEdit ? 'Update' : 'Save'}}
+
+
+            </button>
+
+
+
+            <button class="btn btn-secondary" (click)="clear()">
+
+
+
+                <i class="fa fa-eraser me-1"></i>
+
+
+                Clear
+
+
+            </button>
+
+
+
+        </div>
+
+
+    </div>
+    <!-- ========================================= -->
+    <!-- Search -->
+    <!-- ========================================= -->
+
+    <div class="row mt-4 mb-3">
+
+        <div class="col-md-4">
+
+            <input type="text" class="form-control" placeholder="Search Product..." [(ngModel)]="searchText">
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ========================================= -->
+    <!-- Products Table -->
+    <!-- ========================================= -->
+
+    <div class="table-responsive">
+
+        <table class="table table-bordered table-hover">
+
+
+            <thead class="table-danger">
+
+                <tr>
+
+                    <th>#</th>
+
+                    <th>Product Code</th>
+
+                    <th>Product Name</th>
+
+                    <th>Category</th>
+
+                    <th>Type</th>
+
+                    <th>Unit Price</th>
+
+                    <th>Stock</th>
+
+                    <th>Status</th>
+
+                    <th width="150">
+                        Action
+                    </th>
+
+                </tr>
+
+
+            </thead>
+
+
+
+            <tbody>
+
+
+
+                <tr *ngIf="pagedProducts.length == 0">
+
+
+                    <td colspan="9" class="text-center text-muted">
+
+
+                        No Products Found
+
+
+                    </td>
+
+
+                </tr>
+
+
+
+
+
+                <tr *ngFor="let item of pagedProducts; let i=index">
+
+
+
+                    <td>
+
+                        {{((page-1)*pageSize)+i+1}}
+
+                    </td>
+
+
+
+
+                    <td>
+
+                        {{item.productCode}}
+
+                    </td>
+
+
+
+
+                    <td>
+
+                        {{item.productName}}
+
+                    </td>
+
+
+
+
+                    <td>
+
+                        {{item.category}}
+
+                    </td>
+
+
+
+
+                    <td>
+
+                        {{item.productType}}
+
+                    </td>
+
+
+
+
+                    <td>
+
+                        $ {{item.unitPrice | number}}
+
+                    </td>
+
+
+
+
+                    <td>
+
+                        {{item.stockQuantity}}
+
+                    </td>
+
+
+
+
+                    <td>
+
+
+                        <span class="badge" [ngClass]="{
+
+
+                                'bg-success':
+                                item.status === 'Available',
+
+
+                                'bg-danger':
+                                item.status === 'Out of Stock',
+
+
+                                'bg-secondary':
+                                item.status === 'Discontinued'
+
+
+                            }">
+
+
+                            {{item.status}}
+
+
+                        </span>
+
+
+                    </td>
+
+
+
+
+
+                    <td>
+
+
+
+                        <button class="btn btn-warning btn-sm me-2" (click)="edit(item.productId)">
+
+
+
+                            <i class="fa fa-edit"></i>
+
+
+
+                        </button>
+
+
+
+
+
+                        <button class="btn btn-danger btn-sm" (click)="delete(item.productId)">
+
+
+
+                            <i class="fa fa-trash"></i>
+
+
+
+                        </button>
+
+
+
+                    </td>
+
+
+
+                </tr>
+
+
+
+            </tbody>
+
+
+
+        </table>
+
+
+
+    </div>
+
+
+
+
+
+    <!-- ========================================= -->
+    <!-- Pagination -->
+    <!-- ========================================= -->
+
+
+    <app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredProducts.length"
+        (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
+
+
+
+    </app-pagination>
+
+
+
+</div>

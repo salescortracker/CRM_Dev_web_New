@@ -1,0 +1,709 @@
+<div class="container mt-4">
+
+    <!-- ========================================= -->
+    <!-- Company Profile Form -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4 class="mb-0">
+
+                <i class="fa fa-building me-2"></i>
+
+                Company Profile
+
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <!-- ========================================= -->
+                <!-- Company Name -->
+                <!-- ========================================= -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Company Name
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Company Name"
+                        [(ngModel)]="company.companyName">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !company.companyName">
+
+                        Company Name is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Company Code -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Company Code
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Company Code"
+                        [(ngModel)]="company.companyCode">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !company.companyCode">
+
+                        Company Code is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Legal Name -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Legal Name
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Legal Name"
+                        [(ngModel)]="company.legalName">
+
+                </div>
+
+                <!-- ========================================= -->
+                <!-- Registration Details -->
+                <!-- ========================================= -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Registration Number
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Registration Number"
+                        [(ngModel)]="company.registrationNumber">
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        GST Number
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="GST Number" [(ngModel)]="company.gstNumber">
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        PAN Number
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="PAN Number" [(ngModel)]="company.panNumber">
+
+                </div>
+
+                <!-- ========================================= -->
+                <!-- Industry -->
+                <!-- ========================================= -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Industry
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="company.industry">
+
+                        <option value="">Select Industry</option>
+
+                        <option>Information Technology</option>
+                        <option>Healthcare</option>
+                        <option>Manufacturing</option>
+                        <option>Education</option>
+                        <option>Finance</option>
+                        <option>Retail</option>
+                        <option>Construction</option>
+                        <option>Telecommunications</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !company.industry">
+
+                        Industry is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Company Type -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Company Type
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="company.companyType">
+
+                        <option value="">Select Company Type</option>
+
+                        <option>Private Limited</option>
+                        <option>Public Limited</option>
+                        <option>LLP</option>
+                        <option>Partnership</option>
+                        <option>Proprietorship</option>
+                        <option>Government</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !company.companyType">
+
+                        Company Type is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Established Date -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Established Date
+
+                    </label>
+
+                    <input type="date" class="form-control" [(ngModel)]="company.establishedDate">
+
+                </div>
+
+                <!-- ========================================= -->
+                <!-- Contact Details -->
+                <!-- ========================================= -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Email
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="email" class="form-control" placeholder="Enter Email" [(ngModel)]="company.email">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !company.email">
+
+                        Email is required.
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Phone
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Phone" [(ngModel)]="company.phone">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !company.phone">
+
+                        Phone Number is required.
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Mobile
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Mobile" [(ngModel)]="company.mobile">
+
+                </div>
+
+                <!-- Website -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Website
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="https://www.company.com"
+                        [(ngModel)]="company.website">
+
+                </div>
+
+                <!-- Time Zone -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Time Zone
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="company.timeZone">
+
+                        <option>Asia/Kolkata</option>
+                        <option>UTC</option>
+                        <option>America/New_York</option>
+                        <option>Europe/London</option>
+                        <option>Asia/Dubai</option>
+
+                    </select>
+
+                </div>
+
+                <!-- ========================================= -->
+                <!-- Address -->
+                <!-- ========================================= -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Address Line 1
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Address Line 1"
+                        [(ngModel)]="company.address1">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !company.address1">
+
+                        Address Line 1 is required.
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Address Line 2
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Address Line 2"
+                        [(ngModel)]="company.address2">
+
+                </div>
+
+                <!-- Country -->
+
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Country
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="company.country">
+
+                        <option value="">Select Country</option>
+
+                        <option>India</option>
+                        <option>USA</option>
+                        <option>UK</option>
+                        <option>Australia</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !company.country">
+
+                        Country is required.
+
+                    </div>
+
+                </div>
+
+                <!-- State -->
+
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        State
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="company.state">
+
+                        <option value="">Select State</option>
+
+                        <option>Andhra Pradesh</option>
+                        <option>Telangana</option>
+                        <option>Karnataka</option>
+                        <option>Tamil Nadu</option>
+                        <option>Maharashtra</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !company.state">
+
+                        State is required.
+
+                    </div>
+
+                </div>
+
+                <!-- City -->
+
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        City
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="City" [(ngModel)]="company.city">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !company.city">
+
+                        City is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Pincode -->
+
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Pincode
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Pincode" [(ngModel)]="company.pincode">
+
+                </div>
+
+                <!-- ========================================= -->
+                <!-- Currency & Financial -->
+                <!-- ========================================= -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Currency
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="company.currency">
+
+                        <option>INR</option>
+                        <option>USD</option>
+                        <option>EUR</option>
+                        <option>AED</option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Financial Year
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="company.financialYear">
+
+                        <option>2026-2027</option>
+                        <option>2025-2026</option>
+                        <option>2024-2025</option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Company Logo
+
+                    </label>
+
+                    <input type="file" class="form-control">
+
+                </div>
+
+                <!-- ========================================= -->
+                <!-- Description -->
+                <!-- ========================================= -->
+
+                <div class="col-md-8 mb-3">
+
+                    <label class="form-label">
+
+                        Description
+
+                    </label>
+
+                    <textarea rows="4" class="form-control" placeholder="Enter Company Description"
+                        [(ngModel)]="company.description">
+
+                    </textarea>
+
+                </div>
+
+                <!-- Active -->
+
+                <div class="col-md-4 mb-3 d-flex align-items-end">
+
+                    <div class="form-check">
+
+                        <input type="checkbox" id="isActive" class="form-check-input" [(ngModel)]="company.isActive">
+
+                        <label class="form-check-label ms-2" for="isActive">
+
+                            Active
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <button class="btn btn-danger me-2" (click)="saveCompany()">
+
+                <i class="fa fa-save me-1"></i>
+
+                {{ isEdit ? 'Update' : 'Save' }}
+
+            </button>
+
+            <button class="btn btn-secondary" (click)="clear()">
+
+                <i class="fa fa-eraser me-1"></i>
+
+                Clear
+
+            </button>
+
+        </div>
+
+    </div>
+    <!-- ========================================= -->
+    <!-- Search -->
+    <!-- ========================================= -->
+
+    <div class="row mt-4 mb-3">
+
+        <div class="col-md-4">
+
+            <input type="text" class="form-control" placeholder="Search Company..." [(ngModel)]="searchText">
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Company Profile Listing -->
+    <!-- ========================================= -->
+
+    <div class="table-responsive">
+
+        <table class="table table-bordered table-hover">
+
+            <thead class="table-danger">
+
+                <tr>
+
+                    <th width="60">#</th>
+                    <th>Company Name</th>
+                    <th>Company Code</th>
+                    <th>Industry</th>
+                    <th>Company Type</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Country</th>
+                    <th>State</th>
+                    <th>Status</th>
+                    <th width="140">Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr *ngIf="pagedCompanies.length == 0">
+
+                    <td colspan="11" class="text-center text-muted">
+
+                        No Company Records Found
+
+                    </td>
+
+                </tr>
+
+                <tr *ngFor="let item of pagedCompanies; let i = index">
+
+                    <td>
+
+                        {{ ((page - 1) * pageSize) + i + 1 }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.companyName }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.companyCode }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.industry }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.companyType }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.email }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.phone }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.country }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.state }}
+
+                    </td>
+
+                    <td>
+
+                        <span class="badge" [ngClass]="item.isActive ? 'bg-success' : 'bg-danger'">
+
+                            {{ item.isActive ? 'Active' : 'Inactive' }}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <button class="btn btn-warning btn-sm me-2" (click)="edit(item.companyId)">
+
+                            <i class="fa fa-edit"></i>
+
+                        </button>
+
+                        <button class="btn btn-danger btn-sm" (click)="delete(item.companyId)">
+
+                            <i class="fa fa-trash"></i>
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Pagination -->
+    <!-- ========================================= -->
+
+    <app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredCompanies.length"
+        (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
+
+    </app-pagination>
+
+</div>

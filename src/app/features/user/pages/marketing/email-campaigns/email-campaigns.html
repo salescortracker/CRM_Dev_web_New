@@ -1,0 +1,445 @@
+<div class="container mt-4">
+
+    <!-- ========================================= -->
+    <!-- Email Campaign Form -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4 class="mb-0">
+
+                <i class="fa fa-envelope-open-text me-2"></i>
+
+                Email Campaign Management
+
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <!-- Campaign Name -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Campaign Name
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Campaign Name"
+                        [(ngModel)]="campaign.campaignName">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !campaign.campaignName">
+
+                        Campaign Name is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Email Subject -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Email Subject
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Email Subject"
+                        [(ngModel)]="campaign.emailSubject">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !campaign.emailSubject">
+
+                        Email Subject is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Sender Email -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Sender Email
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="email" class="form-control" placeholder="Enter Sender Email"
+                        [(ngModel)]="campaign.senderEmail">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !campaign.senderEmail">
+
+                        Sender Email is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Email Template -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Email Template
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="campaign.template">
+
+                        <option value="">Select Template</option>
+                        <option>Welcome Email</option>
+                        <option>Product Launch</option>
+                        <option>Promotional Offer</option>
+                        <option>Festival Offer</option>
+                        <option>Newsletter</option>
+                        <option>Product Update</option>
+                        <option>Follow-up Email</option>
+                        <option>Renewal Reminder</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Target Audience -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Target Audience
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="campaign.targetAudience">
+
+                        <option value="">Select Audience</option>
+                        <option>All Customers</option>
+                        <option>Existing Customers</option>
+                        <option>New Leads</option>
+                        <option>Prospects</option>
+                        <option>VIP Customers</option>
+                        <option>Inactive Customers</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Scheduled Date -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Scheduled Date
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="date" class="form-control" [(ngModel)]="campaign.scheduledDate">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !campaign.scheduledDate">
+
+                        Scheduled Date is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Total Recipients -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Total Recipients
+
+                    </label>
+
+                    <input type="number" class="form-control" placeholder="Enter Total Recipients"
+                        [(ngModel)]="campaign.totalRecipients">
+
+                </div>
+
+                <!-- Delivered Count -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Delivered Count
+
+                    </label>
+
+                    <input type="number" class="form-control" placeholder="Delivered Emails"
+                        [(ngModel)]="campaign.deliveredCount">
+
+                </div>
+
+                <!-- Open Rate -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Open Rate (%)
+
+                    </label>
+
+                    <input type="number" class="form-control" placeholder="Open Rate" [(ngModel)]="campaign.openRate">
+
+                </div>
+
+                <!-- Status -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Status
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="campaign.status">
+
+                        <option value="">Select Status</option>
+                        <option>Draft</option>
+                        <option>Scheduled</option>
+                        <option>Sending</option>
+                        <option>Sent</option>
+                        <option>Completed</option>
+                        <option>Failed</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !campaign.status">
+
+                        Status is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Active -->
+                <div class="col-md-2 mb-3 d-flex align-items-end">
+
+                    <div class="form-check">
+
+                        <input id="emailCampaignActive" type="checkbox" class="form-check-input"
+                            [(ngModel)]="campaign.isActive">
+
+                        <label for="emailCampaignActive" class="form-check-label ms-2">
+
+                            Active
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <!-- Email Message -->
+                <div class="col-md-12 mb-3">
+
+                    <label class="form-label">
+
+                        Email Message
+
+                    </label>
+
+                    <textarea rows="6" class="form-control" placeholder="Enter Email Message"
+                        [(ngModel)]="campaign.message">
+
+                    </textarea>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <button class="btn btn-danger me-2" (click)="saveCampaign()">
+
+                <i class="fa fa-save me-1"></i>
+
+                {{ isEdit ? 'Update' : 'Save' }}
+
+            </button>
+
+            <button class="btn btn-secondary" (click)="clear()">
+
+                <i class="fa fa-eraser me-1"></i>
+
+                Clear
+
+            </button>
+
+        </div>
+
+    </div>
+    <!-- ========================================= -->
+    <!-- Search -->
+    <!-- ========================================= -->
+
+    <div class="row mt-4 mb-3">
+
+        <div class="col-md-4">
+
+            <input type="text" class="form-control" placeholder="Search Email Campaign..." [(ngModel)]="searchText">
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Email Campaigns Table -->
+    <!-- ========================================= -->
+
+    <div class="table-responsive">
+
+        <table class="table table-bordered table-hover">
+
+            <thead class="table-danger">
+
+                <tr>
+
+                    <th>#</th>
+                    <th>Campaign Name</th>
+                    <th>Email Subject</th>
+                    <th>Sender Email</th>
+                    <th>Recipients</th>
+                    <th>Scheduled Date</th>
+                    <th>Open Rate</th>
+                    <th>Status</th>
+                    <th width="150">Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr *ngIf="pagedCampaigns.length == 0">
+
+                    <td colspan="9" class="text-center text-muted">
+
+                        No Email Campaigns Found
+
+                    </td>
+
+                </tr>
+
+                <tr *ngFor="let item of pagedCampaigns; let i=index">
+
+                    <td>
+
+                        {{ ((page-1) * pageSize) + i + 1 }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.campaignName }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.emailSubject }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.senderEmail }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.totalRecipients }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.scheduledDate }}
+
+                    </td>
+
+                    <td>
+
+                        <span class="badge bg-info">
+
+                            {{ item.openRate }}%
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <span class="badge" [ngClass]="{
+
+        'bg-secondary': item.status == 'Draft',
+
+        'bg-primary': item.status == 'Scheduled',
+
+        'bg-warning text-dark': item.status == 'Sending',
+
+        'bg-success': item.status == 'Sent',
+
+        'bg-info': item.status == 'Completed',
+
+        'bg-danger': item.status == 'Failed'
+
+    }">
+
+                            {{ item.status }}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <button class="btn btn-warning btn-sm me-2" (click)="edit(item.campaignId)">
+
+                            <i class="fa fa-edit"></i>
+
+                        </button>
+
+                        <button class="btn btn-danger btn-sm" (click)="delete(item.campaignId)">
+
+                            <i class="fa fa-trash"></i>
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Pagination -->
+    <!-- ========================================= -->
+
+    <app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredCampaigns.length"
+        (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
+    </app-pagination>
+
+</div>

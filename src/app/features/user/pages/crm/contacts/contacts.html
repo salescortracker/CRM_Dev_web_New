@@ -1,0 +1,493 @@
+<div class="container mt-4">
+
+    <!-- ========================================= -->
+    <!-- Contact Form -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4 class="mb-0">
+                <i class="fa fa-address-book me-2"></i>
+                Contact Management
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <!-- First Name -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        First Name
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter First Name"
+                        [(ngModel)]="contact.firstName">
+
+                    <div class="text-danger mt-1"
+                        *ngIf="submitted && !contact.firstName">
+
+                        First Name is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Last Name -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Last Name
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter Last Name"
+                        [(ngModel)]="contact.lastName">
+
+                    <div class="text-danger mt-1"
+                        *ngIf="submitted && !contact.lastName">
+
+                        Last Name is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Mobile -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Contact Number
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input
+                        type="number"
+                        class="form-control"
+                        placeholder="Enter Contact Number"
+                        [(ngModel)]="contact.mobile">
+
+                    <div class="text-danger mt-1"
+                        *ngIf="submitted && !contact.mobile">
+
+                        Contact Number is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Email -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Email
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input
+                        type="email"
+                        class="form-control"
+                        placeholder="Enter Email"
+                        [(ngModel)]="contact.email">
+
+                    <div class="text-danger mt-1"
+                        *ngIf="submitted && !contact.email">
+
+                        Email is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Account -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Account
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <select
+                        class="form-select"
+                        [(ngModel)]="contact.account">
+
+                        <option value="">Select Account</option>
+                        <option>ABC Technologies</option>
+                        <option>XYZ Solutions</option>
+                        <option>Future Vision</option>
+                        <option>Global InfoTech</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1"
+                        *ngIf="submitted && !contact.account">
+
+                        Account is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Designation -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Designation
+                    </label>
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Designation"
+                        [(ngModel)]="contact.designation">
+
+                </div>
+
+                <!-- Department -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Department
+                    </label>
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Department"
+                        [(ngModel)]="contact.department">
+
+                </div>
+
+                <!-- Lead Source -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Lead Source
+                    </label>
+
+                    <select
+                        class="form-select"
+                        [(ngModel)]="contact.leadSource">
+
+                        <option value="">Select Lead Source</option>
+                        <option>Website</option>
+                        <option>Referral</option>
+                        <option>Facebook</option>
+                        <option>LinkedIn</option>
+                        <option>Google</option>
+                        <option>Email Campaign</option>
+
+                    </select>
+
+                </div>
+
+                <!-- DOB -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Date of Birth
+                    </label>
+
+                    <input
+                        type="date"
+                        class="form-control"
+                        [(ngModel)]="contact.dob">
+
+                </div>
+
+                <!-- Status -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Status
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <select
+                        class="form-select"
+                        [(ngModel)]="contact.status">
+
+                        <option value="">Select Status</option>
+                        <option>Active</option>
+                        <option>Inactive</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1"
+                        *ngIf="submitted && !contact.status">
+
+                        Status is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Address -->
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+                        Address
+                    </label>
+
+                    <textarea
+                        rows="3"
+                        class="form-control"
+                        placeholder="Address"
+                        [(ngModel)]="contact.address">
+
+                    </textarea>
+
+                </div>
+
+                <!-- City -->
+                <div class="col-md-2 mb-3">
+
+                    <label class="form-label">
+                        City
+                    </label>
+
+                    <input
+                        class="form-control"
+                        placeholder="City"
+                        [(ngModel)]="contact.city">
+
+                </div>
+
+                <!-- State -->
+                <div class="col-md-2 mb-3">
+
+                    <label class="form-label">
+                        State
+                    </label>
+
+                    <input
+                        class="form-control"
+                        placeholder="State"
+                        [(ngModel)]="contact.state">
+
+                </div>
+
+                <!-- Country -->
+                <div class="col-md-2 mb-3">
+
+                    <label class="form-label">
+                        Country
+                    </label>
+
+                    <input
+                        class="form-control"
+                        placeholder="Country"
+                        [(ngModel)]="contact.country">
+
+                </div>
+
+                <!-- Pincode -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+                        Pincode
+                    </label>
+
+                    <input
+                        type="number"
+                        class="form-control"
+                        placeholder="Pincode"
+                        [(ngModel)]="contact.pincode">
+
+                </div>
+
+                <!-- Active -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        <input
+                            type="checkbox"
+                            class="form-check-input me-2"
+                            [(ngModel)]="contact.isActive">
+
+                        Active
+
+                    </label>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <button
+                class="btn btn-danger me-2"
+                (click)="saveContact()">
+
+                <i class="fa fa-save me-1"></i>
+
+                {{isEdit ? 'Update' : 'Save'}}
+
+            </button>
+
+            <button
+                class="btn btn-secondary"
+                (click)="clear()">
+
+                <i class="fa fa-eraser me-1"></i>
+
+                Clear
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Search -->
+    <!-- ========================================= -->
+
+    <div class="row mt-4 mb-3">
+
+        <div class="col-md-4">
+
+            <input
+                type="text"
+                class="form-control"
+                placeholder="Search Contact..."
+                [(ngModel)]="searchText">
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Contacts Table -->
+    <!-- ========================================= -->
+
+    <div class="table-responsive">
+
+        <table class="table table-bordered table-hover">
+
+            <thead class="table-danger">
+
+                <tr>
+
+                    <th>#</th>
+                    <th>Contact Name</th>
+                    <th>Mobile</th>
+                    <th>Email</th>
+                    <th>Account</th>
+                    <th>Designation</th>
+                    <th>Department</th>
+                    <th>Status</th>
+                    <th width="150">Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr *ngIf="pagedContacts.length==0">
+
+                    <td colspan="9" class="text-center text-muted">
+
+                        No Contacts Found
+
+                    </td>
+
+                </tr>
+
+                <tr *ngFor="let item of pagedContacts; let i=index">
+
+                    <td>
+                        {{((page-1)*pageSize)+i+1}}
+                    </td>
+
+                    <td>
+                        {{item.firstName}} {{item.lastName}}
+                    </td>
+
+                    <td>
+                        {{item.mobile}}
+                    </td>
+
+                    <td>
+                        {{item.email}}
+                    </td>
+
+                    <td>
+                        {{item.account}}
+                    </td>
+
+                    <td>
+                        {{item.designation}}
+                    </td>
+
+                    <td>
+                        {{item.department}}
+                    </td>
+
+                    <td>
+
+                        <span
+                            class="badge"
+                            [ngClass]="item.isActive ? 'bg-success':'bg-secondary'">
+
+                            {{item.isActive ? 'Active':'Inactive'}}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <button
+                            class="btn btn-warning btn-sm me-2"
+                            (click)="edit(item.contactId)">
+
+                            <i class="fa fa-edit"></i>
+
+                        </button>
+
+                        <button
+                            class="btn btn-danger btn-sm"
+                            (click)="delete(item.contactId)">
+
+                            <i class="fa fa-trash"></i>
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Pagination -->
+    <!-- ========================================= -->
+
+    <app-pagination
+        [page]="page"
+        [pageSize]="pageSize"
+        [totalRecords]="filteredContacts.length"
+        (pageChanged)="changePage($event)"
+        (pageSizeChanged)="changePageSize($event)">
+    </app-pagination>
+
+</div>

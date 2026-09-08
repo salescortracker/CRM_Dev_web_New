@@ -1,0 +1,237 @@
+<div class="container mt-4">
+
+    <div class="card">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4>License Management</h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+                    <label>License Name <span class="text-danger">*</span></label>
+                    <input type="text"
+                           class="form-control"
+                           placeholder="Enterprise License">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>License Code <span class="text-danger">*</span></label>
+                    <input type="text"
+                           class="form-control"
+                           placeholder="ENT-2026-001">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Company</label>
+                    <select class="form-select">
+                        <option>ABC Technologies</option>
+                        <option>XYZ Solutions</option>
+                        <option>Demo Company</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>License Type</label>
+                    <select class="form-select">
+                        <option>Trial</option>
+                        <option>Professional</option>
+                        <option>Enterprise</option>
+                        <option>Unlimited</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Maximum Users</label>
+                    <input type="number"
+                           class="form-control"
+                           value="100">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Storage Limit (GB)</label>
+                    <input type="number"
+                           class="form-control"
+                           value="500">
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label>License Start Date</label>
+                    <input type="date"
+                           class="form-control">
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label>License Expiry Date</label>
+                    <input type="date"
+                           class="form-control">
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label>API Calls / Month</label>
+                    <input type="number"
+                           class="form-control"
+                           value="100000">
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label>Support Level</label>
+                    <select class="form-select">
+                        <option>Standard</option>
+                        <option>Priority</option>
+                        <option>Premium</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label>
+                        <input type="checkbox" checked>
+                        CRM Module
+                    </label>
+                </div>
+
+                <div class="col-md-3">
+                    <label>
+                        <input type="checkbox" checked>
+                        Sales Module
+                    </label>
+                </div>
+
+                <div class="col-md-3">
+                    <label>
+                        <input type="checkbox" checked>
+                        Marketing Module
+                    </label>
+                </div>
+
+                <div class="col-md-3">
+                    <label>
+                        <input type="checkbox" checked>
+                        Support Module
+                    </label>
+                </div>
+
+                <div class="col-md-3 mt-3">
+                    <label>
+                        <input type="checkbox" checked>
+                        API Access
+                    </label>
+                </div>
+
+                <div class="col-md-3 mt-3">
+                    <label>
+                        <input type="checkbox" checked>
+                        Mobile App
+                    </label>
+                </div>
+
+                <div class="col-md-3 mt-3">
+                    <label>
+                        <input type="checkbox" checked>
+                        Active License
+                    </label>
+                </div>
+
+            </div>
+
+            <button class="btn btn-danger me-2">Save</button>
+
+            <button class="btn btn-warning me-2">Update</button>
+
+            <button class="btn btn-secondary">Clear</button>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="row mb-3">
+
+        <div class="col-md-4">
+            <input class="form-control"
+                   placeholder="Search License...">
+        </div>
+
+        <div class="col-md-4">
+            <select class="form-select">
+                <option>All License Types</option>
+                <option>Trial</option>
+                <option>Professional</option>
+                <option>Enterprise</option>
+            </select>
+        </div>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-danger">
+
+            <tr>
+
+                <th>#</th>
+                <th>License</th>
+                <th>Company</th>
+                <th>Type</th>
+                <th>Users</th>
+                <th>Storage</th>
+                <th>Expiry</th>
+                <th>Status</th>
+                <th width="190">Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+
+                <td>1</td>
+                <td>Enterprise License</td>
+                <td>ABC Technologies</td>
+                <td>Enterprise</td>
+                <td>100</td>
+                <td>500 GB</td>
+                <td>31-Dec-2027</td>
+                <td><span class="badge bg-success">Active</span></td>
+
+                <td>
+                    <button class="btn btn-warning btn-sm me-1">Edit</button>
+                    <button class="btn btn-info btn-sm me-1">Renew</button>
+                    <button class="btn btn-danger btn-sm">Revoke</button>
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>2</td>
+                <td>Professional License</td>
+                <td>XYZ Solutions</td>
+                <td>Professional</td>
+                <td>50</td>
+                <td>200 GB</td>
+                <td>30-Jun-2027</td>
+                <td><span class="badge bg-warning text-dark">Expiring Soon</span></td>
+
+                <td>
+                    <button class="btn btn-warning btn-sm me-1">Edit</button>
+                    <button class="btn btn-info btn-sm me-1">Renew</button>
+                    <button class="btn btn-danger btn-sm">Revoke</button>
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+  
+
+</div>

@@ -1,0 +1,859 @@
+<div class="page-container">
+
+    <!-- Page Header -->
+
+    <div class="page-header">
+
+        <div>
+
+            <p class="page-subtitle">
+                USER & ACCESS MANAGEMENT
+            </p>
+
+            <h1>
+                Designations
+            </h1>
+
+            <p class="page-description">
+                Manage employee designations, hierarchy levels and department-wise job roles.
+            </p>
+
+        </div>
+
+
+        <div class="header-buttons">
+
+            <button class="btn btn-light" (click)="refresh()">
+
+                <i class="fa-solid fa-rotate"></i>
+
+                Refresh
+
+            </button>
+
+
+            <button class="btn btn-danger" (click)="openAddModal()">
+
+                <i class="fa-solid fa-plus"></i>
+
+                Add Designation
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+
+
+    <!-- Statistics -->
+
+    <div class="stats-grid">
+
+
+        <div class="stat-card">
+
+            <span>
+                Total Designations
+            </span>
+
+            <h2>
+                {{designations.length}}
+            </h2>
+
+        </div>
+
+
+
+        <div class="stat-card">
+
+            <span>
+                Active
+            </span>
+
+            <h2>
+                {{activeCount}}
+            </h2>
+
+        </div>
+
+
+
+        <div class="stat-card">
+
+            <span>
+                Inactive
+            </span>
+
+            <h2>
+                {{inactiveCount}}
+            </h2>
+
+        </div>
+
+
+
+        <div class="stat-card">
+
+            <span>
+                Total Employees
+            </span>
+
+            <h2>
+                {{employeeCount}}
+            </h2>
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+
+    <!-- Search Filter -->
+
+    <div class="search-panel">
+
+
+        <div class="search-box">
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+
+            <input type="text" placeholder="Search designation..." [(ngModel)]="searchText">
+
+
+        </div>
+
+
+
+
+        <select class="form-control" [(ngModel)]="statusFilter">
+
+
+            <option value="">
+                All Status
+            </option>
+
+
+            <option value="Active">
+                Active
+            </option>
+
+
+            <option value="Inactive">
+                Inactive
+            </option>
+
+
+        </select>
+
+
+
+
+        <button class="btn btn-secondary" (click)="clearFilters()">
+
+
+            Clear
+
+
+        </button>
+
+
+
+    </div>
+
+
+
+
+
+
+    <!-- Designations Table -->
+
+
+    <div class="table-card">
+
+
+
+        <div class="table-header">
+
+
+            <h3>
+                Designations List
+            </h3>
+
+
+            <span>
+                {{filteredDesignations.length}} Records
+            </span>
+
+
+        </div>
+
+
+
+
+
+        <table>
+
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Designation Name
+                    </th>
+
+
+                    <th>
+                        Department
+                    </th>
+
+
+                    <th>
+                        Job Level
+                    </th>
+
+
+                    <th>
+                        Reporting To
+                    </th>
+
+
+                    <th>
+                        Employees
+                    </th>
+
+
+                    <th>
+                        Status
+                    </th>
+
+
+                    <th width="170">
+                        Actions
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+
+
+
+            <tbody>
+
+
+                <tr *ngFor="let item of filteredDesignations">
+
+
+
+                    <!-- Designation Name -->
+
+                    <td>
+
+
+                        <div class="provider-info">
+
+
+                            <div class="provider-icon">
+
+
+                                <i class="fa-solid fa-user-tie"></i>
+
+
+                            </div>
+
+
+
+                            <div>
+
+
+                                <strong>
+                                    {{item.designationName}}
+                                </strong>
+
+
+                                <small>
+                                    {{item.description}}
+                                </small>
+
+
+                            </div>
+
+
+                        </div>
+
+
+                    </td>
+
+
+
+
+
+                    <!-- Department -->
+
+
+                    <td>
+
+
+                        <span class="department-badge">
+
+                            {{item.department}}
+
+                        </span>
+
+
+                    </td>
+
+
+
+
+
+                    <!-- Job Level -->
+
+
+                    <td>
+
+
+                        <span class="level-badge">
+
+                            {{item.jobLevel}}
+
+                        </span>
+
+
+                    </td>
+
+
+
+
+
+                    <!-- Reporting -->
+
+
+                    <td>
+
+                        {{item.reportingTo}}
+
+                    </td>
+
+
+
+
+
+                    <!-- Employee Count -->
+
+
+                    <td>
+
+
+                        <span class="count-badge">
+
+                            {{item.employeeCount}}
+
+                        </span>
+
+
+                    </td>
+
+
+
+
+
+                    <!-- Status -->
+
+
+                    <td>
+
+
+                        <span class="status" [ngClass]="item.status.toLowerCase()">
+
+
+                            {{item.status}}
+
+
+                        </span>
+
+
+                    </td>
+
+
+
+
+
+                    <!-- Actions -->
+
+
+                    <td>
+
+
+                        <button class="icon-btn" (click)="edit(item)">
+
+
+                            <i class="fa-solid fa-pen"></i>
+
+
+                        </button>
+
+
+
+
+                        <button class="icon-btn danger" (click)="delete(item.id)">
+
+
+                            <i class="fa-solid fa-trash"></i>
+
+
+                        </button>
+
+
+                    </td>
+
+
+
+                </tr>
+
+
+
+            </tbody>
+
+
+
+        </table>
+
+
+
+    </div>
+
+
+
+</div>
+<!-- ======================================= -->
+<!-- Add / Edit Designation Modal -->
+<!-- ======================================= -->
+
+
+<div class="modal-overlay" *ngIf="showModal">
+
+
+    <div class="modal-box">
+
+
+        <!-- Modal Header -->
+
+
+        <div class="modal-header">
+
+
+            <h3>
+
+                {{isEdit ? 'Edit Designation' : 'Add Designation'}}
+
+            </h3>
+
+
+
+            <button class="close-btn" (click)="closeModal()">
+
+
+                ×
+
+
+            </button>
+
+
+        </div>
+
+
+
+
+
+
+        <!-- Modal Body -->
+
+
+        <div class="modal-body">
+
+
+            <div class="form-grid">
+
+
+
+
+
+                <!-- Designation Name -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Designation Name
+
+                    </label>
+
+
+
+                    <input type="text" placeholder="Enter designation name" [(ngModel)]="model.designationName">
+
+
+                </div>
+
+
+
+
+
+
+
+                <!-- Department -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Department
+
+                    </label>
+
+
+
+                    <select [(ngModel)]="model.department">
+
+
+                        <option>
+                            IT
+                        </option>
+
+
+                        <option>
+                            HR
+                        </option>
+
+
+                        <option>
+                            Finance
+                        </option>
+
+
+                        <option>
+                            Sales
+                        </option>
+
+
+                        <option>
+                            Marketing
+                        </option>
+
+
+                        <option>
+                            Operations
+                        </option>
+
+
+                    </select>
+
+
+                </div>
+
+
+
+
+
+
+
+                <!-- Job Level -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Job Level
+
+                    </label>
+
+
+
+                    <select [(ngModel)]="model.jobLevel">
+
+
+                        <option>
+                            Entry Level
+                        </option>
+
+
+                        <option>
+                            Junior
+                        </option>
+
+
+                        <option>
+                            Mid Level
+                        </option>
+
+
+                        <option>
+                            Senior
+                        </option>
+
+
+                        <option>
+                            Lead
+                        </option>
+
+
+                        <option>
+                            Manager
+                        </option>
+
+
+                        <option>
+                            Director
+                        </option>
+
+
+                    </select>
+
+
+                </div>
+
+
+
+
+
+
+
+
+                <!-- Reporting To -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Reporting To
+
+                    </label>
+
+
+
+                    <select [(ngModel)]="model.reportingTo">
+
+
+                        <option>
+                            CEO
+                        </option>
+
+
+                        <option>
+                            Department Head
+                        </option>
+
+
+                        <option>
+                            Manager
+                        </option>
+
+
+                        <option>
+                            Team Lead
+                        </option>
+
+
+                    </select>
+
+
+                </div>
+
+
+
+
+
+
+
+                <!-- Employee Count -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Employee Count
+
+                    </label>
+
+
+
+                    <input type="number" placeholder="Enter employee count" [(ngModel)]="model.employeeCount">
+
+
+                </div>
+
+
+
+
+
+
+
+
+                <!-- Status -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Status
+
+                    </label>
+
+
+
+                    <select [(ngModel)]="model.status">
+
+
+                        <option>
+                            Active
+                        </option>
+
+
+                        <option>
+                            Inactive
+                        </option>
+
+
+                    </select>
+
+
+                </div>
+
+
+
+
+
+
+
+
+                <!-- Description -->
+
+
+                <div class="full-width">
+
+
+                    <label>
+
+                        Description
+
+                    </label>
+
+
+
+                    <textarea rows="4" placeholder="Enter designation description" [(ngModel)]="model.description">
+
+                    </textarea>
+
+
+                </div>
+
+
+
+
+
+
+
+                <!-- Default Designation -->
+
+
+                <div class="checkbox-group">
+
+
+                    <label>
+
+
+                        <input type="checkbox" [(ngModel)]="model.isDefault">
+
+
+
+                        Default Designation
+
+
+
+                    </label>
+
+
+                </div>
+
+
+
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+
+
+        <!-- Modal Footer -->
+
+
+        <div class="modal-footer">
+
+
+
+            <button class="btn-secondary" (click)="closeModal()">
+
+
+
+                Cancel
+
+
+
+            </button>
+
+
+
+
+
+
+            <button class="btn-primary" (click)="saveDesignation()">
+
+
+
+                {{isEdit ? 'Update Designation' : 'Save Designation'}}
+
+
+
+            </button>
+
+
+
+        </div>
+
+
+
+
+
+    </div>
+
+
+
+</div>

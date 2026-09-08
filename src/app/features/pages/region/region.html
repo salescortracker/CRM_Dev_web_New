@@ -1,0 +1,322 @@
+<div class="container mt-4">
+
+    <div class="card">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4>Region Master</h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <!-- Company -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label>
+
+                        Company
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select
+                        class="form-select"
+                        [(ngModel)]="region.companyId">
+
+                        <option [ngValue]="0">
+
+                            Select Company
+
+                        </option>
+
+                        <option
+                            *ngFor="let c of companies"
+                            [ngValue]="c.companyId">
+
+                            {{c.companyName}}
+
+                        </option>
+
+                    </select>
+
+                    <div
+                        class="text-danger mt-1"
+                        *ngIf="submitted && !region.companyId">
+
+                        Company is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Region Name -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label>
+
+                        Region Name
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input
+                        class="form-control"
+                        [(ngModel)]="region.regionName">
+
+                    <div
+                        class="text-danger mt-1"
+                        *ngIf="submitted && !region.regionName">
+
+                        Region Name is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Region Code -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label>
+
+                        Region Code
+
+                    </label>
+
+                    <input
+                        class="form-control"
+                        [(ngModel)]="region.regionCode">
+
+                </div>
+
+                <!-- Country -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label>
+
+                        Country
+
+                    </label>
+
+                    <input
+                        class="form-control"
+                        [(ngModel)]="region.country">
+
+                </div>
+
+                <!-- Contact -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label>
+
+                        Contact Person
+
+                    </label>
+
+                    <input
+                        class="form-control"
+                        [(ngModel)]="region.contactPerson">
+
+                </div>
+
+                <!-- Email -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label>
+
+                        Email
+
+                    </label>
+
+                    <input
+                        class="form-control"
+                        [(ngModel)]="region.email">
+
+                </div>
+
+                <!-- Phone -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label>
+
+                        Phone
+
+                    </label>
+
+                    <input
+                        class="form-control"
+                        [(ngModel)]="region.phoneNumber">
+
+                </div>
+
+                <!-- Address -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label>
+
+                        Address
+
+                    </label>
+
+                    <textarea
+                        class="form-control"
+                        [(ngModel)]="region.address">
+
+                    </textarea>
+
+                </div>
+
+                <!-- Status -->
+
+                <div class="col-md-3">
+
+                    <label>
+
+                        <input
+                            type="checkbox"
+                            [(ngModel)]="region.isActive">
+
+                        Active
+
+                    </label>
+
+                </div>
+
+            </div>
+
+            <button
+                class="btn btn-danger me-2"
+                (click)="saveRegion()">
+
+                {{isEdit?'Update':'Save'}}
+
+            </button>
+
+            <button
+                class="btn btn-secondary"
+                (click)="clear()">
+
+                Clear
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <!-- Search -->
+
+    <div class="row mb-3">
+
+        <div class="col-md-4">
+
+            <input
+                class="form-control"
+                placeholder="Search Region..."
+                [(ngModel)]="searchText">
+
+        </div>
+
+    </div>
+
+    <!-- Grid -->
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-danger">
+
+            <tr>
+
+                <th>#</th>
+
+                <th>Company</th>
+
+                <th>Region</th>
+
+                <th>Code</th>
+
+                <th>Contact</th>
+
+                <th>Status</th>
+
+                <th width="150">
+
+                    Action
+
+                </th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr
+                *ngFor="let item of pagedRegions;let i=index">
+
+                <td>{{i+1}}</td>
+
+                <td>{{item.companyName}}</td>
+
+                <td>{{item.regionName}}</td>
+
+                <td>{{item.regionCode}}</td>
+
+                <td>{{item.contactPerson}}</td>
+
+                <td>
+
+                    {{item.isActive?'Active':'Inactive'}}
+
+                </td>
+
+                <td>
+
+                    <button
+                        class="btn btn-warning btn-sm me-2"
+                        (click)="edit(item.regionId)">
+
+                        Edit
+
+                    </button>
+
+                    <button
+                        class="btn btn-danger btn-sm"
+                        (click)="delete(item.regionId)">
+
+                        Delete
+
+                    </button>
+
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+    <app-pagination
+        [page]="page"
+        [pageSize]="pageSize"
+        [totalRecords]="filteredRegions.length"
+        (pageChanged)="changePage($event)"
+        (pageSizeChanged)="changePageSize($event)">
+
+    </app-pagination>
+
+</div>

@@ -1,0 +1,501 @@
+<div class="container-fluid mt-3">
+
+    <!-- ========================================= -->
+    <!-- Project Task Form -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4 class="mb-0">
+
+                <i class="fa fa-list-check me-2"></i>
+
+                Project Tasks
+
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <!-- Task Name -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Task Name
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Task Name" [(ngModel)]="task.taskName">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !task.taskName">
+
+                        Task Name is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Project -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Project
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="task.project">
+
+                        <option value="">Select Project</option>
+                        <option>CRM Implementation</option>
+                        <option>ERP Integration</option>
+                        <option>Support Portal</option>
+                        <option>Data Migration</option>
+                        <option>Internal HR Portal</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !task.project">
+
+                        Project is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Milestone -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Milestone
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="task.milestone">
+
+                        <option value="">Select Milestone</option>
+                        <option>Requirement Gathering</option>
+                        <option>Database Design</option>
+                        <option>UI Development</option>
+                        <option>System Testing</option>
+                        <option>Go Live</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Assigned To -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Assigned To
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Employee Name"
+                        [(ngModel)]="task.assignedTo">
+
+                </div>
+
+                <!-- Priority -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Priority
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="task.priority">
+
+                        <option value="">Select Priority</option>
+                        <option>Low</option>
+                        <option>Medium</option>
+                        <option>High</option>
+                        <option>Critical</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Status -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Status
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="task.status">
+
+                        <option value="">Select Status</option>
+                        <option>Open</option>
+                        <option>In Progress</option>
+                        <option>Review</option>
+                        <option>Completed</option>
+                        <option>Cancelled</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !task.status">
+
+                        Status is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Start Date -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Start Date
+
+                    </label>
+
+                    <input type="date" class="form-control" [(ngModel)]="task.startDate">
+
+                </div>
+
+                <!-- Due Date -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Due Date
+
+                    </label>
+
+                    <input type="date" class="form-control" [(ngModel)]="task.dueDate">
+
+                </div>
+
+                <!-- Estimated Hours -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Estimated Hours
+
+                    </label>
+
+                    <input type="number" class="form-control" placeholder="Estimated Hours"
+                        [(ngModel)]="task.estimatedHours">
+
+                </div>
+
+                <!-- Actual Hours -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Actual Hours
+
+                    </label>
+
+                    <input type="number" class="form-control" placeholder="Actual Hours" [(ngModel)]="task.actualHours">
+
+                </div>
+
+                <!-- Completion -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Completion (%)
+
+                    </label>
+
+                    <input type="number" class="form-control" min="0" max="100" placeholder="0-100"
+                        [(ngModel)]="task.completion">
+
+                </div>
+
+                <!-- Tags -->
+                <div class="col-md-9 mb-3">
+
+                    <label class="form-label">
+
+                        Tags
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Frontend, Backend, API, Testing..."
+                        [(ngModel)]="task.tags">
+
+                </div>
+
+                <!-- Description -->
+                <div class="col-md-12 mb-3">
+
+                    <label class="form-label">
+
+                        Description
+
+                    </label>
+
+                    <textarea rows="5" class="form-control" placeholder="Enter Task Description..."
+                        [(ngModel)]="task.description">
+
+                    </textarea>
+
+                </div>
+
+                <!-- Active -->
+                <div class="col-md-2 mb-3 d-flex align-items-end">
+
+                    <div class="form-check">
+
+                        <input id="taskActive" type="checkbox" class="form-check-input" [(ngModel)]="task.isActive">
+
+                        <label for="taskActive" class="form-check-label ms-2">
+
+                            Active
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <button class="btn btn-danger me-2" (click)="saveTask()">
+
+                <i class="fa fa-save me-1"></i>
+
+                {{ isEdit ? 'Update Task' : 'Save Task' }}
+
+            </button>
+
+            <button class="btn btn-secondary" (click)="clear()">
+
+                <i class="fa fa-eraser me-1"></i>
+
+                Clear
+
+            </button>
+
+        </div>
+
+    </div>
+    <!-- ========================================= -->
+    <!-- Search Section -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm border-0 mt-4">
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4">
+
+                    <input type="text" class="form-control" placeholder="Search Task, Project, Employee..."
+                        [(ngModel)]="searchText">
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Project Tasks List -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm border-0 mt-3">
+
+        <div class="card-header bg-danger text-white">
+
+            <h5 class="mb-0">
+
+                <i class="fa fa-list-check me-2"></i>
+
+                Project Task List
+
+            </h5>
+
+        </div>
+
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+
+                <table class="table table-bordered table-hover table-striped mb-0">
+
+                    <thead class="table-danger">
+
+                        <tr>
+
+                            <th width="60">#</th>
+                            <th>Task</th>
+                            <th>Project</th>
+                            <th>Milestone</th>
+                            <th>Assigned To</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Progress</th>
+                            <th>Due Date</th>
+                            <th width="140" class="text-center">Action</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr *ngIf="pagedTasks.length == 0">
+
+                            <td colspan="10" class="text-center text-muted py-4">
+
+                                No Tasks Found
+
+                            </td>
+
+                        </tr>
+
+                        <tr *ngFor="let item of pagedTasks; let i = index">
+
+                            <td>
+
+                                {{ ((page - 1) * pageSize) + i + 1 }}
+
+                            </td>
+
+                            <td>
+
+                                {{ item.taskName }}
+
+                            </td>
+
+                            <td>
+
+                                {{ item.project }}
+
+                            </td>
+
+                            <td>
+
+                                {{ item.milestone }}
+
+                            </td>
+
+                            <td>
+
+                                {{ item.assignedTo }}
+
+                            </td>
+
+                            <td>
+
+                                <span class="badge" [ngClass]="{
+                                        'bg-success': item.priority == 'Low',
+                                        'bg-info': item.priority == 'Medium',
+                                        'bg-warning text-dark': item.priority == 'High',
+                                        'bg-danger': item.priority == 'Critical'
+                                    }">
+
+                                    {{ item.priority }}
+
+                                </span>
+
+                            </td>
+
+                            <td>
+
+                                <span class="badge" [ngClass]="{
+                                        'bg-secondary': item.status == 'Open',
+                                        'bg-primary': item.status == 'In Progress',
+                                        'bg-warning text-dark': item.status == 'Review',
+                                        'bg-success': item.status == 'Completed',
+                                        'bg-danger': item.status == 'Cancelled'
+                                    }">
+
+                                    {{ item.status }}
+
+                                </span>
+
+                            </td>
+
+                            <td style="min-width:170px;">
+
+                                <div class="progress" style="height:22px;">
+
+                                    <div class="progress-bar" role="progressbar" [style.width.%]="item.completion">
+
+                                        {{ item.completion }}%
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+                            <td>
+
+                                {{ item.dueDate }}
+
+                            </td>
+
+                            <td class="text-center">
+
+                                <button class="btn btn-warning btn-sm me-2" (click)="edit(item.taskId)">
+
+                                    <i class="fa fa-edit"></i>
+
+                                </button>
+
+                                <button class="btn btn-danger btn-sm" (click)="delete(item.taskId)">
+
+                                    <i class="fa fa-trash"></i>
+
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Pagination -->
+    <!-- ========================================= -->
+
+    <div class="mt-3">
+
+        <app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredTasks.length"
+            (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
+        </app-pagination>
+
+    </div>
+
+</div>

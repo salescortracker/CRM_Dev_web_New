@@ -1,0 +1,227 @@
+<div class="container mt-4">
+
+    <div class="card">
+
+        <div class="card-header bg-danger text-white">
+            <h4>Email Automation</h4>
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+                    <label>Automation Name <span class="text-danger">*</span></label>
+                    <input class="form-control" placeholder="Lead Welcome Email">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Module <span class="text-danger">*</span></label>
+                    <select class="form-select">
+                        <option>Leads</option>
+                        <option>Contacts</option>
+                        <option>Accounts</option>
+                        <option>Opportunities</option>
+                        <option>Quotations</option>
+                        <option>Orders</option>
+                        <option>Invoices</option>
+                        <option>Support Tickets</option>
+                        <option>Subscriptions</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Trigger Event</label>
+                    <select class="form-select">
+                        <option>On Create</option>
+                        <option>On Update</option>
+                        <option>On Delete</option>
+                        <option>Status Changed</option>
+                        <option>Scheduled</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Email Template</label>
+                    <select class="form-select">
+                        <option>Lead Welcome</option>
+                        <option>Quotation Sent</option>
+                        <option>Invoice Generated</option>
+                        <option>Payment Reminder</option>
+                        <option>Subscription Renewal</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Recipient Type</label>
+                    <select class="form-select">
+                        <option>Customer</option>
+                        <option>Lead</option>
+                        <option>Assigned User</option>
+                        <option>Manager</option>
+                        <option>Team</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Send Delay</label>
+                    <input type="number"
+                           class="form-control"
+                           placeholder="0">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Delay Unit</label>
+                    <select class="form-select">
+                        <option>Immediately</option>
+                        <option>Minutes</option>
+                        <option>Hours</option>
+                        <option>Days</option>
+                    </select>
+                </div>
+
+                <div class="col-md-8 mb-3">
+                    <label>Automation Condition</label>
+                    <input class="form-control"
+                           placeholder="Lead Source = Website">
+                </div>
+
+                <div class="col-md-8 mb-3">
+                    <label>Description</label>
+                    <textarea class="form-control"
+                              rows="2"
+                              placeholder="Enter automation description"></textarea>
+                </div>
+
+                <div class="col-md-2 mt-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Active
+                    </label>
+                </div>
+
+                <div class="col-md-2 mt-4">
+                    <label>
+                        <input type="checkbox">
+                        Default
+                    </label>
+                </div>
+
+            </div>
+
+            <button class="btn btn-danger me-2">
+                Save
+            </button>
+
+            <button class="btn btn-secondary me-2">
+                Clear
+            </button>
+
+            <button class="btn btn-success">
+                Send Test Email
+            </button>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="row mb-3">
+
+        <div class="col-md-4">
+            <input class="form-control"
+                   placeholder="Search Email Automation...">
+        </div>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-danger">
+
+            <tr>
+
+                <th>#</th>
+                <th>Automation Name</th>
+                <th>Module</th>
+                <th>Trigger</th>
+                <th>Email Template</th>
+                <th>Recipient</th>
+                <th>Delay</th>
+                <th>Status</th>
+                <th width="150">Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>1</td>
+                <td>Lead Welcome Email</td>
+                <td>Leads</td>
+                <td>On Create</td>
+                <td>Lead Welcome</td>
+                <td>Customer</td>
+                <td>Immediately</td>
+                <td>Active</td>
+                <td>
+                    <button class="btn btn-warning btn-sm me-2">Edit</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>2</td>
+                <td>Quotation Email</td>
+                <td>Quotations</td>
+                <td>Status Changed</td>
+                <td>Quotation Sent</td>
+                <td>Customer</td>
+                <td>Immediately</td>
+                <td>Active</td>
+                <td>
+                    <button class="btn btn-warning btn-sm me-2">Edit</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>3</td>
+                <td>Payment Reminder</td>
+                <td>Invoices</td>
+                <td>Scheduled</td>
+                <td>Payment Reminder</td>
+                <td>Customer</td>
+                <td>3 Days</td>
+                <td>Active</td>
+                <td>
+                    <button class="btn btn-warning btn-sm me-2">Edit</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>4</td>
+                <td>Subscription Renewal Reminder</td>
+                <td>Subscriptions</td>
+                <td>Scheduled</td>
+                <td>Subscription Renewal</td>
+                <td>Customer</td>
+                <td>7 Days</td>
+                <td>Inactive</td>
+                <td>
+                    <button class="btn btn-warning btn-sm me-2">Edit</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+   
+
+</div>

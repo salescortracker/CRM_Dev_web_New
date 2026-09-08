@@ -1,0 +1,225 @@
+<div class="container mt-4">
+
+    <div class="card">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4>User Activities</h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+                    <label>Company</label>
+                    <select class="form-select">
+                        <option>All Companies</option>
+                        <option>ABC Technologies</option>
+                        <option>XYZ Solutions</option>
+                        <option>Demo Company</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Module</label>
+                    <select class="form-select">
+                        <option>All Modules</option>
+                        <option>Leads</option>
+                        <option>Contacts</option>
+                        <option>Sales</option>
+                        <option>Support</option>
+                        <option>Projects</option>
+                        <option>Billing</option>
+                        <option>Reports</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Activity Type</label>
+                    <select class="form-select">
+                        <option>All Activities</option>
+                        <option>Create</option>
+                        <option>Update</option>
+                        <option>Delete</option>
+                        <option>View</option>
+                        <option>Export</option>
+                        <option>Import</option>
+                        <option>Approve</option>
+                        <option>Reject</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Track User Activities
+                    </label>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Capture Browser Information
+                    </label>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Active Monitoring
+                    </label>
+                </div>
+
+            </div>
+
+            <button class="btn btn-danger me-2">
+                Save
+            </button>
+
+            <button class="btn btn-secondary me-2">
+                Clear
+            </button>
+
+            <button class="btn btn-success">
+                Export Activities
+            </button>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="row mb-3">
+
+        <div class="col-md-3">
+            <input class="form-control"
+                   placeholder="Search User...">
+        </div>
+
+        <div class="col-md-3">
+            <select class="form-select">
+                <option>All Modules</option>
+                <option>Leads</option>
+                <option>Sales</option>
+                <option>Support</option>
+                <option>Billing</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <input type="date"
+                   class="form-control">
+        </div>
+
+        <div class="col-md-3">
+            <button class="btn btn-danger w-100">
+                Search
+            </button>
+        </div>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-danger">
+
+            <tr>
+
+                <th>#</th>
+                <th>Date & Time</th>
+                <th>User</th>
+                <th>Company</th>
+                <th>Module</th>
+                <th>Activity</th>
+                <th>Record</th>
+                <th>Status</th>
+                <th width="180">Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+
+                <td>1</td>
+                <td>27-Jul-2026 10:30 AM</td>
+                <td>admin@crm.com</td>
+                <td>ABC Technologies</td>
+                <td>Leads</td>
+                <td>Lead Created</td>
+                <td>LD-100245</td>
+                <td><span class="badge bg-success">Success</span></td>
+
+                <td>
+                    <button class="btn btn-info btn-sm me-1">View</button>
+                    <button class="btn btn-secondary btn-sm">Timeline</button>
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>2</td>
+                <td>27-Jul-2026 10:05 AM</td>
+                <td>sales@crm.com</td>
+                <td>XYZ Solutions</td>
+                <td>Sales</td>
+                <td>Quotation Approved</td>
+                <td>QT-2026-0125</td>
+                <td><span class="badge bg-primary">Completed</span></td>
+
+                <td>
+                    <button class="btn btn-info btn-sm me-1">View</button>
+                    <button class="btn btn-secondary btn-sm">Timeline</button>
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>3</td>
+                <td>27-Jul-2026 09:45 AM</td>
+                <td>support@crm.com</td>
+                <td>Demo Company</td>
+                <td>Support</td>
+                <td>Ticket Updated</td>
+                <td>TKT-4587</td>
+                <td><span class="badge bg-warning">Updated</span></td>
+
+                <td>
+                    <button class="btn btn-info btn-sm me-1">View</button>
+                    <button class="btn btn-secondary btn-sm">Timeline</button>
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>4</td>
+                <td>27-Jul-2026 09:15 AM</td>
+                <td>finance@crm.com</td>
+                <td>ABC Technologies</td>
+                <td>Billing</td>
+                <td>Invoice Exported</td>
+                <td>INV-2026-1054</td>
+                <td><span class="badge bg-success">Exported</span></td>
+
+                <td>
+                    <button class="btn btn-info btn-sm me-1">View</button>
+                    <button class="btn btn-secondary btn-sm">Timeline</button>
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+ 
+
+</div>

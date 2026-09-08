@@ -1,0 +1,250 @@
+<div class="container mt-4">
+
+    <div class="card">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4>Multi-Factor Authentication (MFA)</h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+                    <label>Policy Name <span class="text-danger">*</span></label>
+                    <input class="form-control"
+                           placeholder="Default MFA Policy">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Applies To</label>
+                    <select class="form-select">
+                        <option>All Users</option>
+                        <option>Super Admin</option>
+                        <option>Company Admin</option>
+                        <option>Managers</option>
+                        <option>Sales Team</option>
+                        <option>Support Team</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>MFA Mode</label>
+                    <select class="form-select">
+                        <option>Optional</option>
+                        <option>Mandatory</option>
+                        <option>Disabled</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Primary Authentication Method</label>
+                    <select class="form-select">
+                        <option>Email OTP</option>
+                        <option>SMS OTP</option>
+                        <option>Authenticator App</option>
+                        <option>Push Notification</option>
+                        <option>Security Key (FIDO2)</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>OTP Expiry (Minutes)</label>
+                    <input type="number"
+                           class="form-control"
+                           value="5">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Maximum OTP Attempts</label>
+                    <input type="number"
+                           class="form-control"
+                           value="3">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Trusted Device Duration (Days)</label>
+                    <input type="number"
+                           class="form-control"
+                           value="30">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Backup Authentication</label>
+                    <select class="form-select">
+                        <option>Recovery Code</option>
+                        <option>Email OTP</option>
+                        <option>SMS OTP</option>
+                        <option>Disabled</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Login Challenge</label>
+                    <select class="form-select">
+                        <option>Every Login</option>
+                        <option>New Device Only</option>
+                        <option>High Risk Login Only</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label>
+                        <input type="checkbox" checked>
+                        Enable Email OTP
+                    </label>
+                </div>
+
+                <div class="col-md-3">
+                    <label>
+                        <input type="checkbox" checked>
+                        Enable SMS OTP
+                    </label>
+                </div>
+
+                <div class="col-md-3">
+                    <label>
+                        <input type="checkbox" checked>
+                        Enable Authenticator App
+                    </label>
+                </div>
+
+                <div class="col-md-3">
+                    <label>
+                        <input type="checkbox">
+                        Enable Security Key
+                    </label>
+                </div>
+
+                <div class="col-md-3 mt-3">
+                    <label>
+                        <input type="checkbox" checked>
+                        Remember Trusted Devices
+                    </label>
+                </div>
+
+                <div class="col-md-3 mt-3">
+                    <label>
+                        <input type="checkbox" checked>
+                        Allow Backup Codes
+                    </label>
+                </div>
+
+                <div class="col-md-3 mt-3">
+                    <label>
+                        <input type="checkbox" checked>
+                        Notify User on MFA Change
+                    </label>
+                </div>
+
+                <div class="col-md-3 mt-3">
+                    <label>
+                        <input type="checkbox" checked>
+                        Policy Active
+                    </label>
+                </div>
+
+            </div>
+
+            <button class="btn btn-danger me-2">
+                Save
+            </button>
+
+            <button class="btn btn-secondary me-2">
+                Clear
+            </button>
+
+            <button class="btn btn-success">
+                Test MFA
+            </button>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="row mb-3">
+
+        <div class="col-md-4">
+            <input class="form-control"
+                   placeholder="Search MFA Policy...">
+        </div>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-danger">
+
+            <tr>
+
+                <th>#</th>
+                <th>Policy Name</th>
+                <th>Applies To</th>
+                <th>MFA Mode</th>
+                <th>Primary Method</th>
+                <th>OTP Expiry</th>
+                <th>Status</th>
+                <th width="170">Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>1</td>
+                <td>Default MFA Policy</td>
+                <td>All Users</td>
+                <td>Mandatory</td>
+                <td>Authenticator App</td>
+                <td>5 Minutes</td>
+                <td><span class="badge bg-success">Active</span></td>
+                <td>
+                    <button class="btn btn-warning btn-sm me-2">Edit</button>
+                    <button class="btn btn-info btn-sm me-2">Test</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>2</td>
+                <td>Administrator MFA</td>
+                <td>Super Admin</td>
+                <td>Mandatory</td>
+                <td>Security Key</td>
+                <td>3 Minutes</td>
+                <td><span class="badge bg-success">Active</span></td>
+                <td>
+                    <button class="btn btn-warning btn-sm me-2">Edit</button>
+                    <button class="btn btn-info btn-sm me-2">Test</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>3</td>
+                <td>Sales Team MFA</td>
+                <td>Sales Team</td>
+                <td>Optional</td>
+                <td>Email OTP</td>
+                <td>10 Minutes</td>
+                <td><span class="badge bg-secondary">Inactive</span></td>
+                <td>
+                    <button class="btn btn-warning btn-sm me-2">Edit</button>
+                    <button class="btn btn-info btn-sm me-2">Test</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+
+
+</div>

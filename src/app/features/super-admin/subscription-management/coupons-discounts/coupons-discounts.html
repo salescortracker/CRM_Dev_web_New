@@ -1,0 +1,1112 @@
+<div class="container-fluid mt-4">
+
+
+    <!-- ========================================= -->
+    <!-- Page Header -->
+    <!-- ========================================= -->
+
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+
+        <div>
+
+            <h3 class="fw-bold text-danger mb-1">
+
+                <i class="fa-solid fa-ticket me-2"></i>
+
+                Coupons & Discounts
+
+            </h3>
+
+
+            <p class="text-muted mb-0">
+
+                Manage promotional coupons, discounts and subscription offers.
+
+            </p>
+
+
+        </div>
+
+
+
+        <div>
+
+
+            <button class="btn btn-outline-secondary me-2" (click)="clear()">
+
+
+                <i class="fa-solid fa-rotate me-2"></i>
+
+                Reset
+
+
+            </button>
+
+
+
+            <button class="btn btn-danger" (click)="saveCoupon()">
+
+
+
+                <i class="fa-solid fa-floppy-disk me-2"></i>
+
+                Save Coupon
+
+
+            </button>
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+    <!-- ========================================= -->
+    <!-- Statistics Cards -->
+    <!-- ========================================= -->
+
+
+    <div class="row mb-4">
+
+
+
+        <div class="col-lg-3 col-md-6 mb-3">
+
+
+            <div class="card border-0 shadow-sm">
+
+
+                <div class="card-body">
+
+
+                    <div class="d-flex justify-content-between">
+
+
+                        <div>
+
+
+                            <h6 class="text-muted">
+
+                                Total Coupons
+
+                            </h6>
+
+
+                            <h4 class="fw-bold">
+
+                                {{totalCoupons}}
+
+                            </h4>
+
+
+                        </div>
+
+
+
+                        <i class="fa-solid fa-ticket fa-2x text-danger"></i>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+        <div class="col-lg-3 col-md-6 mb-3">
+
+
+            <div class="card border-0 shadow-sm">
+
+
+                <div class="card-body">
+
+
+                    <div class="d-flex justify-content-between">
+
+
+                        <div>
+
+
+                            <h6 class="text-muted">
+
+                                Active Coupons
+
+                            </h6>
+
+
+                            <h4 class="fw-bold text-success">
+
+                                {{activeCoupons}}
+
+                            </h4>
+
+
+                        </div>
+
+
+
+                        <i class="fa-solid fa-circle-check fa-2x text-success"></i>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+        <div class="col-lg-3 col-md-6 mb-3">
+
+
+            <div class="card border-0 shadow-sm">
+
+
+                <div class="card-body">
+
+
+                    <div class="d-flex justify-content-between">
+
+
+                        <div>
+
+
+                            <h6 class="text-muted">
+
+                                Expired Coupons
+
+                            </h6>
+
+
+                            <h4 class="fw-bold text-warning">
+
+                                {{expiredCoupons}}
+
+                            </h4>
+
+
+                        </div>
+
+
+
+                        <i class="fa-solid fa-clock fa-2x text-warning"></i>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+        <div class="col-lg-3 col-md-6 mb-3">
+
+
+            <div class="card border-0 shadow-sm">
+
+
+                <div class="card-body">
+
+
+                    <div class="d-flex justify-content-between">
+
+
+                        <div>
+
+
+                            <h6 class="text-muted">
+
+                                Discount Given
+
+                            </h6>
+
+
+                            <h4 class="fw-bold">
+
+                                ₹{{totalDiscount}}
+
+                            </h4>
+
+
+                        </div>
+
+
+
+                        <i class="fa-solid fa-percent fa-2x text-primary"></i>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+
+
+    <!-- ========================================= -->
+    <!-- Coupon Information -->
+    <!-- ========================================= -->
+
+
+
+    <div class="card shadow-sm border-0 mb-4">
+
+
+
+        <div class="card-header bg-danger text-white">
+
+
+            <h5 class="mb-0">
+
+
+                <i class="fa-solid fa-ticket me-2"></i>
+
+
+                Coupon Information
+
+
+            </h5>
+
+
+        </div>
+
+
+
+
+        <div class="card-body">
+
+
+
+            <div class="row">
+
+
+
+
+
+                <!-- Coupon Code -->
+
+
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+                        Coupon Code
+
+                        <span class="text-danger">*</span>
+
+
+                    </label>
+
+
+
+                    <input type="text" class="form-control" placeholder="Example: SAVE20"
+                        [(ngModel)]="coupon.couponCode">
+
+
+
+                </div>
+
+
+
+
+
+                <!-- Coupon Name -->
+
+
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+
+                        Coupon Name
+
+
+                        <span class="text-danger">*</span>
+
+
+                    </label>
+
+
+
+                    <input type="text" class="form-control" [(ngModel)]="coupon.couponName">
+
+
+
+                </div>
+
+
+
+
+
+                <!-- Status -->
+
+
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+                        Status
+
+                    </label>
+
+
+
+                    <select class="form-select" [(ngModel)]="coupon.status">
+
+
+
+                        <option>
+                            Active
+                        </option>
+
+
+                        <option>
+                            InActive
+                        </option>
+
+
+                    </select>
+
+
+                </div>
+
+
+
+
+
+
+                <!-- Description -->
+
+
+                <div class="col-md-12 mb-3">
+
+
+                    <label class="form-label">
+
+                        Description
+
+                    </label>
+
+
+
+                    <textarea rows="3" class="form-control" placeholder="Enter coupon description"
+                        [(ngModel)]="coupon.description">
+
+
+                    </textarea>
+
+
+                </div>
+
+
+
+
+
+                <!-- Discount Type -->
+
+
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+                        Discount Type
+
+                    </label>
+
+
+
+                    <select class="form-select" [(ngModel)]="coupon.discountType">
+
+
+
+                        <option>
+                            Percentage
+                        </option>
+
+
+                        <option>
+                            Fixed Amount
+                        </option>
+
+
+
+                    </select>
+
+
+                </div>
+
+
+
+
+
+                <!-- Discount Value -->
+
+
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+                        Discount Value
+
+                    </label>
+
+
+
+                    <input type="number" class="form-control" [(ngModel)]="coupon.discountValue">
+
+
+
+                </div>
+
+
+
+
+
+                <!-- Minimum Amount -->
+
+
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+                        Minimum Subscription Amount
+
+                    </label>
+
+
+
+                    <input type="number" class="form-control" [(ngModel)]="coupon.minimumAmount">
+
+
+
+                </div>
+
+
+
+                <!-- Maximum Discount -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Maximum Discount Limit
+
+                    </label>
+
+
+                    <input type="number" class="form-control" [(ngModel)]="coupon.maximumDiscount">
+
+
+                </div>
+
+
+
+                <!-- Usage Limit -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Usage Limit
+
+                    </label>
+
+
+                    <input type="number" class="form-control" [(ngModel)]="coupon.usageLimit">
+
+
+                </div>
+
+
+
+
+                <!-- Used Count -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Used Count
+
+                    </label>
+
+
+                    <input type="number" class="form-control" [(ngModel)]="coupon.usedCount">
+
+
+                </div>
+
+
+
+
+
+                <!-- Applicable Plans -->
+
+                <div class="col-md-6 mb-3">
+
+
+                    <label class="form-label">
+
+                        Applicable Subscription Plans
+
+                    </label>
+
+
+                    <select class="form-select" [(ngModel)]="coupon.applicablePlan">
+
+
+                        <option>
+                            All Plans
+                        </option>
+
+
+                        <option>
+                            Basic Plan
+                        </option>
+
+
+                        <option>
+                            Professional Plan
+                        </option>
+
+
+                        <option>
+                            Enterprise Plan
+                        </option>
+
+
+                    </select>
+
+
+                </div>
+
+
+
+
+
+                <!-- Start Date -->
+
+                <div class="col-md-3 mb-3">
+
+
+                    <label class="form-label">
+
+                        Start Date
+
+                    </label>
+
+
+                    <input type="date" class="form-control" [(ngModel)]="coupon.startDate">
+
+
+                </div>
+
+
+
+
+
+                <!-- Expiry Date -->
+
+                <div class="col-md-3 mb-3">
+
+
+                    <label class="form-label">
+
+                        Expiry Date
+
+                    </label>
+
+
+                    <input type="date" class="form-control" [(ngModel)]="coupon.expiryDate">
+
+
+                </div>
+
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+
+
+    <!-- ========================================= -->
+    <!-- Search and Filter -->
+    <!-- ========================================= -->
+
+
+    <div class="card shadow-sm border-0 mb-4">
+
+
+        <div class="card-body">
+
+
+            <div class="row">
+
+
+
+                <div class="col-md-4 mb-2">
+
+
+                    <label class="form-label">
+
+                        Search
+
+                    </label>
+
+
+                    <input type="text" class="form-control" placeholder="Search coupon code or name"
+                        [(ngModel)]="searchText">
+
+
+                </div>
+
+
+
+
+
+                <div class="col-md-3 mb-2">
+
+
+                    <label class="form-label">
+
+                        Status Filter
+
+                    </label>
+
+
+                    <select class="form-select" [(ngModel)]="statusFilter">
+
+
+                        <option value="">
+                            All
+                        </option>
+
+
+                        <option>
+                            Active
+                        </option>
+
+
+                        <option>
+                            InActive
+                        </option>
+
+
+                    </select>
+
+
+                </div>
+
+
+
+
+
+                <div class="col-md-5 text-end mt-4">
+
+
+                    <button class="btn btn-success me-2" (click)="exportExcel()">
+
+
+                        <i class="fa-solid fa-file-excel me-2"></i>
+
+                        Excel
+
+
+                    </button>
+
+
+
+                    <button class="btn btn-danger" (click)="exportPdf()">
+
+
+                        <i class="fa-solid fa-file-pdf me-2"></i>
+
+                        PDF
+
+
+                    </button>
+
+
+                </div>
+
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+
+
+    <!-- ========================================= -->
+    <!-- Coupon List Table -->
+    <!-- ========================================= -->
+
+
+    <div class="card shadow-sm border-0">
+
+
+
+        <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+
+
+            <h5 class="mb-0">
+
+
+                <i class="fa-solid fa-list me-2"></i>
+
+                Coupon List
+
+
+            </h5>
+
+
+
+            <span class="badge bg-light text-dark">
+
+
+                Total : {{filteredCoupons.length}}
+
+
+            </span>
+
+
+        </div>
+
+
+
+
+
+        <div class="card-body p-0">
+
+
+            <div class="table-responsive">
+
+
+                <table class="table table-bordered table-hover align-middle mb-0">
+
+
+                    <thead class="table-danger">
+
+
+                        <tr>
+
+
+                            <th width="60">
+                                #
+                            </th>
+
+
+                            <th>
+                                Coupon Code
+                            </th>
+
+
+                            <th>
+                                Coupon Name
+                            </th>
+
+
+                            <th>
+                                Discount
+                            </th>
+
+
+                            <th>
+                                Plan
+                            </th>
+
+
+                            <th>
+                                Usage
+                            </th>
+
+
+                            <th>
+                                Expiry Date
+                            </th>
+
+
+                            <th>
+                                Status
+                            </th>
+
+
+                            <th width="180">
+                                Action
+                            </th>
+
+
+                        </tr>
+
+
+                    </thead>
+
+
+
+
+
+                    <tbody>
+
+
+
+                        <tr *ngFor="let item of pagedCoupons; let i=index">
+
+
+                            <td>
+
+                                {{((page-1)*pageSize)+i+1}}
+
+                            </td>
+
+
+
+                            <td>
+
+                                <strong>
+
+                                    {{item.couponCode}}
+
+                                </strong>
+
+                            </td>
+
+
+
+                            <td>
+
+                                {{item.couponName}}
+
+                            </td>
+
+
+
+
+                            <td>
+
+
+                                <span *ngIf="item.discountType=='Percentage'">
+
+                                    {{item.discountValue}} %
+
+                                </span>
+
+
+                                <span *ngIf="item.discountType=='Fixed Amount'">
+
+                                    ₹{{item.discountValue}}
+
+                                </span>
+
+
+
+                            </td>
+
+
+
+
+                            <td>
+
+                                {{item.applicablePlan}}
+
+                            </td>
+
+
+
+                            <td>
+
+                                {{item.usedCount}} / {{item.usageLimit}}
+
+                            </td>
+
+
+
+
+                            <td>
+
+                                {{item.expiryDate}}
+
+                            </td>
+
+
+
+
+
+                            <td>
+
+
+                                <span class="badge" [ngClass]="item.status=='Active' ? 
+      'bg-success':'bg-secondary'">
+
+
+                                    {{item.status}}
+
+
+                                </span>
+
+
+                            </td>
+
+
+
+
+
+
+                            <td>
+
+
+
+                                <button class="btn btn-warning btn-sm me-2" (click)="edit(item.couponId)">
+
+
+
+                                    <i class="fa-solid fa-pen"></i>
+
+
+
+                                </button>
+
+
+
+
+                                <button class="btn btn-danger btn-sm" (click)="delete(item.couponId)">
+
+
+
+                                    <i class="fa-solid fa-trash"></i>
+
+
+
+                                </button>
+
+
+
+                            </td>
+
+
+
+                        </tr>
+
+
+
+
+
+
+
+                        <tr *ngIf="pagedCoupons.length==0">
+
+
+                            <td colspan="9" class="text-center py-5 text-muted">
+
+
+                                <i class="fa-solid fa-ticket fa-3x mb-3"></i>
+
+
+                                <br>
+
+
+                                No Coupons Available
+
+
+                            </td>
+
+
+                        </tr>
+
+
+
+
+
+                    </tbody>
+
+
+                </table>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div> <!-- ========================================= -->
+    <!-- Pagination -->
+    <!-- ========================================= -->
+
+
+    <div class="mt-3">
+
+
+        <app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredCoupons.length"
+            (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
+
+
+        </app-pagination>
+
+
+    </div>

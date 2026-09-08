@@ -1,0 +1,249 @@
+<div class="container mt-4">
+
+    <div class="card">
+
+        <div class="card-header bg-danger text-white">
+            <h4>SLA Rules</h4>
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+                    <label>SLA Name <span class="text-danger">*</span></label>
+                    <input class="form-control"
+                           placeholder="Critical Support SLA">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Module <span class="text-danger">*</span></label>
+                    <select class="form-select">
+                        <option>Support Tickets</option>
+                        <option>Leads</option>
+                        <option>Opportunities</option>
+                        <option>Orders</option>
+                        <option>Invoices</option>
+                        <option>Customer Complaints</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Priority</label>
+                    <select class="form-select">
+                        <option>Critical</option>
+                        <option>High</option>
+                        <option>Medium</option>
+                        <option>Low</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label>Response Time</label>
+                    <input type="number"
+                           class="form-control"
+                           placeholder="30">
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label>Response Unit</label>
+                    <select class="form-select">
+                        <option>Minutes</option>
+                        <option>Hours</option>
+                        <option>Days</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label>Resolution Time</label>
+                    <input type="number"
+                           class="form-control"
+                           placeholder="4">
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label>Resolution Unit</label>
+                    <select class="form-select">
+                        <option>Hours</option>
+                        <option>Days</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label>Business Hours</label>
+                    <select class="form-select">
+                        <option>24 x 7</option>
+                        <option>Monday - Friday</option>
+                        <option>Office Hours</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label>Applicable Condition</label>
+                    <input class="form-control"
+                           placeholder="Priority = Critical">
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label>Description</label>
+                    <textarea class="form-control"
+                              rows="2"
+                              placeholder="Enter SLA description"></textarea>
+                </div>
+
+                <div class="col-md-3 mt-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Default SLA
+                    </label>
+                </div>
+
+                <div class="col-md-3 mt-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Active
+                    </label>
+                </div>
+
+            </div>
+
+            <button class="btn btn-danger me-2">
+                Save
+            </button>
+
+            <button class="btn btn-secondary">
+                Clear
+            </button>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="row mb-3">
+
+        <div class="col-md-4">
+            <input class="form-control"
+                   placeholder="Search SLA Rule...">
+        </div>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-danger">
+
+            <tr>
+
+                <th>#</th>
+                <th>SLA Name</th>
+                <th>Module</th>
+                <th>Priority</th>
+                <th>Response Time</th>
+                <th>Resolution Time</th>
+                <th>Business Hours</th>
+                <th>Status</th>
+                <th width="150">Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+
+                <td>1</td>
+                <td>Critical Support SLA</td>
+                <td>Support Tickets</td>
+                <td>Critical</td>
+                <td>30 Minutes</td>
+                <td>4 Hours</td>
+                <td>24 x 7</td>
+                <td>Active</td>
+
+                <td>
+                    <button class="btn btn-warning btn-sm me-2">
+                        Edit
+                    </button>
+                    <button class="btn btn-danger btn-sm">
+                        Delete
+                    </button>
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>2</td>
+                <td>Lead Response SLA</td>
+                <td>Leads</td>
+                <td>High</td>
+                <td>1 Hour</td>
+                <td>1 Day</td>
+                <td>Office Hours</td>
+                <td>Active</td>
+
+                <td>
+                    <button class="btn btn-warning btn-sm me-2">
+                        Edit
+                    </button>
+                    <button class="btn btn-danger btn-sm">
+                        Delete
+                    </button>
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>3</td>
+                <td>Invoice Approval SLA</td>
+                <td>Invoices</td>
+                <td>Medium</td>
+                <td>2 Hours</td>
+                <td>2 Days</td>
+                <td>Monday-Friday</td>
+                <td>Active</td>
+
+                <td>
+                    <button class="btn btn-warning btn-sm me-2">
+                        Edit
+                    </button>
+                    <button class="btn btn-danger btn-sm">
+                        Delete
+                    </button>
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>4</td>
+                <td>Complaint Resolution SLA</td>
+                <td>Customer Complaints</td>
+                <td>High</td>
+                <td>30 Minutes</td>
+                <td>8 Hours</td>
+                <td>24 x 7</td>
+                <td>Inactive</td>
+
+                <td>
+                    <button class="btn btn-warning btn-sm me-2">
+                        Edit
+                    </button>
+                    <button class="btn btn-danger btn-sm">
+                        Delete
+                    </button>
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+
+
+</div>

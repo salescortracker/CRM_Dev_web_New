@@ -1,0 +1,211 @@
+<div class="container mt-4">
+
+    <div class="card">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4>Security Logs</h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+                    <label>Log Category</label>
+                    <select class="form-select">
+                        <option>All</option>
+                        <option>Authentication</option>
+                        <option>Authorization</option>
+                        <option>Password</option>
+                        <option>MFA</option>
+                        <option>IP Restriction</option>
+                        <option>Device</option>
+                        <option>API</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Retention Period</label>
+                    <select class="form-select">
+                        <option>30 Days</option>
+                        <option>90 Days</option>
+                        <option>180 Days</option>
+                        <option>1 Year</option>
+                        <option>3 Years</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Log Level</label>
+                    <select class="form-select">
+                        <option>Information</option>
+                        <option>Warning</option>
+                        <option>Error</option>
+                        <option>Critical</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Enable Security Logging
+                    </label>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Log Failed Login Attempts
+                    </label>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Email Critical Alerts
+                    </label>
+                </div>
+
+            </div>
+
+            <button class="btn btn-danger me-2">
+                Save
+            </button>
+
+            <button class="btn btn-secondary me-2">
+                Clear
+            </button>
+
+            <button class="btn btn-success">
+                Export Logs
+            </button>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="row mb-3">
+
+        <div class="col-md-3">
+            <input class="form-control"
+                   placeholder="Search User...">
+        </div>
+
+        <div class="col-md-3">
+            <select class="form-select">
+                <option>All Events</option>
+                <option>Login Success</option>
+                <option>Login Failed</option>
+                <option>Password Changed</option>
+                <option>MFA Failed</option>
+                <option>Account Locked</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <input type="date"
+                   class="form-control">
+        </div>
+
+        <div class="col-md-3">
+            <button class="btn btn-danger w-100">
+                Search
+            </button>
+        </div>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-danger">
+
+            <tr>
+
+                <th>#</th>
+                <th>Date & Time</th>
+                <th>User</th>
+                <th>Company</th>
+                <th>Event</th>
+                <th>IP Address</th>
+                <th>Device</th>
+                <th>Severity</th>
+                <th>Status</th>
+                <th width="120">Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>1</td>
+                <td>27-Jul-2026 09:10 AM</td>
+                <td>admin@crm.com</td>
+                <td>CorTracker</td>
+                <td>Login Success</td>
+                <td>203.110.25.18</td>
+                <td>Windows 11 / Chrome</td>
+                <td><span class="badge bg-success">Info</span></td>
+                <td>Success</td>
+                <td>
+                    <button class="btn btn-info btn-sm">View</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>2</td>
+                <td>27-Jul-2026 08:55 AM</td>
+                <td>john@abc.com</td>
+                <td>ABC Ltd</td>
+                <td>Failed Login</td>
+                <td>45.125.90.15</td>
+                <td>Android / Chrome</td>
+                <td><span class="badge bg-warning">Warning</span></td>
+                <td>Failed</td>
+                <td>
+                    <button class="btn btn-info btn-sm">View</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>3</td>
+                <td>27-Jul-2026 08:30 AM</td>
+                <td>finance@xyz.com</td>
+                <td>XYZ Pvt Ltd</td>
+                <td>Password Changed</td>
+                <td>122.160.20.11</td>
+                <td>Windows 11 / Edge</td>
+                <td><span class="badge bg-primary">Info</span></td>
+                <td>Completed</td>
+                <td>
+                    <button class="btn btn-info btn-sm">View</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>4</td>
+                <td>27-Jul-2026 07:50 AM</td>
+                <td>support@crm.com</td>
+                <td>CorTracker</td>
+                <td>MFA Verification Failed</td>
+                <td>198.51.100.10</td>
+                <td>iPhone / Safari</td>
+                <td><span class="badge bg-danger">Critical</span></td>
+                <td>Blocked</td>
+                <td>
+                    <button class="btn btn-info btn-sm">View</button>
+                </td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+
+
+</div>

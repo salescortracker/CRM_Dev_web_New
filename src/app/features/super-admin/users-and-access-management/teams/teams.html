@@ -1,0 +1,634 @@
+<div class="page-container">
+
+    <div class="page-header">
+
+        <div>
+
+            <p class="page-subtitle">
+                USER & ACCESS MANAGEMENT
+            </p>
+
+            <h1>
+                Teams Management
+            </h1>
+
+            <p class="page-description">
+                Manage teams, team leaders, members and department-based access across CRM.
+            </p>
+
+        </div>
+
+        <div class="header-buttons">
+
+            <button class="btn btn-light" (click)="refresh()">
+                <i class="fa-solid fa-rotate"></i>
+                Refresh
+            </button>
+
+            <button class="btn btn-danger" (click)="openAddModal()">
+                <i class="fa-solid fa-users"></i>
+                Add Team
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- STATISTICS -->
+
+    <div class="stats-grid">
+
+        <div class="stat-card">
+            <span>Total Teams</span>
+            <h2>{{teams.length}}</h2>
+        </div>
+
+
+        <div class="stat-card">
+            <span>Active Teams</span>
+            <h2>{{activeTeams}}</h2>
+        </div>
+
+
+        <div class="stat-card">
+            <span>Inactive Teams</span>
+            <h2>{{inactiveTeams}}</h2>
+        </div>
+
+
+        <div class="stat-card">
+            <span>Total Members</span>
+            <h2>{{totalMembers}}</h2>
+        </div>
+
+    </div>
+
+
+
+    <!-- SEARCH FILTER -->
+
+    <div class="search-panel">
+
+        <div class="search-box">
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input type="text" placeholder="Search team..." [(ngModel)]="searchText">
+
+        </div>
+
+
+        <select class="form-control" [(ngModel)]="departmentFilter">
+
+            <option value="">
+                All Departments
+            </option>
+
+            <option value="Sales">
+                Sales
+            </option>
+
+            <option value="Marketing">
+                Marketing
+            </option>
+
+            <option value="IT">
+                IT
+            </option>
+
+            <option value="HR">
+                HR
+            </option>
+
+        </select>
+
+
+        <select class="form-control" [(ngModel)]="statusFilter">
+
+            <option value="">
+                All Status
+            </option>
+
+            <option value="Active">
+                Active
+            </option>
+
+            <option value="Inactive">
+                Inactive
+            </option>
+
+        </select>
+
+
+        <button class="btn btn-secondary" (click)="clearFilters()">
+
+            Clear
+
+        </button>
+
+
+    </div>
+
+
+
+
+    <!-- TABLE -->
+
+    <div class="table-card">
+
+
+        <div class="table-header">
+
+            <h3>
+                Teams List
+            </h3>
+
+            <span>
+                {{filteredTeams.length}} Records
+            </span>
+
+        </div>
+
+
+
+        <table>
+
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Team
+                    </th>
+
+                    <th>
+                        Team Lead
+                    </th>
+
+                    <th>
+                        Department
+                    </th>
+
+                    <th>
+                        Members
+                    </th>
+
+                    <th>
+                        Created Date
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                    <th width="170">
+                        Actions
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+
+            <tbody>
+
+
+                <tr *ngFor="let item of filteredTeams">
+
+
+                    <td>
+
+
+                        <div class="provider-info">
+
+
+                            <div class="provider-icon">
+
+                                <i class="fa-solid fa-users"></i>
+
+                            </div>
+
+
+                            <div>
+
+                                <strong>
+                                    {{item.teamName}}
+                                </strong>
+
+                                <small>
+                                    {{item.teamCode}}
+                                </small>
+
+                            </div>
+
+
+                        </div>
+
+
+                    </td>
+
+
+
+                    <td>
+                        {{item.teamLead}}
+                    </td>
+
+
+                    <td>
+                        {{item.department}}
+                    </td>
+
+
+                    <td>
+
+                        <span class="member-badge">
+
+                            {{item.members.length}} Members
+
+                        </span>
+
+                    </td>
+
+
+                    <td>
+                        {{item.createdDate}}
+                    </td>
+
+
+
+                    <td>
+
+                        <span class="status" [ngClass]="item.status.toLowerCase()">
+
+                            {{item.status}}
+
+                        </span>
+
+                    </td>
+
+
+
+                    <td>
+
+
+                        <button class="icon-btn" (click)="edit(item)">
+
+                            <i class="fa-solid fa-pen"></i>
+
+                        </button>
+
+
+                        <button class="icon-btn danger" (click)="delete(item.id)">
+
+                            <i class="fa-solid fa-trash"></i>
+
+                        </button>
+
+
+                    </td>
+
+
+
+                </tr>
+
+
+            </tbody>
+
+
+        </table>
+
+
+    </div>
+
+
+</div>
+<!-- ======================================= -->
+<!-- ADD / EDIT TEAM MODAL -->
+<!-- ======================================= -->
+
+<div class="modal-overlay" *ngIf="showModal">
+
+    <div class="modal-box">
+
+
+        <!-- HEADER -->
+
+        <div class="modal-header">
+
+            <h3>
+                {{isEdit ? 'Edit Team' : 'Add Team'}}
+            </h3>
+
+            <button class="close-btn" (click)="closeModal()">
+
+                ×
+
+            </button>
+
+        </div>
+
+
+
+        <!-- BODY -->
+
+        <div class="modal-body">
+
+
+            <div class="form-grid">
+
+
+                <!-- TEAM NAME -->
+
+                <div>
+
+                    <label>
+                        Team Name
+                    </label>
+
+                    <input type="text" placeholder="Enter team name" [(ngModel)]="model.teamName">
+
+                </div>
+
+
+
+                <!-- TEAM CODE -->
+
+                <div>
+
+                    <label>
+                        Team Code
+                    </label>
+
+                    <input type="text" placeholder="TEAM001" [(ngModel)]="model.teamCode">
+
+                </div>
+
+
+
+
+                <!-- DEPARTMENT -->
+
+                <div>
+
+                    <label>
+                        Department
+                    </label>
+
+                    <select [(ngModel)]="model.department">
+
+
+                        <option>
+                            Sales
+                        </option>
+
+
+                        <option>
+                            Marketing
+                        </option>
+
+
+                        <option>
+                            IT
+                        </option>
+
+
+                        <option>
+                            HR
+                        </option>
+
+
+                        <option>
+                            Finance
+                        </option>
+
+
+                    </select>
+
+                </div>
+
+
+
+
+                <!-- TEAM LEAD -->
+
+                <div>
+
+                    <label>
+                        Team Lead
+                    </label>
+
+                    <select [(ngModel)]="model.teamLead">
+
+
+                        <option>
+                            John Smith
+                        </option>
+
+
+                        <option>
+                            Sarah Wilson
+                        </option>
+
+
+                        <option>
+                            David Brown
+                        </option>
+
+
+                        <option>
+                            Michael Johnson
+                        </option>
+
+
+                    </select>
+
+
+                </div>
+
+
+
+
+                <!-- TEAM DESCRIPTION -->
+
+                <div class="full-width">
+
+                    <label>
+                        Team Description
+                    </label>
+
+
+                    <textarea rows="3" placeholder="Enter team description" [(ngModel)]="model.description">
+
+</textarea>
+
+
+                </div>
+
+
+
+
+                <!-- MEMBERS -->
+
+                <div class="full-width">
+
+
+                    <label>
+                        Select Members
+                    </label>
+
+
+
+                    <div class="member-selection">
+
+
+                        <label>
+
+                            <input type="checkbox" value="John Smith" [(ngModel)]="model.membersList.john">
+
+
+                            John Smith
+
+                        </label>
+
+
+
+                        <label>
+
+                            <input type="checkbox" value="Sarah Wilson" [(ngModel)]="model.membersList.sarah">
+
+
+                            Sarah Wilson
+
+                        </label>
+
+
+
+                        <label>
+
+                            <input type="checkbox" value="David Brown" [(ngModel)]="model.membersList.david">
+
+
+                            David Brown
+
+                        </label>
+
+
+
+                        <label>
+
+                            <input type="checkbox" value="Michael Johnson" [(ngModel)]="model.membersList.michael">
+
+
+                            Michael Johnson
+
+                        </label>
+
+
+                    </div>
+
+
+
+                </div>
+
+
+
+
+
+                <!-- STATUS -->
+
+                <div>
+
+                    <label>
+                        Status
+                    </label>
+
+
+                    <select [(ngModel)]="model.status">
+
+
+                        <option>
+                            Active
+                        </option>
+
+
+                        <option>
+                            Inactive
+                        </option>
+
+
+                    </select>
+
+
+                </div>
+
+
+
+
+
+                <!-- DEFAULT TEAM -->
+
+
+                <div class="checkbox-group">
+
+
+                    <label>
+
+
+                        <input type="checkbox" [(ngModel)]="model.isDefault">
+
+
+                        Default Team
+
+
+                    </label>
+
+
+                </div>
+
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+        <!-- FOOTER -->
+
+        <div class="modal-footer">
+
+
+            <button class="btn-secondary" (click)="closeModal()">
+
+
+                Cancel
+
+
+            </button>
+
+
+
+            <button class="btn-primary" (click)="saveTeam()">
+
+
+
+                {{isEdit ? 'Update Team' : 'Save Team'}}
+
+
+            </button>
+
+
+
+        </div>
+
+
+
+    </div>
+
+</div>

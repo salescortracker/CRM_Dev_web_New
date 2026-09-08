@@ -1,0 +1,251 @@
+<div class="container mt-4">
+
+    <div class="card">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4>Email Templates</h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+                    <label>Module</label>
+                    <select class="form-select">
+                        <option>All Modules</option>
+                        <option>Leads</option>
+                        <option>Contacts</option>
+                        <option>Accounts</option>
+                        <option>Opportunities</option>
+                        <option>Quotation</option>
+                        <option>Invoices</option>
+                        <option>Support</option>
+                        <option>Projects</option>
+                        <option>HR</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Category</label>
+                    <select class="form-select">
+                        <option>Registration</option>
+                        <option>Authentication</option>
+                        <option>Sales</option>
+                        <option>Billing</option>
+                        <option>Marketing</option>
+                        <option>Reminder</option>
+                        <option>Support</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Priority</label>
+                    <select class="form-select">
+                        <option>Low</option>
+                        <option>Medium</option>
+                        <option>High</option>
+                        <option>Critical</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Enable Email Templates
+                    </label>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Allow HTML Templates
+                    </label>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Active
+                    </label>
+                </div>
+
+            </div>
+
+            <button class="btn btn-danger me-2">
+                Save
+            </button>
+
+            <button class="btn btn-secondary me-2">
+                Clear
+            </button>
+
+            <button class="btn btn-success">
+                Add Template
+            </button>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="row mb-3">
+
+        <div class="col-md-3">
+            <input class="form-control"
+                   placeholder="Search Template...">
+        </div>
+
+        <div class="col-md-3">
+            <select class="form-select">
+                <option>All Modules</option>
+                <option>Leads</option>
+                <option>Sales</option>
+                <option>Billing</option>
+                <option>Support</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <select class="form-select">
+                <option>All Status</option>
+                <option>Active</option>
+                <option>Inactive</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <button class="btn btn-danger w-100">
+                Search
+            </button>
+        </div>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-danger">
+
+            <tr>
+
+                <th>#</th>
+                <th>Template Name</th>
+                <th>Module</th>
+                <th>Category</th>
+                <th>Subject</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th width="170">Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+
+                <td>1</td>
+                <td>Lead Welcome Email</td>
+                <td>Leads</td>
+                <td>Registration</td>
+                <td>Welcome to CRM</td>
+                <td>High</td>
+                <td>
+                    <span class="badge bg-success">Active</span>
+                </td>
+
+                <td>
+
+                    <button class="btn btn-info btn-sm me-1">Preview</button>
+
+                    <button class="btn btn-warning btn-sm me-1">Edit</button>
+
+                    <button class="btn btn-danger btn-sm">Delete</button>
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>2</td>
+                <td>Password Reset</td>
+                <td>Security</td>
+                <td>Authentication</td>
+                <td>Reset Password</td>
+                <td>Critical</td>
+                <td>
+                    <span class="badge bg-success">Active</span>
+                </td>
+
+                <td>
+
+                    <button class="btn btn-info btn-sm me-1">Preview</button>
+
+                    <button class="btn btn-warning btn-sm me-1">Edit</button>
+
+                    <button class="btn btn-danger btn-sm">Delete</button>
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>3</td>
+                <td>Invoice Generated</td>
+                <td>Billing</td>
+                <td>Finance</td>
+                <td>Your Invoice is Ready</td>
+                <td>Medium</td>
+                <td>
+                    <span class="badge bg-success">Active</span>
+                </td>
+
+                <td>
+
+                    <button class="btn btn-info btn-sm me-1">Preview</button>
+
+                    <button class="btn btn-warning btn-sm me-1">Edit</button>
+
+                    <button class="btn btn-danger btn-sm">Delete</button>
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>4</td>
+                <td>Subscription Renewal</td>
+                <td>Subscription</td>
+                <td>Reminder</td>
+                <td>Your Subscription Expires Soon</td>
+                <td>High</td>
+                <td>
+                    <span class="badge bg-secondary">Inactive</span>
+                </td>
+
+                <td>
+
+                    <button class="btn btn-info btn-sm me-1">Preview</button>
+
+                    <button class="btn btn-warning btn-sm me-1">Edit</button>
+
+                    <button class="btn btn-danger btn-sm">Delete</button>
+
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+
+
+</div>

@@ -1,0 +1,984 @@
+<div class="page-container">
+
+
+    <!-- ========================= -->
+    <!-- Page Header -->
+    <!-- ========================= -->
+
+
+    <div class="page-header">
+
+
+        <div>
+
+
+            <p class="page-subtitle">
+                CRM MODULE CONFIGURATION
+            </p>
+
+
+            <h1>
+                Pipeline Settings
+            </h1>
+
+
+            <p class="page-description">
+                Configure sales pipelines, stages, workflow structure and default sales processes.
+            </p>
+
+
+        </div>
+
+
+
+
+
+        <div class="header-buttons">
+
+
+
+            <button class="btn btn-light" (click)="refresh()">
+
+
+
+                <i class="fa-solid fa-rotate"></i>
+
+                Refresh
+
+
+
+            </button>
+
+
+
+
+
+
+
+            <button class="btn btn-danger" (click)="openAddModal()">
+
+
+
+                <i class="fa-solid fa-plus"></i>
+
+                Add Pipeline
+
+
+
+            </button>
+
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+    <!-- ========================= -->
+    <!-- Statistics -->
+    <!-- ========================= -->
+
+
+    <div class="stats-grid">
+
+
+
+        <div class="stat-card">
+
+
+            <span>
+                Total Pipelines
+            </span>
+
+
+            <h2>
+                {{pipelines.length}}
+            </h2>
+
+
+        </div>
+
+
+
+
+
+
+        <div class="stat-card">
+
+
+            <span>
+                Active Pipelines
+            </span>
+
+
+            <h2>
+                {{activeCount}}
+            </h2>
+
+
+        </div>
+
+
+
+
+
+
+        <div class="stat-card">
+
+
+            <span>
+                Inactive Pipelines
+            </span>
+
+
+            <h2>
+                {{inactiveCount}}
+            </h2>
+
+
+        </div>
+
+
+
+
+
+
+        <div class="stat-card">
+
+
+            <span>
+                Default Pipeline
+            </span>
+
+
+            <h2>
+                {{defaultPipeline}}
+            </h2>
+
+
+        </div>
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+    <!-- ========================= -->
+    <!-- Search Filter -->
+    <!-- ========================= -->
+
+
+    <div class="search-panel">
+
+
+
+        <div class="search-box">
+
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+
+
+            <input type="text" placeholder="Search pipeline..." [(ngModel)]="searchText">
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+        <select class="form-control" [(ngModel)]="statusFilter">
+
+
+
+            <option value="">
+                All Status
+            </option>
+
+
+            <option value="Active">
+                Active
+            </option>
+
+
+            <option value="Inactive">
+                Inactive
+            </option>
+
+
+
+        </select>
+
+
+
+
+
+
+
+        <button class="btn btn-secondary" (click)="clearFilters()">
+
+
+
+            Clear
+
+
+
+        </button>
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+    <!-- ========================= -->
+    <!-- Pipeline Table -->
+    <!-- ========================= -->
+
+
+    <div class="table-card">
+
+
+
+        <div class="table-header">
+
+
+
+            <h3>
+                Sales Pipeline Configuration
+            </h3>
+
+
+
+
+            <span>
+
+                {{filteredPipelines.length}} Records
+
+            </span>
+
+
+
+        </div>
+
+
+
+
+
+
+
+        <table>
+
+
+
+            <thead>
+
+
+                <tr>
+
+
+                    <th>
+                        Pipeline Name
+                    </th>
+
+
+
+                    <th>
+                        Pipeline Type
+                    </th>
+
+
+
+                    <th>
+                        Description
+                    </th>
+
+
+
+                    <th>
+                        Total Stages
+                    </th>
+
+
+
+                    <th>
+                        Status
+                    </th>
+
+
+
+                    <th>
+                        Default
+                    </th>
+
+
+
+                    <th width="170">
+                        Actions
+                    </th>
+
+
+
+                </tr>
+
+
+            </thead>
+
+
+
+
+
+
+
+
+            <tbody>
+
+
+
+                <tr *ngFor="let item of filteredPipelines">
+
+
+
+
+
+
+                    <td>
+
+
+                        <div class="provider-info">
+
+
+
+                            <div class="provider-icon">
+
+
+                                <i class="fa-solid fa-chart-line"></i>
+
+
+                            </div>
+
+
+
+
+
+
+                            <div>
+
+
+                                <strong>
+
+                                    {{item.pipelineName}}
+
+                                </strong>
+
+
+
+                                <small>
+
+                                    {{item.pipelineCode}}
+
+                                </small>
+
+
+
+                            </div>
+
+
+
+                        </div>
+
+
+
+                    </td>
+
+
+
+
+
+
+
+
+                    <td>
+
+
+                        <span class="type-badge">
+
+
+                            {{item.pipelineType}}
+
+
+
+                        </span>
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <td>
+
+
+                        {{item.description}}
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <td>
+
+
+                        {{item.totalStages}}
+
+
+                    </td>
+
+
+
+
+
+
+
+
+                    <td>
+
+
+
+                        <span class="status" [ngClass]="item.status.toLowerCase()">
+
+
+
+                            {{item.status}}
+
+
+
+                        </span>
+
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <td>
+
+
+
+                        <span *ngIf="item.isDefault" class="default-badge">
+
+
+
+                            Default
+
+
+
+                        </span>
+
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <td>
+
+
+
+
+                        <button class="icon-btn" (click)="edit(item)">
+
+
+
+                            <i class="fa-solid fa-pen"></i>
+
+
+
+                        </button>
+
+
+
+
+
+
+
+                        <button class="icon-btn danger" (click)="delete(item.id)">
+
+
+
+                            <i class="fa-solid fa-trash"></i>
+
+
+
+                        </button>
+
+
+
+
+
+                    </td>
+
+
+
+
+
+
+
+                </tr>
+
+
+
+
+
+            </tbody>
+
+
+
+
+        </table>
+
+
+
+
+    </div>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- ================================= -->
+<!-- Add / Edit Pipeline Modal -->
+<!-- ================================= -->
+
+
+<div class="modal-overlay" *ngIf="showModal">
+
+
+
+
+
+    <div class="modal-box">
+
+
+
+
+
+
+        <!-- Modal Header -->
+
+
+        <div class="modal-header">
+
+
+
+            <h3>
+
+
+                {{isEdit ? 'Edit Pipeline':'Add Pipeline'}}
+
+
+
+            </h3>
+
+
+
+
+
+
+            <button class="close-btn" (click)="closeModal()">
+
+
+
+                ×
+
+
+
+            </button>
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+        <!-- Modal Body -->
+
+
+        <div class="modal-body">
+
+
+
+            <div class="form-grid">
+
+
+
+
+
+
+
+                <!-- Pipeline Name -->
+
+
+                <div>
+
+
+                    <label>
+                        Pipeline Name
+                    </label>
+
+
+
+                    <input type="text" placeholder="Enter pipeline name" [(ngModel)]="model.pipelineName">
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Pipeline Code -->
+
+
+                <div>
+
+
+                    <label>
+                        Pipeline Code
+                    </label>
+
+
+
+                    <input type="text" placeholder="Example: SALES_PIPE" [(ngModel)]="model.pipelineCode">
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Pipeline Type -->
+
+
+                <div>
+
+
+                    <label>
+                        Pipeline Type
+                    </label>
+
+
+
+
+                    <select [(ngModel)]="model.pipelineType">
+
+
+
+                        <option>
+                            Sales
+                        </option>
+
+
+                        <option>
+                            Enterprise
+                        </option>
+
+
+                        <option>
+                            Channel
+                        </option>
+
+
+                        <option>
+                            Partner
+                        </option>
+
+
+
+                    </select>
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Total Stages -->
+
+
+                <div>
+
+
+                    <label>
+                        Total Stages
+                    </label>
+
+
+
+
+                    <input type="number" [(ngModel)]="model.totalStages">
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Description -->
+
+
+                <div class="full-width">
+
+
+                    <label>
+                        Description
+                    </label>
+
+
+
+                    <textarea rows="3" placeholder="Enter pipeline description" [(ngModel)]="model.description">
+
+                    </textarea>
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Status -->
+
+
+                <div>
+
+
+                    <label>
+                        Status
+                    </label>
+
+
+
+
+                    <select [(ngModel)]="model.status">
+
+
+
+                        <option>
+                            Active
+                        </option>
+
+
+                        <option>
+                            Inactive
+                        </option>
+
+
+
+                    </select>
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Default Pipeline -->
+
+
+                <div class="checkbox-group">
+
+
+
+                    <label>
+
+
+
+                        <input type="checkbox" [(ngModel)]="model.isDefault">
+
+
+
+                        Default Pipeline
+
+
+
+                    </label>
+
+
+
+                </div>
+
+
+
+
+
+
+            </div>
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+        <!-- Modal Footer -->
+
+
+        <div class="modal-footer">
+
+
+
+
+
+            <button class="btn-secondary" (click)="closeModal()">
+
+
+
+                Cancel
+
+
+
+            </button>
+
+
+
+
+
+
+
+            <button class="btn-primary" (click)="savePipeline()">
+
+
+
+                {{isEdit ? 'Update Pipeline':'Save Pipeline'}}
+
+
+
+            </button>
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+    </div>
+
+
+
+
+</div>

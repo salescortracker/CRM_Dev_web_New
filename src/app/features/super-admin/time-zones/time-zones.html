@@ -1,0 +1,237 @@
+<div class="container mt-4">
+
+    <div class="card">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4>Time Zone Management</h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+                    <label>Time Zone Name <span class="text-danger">*</span></label>
+                    <input type="text"
+                           class="form-control"
+                           placeholder="India Standard Time">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Time Zone Code <span class="text-danger">*</span></label>
+                    <input type="text"
+                           class="form-control"
+                           placeholder="IST">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>UTC Offset</label>
+                    <select class="form-select">
+                        <option>(UTC+05:30)</option>
+                        <option>(UTC+00:00)</option>
+                        <option>(UTC-05:00)</option>
+                        <option>(UTC+01:00)</option>
+                        <option>(UTC+08:00)</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Region</label>
+                    <select class="form-select">
+                        <option>Asia Pacific</option>
+                        <option>Europe</option>
+                        <option>North America</option>
+                        <option>South America</option>
+                        <option>Middle East</option>
+                        <option>Africa</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Country</label>
+                    <select class="form-select">
+                        <option>India</option>
+                        <option>United States</option>
+                        <option>United Kingdom</option>
+                        <option>Australia</option>
+                        <option>Canada</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Daylight Saving Time</label>
+                    <select class="form-select">
+                        <option>Supported</option>
+                        <option>Not Supported</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label>Description</label>
+                    <textarea class="form-control"
+                              rows="3"
+                              placeholder="Enter time zone description"></textarea>
+                </div>
+
+                <div class="col-md-3">
+                    <label>
+                        <input type="checkbox" checked>
+                        Default Time Zone
+                    </label>
+                </div>
+
+                <div class="col-md-3">
+                    <label>
+                        <input type="checkbox" checked>
+                        Active
+                    </label>
+                </div>
+
+            </div>
+
+            <button class="btn btn-danger me-2">
+                Save
+            </button>
+
+            <button class="btn btn-warning me-2">
+                Update
+            </button>
+
+            <button class="btn btn-secondary">
+                Clear
+            </button>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="row mb-3">
+
+        <div class="col-md-4">
+            <input type="text"
+                   class="form-control"
+                   placeholder="Search Time Zone...">
+        </div>
+
+        <div class="col-md-4">
+            <select class="form-select">
+                <option>All Regions</option>
+                <option>Asia Pacific</option>
+                <option>Europe</option>
+                <option>North America</option>
+                <option>Middle East</option>
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <button class="btn btn-danger w-100">
+                Search
+            </button>
+        </div>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-danger">
+
+            <tr>
+
+                <th>#</th>
+                <th>Time Zone</th>
+                <th>Code</th>
+                <th>UTC Offset</th>
+                <th>Region</th>
+                <th>DST</th>
+                <th>Status</th>
+                <th width="170">Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+
+                <td>1</td>
+                <td>India Standard Time</td>
+                <td>IST</td>
+                <td>UTC +05:30</td>
+                <td>Asia Pacific</td>
+                <td>No</td>
+                <td><span class="badge bg-success">Active</span></td>
+
+                <td>
+
+                    <button class="btn btn-warning btn-sm me-1">
+                        Edit
+                    </button>
+
+                    <button class="btn btn-danger btn-sm">
+                        Delete
+                    </button>
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>2</td>
+                <td>Eastern Standard Time</td>
+                <td>EST</td>
+                <td>UTC -05:00</td>
+                <td>North America</td>
+                <td>Yes</td>
+                <td><span class="badge bg-success">Active</span></td>
+
+                <td>
+
+                    <button class="btn btn-warning btn-sm me-1">
+                        Edit
+                    </button>
+
+                    <button class="btn btn-danger btn-sm">
+                        Delete
+                    </button>
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>3</td>
+                <td>Greenwich Mean Time</td>
+                <td>GMT</td>
+                <td>UTC +00:00</td>
+                <td>Europe</td>
+                <td>No</td>
+                <td><span class="badge bg-success">Active</span></td>
+
+                <td>
+
+                    <button class="btn btn-warning btn-sm me-1">
+                        Edit
+                    </button>
+
+                    <button class="btn btn-danger btn-sm">
+                        Delete
+                    </button>
+
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+   
+
+</div>

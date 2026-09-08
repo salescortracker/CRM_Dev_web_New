@@ -1,0 +1,590 @@
+<div class="crm-lead-create-page">
+
+  <!-- ================= PAGE HEADER ================= -->
+
+  <div class="page-header">
+
+    <div>
+      <div class="breadcrumb">
+        <span>CRM</span>
+        <i class="bi bi-chevron-right"></i>
+        <span>Leads</span>
+        <i class="bi bi-chevron-right"></i>
+        <strong>New Lead</strong>
+      </div>
+
+      <h1>Create New Lead</h1>
+      <p>Create and manage a new sales prospect.</p>
+    </div>
+
+    <div class="header-actions">
+
+      <button class="btn-secondary" (click)="cancel()">
+        <i class="bi bi-x-lg"></i>
+        Cancel
+      </button>
+
+      <button class="btn-primary" (click)="createLead()">
+        <i class="bi bi-check2"></i>
+        Create Lead
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- ================= MAIN LAYOUT ================= -->
+
+  <div class="create-layout">
+
+    <!-- ================= LEFT CONTENT ================= -->
+
+    <div class="main-content">
+
+
+      <!-- ================= LEAD INFORMATION ================= -->
+
+      <div class="form-card">
+
+        <div class="card-header">
+
+          <div class="card-header-icon blue">
+            <i class="bi bi-person-vcard"></i>
+          </div>
+
+          <div>
+            <h2>Lead Information</h2>
+            <p>Basic information about your sales prospect.</p>
+          </div>
+
+        </div>
+
+
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label>First Name <span>*</span></label>
+
+            <input
+              type="text"
+              [(ngModel)]="lead.firstName"
+              placeholder="Enter first name">
+          </div>
+
+
+          <div class="form-group">
+            <label>Last Name <span>*</span></label>
+
+            <input
+              type="text"
+              [(ngModel)]="lead.lastName"
+              placeholder="Enter last name">
+          </div>
+
+
+          <div class="form-group">
+
+            <label>Lead Owner</label>
+
+            <select [(ngModel)]="lead.owner">
+
+              <option
+                *ngFor="let owner of owners"
+                [value]="owner">
+                {{ owner }}
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>Email <span>*</span></label>
+
+            <div class="input-icon">
+
+              <i class="bi bi-envelope"></i>
+
+              <input
+                type="email"
+                [(ngModel)]="lead.email"
+                placeholder="name@company.com">
+
+            </div>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>Phone</label>
+
+            <div class="input-icon">
+
+              <i class="bi bi-telephone"></i>
+
+              <input
+                type="text"
+                [(ngModel)]="lead.phone"
+                placeholder="+91 98765 43210">
+
+            </div>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>Lead Source</label>
+
+            <select [(ngModel)]="lead.source">
+
+              <option
+                *ngFor="let source of leadSources"
+                [value]="source">
+                {{ source }}
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>Lead Status</label>
+
+            <select [(ngModel)]="lead.status">
+
+              <option
+                *ngFor="let status of leadStatuses"
+                [value]="status">
+                {{ status }}
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>Lead Score</label>
+
+            <div class="score-input">
+
+              <input
+                type="number"
+                [(ngModel)]="lead.score"
+                min="0"
+                max="100">
+
+              <span>/ 100</span>
+
+            </div>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>Industry</label>
+
+            <select [(ngModel)]="lead.industry">
+
+              <option
+                *ngFor="let industry of industries"
+                [value]="industry">
+                {{ industry }}
+              </option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- ================= COMPANY INFORMATION ================= -->
+
+      <div class="form-card">
+
+        <div class="card-header">
+
+          <div class="card-header-icon purple">
+            <i class="bi bi-building"></i>
+          </div>
+
+          <div>
+            <h2>Company Information</h2>
+            <p>Connect this lead with their organization.</p>
+          </div>
+
+        </div>
+
+
+        <div class="form-grid">
+
+          <div class="form-group">
+
+            <label>Company Name <span>*</span></label>
+
+            <input
+              type="text"
+              [(ngModel)]="lead.companyName"
+              placeholder="Enter company name">
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>Website</label>
+
+            <div class="input-icon">
+
+              <i class="bi bi-globe2"></i>
+
+              <input
+                type="text"
+                [(ngModel)]="lead.website"
+                placeholder="https://company.com">
+
+            </div>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>Industry</label>
+
+            <select [(ngModel)]="lead.companyIndustry">
+
+              <option
+                *ngFor="let industry of industries"
+                [value]="industry">
+                {{ industry }}
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>Company Size</label>
+
+            <select [(ngModel)]="lead.companySize">
+
+              <option
+                *ngFor="let size of companySizes"
+                [value]="size">
+                {{ size }}
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>City</label>
+
+            <input
+              type="text"
+              [(ngModel)]="lead.city"
+              placeholder="Hyderabad">
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>Country</label>
+
+            <select [(ngModel)]="lead.country">
+
+              <option
+                *ngFor="let country of countries"
+                [value]="country">
+                {{ country }}
+              </option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- ================= ADDITIONAL INFORMATION ================= -->
+
+      <div class="form-card">
+
+        <div class="card-header">
+
+          <div class="card-header-icon orange">
+            <i class="bi bi-file-text"></i>
+          </div>
+
+          <div>
+            <h2>Additional Information</h2>
+            <p>Sales opportunity and additional lead information.</p>
+          </div>
+
+        </div>
+
+
+        <div class="form-grid">
+
+          <div class="form-group">
+
+            <label>Expected Value</label>
+
+            <div class="input-icon">
+
+              <span class="currency">₹</span>
+
+              <input
+                type="text"
+                [(ngModel)]="lead.expectedValue"
+                placeholder="5,00,000">
+
+            </div>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>Expected Close Date</label>
+
+            <input
+              type="date"
+              [(ngModel)]="lead.expectedClose">
+
+          </div>
+
+
+          <div class="form-group full">
+
+            <label>Description</label>
+
+            <textarea
+              rows="5"
+              [(ngModel)]="lead.description"
+              placeholder="Enter notes or additional information about this lead...">
+            </textarea>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- ================= CONTACT PREVIEW ================= -->
+
+      <div class="form-card relationship-card">
+
+        <div class="card-header">
+
+          <div class="card-header-icon green">
+            <i class="bi bi-diagram-3"></i>
+          </div>
+
+          <div>
+            <h2>CRM Relationship</h2>
+            <p>The lead will be connected with these CRM records.</p>
+          </div>
+
+        </div>
+
+
+        <div class="relationship-grid">
+
+          <div class="relationship-item">
+
+            <div class="relation-icon lead">
+              <i class="bi bi-person"></i>
+            </div>
+
+            <div>
+              <span>Lead</span>
+              <strong>
+                {{ lead.firstName }} {{ lead.lastName }}
+              </strong>
+            </div>
+
+          </div>
+
+
+          <div class="relation-arrow">
+            <i class="bi bi-arrow-right"></i>
+          </div>
+
+
+          <div class="relationship-item">
+
+            <div class="relation-icon company">
+              <i class="bi bi-building"></i>
+            </div>
+
+            <div>
+              <span>Company</span>
+              <strong>
+                {{ lead.companyName }}
+              </strong>
+            </div>
+
+          </div>
+
+
+          <div class="relation-arrow">
+            <i class="bi bi-arrow-right"></i>
+          </div>
+
+
+          <div class="relationship-item">
+
+            <div class="relation-icon contact">
+              <i class="bi bi-person-lines-fill"></i>
+            </div>
+
+            <div>
+              <span>Primary Contact</span>
+              <strong>
+                {{ lead.firstName }} {{ lead.lastName }}
+              </strong>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ================= RIGHT SUMMARY ================= -->
+
+    <div class="side-panel">
+
+      <div class="preview-card">
+
+        <div class="preview-cover"></div>
+
+        <div class="preview-avatar">
+          {{ getInitials() }}
+        </div>
+
+        <div class="preview-body">
+
+          <h3>
+            {{ lead.firstName || 'First' }}
+            {{ lead.lastName || 'Last' }}
+          </h3>
+
+          <p>
+            {{ lead.companyName || 'Company Name' }}
+          </p>
+
+          <span class="preview-status">
+            <span></span>
+            {{ lead.status }}
+          </span>
+
+
+          <div class="preview-details">
+
+            <div>
+              <i class="bi bi-envelope"></i>
+              <span>{{ lead.email || 'No email' }}</span>
+            </div>
+
+            <div>
+              <i class="bi bi-telephone"></i>
+              <span>{{ lead.phone || 'No phone' }}</span>
+            </div>
+
+            <div>
+              <i class="bi bi-geo-alt"></i>
+              <span>
+                {{ lead.city || 'City' }},
+                {{ lead.country || 'Country' }}
+              </span>
+            </div>
+
+            <div>
+              <i class="bi bi-globe2"></i>
+              <span>{{ lead.website || 'Website' }}</span>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="tips-card">
+
+        <div class="tips-title">
+          <i class="bi bi-lightbulb"></i>
+          Lead Creation Tips
+        </div>
+
+        <div class="tip">
+          <span>01</span>
+          Add accurate contact information.
+        </div>
+
+        <div class="tip">
+          <span>02</span>
+          Connect the lead to the correct company.
+        </div>
+
+        <div class="tip">
+          <span>03</span>
+          Assign the correct sales owner.
+        </div>
+
+        <div class="tip">
+          <span>04</span>
+          Keep the lead score updated.
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ================= BOTTOM ACTIONS ================= -->
+
+  <div class="bottom-actions">
+
+    <button class="btn-secondary" (click)="cancel()">
+      Cancel
+    </button>
+
+    <button class="btn-primary" (click)="createLead()">
+      <i class="bi bi-check2"></i>
+      Create Lead
+    </button>
+
+  </div>
+
+</div>

@@ -1,0 +1,675 @@
+<div class="master-data-page">
+  <div *ngIf="toast" @toast class="toast">
+    <span class="toast-icon">✓</span>{{ toast }}
+  </div>
+
+  <div class="page-header" [ngStyle]="{ background: 'linear-gradient(135deg,' + theme.light + ' 0%, transparent 70%)' }">
+    <div class="glow-blob" [ngStyle]="{ background: theme.color }"></div>
+    <div class="header-inner">
+      <div class="header-title-group">
+        <div class="breadcrumb" [ngStyle]="{ color: theme.color }">
+          Super Admin / Master Data
+        </div>
+        <h1 class="page-title">Master Data</h1>
+        <p class="page-subtitle">Centralised reference data - 7 domains, {{ globalTotal }} total records.</p>
+      </div>
+
+      <div class="cat-switcher">
+        <button
+          *ngFor="let cat of categories; trackBy: trackById"
+          class="cat-btn"
+          [class.active]="category === cat.id"
+          [ngStyle]="category === cat.id ? { background: themes[cat.id].color } : {}"
+          (click)="selectCategory(cat.id)">
+          <i class="fa-solid cat-icon" [ngClass]="cat.iconCls"></i>
+          <span>{{ cat.label }}</span>
+          <span class="cat-badge" [class.active-badge]="category === cat.id">
+            {{ getTabCount(cat.id).total }}
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="split-card" @fadeUp>
+    <div class="sidebar" [ngStyle]="{ background: 'linear-gradient(to bottom,' + theme.light + ', transparent 60%)' }">
+      <div class="sidebar-header">
+        <div class="sidebar-icon" [ngStyle]="{ background: 'linear-gradient(135deg,' + theme.color + ',' + theme.color + 'cc)' }">
+          <i class="fa-solid" [ngClass]="activeTabs[0]?.iconCls"></i>
+        </div>
+        <div>
+          <div class="sidebar-cat-label" [ngStyle]="{ color: theme.color }">
+            {{ category | titlecase }}
+          </div>
+          <div class="sidebar-sub-count">{{ activeTabs.length }} entity types</div>
+        </div>
+      </div>
+
+      <div class="sidebar-list">
+        <button
+          *ngFor="let tab of activeTabs; trackBy: trackById"
+          class="sidebar-item"
+          [class.active]="tab.id === activeSubTab"
+          [ngStyle]="tab.id === activeSubTab ? { background: theme.soft, borderRight: '2px solid ' + theme.color } : {}"
+          (click)="selectSubTab(tab.id)">
+          <div class="sidebar-item-row">
+            <i class="fa-solid tab-icon" [ngClass]="tab.iconCls" [ngStyle]="tab.id === activeSubTab ? { color: theme.color } : {}"></i>
+            <span
+              class="tab-label"
+              [class.active-label]="tab.id === activeSubTab"
+              [ngStyle]="tab.id === activeSubTab ? { color: theme.color } : {}">
+              {{ tab.label }}
+            </span>
+            <span class="tab-count">{{ getTabCount(tab.id).total }}</span>
+          </div>
+          <div class="ratio-track">
+            <div
+              class="ratio-fill"
+              [ngStyle]="{ width: tabRatio(tab.id) + '%', background: tab.id === activeSubTab ? theme.color : '#94a3b8' }">
+            </div>
+          </div>
+        </button>
+      </div>
+
+      <div class="sidebar-footer">Deactivate instead of delete.</div>
+    </div>
+
+    <div class="content-pane">
+      <div class="content-header">
+        <div>
+          <div class="entity-title-row">
+            <i class="fa-solid entity-icon" [ngClass]="getTabIcon(activeSubTab)" [ngStyle]="{ color: theme.color }"></i>
+            <h2 class="entity-title">{{ activeTabLabel }}</h2>
+          </div>
+          <div class="entity-stats">
+            {{ entityTotal }} total
+            <span class="dot-separator">·</span>
+            <span [ngStyle]="{ color: theme.color }">{{ entityActive }} active</span>
+            <span class="dot-separator">·</span>
+            {{ entityTotal - entityActive }} inactive
+          </div>
+        </div>
+
+        <div class="content-controls">
+          <div class="search-wrap">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input class="search-input" [(ngModel)]="search" [placeholder]="'Search ' + activeTabLabel.toLowerCase() + '...'" />
+          </div>
+
+          <ng-container *ngIf="isGeoCategory">
+            <select *ngIf="activeSubTab === 'countries'" class="filter-select" [(ngModel)]="regionFilter">
+              <option value="all">All Regions</option>
+              <option *ngFor="let region of regions" [value]="region.id">{{ region.name }}</option>
+            </select>
+            <select *ngIf="activeSubTab === 'states'" class="filter-select" [(ngModel)]="countryFilter">
+              <option value="all">All Countries</option>
+              <option *ngFor="let country of countries" [value]="country.id">{{ country.name }}</option>
+            </select>
+            <select *ngIf="activeSubTab === 'cities'" class="filter-select" [(ngModel)]="stateFilter">
+              <option value="all">All States</option>
+              <option *ngFor="let state of states" [value]="state.id">{{ state.name }}</option>
+            </select>
+          </ng-container>
+
+          <div class="status-pills">
+            <button
+              *ngFor="let filter of filterStatuses"
+              class="status-pill"
+              [class.active]="statusFilter === filter"
+              (click)="statusFilter = filter">
+              {{ filter | titlecase }}
+            </button>
+          </div>
+
+          <button
+            class="add-btn"
+            [ngStyle]="{ background: 'linear-gradient(135deg,' + theme.color + ',' + theme.color + 'cc)' }"
+            (click)="isGeoCategory ? openGeoAdd(activeSubTab) : openSimAdd(activeSubTab)">
+            <i class="fa-solid fa-plus"></i>
+            Add
+          </button>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <ng-container *ngIf="isGeoCategory">
+                <ng-container *ngIf="activeSubTab === 'countries'">
+                  <th class="th-center">#</th>
+                  <th class="th-wide">Country</th>
+                  <th>Region</th>
+                  <th>ISO 2</th>
+                  <th>ISO 3</th>
+                  <th>Phone</th>
+                  <th>Currency</th>
+                  <th>Status</th>
+                  <th class="th-right">Actions</th>
+                </ng-container>
+                <ng-container *ngIf="activeSubTab === 'states'">
+                  <th class="th-center">#</th>
+                  <th class="th-wide">State</th>
+                  <th>Code</th>
+                  <th>Country</th>
+                  <th>Status</th>
+                  <th class="th-right">Actions</th>
+                </ng-container>
+                <ng-container *ngIf="activeSubTab === 'cities'">
+                  <th class="th-center">#</th>
+                  <th class="th-wide">City</th>
+                  <th>State</th>
+                  <th>Country</th>
+                  <th>Status</th>
+                  <th class="th-right">Actions</th>
+                </ng-container>
+                <ng-container *ngIf="activeSubTab === 'currencies'">
+                  <th class="th-center">#</th>
+                  <th class="th-wide">Currency</th>
+                  <th>Code</th>
+                  <th>Symbol</th>
+                  <th class="th-center">Decimals</th>
+                  <th class="th-center">Default</th>
+                  <th>Status</th>
+                  <th class="th-right">Actions</th>
+                </ng-container>
+                <ng-container *ngIf="activeSubTab === 'timezones'">
+                  <th class="th-center">#</th>
+                  <th class="th-wide">Time Zone</th>
+                  <th>Offset</th>
+                  <th>Abbr.</th>
+                  <th>Status</th>
+                  <th class="th-right">Actions</th>
+                </ng-container>
+                <ng-container *ngIf="activeSubTab === 'languages'">
+                  <th class="th-center">#</th>
+                  <th class="th-wide">Language</th>
+                  <th>Code</th>
+                  <th>Native Name</th>
+                  <th>Status</th>
+                  <th class="th-right">Actions</th>
+                </ng-container>
+                <ng-container *ngIf="activeSubTab === 'nationalities'">
+                  <th class="th-center">#</th>
+                  <th class="th-wide">Nationality</th>
+                  <th>Country</th>
+                  <th>Status</th>
+                  <th class="th-right">Actions</th>
+                </ng-container>
+              </ng-container>
+
+              <ng-container *ngIf="!isGeoCategory">
+                <th class="th-center">#</th>
+                <th class="th-wide">Name</th>
+                <th>Description</th>
+                <th *ngIf="extraLabel">{{ extraLabel }}</th>
+                <th>Status</th>
+                <th class="th-right">Actions</th>
+              </ng-container>
+            </tr>
+          </thead>
+
+          <tbody>
+            <ng-container *ngIf="isGeoCategory && activeSubTab === 'countries'">
+              <tr *ngIf="filteredGeoData.length === 0">
+                <td colspan="9" class="empty-cell"><div class="empty-state">No countries match your criteria.</div></td>
+              </tr>
+              <tr *ngFor="let country of filteredGeoData; let i = index; trackBy: trackById" class="data-row">
+                <td class="td-center mono-dim">{{ i + 1 }}</td>
+                <td class="td-bold">{{ country.name }}</td>
+                <td class="td-muted">{{ regionName(country.regionId) }}</td>
+                <td><code class="chip">{{ country.iso2 }}</code></td>
+                <td><code class="chip">{{ country.iso3 }}</code></td>
+                <td><code class="chip">{{ country.phoneCode }}</code></td>
+                <td><code class="chip accent">{{ currCode(country.currencyId) }}</code></td>
+                <td><span class="status-dot" [class.active]="country.isActive">{{ country.isActive ? 'Active' : 'Inactive' }}</span></td>
+                <td class="td-right">
+                  <div class="row-actions">
+                    <button class="action-btn" title="Edit" (click)="openGeoEdit('countries', country)"><i class="fa-regular fa-pen-to-square"></i></button>
+                    <button class="action-btn" [class.warn]="country.isActive" [class.green]="!country.isActive" [title]="country.isActive ? 'Deactivate' : 'Activate'" (click)="toggleGeo('countries', country.id)">
+                      <i class="fa-solid fa-power-off"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
+
+            <ng-container *ngIf="isGeoCategory && activeSubTab === 'states'">
+              <tr *ngIf="filteredGeoData.length === 0">
+                <td colspan="6" class="empty-cell"><div class="empty-state">No states match your criteria.</div></td>
+              </tr>
+              <tr *ngFor="let state of filteredGeoData; let i = index; trackBy: trackById" class="data-row">
+                <td class="td-center mono-dim">{{ i + 1 }}</td>
+                <td class="td-bold">{{ state.name }}</td>
+                <td><code class="chip">{{ state.code }}</code></td>
+                <td class="td-muted">{{ countryName(state.countryId) }}</td>
+                <td><span class="status-dot" [class.active]="state.isActive">{{ state.isActive ? 'Active' : 'Inactive' }}</span></td>
+                <td class="td-right">
+                  <div class="row-actions">
+                    <button class="action-btn" title="Edit" (click)="openGeoEdit('states', state)"><i class="fa-regular fa-pen-to-square"></i></button>
+                    <button class="action-btn" [class.warn]="state.isActive" [class.green]="!state.isActive" (click)="toggleGeo('states', state.id)"><i class="fa-solid fa-power-off"></i></button>
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
+
+            <ng-container *ngIf="isGeoCategory && activeSubTab === 'cities'">
+              <tr *ngIf="filteredGeoData.length === 0">
+                <td colspan="6" class="empty-cell"><div class="empty-state">No cities match your criteria.</div></td>
+              </tr>
+              <tr *ngFor="let city of filteredGeoData; let i = index; trackBy: trackById" class="data-row">
+                <td class="td-center mono-dim">{{ i + 1 }}</td>
+                <td class="td-bold">{{ city.name }}</td>
+                <td class="td-muted">{{ stateName(city.stateId) }}</td>
+                <td class="td-muted">{{ countryName(city.countryId) }}</td>
+                <td><span class="status-dot" [class.active]="city.isActive">{{ city.isActive ? 'Active' : 'Inactive' }}</span></td>
+                <td class="td-right">
+                  <div class="row-actions">
+                    <button class="action-btn" title="Edit" (click)="openGeoEdit('cities', city)"><i class="fa-regular fa-pen-to-square"></i></button>
+                    <button class="action-btn" [class.warn]="city.isActive" [class.green]="!city.isActive" (click)="toggleGeo('cities', city.id)"><i class="fa-solid fa-power-off"></i></button>
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
+
+            <ng-container *ngIf="isGeoCategory && activeSubTab === 'currencies'">
+              <tr *ngIf="filteredGeoData.length === 0">
+                <td colspan="8" class="empty-cell"><div class="empty-state">No currencies match your criteria.</div></td>
+              </tr>
+              <tr *ngFor="let currency of filteredGeoData; let i = index; trackBy: trackById" class="data-row">
+                <td class="td-center mono-dim">{{ i + 1 }}</td>
+                <td class="td-bold">{{ currency.name }}</td>
+                <td><code class="chip">{{ currency.code }}</code></td>
+                <td class="td-symbol" [ngStyle]="{ color: theme.color }">{{ currency.symbol }}</td>
+                <td class="td-center mono">{{ currency.decimals }}</td>
+                <td class="td-center">
+                  <span *ngIf="currency.isDefault" class="default-badge"><i class="fa-solid fa-star"></i> Default</span>
+                  <button *ngIf="!currency.isDefault" class="star-btn" title="Set as default" (click)="setDefaultCurrency(currency.id)">
+                    <i class="fa-regular fa-star"></i>
+                  </button>
+                </td>
+                <td><span class="status-dot" [class.active]="currency.isActive">{{ currency.isActive ? 'Active' : 'Inactive' }}</span></td>
+                <td class="td-right">
+                  <div class="row-actions">
+                    <button class="action-btn" title="Edit" (click)="openGeoEdit('currencies', currency)"><i class="fa-regular fa-pen-to-square"></i></button>
+                    <button class="action-btn" [class.warn]="currency.isActive" [class.green]="!currency.isActive" (click)="toggleGeo('currencies', currency.id)"><i class="fa-solid fa-power-off"></i></button>
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
+
+            <ng-container *ngIf="isGeoCategory && activeSubTab === 'timezones'">
+              <tr *ngIf="filteredGeoData.length === 0">
+                <td colspan="6" class="empty-cell"><div class="empty-state">No time zones match your criteria.</div></td>
+              </tr>
+              <tr *ngFor="let timezone of filteredGeoData; let i = index; trackBy: trackById" class="data-row">
+                <td class="td-center mono-dim">{{ i + 1 }}</td>
+                <td class="td-bold">{{ timezone.name }}</td>
+                <td><code class="chip">{{ timezone.offset }}</code></td>
+                <td><code class="chip">{{ timezone.abbreviation }}</code></td>
+                <td><span class="status-dot" [class.active]="timezone.isActive">{{ timezone.isActive ? 'Active' : 'Inactive' }}</span></td>
+                <td class="td-right">
+                  <div class="row-actions">
+                    <button class="action-btn" title="Edit" (click)="openGeoEdit('timezones', timezone)"><i class="fa-regular fa-pen-to-square"></i></button>
+                    <button class="action-btn" [class.warn]="timezone.isActive" [class.green]="!timezone.isActive" (click)="toggleGeo('timezones', timezone.id)"><i class="fa-solid fa-power-off"></i></button>
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
+
+            <ng-container *ngIf="isGeoCategory && activeSubTab === 'languages'">
+              <tr *ngIf="filteredGeoData.length === 0">
+                <td colspan="6" class="empty-cell"><div class="empty-state">No languages match your criteria.</div></td>
+              </tr>
+              <tr *ngFor="let language of filteredGeoData; let i = index; trackBy: trackById" class="data-row">
+                <td class="td-center mono-dim">{{ i + 1 }}</td>
+                <td class="td-bold">{{ language.name }}</td>
+                <td><code class="chip">{{ language.code }}</code></td>
+                <td class="td-semibold">{{ language.nativeName }}</td>
+                <td><span class="status-dot" [class.active]="language.isActive">{{ language.isActive ? 'Active' : 'Inactive' }}</span></td>
+                <td class="td-right">
+                  <div class="row-actions">
+                    <button class="action-btn" title="Edit" (click)="openGeoEdit('languages', language)"><i class="fa-regular fa-pen-to-square"></i></button>
+                    <button class="action-btn" [class.warn]="language.isActive" [class.green]="!language.isActive" (click)="toggleGeo('languages', language.id)"><i class="fa-solid fa-power-off"></i></button>
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
+
+            <ng-container *ngIf="isGeoCategory && activeSubTab === 'nationalities'">
+              <tr *ngIf="filteredGeoData.length === 0">
+                <td colspan="5" class="empty-cell"><div class="empty-state">No nationalities match your criteria.</div></td>
+              </tr>
+              <tr *ngFor="let nationality of filteredGeoData; let i = index; trackBy: trackById" class="data-row">
+                <td class="td-center mono-dim">{{ i + 1 }}</td>
+                <td class="td-bold">{{ nationality.name }}</td>
+                <td class="td-muted">{{ countryName(nationality.countryId) }}</td>
+                <td><span class="status-dot" [class.active]="nationality.isActive">{{ nationality.isActive ? 'Active' : 'Inactive' }}</span></td>
+                <td class="td-right">
+                  <div class="row-actions">
+                    <button class="action-btn" title="Edit" (click)="openGeoEdit('nationalities', nationality)"><i class="fa-regular fa-pen-to-square"></i></button>
+                    <button class="action-btn" [class.warn]="nationality.isActive" [class.green]="!nationality.isActive" (click)="toggleGeo('nationalities', nationality.id)"><i class="fa-solid fa-power-off"></i></button>
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
+
+            <ng-container *ngIf="!isGeoCategory">
+              <tr *ngIf="filteredSimpleData.length === 0">
+                <td [attr.colspan]="extraLabel ? 6 : 5" class="empty-cell">
+                  <div class="empty-state">No records match your criteria.</div>
+                </td>
+              </tr>
+              <tr *ngFor="let item of filteredSimpleData; let i = index; trackBy: trackById" class="data-row">
+                <td class="td-center mono-dim">{{ i + 1 }}</td>
+                <td class="td-bold">{{ item.name }}</td>
+                <td class="td-muted td-truncate">{{ item.description || '-' }}</td>
+                <td *ngIf="extraLabel">
+                  <ng-container *ngIf="extraIsColor && item.extra; else plainExtra">
+                    <div class="color-extra-cell">
+                      <span class="color-swatch" [ngStyle]="{ background: item.extra }"></span>
+                      <code class="mono-sm">{{ item.extra }}</code>
+                    </div>
+                  </ng-container>
+                  <ng-template #plainExtra>
+                    <code class="chip" *ngIf="item.extra">{{ item.extra }}</code>
+                    <span *ngIf="!item.extra" class="td-muted">-</span>
+                  </ng-template>
+                </td>
+                <td><span class="status-dot" [class.active]="item.isActive">{{ item.isActive ? 'Active' : 'Inactive' }}</span></td>
+                <td class="td-right">
+                  <div class="row-actions">
+                    <button class="action-btn" title="Edit" (click)="openSimEdit(activeSubTab, item)"><i class="fa-regular fa-pen-to-square"></i></button>
+                    <button class="action-btn" [class.warn]="item.isActive" [class.green]="!item.isActive" (click)="toggleSim(activeSubTab, item.id)"><i class="fa-solid fa-power-off"></i></button>
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-footer">
+        <span>Showing {{ activeFilteredData.length }} of {{ entityTotal }} {{ activeTabLabel.toLowerCase() }}</span>
+        <span class="active-count"><span class="green-dot"></span>{{ entityActive }} active</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" *ngIf="geoModalOpen" (click)="geoModalOpen = false">
+    <div class="modal-panel" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3 class="modal-title">{{ geoModalEditing ? 'Edit' : 'Add' }} {{ activeTabLabel }}</h3>
+        <p class="modal-desc">{{ geoModalEditing ? 'Update the details below.' : 'Fill in the required fields.' }}</p>
+      </div>
+
+      <div class="modal-body">
+        <ng-container *ngIf="geoModalTab === 'countries'">
+          <div class="form-field">
+            <label class="field-label">Country Name *</label>
+            <input class="field-input" [(ngModel)]="geoForm['name']" placeholder="e.g. United States" />
+            <span class="field-error" *ngIf="geoErrors['name']">{{ geoErrors['name'] }}</span>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label class="field-label">Region *</label>
+              <select class="field-select" [(ngModel)]="geoForm['regionId']">
+                <option value="">Select region</option>
+                <option *ngFor="let region of regions" [value]="region.id">{{ region.name }}</option>
+              </select>
+              <span class="field-error" *ngIf="geoErrors['regionId']">{{ geoErrors['regionId'] }}</span>
+            </div>
+            <div class="form-field">
+              <label class="field-label">Currency</label>
+              <select class="field-select" [(ngModel)]="geoForm['currencyId']">
+                <option value="">Select currency</option>
+                <option *ngFor="let currency of currencies" [value]="currency.id">{{ currency.code }} - {{ currency.name }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row-3">
+            <div class="form-field">
+              <label class="field-label">ISO 2 *</label>
+              <input class="field-input mono" [(ngModel)]="geoForm['iso2']" maxlength="2" placeholder="US" />
+              <span class="field-error" *ngIf="geoErrors['iso2']">{{ geoErrors['iso2'] }}</span>
+            </div>
+            <div class="form-field">
+              <label class="field-label">ISO 3 *</label>
+              <input class="field-input mono" [(ngModel)]="geoForm['iso3']" maxlength="3" placeholder="USA" />
+              <span class="field-error" *ngIf="geoErrors['iso3']">{{ geoErrors['iso3'] }}</span>
+            </div>
+            <div class="form-field">
+              <label class="field-label">Phone Code *</label>
+              <input class="field-input mono" [(ngModel)]="geoForm['phoneCode']" maxlength="8" placeholder="+1" />
+              <span class="field-error" *ngIf="geoErrors['phoneCode']">{{ geoErrors['phoneCode'] }}</span>
+            </div>
+          </div>
+          <div class="toggle-row">
+            <span>Status</span>
+            <button class="toggle-btn" [class.on]="geoForm['isActive']" (click)="geoForm['isActive'] = !geoForm['isActive']">
+              {{ geoForm['isActive'] ? 'Active' : 'Inactive' }}
+            </button>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="geoModalTab === 'states'">
+          <div class="form-field">
+            <label class="field-label">Country *</label>
+            <select class="field-select" [(ngModel)]="geoForm['countryId']">
+              <option value="">Select country</option>
+              <option *ngFor="let country of countries" [value]="country.id">{{ country.name }}</option>
+            </select>
+            <span class="field-error" *ngIf="geoErrors['countryId']">{{ geoErrors['countryId'] }}</span>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label class="field-label">State Name *</label>
+              <input class="field-input" [(ngModel)]="geoForm['name']" placeholder="e.g. Maharashtra" />
+              <span class="field-error" *ngIf="geoErrors['name']">{{ geoErrors['name'] }}</span>
+            </div>
+            <div class="form-field">
+              <label class="field-label">Code</label>
+              <input class="field-input mono" [(ngModel)]="geoForm['code']" maxlength="5" placeholder="MH" />
+            </div>
+          </div>
+          <div class="toggle-row">
+            <span>Status</span>
+            <button class="toggle-btn" [class.on]="geoForm['isActive']" (click)="geoForm['isActive'] = !geoForm['isActive']">
+              {{ geoForm['isActive'] ? 'Active' : 'Inactive' }}
+            </button>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="geoModalTab === 'cities'">
+          <div class="form-field">
+            <label class="field-label">Country</label>
+            <select class="field-select" [ngModel]="modalCid" (ngModelChange)="onCityCountryChange($event)">
+              <option value="">Select country first</option>
+              <option *ngFor="let country of countries" [value]="country.id">{{ country.name }}</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label class="field-label">State *</label>
+            <select class="field-select" [(ngModel)]="geoForm['stateId']" [disabled]="!modalCid">
+              <option value="">{{ modalCid ? 'Select state' : 'Select country first' }}</option>
+              <option *ngFor="let state of statesFor(modalCid)" [value]="state.id">{{ state.name }}</option>
+            </select>
+            <span class="field-error" *ngIf="geoErrors['stateId']">{{ geoErrors['stateId'] }}</span>
+          </div>
+          <div class="form-field">
+            <label class="field-label">City Name *</label>
+            <input class="field-input" [(ngModel)]="geoForm['name']" placeholder="e.g. Mumbai" />
+            <span class="field-error" *ngIf="geoErrors['name']">{{ geoErrors['name'] }}</span>
+          </div>
+          <div class="toggle-row">
+            <span>Status</span>
+            <button class="toggle-btn" [class.on]="geoForm['isActive']" (click)="geoForm['isActive'] = !geoForm['isActive']">
+              {{ geoForm['isActive'] ? 'Active' : 'Inactive' }}
+            </button>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="geoModalTab === 'currencies'">
+          <div class="form-field">
+            <label class="field-label">Currency Name *</label>
+            <input class="field-input" [(ngModel)]="geoForm['name']" placeholder="e.g. US Dollar" />
+            <span class="field-error" *ngIf="geoErrors['name']">{{ geoErrors['name'] }}</span>
+          </div>
+          <div class="form-row-3">
+            <div class="form-field">
+              <label class="field-label">Code * (3 chars)</label>
+              <input class="field-input mono" [(ngModel)]="geoForm['code']" maxlength="3" placeholder="USD" />
+              <span class="field-error" *ngIf="geoErrors['code']">{{ geoErrors['code'] }}</span>
+            </div>
+            <div class="form-field">
+              <label class="field-label">Symbol *</label>
+              <input class="field-input mono" [(ngModel)]="geoForm['symbol']" maxlength="8" placeholder="$" />
+              <span class="field-error" *ngIf="geoErrors['symbol']">{{ geoErrors['symbol'] }}</span>
+            </div>
+            <div class="form-field">
+              <label class="field-label">Decimals</label>
+              <input class="field-input mono" type="number" min="0" max="4" [(ngModel)]="geoForm['decimals']" />
+            </div>
+          </div>
+          <div class="toggle-row">
+            <span>Status</span>
+            <button class="toggle-btn" [class.on]="geoForm['isActive']" (click)="geoForm['isActive'] = !geoForm['isActive']">
+              {{ geoForm['isActive'] ? 'Active' : 'Inactive' }}
+            </button>
+            <button class="star-toggle" [class.starred]="geoForm['isDefault']" (click)="geoForm['isDefault'] = !geoForm['isDefault']">
+              <i class="fa-star" [ngClass]="geoForm['isDefault'] ? 'fa-solid' : 'fa-regular'"></i>
+              {{ geoForm['isDefault'] ? 'Default' : 'Set as Default' }}
+            </button>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="geoModalTab === 'timezones'">
+          <div class="form-field">
+            <label class="field-label">Time Zone Name *</label>
+            <input class="field-input" [(ngModel)]="geoForm['name']" placeholder="e.g. India Standard Time" />
+            <span class="field-error" *ngIf="geoErrors['name']">{{ geoErrors['name'] }}</span>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label class="field-label">UTC Offset</label>
+              <input class="field-input mono" [(ngModel)]="geoForm['offset']" placeholder="UTC+5:30" />
+            </div>
+            <div class="form-field">
+              <label class="field-label">Abbreviation</label>
+              <input class="field-input mono" [(ngModel)]="geoForm['abbreviation']" placeholder="IST" />
+            </div>
+          </div>
+          <div class="toggle-row">
+            <span>Status</span>
+            <button class="toggle-btn" [class.on]="geoForm['isActive']" (click)="geoForm['isActive'] = !geoForm['isActive']">
+              {{ geoForm['isActive'] ? 'Active' : 'Inactive' }}
+            </button>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="geoModalTab === 'languages'">
+          <div class="form-field">
+            <label class="field-label">Language Name *</label>
+            <input class="field-input" [(ngModel)]="geoForm['name']" placeholder="e.g. Hindi" />
+            <span class="field-error" *ngIf="geoErrors['name']">{{ geoErrors['name'] }}</span>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label class="field-label">ISO Code *</label>
+              <input class="field-input mono" [(ngModel)]="geoForm['code']" maxlength="5" placeholder="hi" />
+              <span class="field-error" *ngIf="geoErrors['code']">{{ geoErrors['code'] }}</span>
+            </div>
+            <div class="form-field">
+              <label class="field-label">Native Name</label>
+              <input class="field-input" [(ngModel)]="geoForm['nativeName']" placeholder="Hindi" />
+            </div>
+          </div>
+          <div class="toggle-row">
+            <span>Status</span>
+            <button class="toggle-btn" [class.on]="geoForm['isActive']" (click)="geoForm['isActive'] = !geoForm['isActive']">
+              {{ geoForm['isActive'] ? 'Active' : 'Inactive' }}
+            </button>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="geoModalTab === 'nationalities'">
+          <div class="form-field">
+            <label class="field-label">Nationality Name *</label>
+            <input class="field-input" [(ngModel)]="geoForm['name']" placeholder="e.g. Indian" />
+            <span class="field-error" *ngIf="geoErrors['name']">{{ geoErrors['name'] }}</span>
+          </div>
+          <div class="form-field">
+            <label class="field-label">Country *</label>
+            <select class="field-select" [(ngModel)]="geoForm['countryId']">
+              <option value="">Select country</option>
+              <option *ngFor="let country of countries" [value]="country.id">{{ country.name }}</option>
+            </select>
+            <span class="field-error" *ngIf="geoErrors['countryId']">{{ geoErrors['countryId'] }}</span>
+          </div>
+          <div class="toggle-row">
+            <span>Status</span>
+            <button class="toggle-btn" [class.on]="geoForm['isActive']" (click)="geoForm['isActive'] = !geoForm['isActive']">
+              {{ geoForm['isActive'] ? 'Active' : 'Inactive' }}
+            </button>
+          </div>
+        </ng-container>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-ghost" (click)="geoModalOpen = false">Cancel</button>
+        <button class="btn-primary" (click)="saveGeo()">
+          {{ geoModalEditing ? 'Save Changes' : 'Add ' + activeTabLabel }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" *ngIf="simModalOpen" (click)="simModalOpen = false">
+    <div class="modal-panel" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3 class="modal-title">{{ simModalEditing ? 'Edit' : 'Add' }} {{ simModalLabel }}</h3>
+        <p class="modal-desc">{{ simModalEditing ? 'Update the details below.' : 'Fill in the fields to create a new entry.' }}</p>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-field">
+          <label class="field-label">Name *</label>
+          <input class="field-input" [(ngModel)]="simForm.name" [placeholder]="'e.g. ' + simModalLabel" />
+          <span class="field-error" *ngIf="simErrors['name']">{{ simErrors['name'] }}</span>
+        </div>
+
+        <div class="form-field">
+          <label class="field-label">Description</label>
+          <textarea class="field-textarea" rows="2" [(ngModel)]="simForm.description" placeholder="Brief description..."></textarea>
+        </div>
+
+        <div class="form-field" *ngIf="simModalExtraLabel">
+          <label class="field-label">{{ simModalExtraLabel }}</label>
+          <ng-container *ngIf="simModalExtraIsColor; else textExtra">
+            <div class="color-picker-row">
+              <input type="color" class="color-picker" [(ngModel)]="simForm.extra" />
+              <code class="mono-sm">{{ simForm.extra || '#3b82f6' }}</code>
+            </div>
+          </ng-container>
+          <ng-template #textExtra>
+            <input class="field-input" [(ngModel)]="simForm.extra" placeholder="Enter value" />
+          </ng-template>
+        </div>
+
+        <div class="toggle-row">
+          <span>Status</span>
+          <button class="toggle-btn" [class.on]="simForm.isActive" (click)="simForm.isActive = !simForm.isActive">
+            {{ simForm.isActive ? 'Active' : 'Inactive' }}
+          </button>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-ghost" (click)="simModalOpen = false">Cancel</button>
+        <button class="btn-primary" (click)="saveSim()">
+          {{ simModalEditing ? 'Save Changes' : 'Add ' + simModalLabel }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

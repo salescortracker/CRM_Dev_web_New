@@ -1,0 +1,462 @@
+<div class="page-container">
+
+    <!-- ========================= -->
+    <!-- Page Header -->
+    <!-- ========================= -->
+
+    <div class="page-header">
+
+        <div>
+
+            <p class="page-subtitle">
+                INTEGRATION MANAGEMENT
+            </p>
+
+            <h1>Email Configuration</h1>
+
+            <p class="page-description">
+                Configure SMTP providers, manage email settings,
+                and monitor email integration status across all companies.
+            </p>
+
+        </div>
+
+        <div class="header-buttons">
+
+            <button class="btn btn-light" (click)="refresh()">
+
+                <i class="fa-solid fa-rotate"></i>
+
+                Refresh
+
+            </button>
+
+            <button class="btn btn-danger" (click)="openAddModal()">
+
+                <i class="fa-solid fa-plus"></i>
+
+                Add Configuration
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- ========================= -->
+    <!-- Statistics -->
+    <!-- ========================= -->
+
+    <div class="stats-grid">
+
+        <div class="stat-card">
+
+            <span>Total Providers</span>
+
+            <h2>{{emailConfigurations.length}}</h2>
+
+        </div>
+
+        <div class="stat-card">
+
+            <span>Connected</span>
+
+            <h2>{{connectedCount}}</h2>
+
+        </div>
+
+        <div class="stat-card">
+
+            <span>Disconnected</span>
+
+            <h2>{{disconnectedCount}}</h2>
+
+        </div>
+
+        <div class="stat-card">
+
+            <span>Default Provider</span>
+
+            <h2>{{defaultProvider}}</h2>
+
+        </div>
+
+    </div>
+
+    <!-- ========================= -->
+    <!-- Search Panel -->
+    <!-- ========================= -->
+
+    <div class="search-panel">
+
+        <div class="search-box">
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input type="text" placeholder="Search Provider..." [(ngModel)]="searchText">
+
+        </div>
+
+        <select class="form-control" [(ngModel)]="statusFilter">
+
+            <option value="">
+                All Status
+            </option>
+
+            <option value="Connected">
+                Connected
+            </option>
+
+            <option value="Disconnected">
+                Disconnected
+            </option>
+
+        </select>
+
+        <button class="btn btn-secondary" (click)="clearFilters()">
+
+            Clear
+
+        </button>
+
+    </div>
+
+    <!-- ========================= -->
+    <!-- Table -->
+    <!-- ========================= -->
+
+    <div class="table-card">
+
+        <div class="table-header">
+
+            <h3>
+
+                SMTP Providers
+
+            </h3>
+
+            <span>
+
+                {{filteredProviders.length}} Records
+
+            </span>
+
+        </div>
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Provider</th>
+
+                    <th>Host</th>
+
+                    <th>Port</th>
+
+                    <th>Username</th>
+
+                    <th>SSL</th>
+
+                    <th>Status</th>
+
+                    <th>Default</th>
+
+                    <th width="170">
+
+                        Actions
+
+                    </th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr *ngFor="let item of filteredProviders">
+
+                    <td>
+
+                        <div class="provider-info">
+
+                            <div class="provider-icon">
+
+                                <i class="fa-solid fa-envelope"></i>
+
+                            </div>
+
+                            <div>
+
+                                <strong>
+
+                                    {{item.provider}}
+
+                                </strong>
+
+                                <small>
+
+                                    {{item.email}}
+
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    </td>
+
+                    <td>
+
+                        {{item.host}}
+
+                    </td>
+
+                    <td>
+
+                        {{item.port}}
+
+                    </td>
+
+                    <td>
+
+                        {{item.username}}
+
+                    </td>
+
+                    <td>
+
+                        <span class="badge badge-success" *ngIf="item.ssl">
+
+                            Enabled
+
+                        </span>
+
+                        <span class="badge badge-danger" *ngIf="!item.ssl">
+
+                            Disabled
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <span class="status" [ngClass]="item.status.toLowerCase()">
+
+                            {{item.status}}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <span *ngIf="item.isDefault" class="default-badge">
+
+                            Default
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <button class="icon-btn" (click)="edit(item)">
+
+                            <i class="fa-solid fa-pen"></i>
+
+                        </button>
+
+                        <button class="icon-btn danger" (click)="delete(item.id)">
+
+                            <i class="fa-solid fa-trash"></i>
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<!-- ======================================= -->
+<!-- Add / Edit Popup -->
+<!-- ======================================= -->
+
+<div class="modal-overlay" *ngIf="showModal">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <h3>
+
+                {{isEdit ? 'Edit Email Configuration' : 'Add Email Configuration'}}
+
+            </h3>
+
+            <button class="close-btn" (click)="closeModal()">
+
+                ×
+
+            </button>
+
+        </div>
+
+        <div class="modal-body">
+
+            <div class="form-grid">
+
+                <div>
+
+                    <label>
+
+                        Provider Name
+
+                    </label>
+
+                    <input type="text" [(ngModel)]="model.provider">
+
+                </div>
+
+                <div>
+
+                    <label>
+
+                        Email
+
+                    </label>
+
+                    <input type="email" [(ngModel)]="model.email">
+
+                </div>
+
+                <div>
+
+                    <label>
+
+                        SMTP Host
+
+                    </label>
+
+                    <input type="text" [(ngModel)]="model.host">
+
+                </div>
+
+                <div>
+
+                    <label>
+
+                        Port
+
+                    </label>
+
+                    <input type="number" [(ngModel)]="model.port">
+
+                </div>
+
+                <div>
+
+                    <label>
+
+                        Username
+
+                    </label>
+
+                    <input type="text" [(ngModel)]="model.username">
+
+                </div>
+
+                <div>
+
+                    <label>
+
+                        Password
+
+                    </label>
+
+                    <input type="password" [(ngModel)]="model.password">
+
+                </div>
+
+                <div>
+
+                    <label>
+
+                        Status
+
+                    </label>
+
+                    <select [(ngModel)]="model.status">
+
+                        <option>
+
+                            Connected
+
+                        </option>
+
+                        <option>
+
+                            Disconnected
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="checkbox-group">
+
+                    <label>
+
+                        <input type="checkbox" [(ngModel)]="model.ssl">
+
+                        Enable SSL
+
+                    </label>
+
+                </div>
+
+                <div class="checkbox-group">
+
+                    <label>
+
+                        <input type="checkbox" [(ngModel)]="model.isDefault">
+
+                        Default Provider
+
+                    </label>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="modal-footer">
+
+            <button class="btn-secondary" *ngIf="editingIndex!=null" (click)="cancel()">
+
+                Cancel
+
+            </button>
+
+            <button class="btn-primary" (click)="saveConfiguration()">
+
+                {{ editingIndex==null ? 'Save Configuration' : 'Update Configuration' }}
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>

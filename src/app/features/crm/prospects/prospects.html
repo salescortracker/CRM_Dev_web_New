@@ -1,0 +1,568 @@
+<div class="prospects-page">
+
+  <!-- ================================================= -->
+  <!-- PAGE HEADER -->
+  <!-- ================================================= -->
+
+  <div class="page-header">
+
+    <div>
+
+      <div class="breadcrumb">
+        <span>CRM</span>
+        <i class="fa-solid fa-chevron-right"></i>
+        <strong>Prospects</strong>
+      </div>
+
+      <div class="title-section">
+
+        <div class="title-icon">
+          <i class="fa-solid fa-magnifying-glass-chart"></i>
+        </div>
+
+        <div>
+
+          <h1>Prospects</h1>
+
+          <p>
+            Find companies and contacts before starting your sales conversation.
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="header-actions">
+
+      <button
+        class="btn-secondary"
+        type="button"
+        (click)="createContact()">
+
+        <i class="fa-solid fa-user-plus"></i>
+
+        New Contact
+
+      </button>
+
+      <button
+        class="btn-primary"
+        type="button"
+        (click)="createCompany()">
+
+        <i class="fa-solid fa-building"></i>
+
+        New Company
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- ================================================= -->
+  <!-- SEARCH PANEL -->
+  <!-- ================================================= -->
+
+  <div class="search-panel">
+
+    <div class="search-heading">
+
+      <div>
+
+        <h2>Find a Prospect</h2>
+
+        <p>
+          Search existing companies or contacts in your CRM.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <!-- SEARCH TYPE -->
+
+    <div class="search-type">
+
+      <button
+        type="button"
+        [class.active]="searchType === 'Company'"
+        (click)="setSearchType('Company')">
+
+        <i class="fa-solid fa-building"></i>
+
+        Companies
+
+      </button>
+
+      <button
+        type="button"
+        [class.active]="searchType === 'Contact'"
+        (click)="setSearchType('Contact')">
+
+        <i class="fa-solid fa-user"></i>
+
+        Contacts
+
+      </button>
+
+    </div>
+
+
+    <!-- SEARCH BOX -->
+
+    <div class="search-box">
+
+      <i class="fa-solid fa-magnifying-glass"></i>
+
+      <input
+        type="text"
+        [(ngModel)]="searchText"
+        [placeholder]="
+          searchType === 'Company'
+          ? 'Search company name, industry or city...'
+          : 'Search contact name, company, email or phone...'
+        "
+      />
+
+      <span class="shortcut">
+        Ctrl K
+      </span>
+
+    </div>
+
+
+    <div class="search-hint">
+
+      <i class="fa-solid fa-circle-info"></i>
+
+      Search by company name, contact name, email, phone number or industry.
+
+    </div>
+
+  </div>
+
+
+  <!-- ================================================= -->
+  <!-- COMPANY RESULTS -->
+  <!-- ================================================= -->
+
+  <div
+    class="results-card"
+    *ngIf="searchType === 'Company'">
+
+    <div class="results-header">
+
+      <div>
+
+        <h2>Companies</h2>
+
+        <span>
+          {{ filteredCompanies.length }} companies found
+        </span>
+
+      </div>
+
+      <button
+        class="text-button"
+        type="button"
+        (click)="createCompany()">
+
+        <i class="fa-solid fa-plus"></i>
+
+        Add Company
+
+      </button>
+
+    </div>
+
+
+    <div class="company-list">
+
+      <div
+        class="company-row"
+        *ngFor="let company of filteredCompanies"
+        (click)="openCompany(company)">
+
+        <div
+          class="company-avatar"
+          [ngClass]="company.color">
+
+          {{ company.initials }}
+
+        </div>
+
+
+        <div class="company-main">
+
+          <div class="company-title">
+
+            <strong>
+              {{ company.name }}
+            </strong>
+
+            <span class="company-id">
+              {{ company.id }}
+            </span>
+
+          </div>
+
+          <div class="company-meta">
+
+            <span>
+              <i class="fa-solid fa-industry"></i>
+              {{ company.industry }}
+            </span>
+
+            <span>
+              <i class="fa-solid fa-location-dot"></i>
+              {{ company.city }}, {{ company.country }}
+            </span>
+
+            <span>
+              <i class="fa-solid fa-globe"></i>
+              {{ company.website }}
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="company-contacts">
+
+          <div class="contact-count">
+            {{ company.contacts }}
+          </div>
+
+          <span>
+            Contacts
+          </span>
+
+        </div>
+
+
+        <div class="row-arrow">
+
+          <i class="fa-solid fa-chevron-right"></i>
+
+        </div>
+
+      </div>
+
+
+      <div
+        class="empty-state"
+        *ngIf="filteredCompanies.length === 0">
+
+        <div class="empty-icon">
+          <i class="fa-solid fa-building"></i>
+        </div>
+
+        <h3>No companies found</h3>
+
+        <p>
+          Try another search or create a new company.
+        </p>
+
+        <button
+          class="btn-primary"
+          type="button"
+          (click)="createCompany()">
+
+          <i class="fa-solid fa-plus"></i>
+          Create Company
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ================================================= -->
+  <!-- CONTACT RESULTS -->
+  <!-- ================================================= -->
+
+  <div
+    class="results-card"
+    *ngIf="searchType === 'Contact'">
+
+    <div class="results-header">
+
+      <div>
+
+        <h2>Contacts</h2>
+
+        <span>
+          {{ filteredContacts.length }} contacts found
+        </span>
+
+      </div>
+
+      <button
+        class="text-button"
+        type="button"
+        (click)="createContact()">
+
+        <i class="fa-solid fa-plus"></i>
+
+        Add Contact
+
+      </button>
+
+    </div>
+
+
+    <div class="contact-list">
+
+      <div
+        class="contact-row"
+        *ngFor="let contact of filteredContacts"
+        (click)="openContact(contact)">
+
+        <div
+          class="contact-avatar"
+          [ngClass]="contact.color">
+
+          {{ contact.initials }}
+
+        </div>
+
+
+        <div class="contact-main">
+
+          <div class="contact-title">
+
+            <strong>
+              {{ contact.name }}
+            </strong>
+
+            <span>
+              {{ contact.designation }}
+            </span>
+
+          </div>
+
+          <div class="contact-company">
+
+            <i class="fa-solid fa-building"></i>
+
+            {{ contact.company }}
+
+          </div>
+
+        </div>
+
+
+        <div class="contact-details">
+
+          <span>
+            <i class="fa-regular fa-envelope"></i>
+            {{ contact.email }}
+          </span>
+
+          <span>
+            <i class="fa-solid fa-phone"></i>
+            {{ contact.phone }}
+          </span>
+
+        </div>
+
+
+        <div class="row-arrow">
+
+          <i class="fa-solid fa-chevron-right"></i>
+
+        </div>
+
+      </div>
+
+
+      <div
+        class="empty-state"
+        *ngIf="filteredContacts.length === 0">
+
+        <div class="empty-icon">
+          <i class="fa-solid fa-user"></i>
+        </div>
+
+        <h3>No contacts found</h3>
+
+        <p>
+          Try another search or create a new contact.
+        </p>
+
+        <button
+          class="btn-primary"
+          type="button"
+          (click)="createContact()">
+
+          <i class="fa-solid fa-plus"></i>
+          Create Contact
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ================================================= -->
+  <!-- QUICK PROCESS -->
+  <!-- ================================================= -->
+
+  <div class="process-card">
+
+    <div class="process-header">
+
+      <div>
+
+        <span class="section-eyebrow">
+          SALES DISCOVERY
+        </span>
+
+        <h2>
+          What happens next?
+        </h2>
+
+      </div>
+
+      <span class="process-badge">
+        Prospect → Lead
+      </span>
+
+    </div>
+
+
+    <div class="process-flow">
+
+      <div class="process-step">
+
+        <div class="process-number">
+          01
+        </div>
+
+        <div class="process-icon">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </div>
+
+        <strong>
+          Find
+        </strong>
+
+        <span>
+          Search company or contact
+        </span>
+
+      </div>
+
+
+      <div class="process-line"></div>
+
+
+      <div class="process-step">
+
+        <div class="process-number">
+          02
+        </div>
+
+        <div class="process-icon">
+          <i class="fa-solid fa-address-card"></i>
+        </div>
+
+        <strong>
+          Review
+        </strong>
+
+        <span>
+          View company & contact details
+        </span>
+
+      </div>
+
+
+      <div class="process-line"></div>
+
+
+      <div class="process-step">
+
+        <div class="process-number">
+          03
+        </div>
+
+        <div class="process-icon">
+          <i class="fa-solid fa-phone"></i>
+        </div>
+
+        <strong>
+          Connect
+        </strong>
+
+        <span>
+          Call or send an email
+        </span>
+
+      </div>
+
+
+      <div class="process-line"></div>
+
+
+      <div class="process-step">
+
+        <div class="process-number">
+          04
+        </div>
+
+        <div class="process-icon">
+          <i class="fa-solid fa-clipboard-check"></i>
+        </div>
+
+        <strong>
+          Qualify
+        </strong>
+
+        <span>
+          Record call outcome
+        </span>
+
+      </div>
+
+
+      <div class="process-line"></div>
+
+
+      <div class="process-step">
+
+        <div class="process-number">
+          05
+        </div>
+
+        <div class="process-icon success">
+          <i class="fa-solid fa-user-plus"></i>
+        </div>
+
+        <strong>
+          Convert
+        </strong>
+
+        <span>
+          Create lead & follow-up
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

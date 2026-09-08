@@ -1,0 +1,2 @@
+import './polyfills.server.mjs';
+import{e,la as s}from"./chunk-SGKSW562.mjs";var i=class t{totalRequests=0;loadingSubject=new e(!1);loading$=this.loadingSubject.asObservable();show(){this.totalRequests++,this.loadingSubject.next(!0)}hide(){this.totalRequests--,this.totalRequests<=0&&(this.totalRequests=0,this.loadingSubject.next(!1))}forceStop(){this.totalRequests=0,this.loadingSubject.next(!1)}static \u0275fac=function(a){return new(a||t)};static \u0275prov=s({token:t,factory:t.\u0275fac})};export{i as a};

@@ -1,0 +1,1415 @@
+<div class="page-container">
+
+
+    <!-- ========================= -->
+    <!-- Page Header -->
+    <!-- ========================= -->
+
+
+    <div class="page-header">
+
+
+        <div>
+
+
+            <p class="page-subtitle">
+                INTEGRATION MANAGEMENT
+            </p>
+
+
+
+            <h1>
+                Third Party Integrations
+            </h1>
+
+
+
+            <p class="page-description">
+
+                Connect and manage external applications, services and business integrations across CRM.
+
+            </p>
+
+
+        </div>
+
+
+
+
+
+        <div class="header-buttons">
+
+
+
+            <button
+
+                class="btn btn-light"
+
+                (click)="refresh()">
+
+
+
+                <i class="fa-solid fa-rotate"></i>
+
+
+                Refresh
+
+
+            </button>
+
+
+
+
+
+
+            <button
+
+                class="btn btn-danger"
+
+                (click)="openAddModal()">
+
+
+
+                <i class="fa-solid fa-plus"></i>
+
+
+                Add Integration
+
+
+            </button>
+
+
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+    <!-- ========================= -->
+    <!-- Statistics -->
+    <!-- ========================= -->
+
+
+    <div class="stats-grid">
+
+
+
+        <div class="stat-card">
+
+
+            <span>
+                Total Integrations
+            </span>
+
+
+
+            <h2>
+                {{integrations.length}}
+            </h2>
+
+
+
+        </div>
+
+
+
+
+
+
+        <div class="stat-card">
+
+
+            <span>
+                Connected
+            </span>
+
+
+
+            <h2>
+                {{connectedCount}}
+            </h2>
+
+
+
+        </div>
+
+
+
+
+
+
+        <div class="stat-card">
+
+
+            <span>
+                Disconnected
+            </span>
+
+
+
+            <h2>
+                {{disconnectedCount}}
+            </h2>
+
+
+
+        </div>
+
+
+
+
+
+
+        <div class="stat-card">
+
+
+            <span>
+                Default Integration
+            </span>
+
+
+
+            <h2>
+                {{defaultIntegration}}
+            </h2>
+
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+    <!-- ========================= -->
+    <!-- Search & Filter -->
+    <!-- ========================= -->
+
+
+    <div class="search-panel">
+
+
+
+        <div class="search-box">
+
+
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+
+
+
+            <input
+
+
+                type="text"
+
+
+                placeholder="Search integration..."
+
+
+                [(ngModel)]="searchText">
+
+
+
+        </div>
+
+
+
+
+
+
+
+        <select
+
+            class="form-control"
+
+            [(ngModel)]="statusFilter">
+
+
+
+            <option value="">
+
+                All Status
+
+            </option>
+
+
+
+            <option value="Connected">
+
+                Connected
+
+            </option>
+
+
+
+            <option value="Disconnected">
+
+                Disconnected
+
+            </option>
+
+
+
+        </select>
+
+
+
+
+
+
+
+
+        <button
+
+            class="btn btn-secondary"
+
+            (click)="clearFilters()">
+
+
+
+            Clear
+
+
+
+        </button>
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+    <!-- ========================= -->
+    <!-- Integration Table -->
+    <!-- ========================= -->
+
+
+    <div class="table-card">
+
+
+
+
+
+        <div class="table-header">
+
+
+
+            <h3>
+
+                Third Party Services
+
+            </h3>
+
+
+
+
+            <span>
+
+                {{filteredIntegrations.length}} Records
+
+            </span>
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+        <table>
+
+
+
+            <thead>
+
+
+
+                <tr>
+
+
+
+                    <th>
+                        Integration
+                    </th>
+
+
+
+
+                    <th>
+                        Provider
+                    </th>
+
+
+
+
+                    <th>
+                        Category
+                    </th>
+
+
+
+
+                    <th>
+                        API Version
+                    </th>
+
+
+
+
+                    <th>
+                        Authentication
+                    </th>
+
+
+
+
+                    <th>
+                        Status
+                    </th>
+
+
+
+
+                    <th>
+                        Default
+                    </th>
+
+
+
+
+                    <th width="170">
+                        Actions
+                    </th>
+
+
+
+                </tr>
+
+
+
+            </thead>
+
+
+
+
+
+
+
+
+            <tbody>
+
+
+
+
+
+                <tr
+
+                    *ngFor="let item of filteredIntegrations">
+
+
+
+
+
+
+                    <td>
+
+
+
+
+                        <div class="provider-info">
+
+
+
+
+
+                            <div class="provider-icon">
+
+
+                                <i class="fa-solid fa-link"></i>
+
+
+
+                            </div>
+
+
+
+
+
+
+                            <div>
+
+
+
+
+                                <strong>
+
+
+                                    {{item.integrationName}}
+
+
+                                </strong>
+
+
+
+
+                                <small>
+
+
+                                    {{item.provider}}
+
+
+                                </small>
+
+
+
+
+
+                            </div>
+
+
+
+
+                        </div>
+
+
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <td>
+
+
+                        {{item.provider}}
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <td>
+
+
+                        <span class="category-badge">
+
+
+                            {{item.category}}
+
+
+                        </span>
+
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <td>
+
+
+                        {{item.apiVersion}}
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <td>
+
+
+                        {{item.authType}}
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <td>
+
+
+
+                        <span
+
+
+                            class="status"
+
+
+                            [ngClass]="item.status.toLowerCase()">
+
+
+
+                            {{item.status}}
+
+
+
+                        </span>
+
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <td>
+
+
+
+                        <span
+
+
+                            *ngIf="item.isDefault"
+
+
+                            class="default-badge">
+
+
+
+                            Default
+
+
+
+                        </span>
+
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <td>
+
+
+
+                        <button
+
+
+                            class="icon-btn"
+
+
+                            (click)="edit(item)">
+
+
+
+                            <i class="fa-solid fa-pen"></i>
+
+
+
+                        </button>
+
+
+
+
+
+
+
+                        <button
+
+
+                            class="icon-btn danger"
+
+
+                            (click)="delete(item.id)">
+
+
+
+                            <i class="fa-solid fa-trash"></i>
+
+
+
+                        </button>
+
+
+
+
+
+                    </td>
+
+
+
+
+
+
+                </tr>
+
+
+
+
+
+
+            </tbody>
+
+
+
+
+
+
+        </table>
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+</div>
+
+<!-- ======================================= -->
+<!-- Add / Edit Third Party Integration Modal -->
+<!-- ======================================= -->
+
+
+<div 
+    class="modal-overlay" 
+    *ngIf="showModal">
+
+
+    <div class="modal-box">
+
+
+
+        <!-- ========================= -->
+        <!-- Modal Header -->
+        <!-- ========================= -->
+
+
+        <div class="modal-header">
+
+
+            <h3>
+
+                {{isEdit ? 'Edit Third Party Integration' : 'Add Third Party Integration'}}
+
+            </h3>
+
+
+
+
+            <button
+
+                class="close-btn"
+
+                (click)="closeModal()">
+
+
+                ×
+
+
+            </button>
+
+
+
+        </div>
+
+
+
+
+
+
+
+        <!-- ========================= -->
+        <!-- Modal Body -->
+        <!-- ========================= -->
+
+
+        <div class="modal-body">
+
+
+
+            <div class="form-grid">
+
+
+
+
+
+
+
+                <!-- Integration Name -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Integration Name
+
+                    </label>
+
+
+
+                    <input
+
+                        type="text"
+
+                        placeholder="Enter integration name"
+
+                        [(ngModel)]="model.integrationName">
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Provider -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Provider Name
+
+                    </label>
+
+
+
+                    <input
+
+                        type="text"
+
+                        placeholder="Example: Salesforce"
+
+                        [(ngModel)]="model.provider">
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Category -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Category
+
+                    </label>
+
+
+
+                    <select
+
+                        [(ngModel)]="model.category">
+
+
+
+                        <option>
+                            CRM
+                        </option>
+
+
+                        <option>
+                            Payment
+                        </option>
+
+
+                        <option>
+                            Communication
+                        </option>
+
+
+                        <option>
+                            Marketing
+                        </option>
+
+
+                        <option>
+                            Analytics
+                        </option>
+
+
+                        <option>
+                            Storage
+                        </option>
+
+
+
+                    </select>
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- API Version -->
+
+
+                <div>
+
+
+                    <label>
+
+                        API Version
+
+                    </label>
+
+
+
+                    <input
+
+                        type="text"
+
+                        placeholder="v1"
+
+                        [(ngModel)]="model.apiVersion">
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- API Base URL -->
+
+
+                <div class="full-width">
+
+
+                    <label>
+
+                        API Base URL
+
+                    </label>
+
+
+
+                    <input
+
+                        type="text"
+
+                        placeholder="https://api.example.com"
+
+                        [(ngModel)]="model.baseUrl">
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- API Key -->
+
+
+                <div>
+
+
+                    <label>
+
+                        API Key
+
+                    </label>
+
+
+
+                    <input
+
+                        type="text"
+
+                        placeholder="Enter API key"
+
+                        [(ngModel)]="model.apiKey">
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Secret Key -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Secret Key
+
+                    </label>
+
+
+
+                    <input
+
+                        type="password"
+
+                        placeholder="Enter secret key"
+
+                        [(ngModel)]="model.secretKey">
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Authentication -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Authentication Type
+
+                    </label>
+
+
+
+                    <select
+
+                        [(ngModel)]="model.authType">
+
+
+
+                        <option>
+                            API Key
+                        </option>
+
+
+                        <option>
+                            Bearer Token
+                        </option>
+
+
+                        <option>
+                            OAuth 2.0
+                        </option>
+
+
+                        <option>
+                            Basic Authentication
+                        </option>
+
+
+                        <option>
+                            None
+                        </option>
+
+
+
+                    </select>
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Sync Frequency -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Sync Frequency
+
+                    </label>
+
+
+
+                    <select
+
+                        [(ngModel)]="model.syncFrequency">
+
+
+
+                        <option>
+                            Real Time
+                        </option>
+
+
+                        <option>
+                            Every 5 Minutes
+                        </option>
+
+
+                        <option>
+                            Every 15 Minutes
+                        </option>
+
+
+                        <option>
+                            Hourly
+                        </option>
+
+
+                        <option>
+                            Daily
+                        </option>
+
+
+
+                    </select>
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Status -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Status
+
+                    </label>
+
+
+
+                    <select
+
+                        [(ngModel)]="model.status">
+
+
+
+                        <option>
+                            Connected
+                        </option>
+
+
+                        <option>
+                            Disconnected
+                        </option>
+
+
+
+                    </select>
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Timeout -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Timeout (Seconds)
+
+                    </label>
+
+
+
+                    <input
+
+                        type="number"
+
+                        [(ngModel)]="model.timeout">
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- SSL -->
+
+
+                <div class="checkbox-group">
+
+
+
+                    <label>
+
+
+
+                        <input
+
+                            type="checkbox"
+
+                            [(ngModel)]="model.sslEnabled">
+
+
+
+                        Enable SSL
+
+
+
+                    </label>
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Default -->
+
+
+                <div class="checkbox-group">
+
+
+
+                    <label>
+
+
+
+                        <input
+
+                            type="checkbox"
+
+                            [(ngModel)]="model.isDefault">
+
+
+
+                        Default Integration
+
+
+
+                    </label>
+
+
+
+                </div>
+
+
+
+
+
+
+
+            </div>
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+        <!-- ========================= -->
+        <!-- Modal Footer -->
+        <!-- ========================= -->
+
+
+        <div class="modal-footer">
+
+
+
+            <button
+
+                class="btn-secondary"
+
+                (click)="closeModal()">
+
+
+
+                Cancel
+
+
+
+            </button>
+
+
+
+
+
+
+
+            <button
+
+                class="btn-primary"
+
+                (click)="saveIntegration()">
+
+
+
+                {{isEdit ? 'Update Integration' : 'Save Integration'}}
+
+
+
+            </button>
+
+
+
+
+
+        </div>
+
+
+
+
+
+    </div>
+
+
+
+</div>

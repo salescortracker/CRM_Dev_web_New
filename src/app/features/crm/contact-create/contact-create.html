@@ -1,0 +1,469 @@
+<div class="contact-create-page">
+
+  <!-- HEADER -->
+
+  <div class="page-header">
+
+    <div>
+
+      <div class="breadcrumb">
+
+        <span>CRM</span>
+
+        <i class="fa-solid fa-chevron-right"></i>
+
+        <span>Contacts</span>
+
+        <i class="fa-solid fa-chevron-right"></i>
+
+        <strong>New Contact</strong>
+
+      </div>
+
+
+      <div class="title-section">
+
+        <div class="title-icon">
+
+          <i class="fa-solid fa-user-plus"></i>
+
+        </div>
+
+        <div>
+
+          <h1>Create Contact</h1>
+
+          <p>
+            Add a new business contact and associate them with a company.
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="header-actions">
+
+      <button
+        class="btn-secondary"
+        type="button"
+        (click)="cancel()">
+
+        Cancel
+
+      </button>
+
+      <button
+        class="btn-primary"
+        type="button"
+        (click)="saveContact()">
+
+        <i class="fa-solid fa-check"></i>
+
+        Save Contact
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- FORM -->
+
+  <div class="form-layout">
+
+
+    <!-- PERSONAL -->
+
+    <div class="form-card">
+
+      <div class="card-heading">
+
+        <div class="card-heading-icon blue">
+
+          <i class="fa-solid fa-user"></i>
+
+        </div>
+
+        <div>
+
+          <h2>Personal Information</h2>
+
+          <p>
+            Basic information about the contact.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="form-grid">
+
+        <div class="form-group">
+
+          <label>First Name *</label>
+
+          <input
+            type="text"
+            [(ngModel)]="contact.firstName"
+            placeholder="Enter first name" />
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>Last Name *</label>
+
+          <input
+            type="text"
+            [(ngModel)]="contact.lastName"
+            placeholder="Enter last name" />
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>Designation</label>
+
+          <input
+            type="text"
+            [(ngModel)]="contact.designation"
+            placeholder="e.g. CEO, Director" />
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>Department</label>
+
+          <input
+            type="text"
+            [(ngModel)]="contact.department"
+            placeholder="e.g. Sales, HR" />
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- COMPANY -->
+
+    <div class="form-card">
+
+      <div class="card-heading">
+
+        <div class="card-heading-icon green">
+
+          <i class="fa-solid fa-building"></i>
+
+        </div>
+
+        <div>
+
+          <h2>Company Association</h2>
+
+          <p>
+            Connect this contact with an existing company.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="form-grid">
+
+        <div class="form-group full">
+
+          <label>Company *</label>
+
+          <select
+            [(ngModel)]="contact.company">
+
+            <option value="">
+              Select Company
+            </option>
+
+            <option
+              *ngFor="let company of companies"
+              [value]="company">
+
+              {{ company }}
+
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>Contact Type</label>
+
+          <select
+            [(ngModel)]="contact.contactType">
+
+            <option>Decision Maker</option>
+            <option>Influencer</option>
+            <option>End User</option>
+            <option>Other</option>
+
+          </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>Relationship</label>
+
+          <select
+            [(ngModel)]="contact.relationship">
+
+            <option>Prospect</option>
+            <option>Customer</option>
+            <option>Partner</option>
+            <option>Vendor</option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- CONTACT INFORMATION -->
+
+    <div class="form-card">
+
+      <div class="card-heading">
+
+        <div class="card-heading-icon orange">
+
+          <i class="fa-solid fa-address-card"></i>
+
+        </div>
+
+        <div>
+
+          <h2>Contact Information</h2>
+
+          <p>
+            Business communication details.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="form-grid">
+
+        <div class="form-group">
+
+          <label>Business Email *</label>
+
+          <input
+            type="email"
+            [(ngModel)]="contact.email"
+            placeholder="name@company.com" />
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>Phone *</label>
+
+          <input
+            type="text"
+            [(ngModel)]="contact.phone"
+            placeholder="+91 XXXXX XXXXX" />
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>Alternate Phone</label>
+
+          <input
+            type="text"
+            [(ngModel)]="contact.alternatePhone"
+            placeholder="Alternate phone" />
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>Website</label>
+
+          <input
+            type="text"
+            [(ngModel)]="contact.website"
+            placeholder="https://company.com" />
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ADDRESS -->
+
+    <div class="form-card">
+
+      <div class="card-heading">
+
+        <div class="card-heading-icon purple">
+
+          <i class="fa-solid fa-location-dot"></i>
+
+        </div>
+
+        <div>
+
+          <h2>Address</h2>
+
+          <p>
+            Contact location and business address.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="form-grid">
+
+        <div class="form-group full">
+
+          <label>Address Line 1</label>
+
+          <input
+            type="text"
+            [(ngModel)]="contact.addressLine1"
+            placeholder="Street / Building / Area" />
+
+        </div>
+
+
+        <div class="form-group full">
+
+          <label>Address Line 2</label>
+
+          <input
+            type="text"
+            [(ngModel)]="contact.addressLine2"
+            placeholder="Suite / Floor / Landmark" />
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>City</label>
+
+          <input
+            type="text"
+            [(ngModel)]="contact.city"
+            placeholder="City" />
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>State</label>
+
+          <input
+            type="text"
+            [(ngModel)]="contact.state"
+            placeholder="State" />
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>Country</label>
+
+          <input
+            type="text"
+            [(ngModel)]="contact.country"
+            placeholder="Country" />
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>Postal Code</label>
+
+          <input
+            type="text"
+            [(ngModel)]="contact.postalCode"
+            placeholder="Postal code" />
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- NOTES -->
+
+    <div class="form-card">
+
+      <div class="card-heading">
+
+        <div class="card-heading-icon gray">
+
+          <i class="fa-solid fa-note-sticky"></i>
+
+        </div>
+
+        <div>
+
+          <h2>Additional Information</h2>
+
+          <p>
+            Add useful information for your sales team.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>Notes</label>
+
+        <textarea
+          [(ngModel)]="contact.notes"
+          rows="5"
+          placeholder="Enter notes..."></textarea>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

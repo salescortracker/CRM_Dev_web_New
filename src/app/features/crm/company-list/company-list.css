@@ -1,0 +1,1422 @@
+/* =========================================================
+   CORCRM — COMPANY LIST PAGE
+   Premium Enterprise SaaS Design
+========================================================= */
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.company-list-page {
+  width: 100%;
+  min-height: calc(100vh - 130px);
+  padding: 26px 28px 40px;
+  background: #f5f7fb;
+  color: #172033;
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Arial,
+    sans-serif;
+}
+
+
+/* =========================================================
+   PAGE HEADER
+========================================================= */
+
+.page-header {
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 25px;
+  margin-bottom: 24px;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 11px;
+
+  font-size: 10px;
+  font-weight: 600;
+  color: #98a2b3;
+}
+
+.breadcrumb i {
+  font-size: 8px;
+  color: #b4bdca;
+}
+
+.breadcrumb span {
+  color: #98a2b3;
+}
+
+.breadcrumb span:last-of-type {
+  color: #667085;
+}
+
+.title-section {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.title-icon {
+  width: 45px;
+  height: 45px;
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 12px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #edf4ff,
+      #dceaff
+    );
+
+  color: #155eef;
+
+  border: 1px solid #d8e6ff;
+
+  box-shadow:
+    0 5px 14px rgba(21, 94, 239, 0.08);
+}
+
+.title-icon i {
+  font-size: 17px;
+}
+
+.title-section h1 {
+  margin: 0;
+
+  color: #172033;
+
+  font-size: 22px;
+  line-height: 27px;
+
+  font-weight: 800;
+
+  letter-spacing: -0.6px;
+}
+
+.title-section p {
+  margin: 4px 0 0;
+
+  color: #98a2b3;
+
+  font-size: 11px;
+  line-height: 17px;
+}
+
+
+/* =========================================================
+   HEADER ACTIONS
+========================================================= */
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.btn-primary,
+.btn-secondary {
+  height: 38px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  padding: 0 14px;
+
+  border-radius: 8px;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    all 0.2s ease;
+}
+
+.btn-primary {
+  border: 1px solid #155eef;
+
+  background: #155eef;
+  color: #ffffff;
+
+  box-shadow:
+    0 5px 14px rgba(21, 94, 239, 0.20);
+}
+
+.btn-primary:hover {
+  background: #0f4dcc;
+  border-color: #0f4dcc;
+
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 8px 18px rgba(21, 94, 239, 0.25);
+}
+
+.btn-secondary {
+  border: 1px solid #dfe3ea;
+
+  background: #ffffff;
+  color: #475467;
+}
+
+.btn-secondary:hover {
+  border-color: #c7d7fe;
+  color: #155eef;
+  background: #f8faff;
+}
+
+.btn-primary i,
+.btn-secondary i {
+  font-size: 10px;
+}
+
+
+/* =========================================================
+   SUMMARY GRID
+========================================================= */
+
+.summary-grid {
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 14px;
+
+  margin-bottom: 18px;
+}
+
+.summary-card {
+  min-height: 82px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 15px 17px;
+
+  background: #ffffff;
+
+  border: 1px solid #e7eaf0;
+
+  border-radius: 11px;
+
+  box-shadow:
+    0 2px 5px rgba(16, 24, 40, 0.025);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.summary-card:hover {
+  transform: translateY(-2px);
+
+  border-color: #d7deea;
+
+  box-shadow:
+    0 8px 20px rgba(16, 24, 40, 0.06);
+}
+
+.summary-icon {
+  width: 40px;
+  height: 40px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+}
+
+.summary-icon i {
+  font-size: 14px;
+}
+
+.summary-icon.blue {
+  background: #edf4ff;
+  color: #155eef;
+}
+
+.summary-icon.green {
+  background: #ecfdf3;
+  color: #039855;
+}
+
+.summary-icon.orange {
+  background: #fff7ed;
+  color: #ea580c;
+}
+
+.summary-icon.purple {
+  background: #f4f3ff;
+  color: #6938ef;
+}
+
+.summary-card > div:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.summary-card span {
+  color: #98a2b3;
+
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.summary-card strong {
+  color: #172033;
+
+  font-size: 20px;
+  line-height: 22px;
+
+  font-weight: 800;
+
+  letter-spacing: -0.4px;
+}
+
+
+/* =========================================================
+   FILTER PANEL
+========================================================= */
+
+.filter-panel {
+  width: 100%;
+
+  min-height: 64px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  padding: 12px;
+
+  margin-bottom: 16px;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e9f0;
+
+  border-radius: 11px;
+
+  box-shadow:
+    0 2px 5px rgba(16, 24, 40, 0.025);
+}
+
+
+/* =========================================================
+   SEARCH FIELD
+========================================================= */
+
+.search-field {
+  height: 38px;
+
+  flex: 1;
+
+  min-width: 220px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  padding: 0 11px;
+
+  border: 1px solid #e1e5eb;
+
+  border-radius: 8px;
+
+  background: #ffffff;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.search-field:focus-within {
+  border-color: #9dbbff;
+
+  box-shadow:
+    0 0 0 3px rgba(21, 94, 239, 0.07);
+}
+
+.search-field i {
+  color: #98a2b3;
+  font-size: 11px;
+}
+
+.search-field input {
+  width: 100%;
+
+  border: 0;
+  outline: 0;
+
+  background: transparent;
+
+  color: #172033;
+
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.search-field input::placeholder {
+  color: #a5adba;
+}
+
+
+/* =========================================================
+   SELECT FILTERS
+========================================================= */
+
+.filter-panel select {
+  height: 38px;
+
+  min-width: 145px;
+
+  padding: 0 30px 0 11px;
+
+  border: 1px solid #e1e5eb;
+
+  border-radius: 8px;
+
+  background-color: #ffffff;
+
+  color: #475467;
+
+  font-size: 10px;
+  font-weight: 600;
+
+  outline: none;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.filter-panel select:hover {
+  border-color: #cbd5e1;
+}
+
+.filter-panel select:focus {
+  border-color: #9dbbff;
+
+  box-shadow:
+    0 0 0 3px rgba(21, 94, 239, 0.07);
+}
+
+
+/* =========================================================
+   RESET FILTER
+========================================================= */
+
+.filter-button {
+  height: 38px;
+
+  padding: 0 12px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  border: 1px solid #e1e5eb;
+
+  border-radius: 8px;
+
+  background: #ffffff;
+
+  color: #667085;
+
+  font-size: 10px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.filter-button:hover {
+  border-color: #c7d7fe;
+
+  background: #f8faff;
+
+  color: #155eef;
+}
+
+.filter-button i {
+  font-size: 10px;
+}
+
+
+/* =========================================================
+   COMPANY TABLE CARD
+========================================================= */
+
+.companies-card {
+  width: 100%;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e9f0;
+
+  border-radius: 12px;
+
+  overflow: hidden;
+
+  box-shadow:
+    0 2px 5px rgba(16, 24, 40, 0.025);
+}
+
+
+/* =========================================================
+   TABLE HEADER
+========================================================= */
+
+.table-header {
+  min-height: 66px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 13px 17px;
+
+  border-bottom: 1px solid #edf0f4;
+}
+
+.table-header h2 {
+  margin: 0;
+
+  color: #172033;
+
+  font-size: 13px;
+  line-height: 18px;
+
+  font-weight: 750;
+}
+
+.table-header span {
+  display: block;
+
+  margin-top: 3px;
+
+  color: #98a2b3;
+
+  font-size: 9px;
+  font-weight: 500;
+}
+
+.view-button {
+  height: 32px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 6px;
+
+  padding: 0 10px;
+
+  border: 1px solid #e1e5eb;
+
+  border-radius: 7px;
+
+  background: #ffffff;
+
+  color: #667085;
+
+  font-size: 9px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.view-button:hover {
+  border-color: #c7d7fe;
+
+  background: #f8faff;
+
+  color: #155eef;
+}
+
+.view-button i {
+  font-size: 9px;
+}
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.company-table {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table-row {
+  min-width: 980px;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(240px, 1.7fr)
+    minmax(130px, 0.9fr)
+    minmax(150px, 1fr)
+    90px
+    105px
+    130px
+    48px;
+
+  align-items: center;
+
+  min-height: 69px;
+
+  padding: 0 16px;
+
+  border-bottom: 1px solid #f0f2f5;
+
+  cursor: pointer;
+
+  transition:
+    background 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.table-row:last-child {
+  border-bottom: 0;
+}
+
+.table-row:not(.table-heading):hover {
+  background: #f8faff;
+
+  box-shadow:
+    inset 3px 0 0 #155eef;
+}
+
+
+/* =========================================================
+   TABLE HEADING
+========================================================= */
+
+.table-heading {
+  min-height: 42px;
+
+  background: #fafbfc;
+
+  border-bottom: 1px solid #e9edf2;
+
+  cursor: default;
+}
+
+.table-heading:hover {
+  background: #fafbfc;
+  box-shadow: none;
+}
+
+.table-heading > div {
+  color: #98a2b3;
+
+  font-size: 8px;
+
+  font-weight: 800;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.65px;
+}
+
+
+/* =========================================================
+   COMPANY CELL
+========================================================= */
+
+.company-cell {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+}
+
+.company-avatar {
+  width: 38px;
+  height: 38px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  font-size: 10px;
+
+  font-weight: 800;
+
+  border: 1px solid rgba(21, 94, 239, 0.08);
+}
+
+
+/* =========================================================
+   AVATAR COLOR VARIANTS
+========================================================= */
+
+.company-avatar.blue {
+  background: #edf4ff;
+  color: #155eef;
+}
+
+.company-avatar.green {
+  background: #ecfdf3;
+  color: #027a48;
+}
+
+.company-avatar.orange {
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+.company-avatar.purple {
+  background: #f4f3ff;
+  color: #6938ef;
+}
+
+.company-avatar.red {
+  background: #fef3f2;
+  color: #d92d20;
+}
+
+.company-avatar.cyan {
+  background: #ecfdff;
+  color: #088ab2;
+}
+
+.company-cell > div:last-child {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
+}
+
+.company-cell strong {
+  overflow: hidden;
+
+  color: #172033;
+
+  font-size: 10px;
+  font-weight: 750;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.company-cell span {
+  color: #98a2b3;
+
+  font-size: 8px;
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   INDUSTRY
+========================================================= */
+
+.industry-cell {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  color: #475467;
+
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.industry-cell i {
+  width: 25px;
+  height: 25px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 7px;
+
+  background: #f5f8ff;
+
+  color: #5b7fc7;
+
+  font-size: 9px;
+}
+
+
+/* =========================================================
+   LOCATION
+========================================================= */
+
+.location-cell {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  min-width: 0;
+
+  color: #667085;
+
+  font-size: 9px;
+  font-weight: 500;
+}
+
+.location-cell i {
+  flex-shrink: 0;
+
+  color: #98a2b3;
+
+  font-size: 10px;
+}
+
+.location-cell span {
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   CONTACTS
+========================================================= */
+
+.contacts-cell {
+  display: flex;
+  flex-direction: column;
+
+  gap: 2px;
+}
+
+.contacts-cell strong {
+  color: #172033;
+
+  font-size: 12px;
+
+  font-weight: 750;
+}
+
+.contacts-cell span {
+  color: #98a2b3;
+
+  font-size: 8px;
+
+  font-weight: 500;
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.status {
+  width: max-content;
+
+  display: inline-flex;
+  align-items: center;
+
+  gap: 6px;
+
+  padding: 5px 8px;
+
+  border-radius: 20px;
+
+  font-size: 8px;
+
+  font-weight: 700;
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: currentColor;
+}
+
+
+/* ACTIVE */
+
+.status.active {
+  background: #ecfdf3;
+  color: #027a48;
+}
+
+
+/* PROSPECT */
+
+.status.prospect {
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+
+/* INACTIVE */
+
+.status.inactive {
+  background: #f2f4f7;
+  color: #667085;
+}
+
+
+/* =========================================================
+   OWNER
+========================================================= */
+
+.owner-cell {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  min-width: 0;
+}
+
+.owner-avatar {
+  width: 28px;
+  height: 28px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 8px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #e7efff,
+      #cddcff
+    );
+
+  color: #174ea6;
+
+  font-size: 8px;
+
+  font-weight: 800;
+}
+
+.owner-cell span {
+  overflow: hidden;
+
+  color: #667085;
+
+  font-size: 8px;
+
+  font-weight: 600;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   ROW ACTION
+========================================================= */
+
+.row-action {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.row-action button {
+  width: 28px;
+  height: 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid transparent;
+
+  border-radius: 7px;
+
+  background: transparent;
+
+  color: #98a2b3;
+
+  cursor: pointer;
+
+  transition: all 0.18s ease;
+}
+
+.row-action button:hover {
+  border-color: #d6e2ff;
+
+  background: #edf4ff;
+
+  color: #155eef;
+}
+
+.row-action i {
+  font-size: 9px;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.empty-state {
+  width: 100%;
+
+  min-height: 300px;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 40px 20px;
+
+  text-align: center;
+}
+
+.empty-icon {
+  width: 54px;
+  height: 54px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 13px;
+
+  border-radius: 14px;
+
+  background: #f2f5f9;
+
+  color: #98a2b3;
+}
+
+.empty-icon i {
+  font-size: 19px;
+}
+
+.empty-state h3 {
+  margin: 0;
+
+  color: #344054;
+
+  font-size: 14px;
+
+  font-weight: 750;
+}
+
+.empty-state p {
+  margin: 6px 0 17px;
+
+  color: #98a2b3;
+
+  font-size: 10px;
+}
+
+
+/* =========================================================
+   RESPONSIVE — 1400px
+========================================================= */
+
+@media (max-width: 1400px) {
+
+  .company-list-page {
+    padding: 24px;
+  }
+
+  .summary-grid {
+    gap: 12px;
+  }
+
+  .table-row {
+    grid-template-columns:
+      minmax(220px, 1.6fr)
+      minmax(120px, 0.9fr)
+      minmax(140px, 1fr)
+      80px
+      100px
+      120px
+      45px;
+  }
+}
+
+
+/* =========================================================
+   RESPONSIVE — 1100px
+========================================================= */
+
+@media (max-width: 1100px) {
+
+  .company-list-page {
+    padding: 20px;
+  }
+
+  .summary-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .page-header {
+    align-items: flex-start;
+  }
+
+  .header-actions {
+    flex-shrink: 0;
+  }
+
+  .filter-panel {
+    flex-wrap: wrap;
+  }
+
+  .search-field {
+    flex-basis: 100%;
+  }
+}
+
+
+/* =========================================================
+   RESPONSIVE — 800px
+========================================================= */
+
+@media (max-width: 800px) {
+
+  .company-list-page {
+    padding: 18px 15px 30px;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 17px;
+  }
+
+  .header-actions {
+    width: 100%;
+  }
+
+  .header-actions button {
+    flex: 1;
+  }
+
+  .summary-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .filter-panel {
+    align-items: stretch;
+  }
+
+  .search-field {
+    flex-basis: 100%;
+  }
+
+  .filter-panel select {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .filter-button {
+    flex-shrink: 0;
+  }
+}
+
+
+/* =========================================================
+   RESPONSIVE — 600px
+========================================================= */
+
+@media (max-width: 600px) {
+
+  .company-list-page {
+    padding: 15px 11px 25px;
+  }
+
+  .breadcrumb {
+    margin-bottom: 9px;
+  }
+
+  .title-icon {
+    width: 40px;
+    height: 40px;
+
+    border-radius: 10px;
+  }
+
+  .title-icon i {
+    font-size: 15px;
+  }
+
+  .title-section h1 {
+    font-size: 19px;
+  }
+
+  .title-section p {
+    font-size: 9px;
+  }
+
+  .header-actions {
+    gap: 7px;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    height: 36px;
+
+    padding: 0 10px;
+
+    font-size: 9px;
+  }
+
+  .summary-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+
+    gap: 8px;
+  }
+
+  .summary-card {
+    min-height: 72px;
+
+    padding: 11px;
+
+    gap: 9px;
+  }
+
+  .summary-icon {
+    width: 34px;
+    height: 34px;
+
+    border-radius: 8px;
+  }
+
+  .summary-icon i {
+    font-size: 12px;
+  }
+
+  .summary-card span {
+    font-size: 8px;
+  }
+
+  .summary-card strong {
+    font-size: 17px;
+  }
+
+  .filter-panel {
+    padding: 9px;
+
+    gap: 7px;
+  }
+
+  .search-field {
+    min-width: 100%;
+  }
+
+  .filter-panel select {
+    min-width: 0;
+
+    height: 36px;
+
+    font-size: 9px;
+  }
+
+  .filter-button {
+    height: 36px;
+
+    padding: 0 9px;
+
+    font-size: 9px;
+  }
+
+  .table-header {
+    padding: 12px;
+  }
+
+  .companies-card {
+    border-radius: 10px;
+  }
+}
+
+
+/* =========================================================
+   RESPONSIVE — 420px
+========================================================= */
+
+@media (max-width: 420px) {
+
+  .company-list-page {
+    padding: 13px 9px 22px;
+  }
+
+  .title-section {
+    gap: 9px;
+  }
+
+  .title-section h1 {
+    font-size: 17px;
+  }
+
+  .title-section p {
+    max-width: 240px;
+
+    font-size: 8px;
+  }
+
+  .header-actions {
+    flex-direction: column;
+  }
+
+  .header-actions button {
+    width: 100%;
+  }
+
+  .summary-card {
+    padding: 9px;
+
+    gap: 7px;
+  }
+
+  .summary-icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .summary-card strong {
+    font-size: 15px;
+  }
+
+  .filter-panel {
+    display: grid;
+
+    grid-template-columns:
+      1fr 1fr;
+  }
+
+  .search-field {
+    grid-column: 1 / -1;
+  }
+
+  .filter-panel select {
+    width: 100%;
+  }
+
+  .filter-button {
+    width: 100%;
+  }
+}
+
+
+/* =========================================================
+   SMALL DEVICES
+========================================================= */
+
+@media (max-width: 340px) {
+
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .filter-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .search-field {
+    grid-column: auto;
+  }
+}
+
+
+/* =========================================================
+   ACCESSIBILITY / FOCUS
+========================================================= */
+
+button:focus-visible,
+select:focus-visible,
+input:focus-visible {
+  outline: 2px solid rgba(21, 94, 239, 0.35);
+
+  outline-offset: 2px;
+}
+
+
+/* =========================================================
+   SMOOTH SCROLLING
+========================================================= */
+
+.company-table {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+.company-table::-webkit-scrollbar {
+  height: 7px;
+}
+
+.company-table::-webkit-scrollbar-track {
+  background: #f8fafc;
+}
+
+.company-table::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 20px;
+}
+
+.company-table::-webkit-scrollbar-thumb:hover {
+  background: #98a2b3;
+}

@@ -1,0 +1,870 @@
+<div class="container-fluid mt-4">
+
+    <!-- ========================================= -->
+    <!-- Page Header -->
+    <!-- ========================================= -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h3 class="fw-bold text-danger mb-1">
+                <i class="fa-solid fa-credit-card me-2"></i>
+                Payment Tracking
+            </h3>
+
+            <p class="text-muted mb-0">
+                Monitor subscription payments, transaction status, refunds and revenue.
+            </p>
+
+        </div>
+
+        <div>
+
+            <button class="btn btn-outline-secondary me-2"
+                    (click)="refresh()">
+                <i class="fa-solid fa-rotate"></i>
+                Refresh
+            </button>
+
+            <button class="btn btn-success me-2"
+                    (click)="exportExcel()">
+                <i class="fa-solid fa-file-excel me-2"></i>
+                Excel
+            </button>
+
+            <button class="btn btn-danger"
+                    (click)="exportPdf()">
+                <i class="fa-solid fa-file-pdf me-2"></i>
+                PDF
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Dashboard Cards -->
+    <!-- ========================================= -->
+
+    <div class="row mb-4">
+
+        <div class="col-lg-2 col-md-4 mb-3">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <small class="text-muted">
+                                Total Payments
+                            </small>
+
+                            <h3 class="fw-bold text-primary">
+                                {{totalPayments}}
+                            </h3>
+
+                        </div>
+
+                        <i class="fa-solid fa-wallet fa-2x text-primary"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-2 col-md-4 mb-3">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <small class="text-muted">
+                                Successful
+                            </small>
+
+                            <h3 class="fw-bold text-success">
+                                {{successfulPayments}}
+                            </h3>
+
+                        </div>
+
+                        <i class="fa-solid fa-circle-check fa-2x text-success"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-2 col-md-4 mb-3">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <small class="text-muted">
+                                Pending
+                            </small>
+
+                            <h3 class="fw-bold text-warning">
+                                {{pendingPayments}}
+                            </h3>
+
+                        </div>
+
+                        <i class="fa-solid fa-clock fa-2x text-warning"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-2 col-md-4 mb-3">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <small class="text-muted">
+                                Failed
+                            </small>
+
+                            <h3 class="fw-bold text-danger">
+                                {{failedPayments}}
+                            </h3>
+
+                        </div>
+
+                        <i class="fa-solid fa-circle-xmark fa-2x text-danger"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-2 col-md-4 mb-3">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <small class="text-muted">
+                                Revenue
+                            </small>
+
+                            <h4 class="fw-bold text-success">
+                                ₹{{totalRevenue}}
+                            </h4>
+
+                        </div>
+
+                        <i class="fa-solid fa-indian-rupee-sign fa-2x text-success"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-2 col-md-4 mb-3">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <small class="text-muted">
+                                Refunds
+                            </small>
+
+                            <h3 class="fw-bold text-secondary">
+                                {{refundPayments}}
+                            </h3>
+
+                        </div>
+
+                        <i class="fa-solid fa-rotate-left fa-2x text-secondary"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Filters -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm border-0 mb-4">
+
+        <div class="card-header bg-danger text-white">
+
+            <h5 class="mb-0">
+                <i class="fa-solid fa-filter me-2"></i>
+                Search & Filters
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-lg-3 mb-3">
+
+                    <label class="form-label">
+                        Search
+                    </label>
+
+                    <input
+                        class="form-control"
+                        placeholder="Company / Invoice / Transaction"
+                        [(ngModel)]="searchText">
+
+                </div>
+
+                <div class="col-lg-2 mb-3">
+
+                    <label class="form-label">
+                        Status
+                    </label>
+
+                    <select class="form-select"
+                            [(ngModel)]="statusFilter">
+
+                        <option value="">
+                            All
+                        </option>
+
+                        <option>
+                            Success
+                        </option>
+
+                        <option>
+                            Pending
+                        </option>
+
+                        <option>
+                            Failed
+                        </option>
+
+                        <option>
+                            Refunded
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-lg-2 mb-3">
+
+                    <label class="form-label">
+                        Method
+                    </label>
+
+                    <select class="form-select"
+                            [(ngModel)]="methodFilter">
+
+                        <option value="">
+                            All
+                        </option>
+
+                        <option>UPI</option>
+                        <option>Card</option>
+                        <option>Net Banking</option>
+                        <option>Wallet</option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-lg-2 mb-3">
+
+                    <label class="form-label">
+                        From Date
+                    </label>
+
+                    <input type="date"
+                           class="form-control"
+                           [(ngModel)]="fromDate">
+
+                </div>
+
+                <div class="col-lg-2 mb-3">
+
+                    <label class="form-label">
+                        To Date
+                    </label>
+
+                    <input type="date"
+                           class="form-control"
+                           [(ngModel)]="toDate">
+
+                </div>
+
+                <div class="col-lg-1 d-grid mb-3">
+
+                    <label class="form-label text-white">.</label>
+
+                    <button class="btn btn-secondary"
+                            (click)="clearSearch()">
+
+                        <i class="fa-solid fa-xmark"></i>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Payment Table -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+
+            <h5 class="mb-0">
+
+                <i class="fa-solid fa-money-check-dollar me-2"></i>
+
+                Payment History
+
+            </h5>
+
+            <span class="badge bg-light text-dark">
+
+                Total :
+                {{filteredPayments.length}}
+
+            </span>
+
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table table-hover table-bordered align-middle mb-0">
+
+                <thead class="table-danger">
+
+                    <tr>
+
+                        <th>#</th>
+                        <th>Company</th>
+                        <th>Invoice</th>
+                        <th>Transaction ID</th>
+                        <th>Plan</th>
+                        <th>Amount</th>
+                        <th>Method</th>
+                        <th>Status</th>
+                        <th>Payment Date</th>
+                        <th width="180">Action</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr *ngFor="let item of pagedPayments; let i=index">
+
+                        <td>
+                            {{((page-1)*pageSize)+i+1}}
+                        </td>
+
+                        <td>
+
+                            <div class="fw-bold">
+                                {{item.companyName}}
+                            </div>
+
+                            <small class="text-muted">
+                                {{item.companyCode}}
+                            </small>
+
+                        </td>
+
+                        <td>
+                            {{item.invoiceNo}}
+                        </td>
+
+                        <td>
+                            {{item.transactionId}}
+                        </td>
+
+                        <td>
+                            {{item.plan}}
+                        </td>
+
+                        <td class="fw-bold text-success">
+                            ₹{{item.amount}}
+                        </td>
+
+                        <td>
+                            {{item.paymentMethod}}
+                        </td>
+
+                        <td>
+
+                            <span class="badge"
+
+                                  [ngClass]="{
+                                  'bg-success':item.status=='Success',
+                                  'bg-warning text-dark':item.status=='Pending',
+                                  'bg-danger':item.status=='Failed',
+                                  'bg-secondary':item.status=='Refunded'
+                                  }">
+
+                                {{item.status}}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+                            {{item.paymentDate}}
+                        </td>
+
+                        <td>
+
+                            <button class="btn btn-info btn-sm me-1"
+                                    (click)="view(item)">
+
+                                <i class="fa-solid fa-eye"></i>
+
+                            </button>
+
+                            <button class="btn btn-warning btn-sm me-1"
+                                    (click)="refund(item)">
+
+                                <i class="fa-solid fa-rotate-left"></i>
+
+                            </button>
+
+                            <button class="btn btn-danger btn-sm"
+                                    (click)="delete(item.paymentId)">
+
+                                <i class="fa-solid fa-trash"></i>
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                    <tr *ngIf="pagedPayments.length==0">
+
+                        <td colspan="10"
+                            class="text-center py-5 text-muted">
+
+                            <i class="fa-solid fa-credit-card fa-3x mb-3"></i>
+
+                            <br>
+
+                            No Payment Records Found.
+
+                        </td>
+
+                    </tr>
+                                    </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Revenue Summary -->
+    <!-- ========================================= -->
+
+    <div class="row mt-4">
+
+        <div class="col-md-3 mb-3">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body text-center">
+
+                    <h6 class="text-muted">
+                        Today's Collection
+                    </h6>
+
+                    <h3 class="fw-bold text-success">
+                        ₹{{todayCollection}}
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3 mb-3">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body text-center">
+
+                    <h6 class="text-muted">
+                        This Month
+                    </h6>
+
+                    <h3 class="fw-bold text-primary">
+                        ₹{{monthlyCollection}}
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3 mb-3">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body text-center">
+
+                    <h6 class="text-muted">
+                        Pending Amount
+                    </h6>
+
+                    <h3 class="fw-bold text-warning">
+                        ₹{{pendingAmount}}
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3 mb-3">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body text-center">
+
+                    <h6 class="text-muted">
+                        Refunded Amount
+                    </h6>
+
+                    <h3 class="fw-bold text-danger">
+                        ₹{{refundAmount}}
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- View Payment Modal -->
+    <!-- ========================================= -->
+
+    <div class="modal fade"
+         id="viewPaymentModal"
+         tabindex="-1">
+
+        <div class="modal-dialog modal-lg">
+
+            <div class="modal-content">
+
+                <div class="modal-header bg-danger text-white">
+
+                    <h5 class="modal-title">
+
+                        <i class="fa-solid fa-eye me-2"></i>
+
+                        Payment Details
+
+                    </h5>
+
+                    <button class="btn-close btn-close-white"
+                            data-bs-dismiss="modal">
+                    </button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="fw-bold">
+                                Company
+                            </label>
+
+                            <p>{{selectedPayment.companyName}}</p>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="fw-bold">
+                                Plan
+                            </label>
+
+                            <p>{{selectedPayment.plan}}</p>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="fw-bold">
+                                Invoice
+                            </label>
+
+                            <p>{{selectedPayment.invoiceNo}}</p>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="fw-bold">
+                                Transaction ID
+                            </label>
+
+                            <p>{{selectedPayment.transactionId}}</p>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="fw-bold">
+                                Amount
+                            </label>
+
+                            <p class="text-success fw-bold">
+                                ₹{{selectedPayment.amount}}
+                            </p>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="fw-bold">
+                                Payment Method
+                            </label>
+
+                            <p>{{selectedPayment.paymentMethod}}</p>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="fw-bold">
+                                Payment Gateway
+                            </label>
+
+                            <p>{{selectedPayment.gateway}}</p>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="fw-bold">
+                                Status
+                            </label>
+
+                            <p>{{selectedPayment.status}}</p>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="fw-bold">
+                                Payment Date
+                            </label>
+
+                            <p>{{selectedPayment.paymentDate}}</p>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="fw-bold">
+                                Next Renewal
+                            </label>
+
+                            <p>{{selectedPayment.nextRenewal}}</p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+
+                        Close
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Refund Modal -->
+    <!-- ========================================= -->
+
+    <div class="modal fade"
+         id="refundModal"
+         tabindex="-1">
+
+        <div class="modal-dialog">
+
+            <div class="modal-content">
+
+                <div class="modal-header bg-warning">
+
+                    <h5 class="modal-title">
+
+                        <i class="fa-solid fa-rotate-left me-2"></i>
+
+                        Refund Payment
+
+                    </h5>
+
+                    <button class="btn-close"
+                            data-bs-dismiss="modal">
+                    </button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+
+                            Refund Amount
+
+                        </label>
+
+                        <input type="number"
+                               class="form-control"
+                               [(ngModel)]="refundAmountValue">
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+
+                            Refund Reason
+
+                        </label>
+
+                        <textarea rows="3"
+                                  class="form-control"
+                                  [(ngModel)]="refundReason">
+
+                        </textarea>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+
+                        Cancel
+
+                    </button>
+
+                    <button class="btn btn-warning"
+                            (click)="confirmRefund()">
+
+                        <i class="fa-solid fa-check me-2"></i>
+
+                        Process Refund
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Pagination -->
+    <!-- ========================================= -->
+
+    <div class="mt-4">
+
+        <app-pagination
+            [page]="page"
+            [pageSize]="pageSize"
+            [totalRecords]="filteredPayments.length"
+            (pageChanged)="changePage($event)"
+            (pageSizeChanged)="changePageSize($event)">
+
+        </app-pagination>
+
+    </div>
+
+</div>

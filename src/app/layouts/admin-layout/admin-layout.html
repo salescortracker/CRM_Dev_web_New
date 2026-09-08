@@ -1,0 +1,503 @@
+@if (isConsoleRole) {
+
+  <!-- =========================================================
+       ADMIN / SUPER ADMIN CONSOLE
+  ========================================================== -->
+
+  <app-sidebar (sidebarToggle)="onConsoleSidebarToggle($event)"></app-sidebar>
+
+  <div class="console-body" [class.collapsed]="consoleSidebarCollapsed">
+
+    <app-header></app-header>
+
+    <main class="console-content">
+      <router-outlet></router-outlet>
+    </main>
+
+  </div>
+
+} @else {
+
+<div class="crm-shell">
+
+  <!-- =========================================================
+       TOP CORPORATE BAR
+  ========================================================== -->
+
+  <header class="crm-topbar">
+
+    <!-- BRAND -->
+    <div class="top-brand">
+
+      <div class="brand-mark">
+        <span class="brand-mark-main">C</span>
+        <span class="brand-mark-line"></span>
+      </div>
+
+      <div class="brand-content">
+
+        <div class="brand-name">
+          COR<span>CRM</span>
+        </div>
+
+        <div class="brand-caption">
+          CUSTOMER RELATIONSHIP PLATFORM
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- MAIN MENU -->
+
+    <nav class="top-menu">
+
+      <!-- DASHBOARD -->
+
+      <a
+        class="top-menu-item dashboard-tab"
+        routerLink="/dashboard"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <i class="fa-solid fa-table-cells-large"></i>
+        <span>Dashboard</span>
+      </a>
+
+
+      <!-- CRM -->
+
+      <a
+        class="top-menu-item crm-tab"
+        routerLink="/leads-list"
+        routerLinkActive="active"
+      >
+        <i class="fa-solid fa-users"></i>
+        <span>CRM</span>
+        <i class="fa-solid fa-chevron-down menu-arrow"></i>
+      </a>
+
+
+      <!-- SALES -->
+
+      <a
+        class="top-menu-item sales-tab"
+        routerLink="/quotations"
+        routerLinkActive="active"
+      >
+        <i class="fa-solid fa-chart-column"></i>
+        <span>Sales</span>
+        <i class="fa-solid fa-chevron-down menu-arrow"></i>
+      </a>
+
+
+      <!-- ACTIVITIES -->
+
+      <a
+        class="top-menu-item activity-tab"
+        routerLink="/activities"
+        routerLinkActive="active"
+      >
+        <i class="fa-solid fa-calendar-check"></i>
+        <span>Activities</span>
+        <i class="fa-solid fa-chevron-down menu-arrow"></i>
+      </a>
+
+
+      <!-- INSIGHTS -->
+
+      <a
+        class="top-menu-item insight-tab"
+        routerLink="/insights"
+        routerLinkActive="active"
+      >
+        <i class="fa-solid fa-chart-line"></i>
+        <span>Insights</span>
+      </a>
+
+    </nav>
+
+
+    <!-- RIGHT ACTIONS -->
+
+    <div class="top-actions">
+
+      <!-- GLOBAL SEARCH -->
+
+      <button
+        class="global-search"
+        type="button"
+       
+      >
+
+        <i class="fa-solid fa-magnifying-glass"></i>
+
+        <span class="search-placeholder">
+          Search anything...
+        </span>
+
+        <span class="search-shortcut">
+          Ctrl K
+        </span>
+
+      </button>
+
+
+      <!-- QUICK CREATE -->
+
+      <button
+        class="quick-create"
+        type="button"
+      
+      >
+
+        <i class="fa-solid fa-plus"></i>
+
+        <span>Create</span>
+
+      </button>
+
+
+      <!-- NOTIFICATION -->
+
+      <button
+        class="top-icon notification"
+        type="button"
+        (click)="openNotifications()"
+      >
+
+        <i class="fa-regular fa-bell"></i>
+
+        @if (notificationCount > 0) {
+          <span class="notification-count">
+            {{ notificationCount }}
+          </span>
+        }
+
+      </button>
+
+
+      <!-- HELP -->
+
+      <button
+        class="top-icon"
+        type="button"
+       
+      >
+
+        <i class="fa-regular fa-circle-question"></i>
+
+      </button>
+
+
+      <!-- USER -->
+
+      <button
+        class="top-user"
+        type="button"
+      
+      >
+
+        <div class="user-avatar">
+          {{ initials }}
+        </div>
+
+        <div class="user-info">
+
+          <strong>
+            {{ userName }}
+          </strong>
+
+          <span>
+            {{ userRole }}
+          </span>
+
+        </div>
+
+        <i class="fa-solid fa-chevron-down user-arrow"></i>
+
+      </button>
+
+
+      <!-- LOGOUT -->
+
+      <button
+        class="logout-button"
+        type="button"
+        (click)="logout()"
+        title="Logout"
+      >
+
+        <i class="fa-solid fa-right-from-bracket"></i>
+
+      </button>
+
+    </div>
+
+  </header>
+
+
+  <!-- =========================================================
+       SECONDARY CRM NAVIGATION
+  ========================================================== -->
+
+  <div class="crm-secondary-nav">
+
+    <!-- WORKSPACE -->
+
+    <div class="secondary-left">
+
+      <div class="workspace-icon">
+        <i class="fa-solid fa-layer-group"></i>
+      </div>
+
+      <div class="workspace-name">
+
+        <strong>
+          CRM Workspace
+        </strong>
+
+        <span>
+          Customer 360
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- SECONDARY MENU -->
+
+    <nav class="secondary-menu">
+
+      <!-- OVERVIEW -->
+
+      <a
+        class="secondary-item"
+        routerLink="/dashboard"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+
+        <i class="fa-solid fa-house"></i>
+
+        <span>
+          Overview
+        </span>
+
+      </a>
+
+
+      <!-- PROSPECTS -->
+
+      <a
+        class="secondary-item"
+        routerLink="/prospects"
+        routerLinkActive="active"
+      >
+
+        <i class="fa-solid fa-building-circle-check"></i>
+
+        <span>
+          Prospects
+        </span>
+
+        <span class="nav-count prospect-count">
+          18
+        </span>
+
+      </a>
+
+
+      <!-- LEADS -->
+
+      <a
+        class="secondary-item"
+        routerLink="/leads-list"
+        routerLinkActive="active"
+      >
+
+        <i class="fa-solid fa-user-plus"></i>
+
+        <span>
+          Leads
+        </span>
+
+        <span class="nav-count">
+          24
+        </span>
+
+      </a>
+
+
+      <!-- ACCOUNTS -->
+
+      <a
+        class="secondary-item"
+        routerLink="/accounts"
+        routerLinkActive="active"
+      >
+
+        <i class="fa-solid fa-building"></i>
+
+        <span>
+          Accounts
+        </span>
+
+      </a>
+
+
+      <!-- CONTACTS -->
+
+      <!-- <a
+        class="secondary-item"
+        routerLink="/contacts"
+        routerLinkActive="active"
+      >
+
+        <i class="fa-solid fa-address-book"></i>
+
+        <span>
+          Contacts
+        </span>
+
+      </a> -->
+
+
+      <!-- OPPORTUNITIES -->
+
+      <a
+        class="secondary-item"
+        routerLink="/opportunities"
+        routerLinkActive="active"
+      >
+
+        <i class="fa-solid fa-bullseye"></i>
+
+        <span>
+          Opportunities
+        </span>
+
+        <span class="nav-count blue">
+          8
+        </span>
+
+      </a>
+
+
+      <!-- PIPELINE -->
+
+      <a
+        class="secondary-item"
+        routerLink="/pipeline"
+        routerLinkActive="active"
+      >
+
+        <i class="fa-solid fa-filter"></i>
+
+        <span>
+          Pipeline
+        </span>
+
+      </a>
+
+    </nav>
+
+
+    <!-- SECONDARY ACTIONS -->
+
+    <div class="secondary-actions">
+
+      <button
+        class="secondary-action"
+        type="button"
+      >
+
+        <i class="fa-solid fa-filter"></i>
+
+        <span>
+          Filter
+        </span>
+
+      </button>
+
+
+      <button
+        class="secondary-action settings-action"
+        type="button"
+        title="Workspace Settings"
+      >
+
+        <i class="fa-solid fa-sliders"></i>
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================================================
+       MAIN APPLICATION CONTENT
+  ========================================================== -->
+
+  <main class="crm-content">
+
+    <router-outlet></router-outlet>
+
+  </main>
+
+
+  <!-- =========================================================
+       MOBILE BOTTOM NAVIGATION
+  ========================================================== -->
+
+  <nav class="mobile-bottom-nav">
+
+    <a
+      routerLink="/dashboard"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <i class="fa-solid fa-house"></i>
+      <span>Home</span>
+    </a>
+
+    <a
+      routerLink="/prospects"
+      routerLinkActive="active"
+    >
+      <i class="fa-solid fa-building"></i>
+      <span>Prospects</span>
+    </a>
+
+    <a
+      routerLink="/leads-list"
+      routerLinkActive="active"
+    >
+      <i class="fa-solid fa-user-plus"></i>
+      <span>Leads</span>
+    </a>
+
+    <a
+      routerLink="/accounts"
+      routerLinkActive="active"
+    >
+      <i class="fa-solid fa-users"></i>
+      <span>Accounts</span>
+    </a>
+
+    <button
+      type="button"
+     
+    >
+      <i class="fa-solid fa-plus"></i>
+      <span>Create</span>
+    </button>
+
+  </nav>
+
+</div>
+
+}

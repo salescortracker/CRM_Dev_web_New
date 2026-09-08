@@ -1,0 +1,226 @@
+<div class="container mt-4">
+
+    <div class="card">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4>Number Format Management</h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+                    <label>Format Name <span class="text-danger">*</span></label>
+                    <input type="text"
+                           class="form-control"
+                           placeholder="US Number Format">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Format Code <span class="text-danger">*</span></label>
+                    <input type="text"
+                           class="form-control"
+                           placeholder="US_FMT">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Country / Region</label>
+                    <select class="form-select">
+                        <option>United States</option>
+                        <option>India</option>
+                        <option>Germany</option>
+                        <option>France</option>
+                        <option>United Kingdom</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Decimal Separator</label>
+                    <select class="form-select">
+                        <option>.</option>
+                        <option>,</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Thousands Separator</label>
+                    <select class="form-select">
+                        <option>,</option>
+                        <option>.</option>
+                        <option>Space</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Decimal Places</label>
+                    <select class="form-select">
+                        <option>2</option>
+                        <option>0</option>
+                        <option>3</option>
+                        <option>4</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Negative Number Format</label>
+                    <select class="form-select">
+                        <option>-1234.56</option>
+                        <option>(1234.56)</option>
+                        <option>1234.56-</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Digit Grouping</label>
+                    <select class="form-select">
+                        <option>1,234,567.89</option>
+                        <option>12,34,567.89 (India)</option>
+                        <option>1.234.567,89</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Sample Preview</label>
+                    <input type="text"
+                           class="form-control"
+                           value="1,234,567.89"
+                           readonly>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Default Number Format
+                    </label>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Allow Company Override
+                    </label>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Active
+                    </label>
+                </div>
+
+            </div>
+
+            <button class="btn btn-danger me-2">
+                Save
+            </button>
+
+            <button class="btn btn-warning me-2">
+                Update
+            </button>
+
+            <button class="btn btn-secondary">
+                Clear
+            </button>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="row mb-3">
+
+        <div class="col-md-4">
+            <input class="form-control"
+                   placeholder="Search Number Format...">
+        </div>
+
+        <div class="col-md-4">
+            <select class="form-select">
+                <option>All Regions</option>
+                <option>United States</option>
+                <option>India</option>
+                <option>Germany</option>
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <button class="btn btn-danger w-100">
+                Search
+            </button>
+        </div>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-danger">
+
+            <tr>
+
+                <th>#</th>
+                <th>Format Name</th>
+                <th>Code</th>
+                <th>Sample</th>
+                <th>Country</th>
+                <th>Default</th>
+                <th>Status</th>
+                <th width="170">Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>1</td>
+                <td>US Number Format</td>
+                <td>US_FMT</td>
+                <td>1,234,567.89</td>
+                <td>United States</td>
+                <td><span class="badge bg-primary">Yes</span></td>
+                <td><span class="badge bg-success">Active</span></td>
+                <td>
+                    <button class="btn btn-warning btn-sm me-1">Edit</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>2</td>
+                <td>Indian Number Format</td>
+                <td>IN_FMT</td>
+                <td>12,34,567.89</td>
+                <td>India</td>
+                <td>No</td>
+                <td><span class="badge bg-success">Active</span></td>
+                <td>
+                    <button class="btn btn-warning btn-sm me-1">Edit</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>3</td>
+                <td>European Number Format</td>
+                <td>EU_FMT</td>
+                <td>1.234.567,89</td>
+                <td>Germany</td>
+                <td>No</td>
+                <td><span class="badge bg-success">Active</span></td>
+                <td>
+                    <button class="btn btn-warning btn-sm me-1">Edit</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+
+</div>

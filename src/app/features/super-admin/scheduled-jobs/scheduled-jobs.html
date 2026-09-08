@@ -1,0 +1,203 @@
+<div class="container mt-4">
+
+    <div class="card">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4>Scheduled Jobs</h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+                    <label>Job Name <span class="text-danger">*</span></label>
+                    <input class="form-control" placeholder="Daily Database Backup">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Job Category <span class="text-danger">*</span></label>
+                    <select class="form-select">
+                        <option>Backup</option>
+                        <option>Email</option>
+                        <option>Notifications</option>
+                        <option>Reports</option>
+                        <option>Data Synchronization</option>
+                        <option>Cleanup</option>
+                        <option>Subscription</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Execution Type</label>
+                    <select class="form-select">
+                        <option>Daily</option>
+                        <option>Weekly</option>
+                        <option>Monthly</option>
+                        <option>Hourly</option>
+                        <option>Custom Cron</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Execution Time</label>
+                    <input type="time" class="form-control">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Time Zone</label>
+                    <select class="form-select">
+                        <option>UTC</option>
+                        <option>Asia/Kolkata</option>
+                        <option>America/New_York</option>
+                        <option>Europe/London</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Retry Count</label>
+                    <input type="number"
+                           class="form-control"
+                           value="3">
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label>Job Description</label>
+                    <textarea class="form-control"
+                              rows="2"
+                              placeholder="Enter job description"></textarea>
+                </div>
+
+                <div class="col-md-3 mt-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Run on Startup
+                    </label>
+                </div>
+
+                <div class="col-md-3 mt-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Active
+                    </label>
+                </div>
+
+            </div>
+
+            <button class="btn btn-danger me-2">
+                Save
+            </button>
+
+            <button class="btn btn-secondary me-2">
+                Clear
+            </button>
+
+            <button class="btn btn-success">
+                Run Now
+            </button>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="row mb-3">
+
+        <div class="col-md-4">
+            <input class="form-control"
+                   placeholder="Search Scheduled Job...">
+        </div>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-danger">
+
+            <tr>
+
+                <th>#</th>
+                <th>Job Name</th>
+                <th>Category</th>
+                <th>Execution</th>
+                <th>Next Run</th>
+                <th>Last Run</th>
+                <th>Status</th>
+                <th width="170">Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>1</td>
+                <td>Daily Database Backup</td>
+                <td>Backup</td>
+                <td>Daily - 11:00 PM</td>
+                <td>28-Jul-2026 11:00 PM</td>
+                <td>27-Jul-2026 11:00 PM</td>
+                <td><span class="badge bg-success">Active</span></td>
+                <td>
+                    <button class="btn btn-warning btn-sm me-2">Edit</button>
+                    <button class="btn btn-success btn-sm me-2">Run</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>2</td>
+                <td>Subscription Renewal Reminder</td>
+                <td>Email</td>
+                <td>Daily - 08:00 AM</td>
+                <td>28-Jul-2026 08:00 AM</td>
+                <td>27-Jul-2026 08:00 AM</td>
+                <td><span class="badge bg-success">Active</span></td>
+                <td>
+                    <button class="btn btn-warning btn-sm me-2">Edit</button>
+                    <button class="btn btn-success btn-sm me-2">Run</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>3</td>
+                <td>Weekly Sales Report</td>
+                <td>Reports</td>
+                <td>Monday - 09:00 AM</td>
+                <td>03-Aug-2026 09:00 AM</td>
+                <td>27-Jul-2026 09:00 AM</td>
+                <td><span class="badge bg-success">Active</span></td>
+                <td>
+                    <button class="btn btn-warning btn-sm me-2">Edit</button>
+                    <button class="btn btn-success btn-sm me-2">Run</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>4</td>
+                <td>Log Cleanup</td>
+                <td>Cleanup</td>
+                <td>Monthly - 01:00 AM</td>
+                <td>01-Aug-2026 01:00 AM</td>
+                <td>01-Jul-2026 01:00 AM</td>
+                <td><span class="badge bg-danger">Inactive</span></td>
+                <td>
+                    <button class="btn btn-warning btn-sm me-2">Edit</button>
+                    <button class="btn btn-success btn-sm me-2">Run</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+ 
+
+</div>

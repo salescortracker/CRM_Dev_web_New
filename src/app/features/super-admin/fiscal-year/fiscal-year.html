@@ -1,0 +1,214 @@
+<div class="container mt-4">
+
+    <div class="card">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4>Fiscal Year Management</h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+                    <label>Fiscal Year Name <span class="text-danger">*</span></label>
+                    <input type="text"
+                           class="form-control"
+                           placeholder="FY 2026-2027">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Fiscal Year Code <span class="text-danger">*</span></label>
+                    <input type="text"
+                           class="form-control"
+                           placeholder="FY26-27">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Fiscal Type</label>
+                    <select class="form-select">
+                        <option>Annual</option>
+                        <option>Half Yearly</option>
+                        <option>Quarterly</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label>Start Date</label>
+                    <input type="date"
+                           class="form-control">
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label>End Date</label>
+                    <input type="date"
+                           class="form-control">
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label>Default Quarter</label>
+                    <select class="form-select">
+                        <option>Q1</option>
+                        <option>Q2</option>
+                        <option>Q3</option>
+                        <option>Q4</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label>Default Month</label>
+                    <select class="form-select">
+                        <option>April</option>
+                        <option>January</option>
+                        <option>July</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Default Fiscal Year
+                    </label>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Allow Company Override
+                    </label>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Active
+                    </label>
+                </div>
+
+            </div>
+
+            <button class="btn btn-danger me-2">
+                Save
+            </button>
+
+            <button class="btn btn-warning me-2">
+                Update
+            </button>
+
+            <button class="btn btn-secondary">
+                Clear
+            </button>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="row mb-3">
+
+        <div class="col-md-4">
+            <input class="form-control"
+                   placeholder="Search Fiscal Year...">
+        </div>
+
+        <div class="col-md-4">
+            <select class="form-select">
+                <option>All Status</option>
+                <option>Active</option>
+                <option>Inactive</option>
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <button class="btn btn-danger w-100">
+                Search
+            </button>
+        </div>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-danger">
+
+            <tr>
+
+                <th>#</th>
+                <th>Fiscal Year</th>
+                <th>Code</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Default</th>
+                <th>Status</th>
+                <th width="170">Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+
+                <td>1</td>
+                <td>FY 2026-2027</td>
+                <td>FY26-27</td>
+                <td>01-Apr-2026</td>
+                <td>31-Mar-2027</td>
+                <td>
+                    <span class="badge bg-primary">Yes</span>
+                </td>
+                <td>
+                    <span class="badge bg-success">Active</span>
+                </td>
+
+                <td>
+
+                    <button class="btn btn-warning btn-sm me-1">
+                        Edit
+                    </button>
+
+                    <button class="btn btn-danger btn-sm">
+                        Delete
+                    </button>
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>2</td>
+                <td>FY 2025-2026</td>
+                <td>FY25-26</td>
+                <td>01-Apr-2025</td>
+                <td>31-Mar-2026</td>
+                <td>No</td>
+                <td>
+                    <span class="badge bg-secondary">Closed</span>
+                </td>
+
+                <td>
+
+                    <button class="btn btn-warning btn-sm me-1">
+                        View
+                    </button>
+
+                    <button class="btn btn-info btn-sm">
+                        Archive
+                    </button>
+
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+ 
+
+</div>

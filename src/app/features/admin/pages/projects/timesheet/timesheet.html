@@ -1,0 +1,692 @@
+<div class="container mt-4">
+
+    <!-- ========================================= -->
+    <!-- Timesheet Form -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4 class="mb-0">
+
+                <i class="fa fa-clock me-2"></i>
+
+                Timesheet Management
+
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <!-- Employee Name -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Employee Name
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="timesheet.employeeName">
+
+                        <option value="">Select Employee</option>
+                        <option>Karishma</option>
+                        <option>Rahul</option>
+                        <option>Sneha</option>
+                        <option>Arun</option>
+                        <option>Durga</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !timesheet.employeeName">
+
+                        Employee Name is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Project Name -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Project Name
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="timesheet.projectName">
+
+                        <option value="">Select Project</option>
+                        <option>CRM Application</option>
+                        <option>HRMS Portal</option>
+                        <option>Mobile Application</option>
+                        <option>ERP System</option>
+                        <option>Customer Portal</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !timesheet.projectName">
+
+                        Project Name is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Task Name -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Task Name
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="timesheet.taskName">
+
+                        <option value="">Select Task</option>
+                        <option>Development</option>
+                        <option>Bug Fixing</option>
+                        <option>Testing</option>
+                        <option>Code Review</option>
+                        <option>Deployment</option>
+                        <option>Documentation</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !timesheet.taskName">
+
+                        Task Name is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Timesheet Date -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Timesheet Date
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="date" class="form-control" [(ngModel)]="timesheet.timesheetDate">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !timesheet.timesheetDate">
+
+                        Timesheet Date is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Start Time -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Start Time
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="time" class="form-control" [(ngModel)]="timesheet.startTime">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !timesheet.startTime">
+
+                        Start Time is required.
+
+                    </div>
+
+                </div>
+
+                <!-- End Time -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        End Time
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="time" class="form-control" [(ngModel)]="timesheet.endTime">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !timesheet.endTime">
+
+                        End Time is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Total Hours -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Total Hours
+
+                    </label>
+
+                    <input type="number" class="form-control" placeholder="0" [(ngModel)]="timesheet.totalHours">
+
+                </div>
+
+                <!-- Billing Type -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Billing Type
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="timesheet.billingType">
+
+                        <option value="">Select Billing Type</option>
+                        <option>Billable</option>
+                        <option>Non Billable</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Status -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Status
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="timesheet.status">
+
+                        <option value="">Select Status</option>
+                        <option>Draft</option>
+                        <option>Submitted</option>
+                        <option>Approved</option>
+                        <option>Rejected</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !timesheet.status">
+
+                        Status is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Approved By -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Approved By
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Approved By"
+                        [(ngModel)]="timesheet.approvedBy">
+
+                </div>
+
+                <!-- Work Description -->
+                <div class="col-md-8 mb-3">
+
+                    <label class="form-label">
+
+                        Work Description
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <textarea rows="4" class="form-control" placeholder="Enter Work Description"
+                        [(ngModel)]="timesheet.workDescription">
+
+                    </textarea>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !timesheet.workDescription">
+
+                        Work Description is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Active -->
+                <div class="col-md-4 mb-3 d-flex align-items-end">
+
+                    <div class="form-check">
+
+                        <input type="checkbox" class="form-check-input" id="timesheetActive"
+                            [(ngModel)]="timesheet.isActive">
+
+                        <label class="form-check-label ms-2" for="timesheetActive">
+
+                            Active
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <button class="btn btn-danger me-2" (click)="saveTimesheet()">
+
+                <i class="fa fa-save me-1"></i>
+
+                {{ isEdit ? 'Update' : 'Save' }}
+
+            </button>
+
+            <button class="btn btn-secondary" (click)="clear()">
+
+                <i class="fa fa-eraser me-1"></i>
+
+                Clear
+
+            </button>
+
+        </div>
+
+    </div>
+    <!-- ========================================= -->
+    <!-- Search -->
+    <!-- ========================================= -->
+
+
+    <div class="row mt-4 mb-3">
+
+
+        <div class="col-md-4">
+
+
+            <input type="text" class="form-control" placeholder="Search Timesheet..." [(ngModel)]="searchText">
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+    <!-- ========================================= -->
+    <!-- Timesheet Listing Table -->
+    <!-- ========================================= -->
+
+
+    <div class="table-responsive">
+
+
+
+        <table class="table table-bordered table-hover">
+
+
+
+            <thead class="table-danger">
+
+
+
+                <tr>
+
+
+                    <th>#</th>
+
+
+                    <th>Employee</th>
+
+
+                    <th>Project</th>
+
+
+                    <th>Task</th>
+
+
+                    <th>Date</th>
+
+
+                    <th>Total Hours</th>
+
+
+                    <th>Billing Type</th>
+
+
+                    <th>Status</th>
+
+
+                    <th width="140">
+
+                        Action
+
+                    </th>
+
+
+                </tr>
+
+
+
+            </thead>
+
+
+
+
+
+            <tbody>
+
+
+
+
+
+                <tr *ngIf="pagedTimesheets.length == 0">
+
+
+                    <td colspan="9" class="text-center text-muted">
+
+
+
+                        No Timesheet Records Found
+
+
+
+                    </td>
+
+
+                </tr>
+
+
+
+
+
+
+
+                <tr *ngFor="let item of pagedTimesheets; let i=index">
+
+
+
+
+
+                    <td>
+
+
+                        {{ ((page - 1) * pageSize) + i + 1 }}
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+                        {{ item.employeeName }}
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+                        {{ item.projectName }}
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+                        {{ item.taskName }}
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+                        {{ item.timesheetDate | date:'dd-MM-yyyy' }}
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+                        {{ item.totalHours }} Hrs
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+                        <span class="badge" [ngClass]="{
+
+
+                                'bg-success':
+
+                                item.billingType == 'Billable',
+
+
+
+                                'bg-secondary':
+
+                                item.billingType == 'Non Billable'
+
+
+
+                            }">
+
+
+
+                            {{ item.billingType }}
+
+
+
+                        </span>
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+
+                        <span class="badge" [ngClass]="{
+
+
+                                'bg-primary':
+
+                                item.status == 'Submitted',
+
+
+
+                                'bg-success':
+
+                                item.status == 'Approved',
+
+
+
+                                'bg-danger':
+
+                                item.status == 'Rejected',
+
+
+
+                                'bg-warning text-dark':
+
+                                item.status == 'Draft'
+
+
+
+                            }">
+
+
+
+                            {{ item.status }}
+
+
+
+                        </span>
+
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+
+
+
+                        <button class="btn btn-warning btn-sm me-2" (click)="edit(item.timesheetId)">
+
+
+
+                            <i class="fa fa-edit"></i>
+
+
+
+                        </button>
+
+
+
+
+
+
+
+                        <button class="btn btn-danger btn-sm" (click)="delete(item.timesheetId)">
+
+
+
+                            <i class="fa fa-trash"></i>
+
+
+
+                        </button>
+
+
+
+
+
+                    </td>
+
+
+
+
+
+                </tr>
+
+
+
+
+
+            </tbody>
+
+
+
+
+
+        </table>
+
+
+
+
+    </div>
+
+
+
+
+
+
+    <!-- ========================================= -->
+    <!-- Pagination -->
+    <!-- ========================================= -->
+
+
+
+    <app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredTimesheets.length"
+        (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
+
+
+
+    </app-pagination>
+
+
+
+
+
+</div>

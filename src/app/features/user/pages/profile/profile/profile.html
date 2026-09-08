@@ -1,0 +1,1229 @@
+<div class="container-fluid mt-3">
+
+
+    <!-- ========================================= -->
+    <!-- Profile Header -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm border-0 mb-4">
+
+
+        <div class="card-body">
+
+
+            <div class="row align-items-center">
+
+
+                <!-- Profile Image -->
+
+                <div class="col-md-2 text-center">
+
+
+                    <img [src]="profile.profileImage" class="rounded-circle border" width="120" height="120">
+
+
+                    <div class="mt-3">
+
+
+                        <label class="btn btn-primary btn-sm">
+
+
+                            <i class="fa fa-camera me-1"></i>
+
+                            Upload Photo
+
+
+                            <input type="file" hidden (change)="uploadImage($event)">
+
+
+                        </label>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+
+                <!-- User Summary -->
+
+                <div class="col-md-7">
+
+
+                    <h3 class="mb-1">
+
+                        {{ profile.fullName }}
+
+                    </h3>
+
+
+                    <p class="text-muted mb-1">
+
+                        <i class="fa fa-briefcase me-2"></i>
+
+                        {{ profile.designation }}
+
+                    </p>
+
+
+                    <p class="text-muted mb-1">
+
+                        <i class="fa fa-building me-2"></i>
+
+                        {{ profile.companyName }}
+
+                    </p>
+
+
+                    <p class="text-muted">
+
+                        <i class="fa fa-envelope me-2"></i>
+
+                        {{ profile.email }}
+
+                    </p>
+
+
+                </div>
+
+
+
+                <!-- Status -->
+
+                <div class="col-md-3 text-end">
+
+
+                    <span class="badge bg-success fs-6">
+
+
+                        {{ profile.status }}
+
+
+                    </span>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+    <!-- ========================================= -->
+    <!-- Profile Form -->
+    <!-- ========================================= -->
+
+
+    <div class="card shadow-sm border-0">
+
+
+        <div class="card-header text-white" style="background-color:#dc3545;">
+
+
+            <h5 class="mb-0">
+
+
+                <i class="fa fa-id-card me-2"></i>
+
+
+                My Profile Information
+
+
+            </h5>
+
+
+        </div>
+
+
+
+        <div class="card-body">
+
+
+            <div class="row">
+
+
+
+                <!-- Full Name -->
+
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+
+                        Full Name
+
+                        <span class="text-danger">*</span>
+
+
+                    </label>
+
+
+                    <input type="text" class="form-control" [(ngModel)]="profile.fullName">
+
+
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !profile.fullName">
+
+
+                        Full Name is required.
+
+
+                    </div>
+
+
+                </div>
+
+
+
+
+
+                <!-- Employee Code -->
+
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+
+                        Employee Code
+
+
+                    </label>
+
+
+                    <input type="text" class="form-control" [(ngModel)]="profile.employeeCode" readonly>
+
+
+                </div>
+
+
+
+
+
+                <!-- Email -->
+
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+
+                        Email
+
+
+                    </label>
+
+
+                    <input type="email" class="form-control" [(ngModel)]="profile.email">
+
+
+                </div>
+
+
+
+
+
+                <!-- Phone -->
+
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+
+                        Phone Number
+
+
+                    </label>
+
+
+                    <input type="text" class="form-control" [(ngModel)]="profile.phone">
+
+
+                </div>
+
+
+
+
+
+                <!-- Alternate Phone -->
+
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+
+                        Alternate Phone
+
+
+                    </label>
+
+
+                    <input type="text" class="form-control" [(ngModel)]="profile.alternatePhone">
+
+
+                </div>
+
+
+
+
+
+                <!-- Date Of Birth -->
+
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+
+                        Date Of Birth
+
+
+                    </label>
+
+
+                    <input type="date" class="form-control" [(ngModel)]="profile.dateOfBirth">
+
+
+                </div>
+
+
+
+
+
+                <!-- Gender -->
+
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+
+                        Gender
+
+
+                    </label>
+
+
+                    <select class="form-select" [(ngModel)]="profile.gender">
+
+
+                        <option value="">Select Gender</option>
+
+                        <option>Male</option>
+
+                        <option>Female</option>
+
+                        <option>Other</option>
+
+
+                    </select>
+
+
+                </div>
+
+
+
+
+
+                <!-- Address -->
+
+                <div class="col-md-8 mb-3">
+
+
+                    <label class="form-label">
+
+
+                        Address
+
+
+                    </label>
+
+
+                    <textarea class="form-control" rows="2" [(ngModel)]="profile.address">
+
+                    </textarea>
+
+
+                </div>
+
+
+
+
+
+                <!-- City -->
+
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+
+                        City
+
+
+                    </label>
+
+
+                    <input type="text" class="form-control" [(ngModel)]="profile.city">
+
+
+                </div>
+
+
+
+
+
+                <!-- State -->
+
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+
+                        State
+
+
+                    </label>
+
+
+                    <input type="text" class="form-control" [(ngModel)]="profile.state">
+
+
+                </div>
+
+
+
+
+
+                <!-- Country -->
+
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+
+                        Country
+
+
+                    </label>
+
+
+                    <input type="text" class="form-control" [(ngModel)]="profile.country">
+
+
+                </div>
+
+
+
+
+
+                <!-- ================================= -->
+                <!-- Professional Information -->
+                <!-- ================================= -->
+
+
+                <div class="col-md-12 mt-3">
+
+
+                    <h6 class="border-bottom pb-2">
+
+
+                        <i class="fa fa-user-tie me-2"></i>
+
+
+                        Professional Information
+
+
+                    </h6>
+
+
+                </div>
+
+
+
+
+
+                <!-- Department -->
+
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+
+                        Department
+
+
+                    </label>
+
+
+                    <input type="text" class="form-control" [(ngModel)]="profile.department">
+
+
+                </div>
+
+
+
+
+
+                <!-- Designation -->
+
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+
+                        Designation
+
+
+                    </label>
+
+
+                    <input type="text" class="form-control" [(ngModel)]="profile.designation">
+
+
+                </div>
+
+
+
+
+
+                <!-- Reporting Manager -->
+
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+
+                        Reporting Manager
+
+
+                    </label>
+
+
+                    <input type="text" class="form-control" [(ngModel)]="profile.reportingManager">
+
+
+                </div>
+
+
+
+
+
+                <!-- Joining Date -->
+
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+
+                        Joining Date
+
+
+                    </label>
+
+
+                    <input type="date" class="form-control" [(ngModel)]="profile.joiningDate">
+
+
+                </div>
+
+
+
+
+
+                <!-- ================================= -->
+                <!-- Account Information -->
+                <!-- ================================= -->
+
+
+                <div class="col-md-12 mt-3">
+
+
+                    <h6 class="border-bottom pb-2">
+
+
+                        <i class="fa fa-lock me-2"></i>
+
+
+                        Account Information
+
+
+                    </h6>
+
+
+                </div>
+
+
+
+
+
+                <!-- Username -->
+
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+
+                        Username
+
+
+                    </label>
+
+
+                    <input type="text" class="form-control" [(ngModel)]="profile.username" readonly>
+
+
+                </div>
+
+
+
+
+
+                <!-- Role -->
+
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+
+                        Role
+
+
+                    </label>
+
+
+                    <input type="text" class="form-control" [(ngModel)]="profile.role" readonly>
+
+
+                </div>
+
+
+
+
+
+                <!-- Last Login -->
+
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+
+                        Last Login
+
+
+                    </label>
+
+
+                    <input type="text" class="form-control" [(ngModel)]="profile.lastLogin" readonly>
+
+
+                </div>
+
+
+
+            </div>
+
+
+
+
+
+            <hr>
+
+
+            <button class="btn btn-primary me-2" (click)="updateProfile()">
+
+
+
+                <i class="fa fa-save me-1"></i>
+
+
+                Save Changes
+
+
+            </button>
+
+
+
+
+
+            <button class="btn btn-secondary" (click)="resetProfile()">
+
+
+
+                <i class="fa fa-refresh me-1"></i>
+
+
+                Reset
+
+
+            </button>
+
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+<!-- ========================================= -->
+<!-- Security Information -->
+<!-- ========================================= -->
+
+<div class="card shadow-sm border-0 mt-4">
+
+
+    <div class="card-header bg-dark text-white">
+
+
+        <h5 class="mb-0">
+
+            <i class="fa fa-shield-halved me-2"></i>
+
+            Security Information
+
+        </h5>
+
+
+    </div>
+
+
+
+    <div class="card-body">
+
+
+        <div class="row">
+
+
+
+            <!-- Password Status -->
+
+            <div class="col-md-4 mb-3">
+
+
+                <div class="border rounded p-3">
+
+
+                    <div class="d-flex justify-content-between">
+
+
+                        <span>
+
+                            <i class="fa fa-key me-2 text-warning"></i>
+
+                            Password Status
+
+                        </span>
+
+
+
+                        <span class="badge bg-success">
+
+                            Active
+
+                        </span>
+
+
+                    </div>
+
+
+                    <small class="text-muted">
+
+                        Last changed:
+                        {{ profile.passwordChangedDate }}
+
+                    </small>
+
+
+                </div>
+
+
+            </div>
+
+
+
+
+
+            <!-- MFA Status -->
+
+            <div class="col-md-4 mb-3">
+
+
+                <div class="border rounded p-3">
+
+
+                    <div class="d-flex justify-content-between">
+
+
+                        <span>
+
+                            <i class="fa fa-shield me-2 text-primary"></i>
+
+                            Multi Factor Authentication
+
+                        </span>
+
+
+
+                        <span class="badge" [ngClass]="profile.mfaEnabled 
+                            ? 'bg-success' 
+                            : 'bg-danger'">
+
+
+                            {{ profile.mfaEnabled ? 'Enabled' : 'Disabled' }}
+
+
+                        </span>
+
+
+                    </div>
+
+
+                    <small class="text-muted">
+
+
+                        Secure your account using OTP
+
+
+                    </small>
+
+
+                </div>
+
+
+            </div>
+
+
+
+
+
+            <!-- Login Security -->
+
+            <div class="col-md-4 mb-3">
+
+
+                <div class="border rounded p-3">
+
+
+                    <div class="d-flex justify-content-between">
+
+
+                        <span>
+
+
+                            <i class="fa fa-laptop me-2 text-info"></i>
+
+
+                            Active Sessions
+
+
+                        </span>
+
+
+
+                        <span class="badge bg-primary">
+
+
+                            {{ profile.activeSessions }}
+
+
+                        </span>
+
+
+                    </div>
+
+
+                    <small class="text-muted">
+
+
+                        Currently active devices
+
+
+                    </small>
+
+
+                </div>
+
+
+            </div>
+
+
+
+        </div>
+
+
+
+
+
+        <hr>
+
+
+
+
+
+        <!-- Security Actions -->
+
+
+        <div class="row">
+
+
+
+            <div class="col-md-4">
+
+
+                <button class="btn btn-outline-primary w-100" routerLink="/change-password">
+
+
+                    <i class="fa fa-key me-2"></i>
+
+
+                    Change Password
+
+
+                </button>
+
+
+            </div>
+
+
+
+
+
+            <div class="col-md-4">
+
+
+                <button class="btn btn-outline-success w-100" routerLink="/mfa">
+
+
+                    <i class="fa fa-shield-halved me-2"></i>
+
+
+                    Manage MFA
+
+
+                </button>
+
+
+            </div>
+
+
+
+
+
+            <div class="col-md-4">
+
+
+                <button class="btn btn-outline-danger w-100" routerLink="/sessions">
+
+
+                    <i class="fa fa-laptop me-2"></i>
+
+
+                    Manage Sessions
+
+
+                </button>
+
+
+            </div>
+
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+
+
+
+
+
+<!-- ========================================= -->
+<!-- Activity Summary -->
+<!-- ========================================= -->
+
+<div class="card shadow-sm border-0 mt-4">
+
+
+    <div class="card-header text-white" style="background-color:#dc3545;">
+
+
+        <h5 class="mb-0">
+
+
+            <i class="fa fa-chart-line me-2"></i>
+
+
+            Activity Summary
+
+
+        </h5>
+
+
+    </div>
+
+
+
+
+
+    <div class="card-body">
+
+
+        <div class="row">
+
+
+
+            <!-- Login Count -->
+
+
+            <div class="col-md-3 mb-3">
+
+
+                <div class="card border-0 shadow-sm text-center p-3">
+
+
+                    <i class="fa fa-right-to-bracket fa-2x text-success"></i>
+
+
+                    <h3 class="mt-2">
+
+
+                        {{ activity.loginCount }}
+
+
+                    </h3>
+
+
+                    <span class="text-muted">
+
+
+                        Total Logins
+
+
+                    </span>
+
+
+                </div>
+
+
+            </div>
+
+
+
+
+
+            <!-- Tasks -->
+
+
+            <div class="col-md-3 mb-3">
+
+
+                <div class="card border-0 shadow-sm text-center p-3">
+
+
+                    <i class="fa fa-list-check fa-2x text-primary"></i>
+
+
+                    <h3 class="mt-2">
+
+
+                        {{ activity.completedTasks }}
+
+
+                    </h3>
+
+
+                    <span class="text-muted">
+
+
+                        Completed Tasks
+
+
+                    </span>
+
+
+                </div>
+
+
+            </div>
+
+
+
+
+
+            <!-- Leads -->
+
+
+            <div class="col-md-3 mb-3">
+
+
+                <div class="card border-0 shadow-sm text-center p-3">
+
+
+                    <i class="fa fa-user-plus fa-2x text-warning"></i>
+
+
+                    <h3 class="mt-2">
+
+
+                        {{ activity.createdLeads }}
+
+
+                    </h3>
+
+
+                    <span class="text-muted">
+
+
+                        Created Leads
+
+
+                    </span>
+
+
+                </div>
+
+
+            </div>
+
+
+
+
+
+            <!-- Reports -->
+
+
+            <div class="col-md-3 mb-3">
+
+
+                <div class="card border-0 shadow-sm text-center p-3">
+
+
+                    <i class="fa fa-chart-column fa-2x text-danger"></i>
+
+
+                    <h3 class="mt-2">
+
+
+                        {{ activity.generatedReports }}
+
+
+                    </h3>
+
+
+                    <span class="text-muted">
+
+
+                        Generated Reports
+
+
+                    </span>
+
+
+                </div>
+
+
+            </div>
+
+
+
+        </div>
+
+
+
+
+
+        <hr>
+
+
+
+
+
+        <!-- Recent Activity Timeline -->
+
+
+        <h6 class="mb-3">
+
+
+            Recent Activity
+
+
+        </h6>
+
+
+
+
+
+        <div class="timeline">
+
+
+            <div class="border-start border-3 ps-3 mb-3" *ngFor="let item of recentActivities">
+
+
+
+                <h6 class="mb-1">
+
+
+                    <i [class]="item.icon + ' me-2'"></i>
+
+
+                    {{ item.title }}
+
+
+                </h6>
+
+
+
+                <small class="text-muted">
+
+
+                    {{ item.description }}
+
+                    -
+
+                    {{ item.date }}
+
+
+                </small>
+
+
+
+            </div>
+
+
+        </div>
+
+
+
+    </div>
+
+
+</div>

@@ -1,0 +1,1070 @@
+<div class="opportunity-page">
+
+  <!-- ===================================================== -->
+  <!-- HEADER -->
+  <!-- ===================================================== -->
+
+  <div class="page-header">
+
+    <div>
+
+      <div class="breadcrumb">
+        CRM
+        <span>›</span>
+        Sales
+        <span>›</span>
+        <strong>Opportunities</strong>
+      </div>
+
+      <h1>Opportunity Management</h1>
+
+      <p>
+        Manage sales opportunities from qualification to closed won.
+      </p>
+
+    </div>
+
+    <button
+      type="button"
+      class="btn-primary"
+      (click)="openCreateOpportunity()">
+
+      <i class="fa fa-plus"></i>
+
+      New Opportunity
+
+    </button>
+
+  </div>
+
+
+  <!-- ===================================================== -->
+  <!-- KPI CARDS -->
+  <!-- ===================================================== -->
+
+  <div class="summary-grid">
+
+    <div class="summary-card">
+
+      <div class="summary-icon red">
+        <i class="fa fa-funnel-dollar"></i>
+      </div>
+
+      <div>
+
+        <span>Open Pipeline</span>
+
+        <strong>
+          {{ formatCurrency(pipelineTotal) }}
+        </strong>
+
+        <small>
+          {{ openOpportunityCount }}
+          open opportunities
+        </small>
+
+      </div>
+
+    </div>
+
+
+    <div class="summary-card">
+
+      <div class="summary-icon blue">
+        <i class="fa fa-chart-line"></i>
+      </div>
+
+      <div>
+
+        <span>Weighted Revenue</span>
+
+        <strong>
+          {{ formatCurrency(weightedPipeline) }}
+        </strong>
+
+        <small>
+          Based on probability
+        </small>
+
+      </div>
+
+    </div>
+
+
+    <div class="summary-card">
+
+      <div class="summary-icon green">
+        <i class="fa fa-check-circle"></i>
+      </div>
+
+      <div>
+
+        <span>Closed Won</span>
+
+        <strong>
+          {{ formatCurrency(wonTotal) }}
+        </strong>
+
+        <small>
+          {{ wonOpportunityCount }}
+          opportunities
+        </small>
+
+      </div>
+
+    </div>
+
+
+    <div class="summary-card">
+
+      <div class="summary-icon orange">
+        <i class="fa fa-times-circle"></i>
+      </div>
+
+      <div>
+
+        <span>Closed Lost</span>
+
+        <strong>
+          {{ formatCurrency(lostTotal) }}
+        </strong>
+
+        <small>
+          {{ lostOpportunityCount }}
+          opportunities
+        </small>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ===================================================== -->
+  <!-- FILTER -->
+  <!-- ===================================================== -->
+
+  <div class="filter-card">
+
+    <div class="search-wrapper">
+
+      <i class="fa fa-search"></i>
+
+      <input
+        type="text"
+        [(ngModel)]="searchText"
+        placeholder="Search opportunity, account, contact or lead...">
+
+    </div>
+
+
+    <select
+      [(ngModel)]="selectedStage"
+      class="filter-control">
+
+      <option value="All">
+        All Stages
+      </option>
+
+      <option
+        *ngFor="let stage of stages"
+        [value]="stage">
+
+        {{ stage }}
+
+      </option>
+
+    </select>
+
+
+    <select
+      [(ngModel)]="selectedStatus"
+      class="filter-control">
+
+      <option value="All">
+        All Status
+      </option>
+
+      <option
+        *ngFor="let status of statuses.slice(1)"
+        [value]="status">
+
+        {{ status }}
+
+      </option>
+
+    </select>
+
+
+    <select
+      [(ngModel)]="selectedOwner"
+      class="filter-control">
+
+      <option
+        *ngFor="let owner of owners"
+        [value]="owner">
+
+        {{ owner === 'All' ? 'All Owners' : owner }}
+
+      </option>
+
+    </select>
+
+
+    <select
+      [(ngModel)]="selectedPriority"
+      class="filter-control">
+
+      <option
+        *ngFor="let priority of priorities"
+        [value]="priority">
+
+        {{ priority === 'All' ? 'All Priorities' : priority }}
+
+      </option>
+
+    </select>
+
+
+    <button
+      type="button"
+      class="btn-reset"
+      (click)="resetFilters()">
+
+      <i class="fa fa-refresh"></i>
+
+      Reset
+
+    </button>
+
+  </div>
+
+
+  <!-- ===================================================== -->
+  <!-- TABLE -->
+  <!-- ===================================================== -->
+
+  <div class="table-card">
+
+    <div class="table-header">
+
+      <div>
+
+        <h3>Sales Opportunities</h3>
+
+        <span>
+          {{ filteredOpportunities.length }}
+          opportunities
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <div class="table-responsive">
+
+      <table>
+
+        <thead>
+
+          <tr>
+
+            <th>#</th>
+
+            <th>Opportunity</th>
+
+            <th>Account</th>
+
+            <th>Contact</th>
+
+            <th>Stage</th>
+
+            <th>Amount</th>
+
+            <th>Probability</th>
+
+            <th>Expected Close</th>
+
+            <th>Owner</th>
+
+            <th>Status</th>
+
+            <th>Action</th>
+
+          </tr>
+
+        </thead>
+
+
+        <tbody>
+
+          <tr
+            *ngFor="
+              let item of pagedOpportunities;
+              let i = index;
+              trackBy: trackById
+            ">
+
+            <td>
+              {{ ((page - 1) * pageSize) + i + 1 }}
+            </td>
+
+
+            <td>
+
+              <div class="opportunity-name">
+
+                <strong>
+                  {{ item.opportunityName }}
+                </strong>
+
+                <small>
+                  {{ item.opportunityNumber }}
+                </small>
+
+              </div>
+
+            </td>
+
+
+            <td>
+
+              <strong>
+                {{ item.account }}
+              </strong>
+
+            </td>
+
+
+            <td>
+
+              <div class="contact-cell">
+
+                <strong>
+                  {{ item.contact }}
+                </strong>
+
+                <small>
+                  Lead: {{ item.lead }}
+                </small>
+
+              </div>
+
+            </td>
+
+
+            <td>
+
+              <span
+                class="stage-badge"
+                [ngClass]="{
+                  'prospecting': item.stage === 'Prospecting',
+                  'qualification': item.stage === 'Qualification',
+                  'analysis': item.stage === 'Needs Analysis',
+                  'proposal': item.stage === 'Proposal',
+                  'negotiation': item.stage === 'Negotiation',
+                  'won': item.stage === 'Closed Won',
+                  'lost': item.stage === 'Closed Lost'
+                }">
+
+                {{ item.stage }}
+
+              </span>
+
+            </td>
+
+
+            <td>
+
+              <strong>
+                {{ formatCurrency(item.amount) }}
+              </strong>
+
+            </td>
+
+
+            <td>
+
+              <div class="probability">
+
+                <div class="probability-text">
+
+                  {{ item.probability }}%
+
+                </div>
+
+                <div class="progress">
+
+                  <span
+                    [style.width.%]="item.probability">
+                  </span>
+
+                </div>
+
+              </div>
+
+            </td>
+
+
+            <td>
+
+              {{ item.closeDate }}
+
+            </td>
+
+
+            <td>
+
+              {{ item.owner }}
+
+            </td>
+
+
+            <td>
+
+              <span
+                class="status-badge"
+                [ngClass]="{
+                  'status-open': item.status === 'Open',
+                  'status-won': item.status === 'Won',
+                  'status-lost': item.status === 'Lost'
+                }">
+
+                {{ item.status }}
+
+              </span>
+
+            </td>
+
+
+            <td>
+
+              <div class="action-buttons">
+
+                <button
+                  type="button"
+                  class="btn-edit"
+                  (click)="editOpportunity(item)">
+
+                  <i class="fa fa-edit"></i>
+
+                </button>
+
+
+                <button
+                  type="button"
+                  class="btn-delete"
+                  (click)="deleteOpportunity(item.opportunityId)">
+
+                  <i class="fa fa-trash"></i>
+
+                </button>
+
+              </div>
+
+            </td>
+
+          </tr>
+
+
+          <tr
+            *ngIf="pagedOpportunities.length === 0">
+
+            <td
+              colspan="11"
+              class="empty-row">
+
+              <i class="fa fa-folder-open"></i>
+
+              <strong>
+                No opportunities found
+              </strong>
+
+              <span>
+                Try changing your filters.
+              </span>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- PAGINATION -->
+    <!-- ================================================= -->
+
+    <div class="pagination">
+
+      <button
+        type="button"
+        [disabled]="page === 1"
+        (click)="changePage(page - 1)">
+
+        ‹
+
+      </button>
+
+
+      <button
+        type="button"
+        *ngFor="let p of pageNumbers"
+        [class.active]="page === p"
+        (click)="changePage(p)">
+
+        {{ p }}
+
+      </button>
+
+
+      <button
+        type="button"
+        [disabled]="page === totalPages"
+        (click)="changePage(page + 1)">
+
+        ›
+
+      </button>
+
+
+      <select
+        [(ngModel)]="pageSize"
+        (ngModelChange)="changePageSize($event)">
+
+        <option [ngValue]="5">
+          5
+        </option>
+
+        <option [ngValue]="10">
+          10
+        </option>
+
+        <option [ngValue]="25">
+          25
+        </option>
+
+        <option [ngValue]="50">
+          50
+        </option>
+
+      </select>
+
+    </div>
+
+  </div>
+
+
+  <!-- ===================================================== -->
+  <!-- CREATE / EDIT MODAL -->
+  <!-- ===================================================== -->
+
+  <div
+    class="modal-backdrop"
+    *ngIf="showForm">
+
+    <div class="opportunity-modal">
+
+
+      <!-- HEADER -->
+
+      <div class="modal-header">
+
+        <div>
+
+          <span>CRM / SALES</span>
+
+          <h2>
+            {{ isEdit ? 'Edit Opportunity' : 'New Opportunity' }}
+          </h2>
+
+        </div>
+
+
+        <button
+          type="button"
+          class="close-button"
+          (click)="closeForm()">
+
+          <i class="fa fa-times"></i>
+
+        </button>
+
+      </div>
+
+
+      <!-- BODY -->
+
+      <div class="modal-body">
+
+        <!-- BASIC INFORMATION -->
+
+        <div class="section-title">
+
+          <span class="section-number">
+            01
+          </span>
+
+          <div>
+
+            <strong>
+              Opportunity Information
+            </strong>
+
+            <small>
+              Basic sales opportunity details
+            </small>
+
+          </div>
+
+        </div>
+
+
+        <div class="form-grid">
+
+
+          <div class="form-group full">
+
+            <label>
+              Opportunity Name
+              <span>*</span>
+            </label>
+
+            <input
+              type="text"
+              [(ngModel)]="opportunityForm.opportunityName"
+              placeholder="Enter opportunity name">
+
+            <small
+              class="error"
+              *ngIf="
+                submitted &&
+                !opportunityForm.opportunityName
+              ">
+
+              Opportunity name is required.
+
+            </small>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Opportunity Number
+            </label>
+
+            <input
+              type="text"
+              [(ngModel)]="opportunityForm.opportunityNumber">
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Account
+              <span>*</span>
+            </label>
+
+            <select
+              [(ngModel)]="opportunityForm.account">
+
+              <option value="">
+                Select Account
+              </option>
+
+              <option
+                *ngFor="let account of accounts"
+                [value]="account">
+
+                {{ account }}
+
+              </option>
+
+            </select>
+
+            <small
+              class="error"
+              *ngIf="
+                submitted &&
+                !opportunityForm.account
+              ">
+
+              Account is required.
+
+            </small>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Contact
+              <span>*</span>
+            </label>
+
+            <select
+              [(ngModel)]="opportunityForm.contact">
+
+              <option value="">
+                Select Contact
+              </option>
+
+              <option
+                *ngFor="let contact of contacts"
+                [value]="contact">
+
+                {{ contact }}
+
+              </option>
+
+            </select>
+
+            <small
+              class="error"
+              *ngIf="
+                submitted &&
+                !opportunityForm.contact
+              ">
+
+              Contact is required.
+
+            </small>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Lead
+            </label>
+
+            <select
+              [(ngModel)]="opportunityForm.lead">
+
+              <option value="">
+                Select Lead
+              </option>
+
+              <option
+                *ngFor="let lead of leads"
+                [value]="lead">
+
+                {{ lead }}
+
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Opportunity Owner
+            </label>
+
+            <select
+              [(ngModel)]="opportunityForm.owner">
+
+              <option
+                *ngFor="let owner of owners.slice(1)"
+                [value]="owner">
+
+                {{ owner }}
+
+              </option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+
+        <!-- SALES INFORMATION -->
+
+        <div class="section-title">
+
+          <span class="section-number">
+            02
+          </span>
+
+          <div>
+
+            <strong>
+              Sales Information
+            </strong>
+
+            <small>
+              Revenue, stage and probability
+            </small>
+
+          </div>
+
+        </div>
+
+
+        <div class="form-grid">
+
+
+          <div class="form-group">
+
+            <label>
+              Sales Stage
+              <span>*</span>
+            </label>
+
+            <select
+              [(ngModel)]="opportunityForm.stage"
+              (ngModelChange)="stageChanged()">
+
+              <option
+                *ngFor="let stage of stages"
+                [value]="stage">
+
+                {{ stage }}
+
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Amount
+              <span>*</span>
+            </label>
+
+            <input
+              type="number"
+              min="0"
+              [(ngModel)]="opportunityForm.amount"
+              (ngModelChange)="calculateExpectedRevenue()"
+              placeholder="0">
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Probability
+            </label>
+
+            <div class="input-suffix">
+
+              <input
+                type="number"
+                min="0"
+                max="100"
+                [(ngModel)]="opportunityForm.probability"
+                (ngModelChange)="calculateExpectedRevenue()">
+
+              <span>%</span>
+
+            </div>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Weighted Revenue
+            </label>
+
+            <input
+              type="number"
+              [ngModel]="opportunityForm.expectedRevenue"
+              readonly>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Expected Close Date
+              <span>*</span>
+            </label>
+
+            <input
+              type="date"
+              [(ngModel)]="opportunityForm.closeDate">
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Next Follow-up
+            </label>
+
+            <input
+              type="date"
+              [(ngModel)]="opportunityForm.followUpDate">
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Lead Source
+            </label>
+
+            <select
+              [(ngModel)]="opportunityForm.leadSource">
+
+              <option
+                *ngFor="let source of sources"
+                [value]="source">
+
+                {{ source }}
+
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Priority
+            </label>
+
+            <select
+              [(ngModel)]="opportunityForm.priority">
+
+              <option>
+                High
+              </option>
+
+              <option>
+                Medium
+              </option>
+
+              <option>
+                Low
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Status
+            </label>
+
+            <select
+              [(ngModel)]="opportunityForm.status">
+
+              <option>
+                Open
+              </option>
+
+              <option>
+                Won
+              </option>
+
+              <option>
+                Lost
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Active
+            </label>
+
+            <label class="switch">
+
+              <input
+                type="checkbox"
+                [(ngModel)]="opportunityForm.isActive">
+
+              <span></span>
+
+            </label>
+
+          </div>
+
+
+          <div class="form-group full">
+
+            <label>
+              Description
+            </label>
+
+            <textarea
+              rows="4"
+              [(ngModel)]="opportunityForm.description"
+              placeholder="Enter opportunity details...">
+            </textarea>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- FOOTER -->
+
+      <div class="modal-footer">
+
+        <button
+          type="button"
+          class="btn-cancel"
+          (click)="closeForm()">
+
+          Cancel
+
+        </button>
+
+
+        <button
+          type="button"
+          class="btn-primary"
+          (click)="saveOpportunity()">
+
+          <i class="fa fa-save"></i>
+
+          {{ isEdit ? 'Update Opportunity' : 'Create Opportunity' }}
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

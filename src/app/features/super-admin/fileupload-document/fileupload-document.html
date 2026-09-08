@@ -1,0 +1,270 @@
+<div class="container mt-4">
+
+    <div class="card">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4>File Upload & Document Settings</h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+                    <label>Maximum File Size (MB) <span class="text-danger">*</span></label>
+                    <input type="number"
+                           class="form-control"
+                           value="50">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Maximum Files Per Upload</label>
+                    <input type="number"
+                           class="form-control"
+                           value="10">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Allowed File Types</label>
+                    <input class="form-control"
+                           value="PDF,DOC,DOCX,XLS,XLSX,PPT,PPTX,JPG,PNG,ZIP">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Default Document Category</label>
+                    <select class="form-select">
+                        <option>General Documents</option>
+                        <option>Employee Documents</option>
+                        <option>Project Documents</option>
+                        <option>Invoices</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>File Naming Convention</label>
+                    <select class="form-select">
+                        <option>Original File Name</option>
+                        <option>UUID</option>
+                        <option>Company_File_Date</option>
+                        <option>Timestamp_File</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Version Control</label>
+                    <select class="form-select">
+                        <option>Enabled</option>
+                        <option>Disabled</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Retention Period</label>
+                    <select class="form-select">
+                        <option>30 Days</option>
+                        <option>90 Days</option>
+                        <option>180 Days</option>
+                        <option>365 Days</option>
+                        <option>Forever</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Virus Scan Provider</label>
+                    <select class="form-select">
+                        <option>Windows Defender</option>
+                        <option>ClamAV</option>
+                        <option>Microsoft Defender</option>
+                        <option>None</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Image Compression</label>
+                    <select class="form-select">
+                        <option>Enabled</option>
+                        <option>Disabled</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label>
+                        <input type="checkbox" checked>
+                        Enable Drag & Drop Upload
+                    </label>
+                </div>
+
+                <div class="col-md-3">
+                    <label>
+                        <input type="checkbox" checked>
+                        Enable Multiple Upload
+                    </label>
+                </div>
+
+                <div class="col-md-3">
+                    <label>
+                        <input type="checkbox" checked>
+                        Enable Preview
+                    </label>
+                </div>
+
+                <div class="col-md-3">
+                    <label>
+                        <input type="checkbox" checked>
+                        Enable Download
+                    </label>
+                </div>
+
+                <div class="col-md-3 mt-3">
+                    <label>
+                        <input type="checkbox" checked>
+                        Enable File Versioning
+                    </label>
+                </div>
+
+                <div class="col-md-3 mt-3">
+                    <label>
+                        <input type="checkbox" checked>
+                        Enable Virus Scan
+                    </label>
+                </div>
+
+                <div class="col-md-3 mt-3">
+                    <label>
+                        <input type="checkbox">
+                        Auto Delete Expired Files
+                    </label>
+                </div>
+
+                <div class="col-md-3 mt-3">
+                    <label>
+                        <input type="checkbox" checked>
+                        Active
+                    </label>
+                </div>
+
+            </div>
+
+            <button class="btn btn-danger me-2">
+                Save
+            </button>
+
+            <button class="btn btn-warning me-2">
+                Update
+            </button>
+
+            <button class="btn btn-secondary">
+                Clear
+            </button>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="row mb-3">
+
+        <div class="col-md-4">
+            <input class="form-control"
+                   placeholder="Search Document Settings...">
+        </div>
+
+        <div class="col-md-4">
+            <select class="form-select">
+                <option>All Categories</option>
+                <option>Employee Documents</option>
+                <option>Projects</option>
+                <option>Invoices</option>
+                <option>General Documents</option>
+            </select>
+        </div>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-danger">
+
+            <tr>
+
+                <th>#</th>
+                <th>Category</th>
+                <th>Max Size</th>
+                <th>Allowed Types</th>
+                <th>Retention</th>
+                <th>Versioning</th>
+                <th>Status</th>
+                <th width="180">Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+
+                <td>1</td>
+                <td>General Documents</td>
+                <td>50 MB</td>
+                <td>PDF,DOCX,XLSX,JPG</td>
+                <td>365 Days</td>
+                <td>Enabled</td>
+                <td><span class="badge bg-success">Active</span></td>
+
+                <td>
+
+                    <button class="btn btn-warning btn-sm me-1">
+                        Edit
+                    </button>
+
+                    <button class="btn btn-info btn-sm me-1">
+                        View
+                    </button>
+
+                    <button class="btn btn-danger btn-sm">
+                        Delete
+                    </button>
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>2</td>
+                <td>Employee Documents</td>
+                <td>100 MB</td>
+                <td>PDF,JPG,PNG</td>
+                <td>Forever</td>
+                <td>Enabled</td>
+                <td><span class="badge bg-success">Active</span></td>
+
+                <td>
+
+                    <button class="btn btn-warning btn-sm me-1">
+                        Edit
+                    </button>
+
+                    <button class="btn btn-info btn-sm me-1">
+                        View
+                    </button>
+
+                    <button class="btn btn-danger btn-sm">
+                        Delete
+                    </button>
+
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+ 
+
+</div>

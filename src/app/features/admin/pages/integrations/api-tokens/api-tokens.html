@@ -1,0 +1,439 @@
+<div class="container mt-4">
+
+    <!-- ========================================= -->
+    <!-- API Token Form -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4 class="mb-0">
+
+                <i class="fa fa-key me-2"></i>
+
+                API Tokens Management
+
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <!-- Token Name -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Token Name
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Token Name"
+                        [(ngModel)]="apiToken.tokenName">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !apiToken.tokenName">
+
+                        Token Name is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Token Code -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Token Code
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Token Code"
+                        [(ngModel)]="apiToken.tokenCode">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !apiToken.tokenCode">
+
+                        Token Code is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Integration Type -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Integration Type
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="apiToken.integrationType">
+
+                        <option value="">Select Integration</option>
+                        <option>CRM API</option>
+                        <option>HRMS API</option>
+                        <option>Payment Gateway</option>
+                        <option>SMS Gateway</option>
+                        <option>Email Service</option>
+                        <option>Third Party API</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !apiToken.integrationType">
+
+                        Integration Type is required.
+
+                    </div>
+
+                </div>
+
+                <!-- API Key -->
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+                        API Key
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter API Key" [(ngModel)]="apiToken.apiKey">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !apiToken.apiKey">
+
+                        API Key is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Secret Key -->
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+                        Secret Key
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="password" class="form-control" placeholder="Enter Secret Key"
+                        [(ngModel)]="apiToken.secretKey">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !apiToken.secretKey">
+
+                        Secret Key is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Expiry Date -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Expiry Date
+
+                    </label>
+
+                    <input type="date" class="form-control" [(ngModel)]="apiToken.expiryDate">
+
+                </div>
+
+                <!-- Access Level -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Access Level
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="apiToken.accessLevel">
+
+                        <option value="">Select Access Level</option>
+                        <option>Read Only</option>
+                        <option>Read &amp; Write</option>
+                        <option>Full Access</option>
+                        <option>Administrator</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !apiToken.accessLevel">
+
+                        Access Level is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Status -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Status
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="apiToken.status">
+
+                        <option value="">Select Status</option>
+                        <option>Active</option>
+                        <option>Inactive</option>
+                        <option>Expired</option>
+                        <option>Revoked</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !apiToken.status">
+
+                        Status is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Description -->
+                <div class="col-md-8 mb-3">
+
+                    <label class="form-label">
+
+                        Description
+
+                    </label>
+
+                    <textarea rows="4" class="form-control" placeholder="Enter Description"
+                        [(ngModel)]="apiToken.description">
+
+                    </textarea>
+
+                </div>
+
+                <!-- Active -->
+                <div class="col-md-4 mb-3 d-flex align-items-end">
+
+                    <div class="form-check">
+
+                        <input type="checkbox" class="form-check-input" id="apiTokenActive"
+                            [(ngModel)]="apiToken.isActive">
+
+                        <label class="form-check-label ms-2" for="apiTokenActive">
+
+                            Active
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <button class="btn btn-danger me-2" (click)="saveApiToken()">
+
+                <i class="fa fa-save me-1"></i>
+
+                {{ isEdit ? 'Update' : 'Save' }}
+
+            </button>
+
+            <button class="btn btn-secondary" (click)="clear()">
+
+                <i class="fa fa-eraser me-1"></i>
+
+                Clear
+
+            </button>
+
+        </div>
+
+    </div>
+    <!-- ========================================= -->
+    <!-- Search -->
+    <!-- ========================================= -->
+
+    <div class="row mt-4 mb-3">
+
+        <div class="col-md-4">
+
+            <input type="text" class="form-control" placeholder="Search API Token..." [(ngModel)]="searchText">
+
+        </div>
+
+    </div>
+
+
+
+
+
+    <!-- ========================================= -->
+    <!-- API Tokens Listing -->
+    <!-- ========================================= -->
+
+    <div class="table-responsive">
+
+        <table class="table table-bordered table-hover">
+
+            <thead class="table-danger">
+
+                <tr>
+
+                    <th>#</th>
+
+                    <th>Token Code</th>
+
+                    <th>Token Name</th>
+
+                    <th>Integration Type</th>
+
+                    <th>Access Level</th>
+
+                    <th>Expiry Date</th>
+
+                    <th>Status</th>
+
+                    <th width="140">Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr *ngIf="pagedApiTokens.length == 0">
+
+                    <td colspan="8" class="text-center text-muted">
+
+                        No API Tokens Found
+
+                    </td>
+
+                </tr>
+
+                <tr *ngFor="let item of pagedApiTokens; let i = index">
+
+                    <td>
+
+                        {{ ((page - 1) * pageSize) + i + 1 }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.tokenCode }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.tokenName }}
+
+                    </td>
+
+                    <td>
+
+                        <span class="badge" [ngClass]="{
+
+                                'bg-primary': item.integrationType == 'CRM API',
+
+                                'bg-success': item.integrationType == 'HRMS API',
+
+                                'bg-warning text-dark': item.integrationType == 'Payment Gateway',
+
+                                'bg-info text-dark': item.integrationType == 'SMS Gateway',
+
+                                'bg-secondary': item.integrationType == 'Email Service',
+
+                                'bg-dark': item.integrationType == 'Third Party API'
+
+                            }">
+
+                            {{ item.integrationType }}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <span class="badge" [ngClass]="{
+
+                                'bg-secondary': item.accessLevel == 'Read Only',
+
+                                'bg-primary': item.accessLevel == 'Read & Write',
+
+                                'bg-success': item.accessLevel == 'Full Access',
+
+                                'bg-danger': item.accessLevel == 'Administrator'
+
+                            }">
+
+                            {{ item.accessLevel }}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        {{ item.expiryDate | date:'dd-MM-yyyy' }}
+
+                    </td>
+
+                    <td>
+
+                        <span class="badge" [ngClass]="{
+
+                                'bg-success': item.status == 'Active',
+
+                                'bg-secondary': item.status == 'Inactive',
+
+                                'bg-warning text-dark': item.status == 'Expired',
+
+                                'bg-danger': item.status == 'Revoked'
+
+                            }">
+
+                            {{ item.status }}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <button class="btn btn-warning btn-sm me-2" (click)="edit(item.apiTokenId)">
+
+                            <i class="fa fa-edit"></i>
+
+                        </button>
+
+                        <button class="btn btn-danger btn-sm" (click)="delete(item.apiTokenId)">
+
+                            <i class="fa fa-trash"></i>
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+
+
+
+    <!-- ========================================= -->
+    <!-- Pagination -->
+    <!-- ========================================= -->
+
+    <app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredApiTokens.length"
+        (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
+
+    </app-pagination>
+
+</div>

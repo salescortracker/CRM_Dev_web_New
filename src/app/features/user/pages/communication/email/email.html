@@ -1,0 +1,408 @@
+<div class="container-fluid mt-3">
+
+    <!-- ========================================= -->
+    <!-- Email Communication Form -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4 class="mb-0">
+
+                <i class="fa fa-envelope me-2"></i>
+
+                Email Communication
+
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <!-- Email Subject -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Email Subject
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Email Subject"
+                        [(ngModel)]="email.subject">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !email.subject">
+
+                        Email Subject is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Recipient Name -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Recipient Name
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Recipient Name"
+                        [(ngModel)]="email.recipientName">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !email.recipientName">
+
+                        Recipient Name is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Recipient Email -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Recipient Email
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="email" class="form-control" placeholder="Enter Recipient Email"
+                        [(ngModel)]="email.recipientEmail">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !email.recipientEmail">
+
+                        Recipient Email is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Related Module -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Related Module
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="email.relatedModule">
+
+                        <option value="">Select Module</option>
+                        <option>Lead</option>
+                        <option>Customer</option>
+                        <option>Contact</option>
+                        <option>Opportunity</option>
+                        <option>Deal</option>
+                        <option>Invoice</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Priority -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Priority
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="email.priority">
+
+                        <option value="">Select Priority</option>
+                        <option>Low</option>
+                        <option>Medium</option>
+                        <option>High</option>
+                        <option>Urgent</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Status -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Status
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="email.status">
+
+                        <option value="">Select Status</option>
+                        <option>Draft</option>
+                        <option>Scheduled</option>
+                        <option>Sent</option>
+                        <option>Failed</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !email.status">
+
+                        Status is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Attachment -->
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Attachment
+
+                    </label>
+
+                    <input type="file" class="form-control" (change)="onFileSelected($event)">
+
+                </div>
+
+                <!-- Active -->
+                <div class="col-md-2 mb-3 d-flex align-items-end">
+
+                    <div class="form-check">
+
+                        <input id="emailActive" type="checkbox" class="form-check-input" [(ngModel)]="email.isActive">
+
+                        <label for="emailActive" class="form-check-label ms-2">
+
+                            Active
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <!-- Scheduled Date -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Scheduled Date
+
+                    </label>
+
+                    <input type="date" class="form-control" [(ngModel)]="email.scheduledDate">
+
+                </div>
+
+                <!-- Email Body -->
+                <div class="col-md-12 mb-3">
+
+                    <label class="form-label">
+
+                        Email Body
+
+                    </label>
+
+                    <textarea rows="7" class="form-control" placeholder="Type your email message..."
+                        [(ngModel)]="email.body">
+
+                    </textarea>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <button class="btn btn-danger me-2" (click)="saveEmail()">
+
+                <i class="fa fa-save me-1"></i>
+
+                {{ isEdit ? 'Update' : 'Send Email' }}
+
+            </button>
+
+            <button class="btn btn-secondary" (click)="clear()">
+
+                <i class="fa fa-eraser me-1"></i>
+
+                Clear
+
+            </button>
+
+        </div>
+
+    </div>
+    <!-- ========================================= -->
+    <!-- Search -->
+    <!-- ========================================= -->
+
+    <div class="row mt-4 mb-3">
+
+        <div class="col-md-4">
+
+            <input type="text" class="form-control" placeholder="Search Email..." [(ngModel)]="searchText">
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Email Communication Table -->
+    <!-- ========================================= -->
+
+    <div class="table-responsive">
+
+        <table class="table table-bordered table-hover align-middle">
+
+            <thead class="table-danger">
+
+                <tr>
+
+                    <th>#</th>
+                    <th>Subject</th>
+                    <th>Recipient</th>
+                    <th>Email</th>
+                    <th>Module</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                    <th>Scheduled Date</th>
+                    <th width="150">Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr *ngIf="pagedEmails.length == 0">
+
+                    <td colspan="9" class="text-center text-muted">
+
+                        No Email Records Found
+
+                    </td>
+
+                </tr>
+
+                <tr *ngFor="let item of pagedEmails; let i = index">
+
+                    <td>
+
+                        {{ ((page - 1) * pageSize) + i + 1 }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.subject }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.recipientName }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.recipientEmail }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.relatedModule }}
+
+                    </td>
+
+                    <td>
+
+                        <span class="badge" [ngClass]="{
+
+                                'bg-success': item.priority == 'Low',
+
+                                'bg-info': item.priority == 'Medium',
+
+                                'bg-warning text-dark': item.priority == 'High',
+
+                                'bg-danger': item.priority == 'Urgent'
+
+                            }">
+
+                            {{ item.priority }}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <span class="badge" [ngClass]="{
+
+                                'bg-secondary': item.status == 'Draft',
+
+                                'bg-primary': item.status == 'Scheduled',
+
+                                'bg-success': item.status == 'Sent',
+
+                                'bg-danger': item.status == 'Failed'
+
+                            }">
+
+                            {{ item.status }}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        {{ item.scheduledDate }}
+
+                    </td>
+
+                    <td>
+
+                        <button class="btn btn-warning btn-sm me-2" (click)="edit(item.emailId)">
+
+                            <i class="fa fa-edit"></i>
+
+                        </button>
+
+                        <button class="btn btn-danger btn-sm" (click)="delete(item.emailId)">
+
+                            <i class="fa fa-trash"></i>
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Pagination -->
+    <!-- ========================================= -->
+
+    <app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredEmails.length"
+        (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
+    </app-pagination>
+
+</div>

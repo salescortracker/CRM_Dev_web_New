@@ -1,0 +1,1589 @@
+<div class="page-container">
+
+
+    <!-- ================================= -->
+    <!-- Page Header -->
+    <!-- ================================= -->
+
+
+    <div class="page-header">
+
+
+        <div>
+
+
+            <p class="page-subtitle">
+
+                CRM MODULE CONFIGURATION
+
+            </p>
+
+
+
+            <h1>
+
+                Territories
+
+            </h1>
+
+
+
+            <p class="page-description">
+
+                Manage sales territories, regions, assigned managers and customer distribution.
+
+            </p>
+
+
+        </div>
+
+
+
+
+
+        <div class="header-buttons">
+
+
+
+            <button
+
+                class="btn btn-light"
+
+                (click)="refresh()">
+
+
+
+                <i class="fa-solid fa-rotate"></i>
+
+
+                Refresh
+
+
+            </button>
+
+
+
+
+
+            <button
+
+                class="btn btn-danger"
+
+                (click)="openAddModal()">
+
+
+
+                <i class="fa-solid fa-plus"></i>
+
+
+                Add Territory
+
+
+            </button>
+
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+    <!-- ================================= -->
+    <!-- Statistics -->
+    <!-- ================================= -->
+
+
+    <div class="stats-grid">
+
+
+
+
+
+        <div class="stat-card">
+
+
+            <span>
+
+                Total Territories
+
+            </span>
+
+
+            <h2>
+
+                {{territories.length}}
+
+            </h2>
+
+
+        </div>
+
+
+
+
+
+
+        <div class="stat-card">
+
+
+            <span>
+
+                Active
+
+            </span>
+
+
+            <h2>
+
+                {{activeCount}}
+
+            </h2>
+
+
+        </div>
+
+
+
+
+
+
+        <div class="stat-card">
+
+
+            <span>
+
+                Inactive
+
+            </span>
+
+
+            <h2>
+
+                {{inactiveCount}}
+
+            </h2>
+
+
+        </div>
+
+
+
+
+
+
+        <div class="stat-card">
+
+
+            <span>
+
+                Default Territory
+
+            </span>
+
+
+            <h2>
+
+                {{defaultTerritory}}
+
+            </h2>
+
+
+        </div>
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+    <!-- ================================= -->
+    <!-- Search Filter -->
+    <!-- ================================= -->
+
+
+    <div class="search-panel">
+
+
+
+
+
+        <div class="search-box">
+
+
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+
+
+
+            <input
+
+
+                type="text"
+
+
+                placeholder="Search territory..."
+
+
+                [(ngModel)]="searchText">
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+        <select
+
+
+            class="form-control"
+
+
+            [(ngModel)]="statusFilter">
+
+
+
+
+
+            <option value="">
+
+
+                All Status
+
+
+            </option>
+
+
+
+
+
+            <option value="Active">
+
+
+                Active
+
+
+            </option>
+
+
+
+
+
+            <option value="Inactive">
+
+
+                Inactive
+
+
+            </option>
+
+
+
+
+
+        </select>
+
+
+
+
+
+
+
+
+        <button
+
+
+            class="btn btn-secondary"
+
+
+            (click)="clearFilters()">
+
+
+
+
+
+            Clear
+
+
+
+
+
+        </button>
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- ================================= -->
+    <!-- Territory Table -->
+    <!-- ================================= -->
+
+
+
+    <div class="table-card">
+
+
+
+
+
+        <div class="table-header">
+
+
+
+            <h3>
+
+
+                Territory Master
+
+
+            </h3>
+
+
+
+
+
+            <span>
+
+
+                {{filteredTerritories.length}} Records
+
+
+            </span>
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+        <table>
+
+
+
+            <thead>
+
+
+
+                <tr>
+
+
+
+
+                    <th>
+
+                        Territory Name
+
+                    </th>
+
+
+
+
+
+                    <th>
+
+                        Code
+
+                    </th>
+
+
+
+
+
+                    <th>
+
+                        Region
+
+                    </th>
+
+
+
+
+
+                    <th>
+
+                        Territory Manager
+
+                    </th>
+
+
+
+
+
+                    <th>
+
+                        Customers
+
+                    </th>
+
+
+
+
+
+                    <th>
+
+                        Status
+
+                    </th>
+
+
+
+
+
+                    <th>
+
+                        Default
+
+                    </th>
+
+
+
+
+
+                    <th width="170">
+
+                        Actions
+
+                    </th>
+
+
+
+
+                </tr>
+
+
+
+            </thead>
+
+
+
+
+
+
+
+
+
+            <tbody>
+
+
+
+
+
+                <tr
+
+
+                    *ngFor="let item of filteredTerritories">
+
+
+
+
+
+
+
+                    <!-- Territory Name -->
+
+
+                    <td>
+
+
+
+
+                        <div class="provider-info">
+
+
+
+
+
+                            <div class="provider-icon">
+
+
+
+                                <i class="fa-solid fa-map-location-dot"></i>
+
+
+
+                            </div>
+
+
+
+
+
+
+
+
+                            <div>
+
+
+
+                                <strong>
+
+
+
+                                    {{item.territoryName}}
+
+
+
+                                </strong>
+
+
+
+                                <small>
+
+
+
+                                    {{item.territoryCode}}
+
+
+
+                                </small>
+
+
+
+                            </div>
+
+
+
+
+
+                        </div>
+
+
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <!-- Code -->
+
+
+                    <td>
+
+
+
+                        <span class="code-badge">
+
+
+
+                            {{item.territoryCode}}
+
+
+
+                        </span>
+
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <!-- Region -->
+
+
+                    <td>
+
+
+                        {{item.region}}
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <!-- Manager -->
+
+
+                    <td>
+
+
+                        {{item.managerName}}
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <!-- Customers -->
+
+
+                    <td>
+
+
+                        {{item.customerCount}}
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <!-- Status -->
+
+
+                    <td>
+
+
+
+                        <span
+
+
+                            class="status"
+
+
+                            [ngClass]="item.status.toLowerCase()">
+
+
+
+                            {{item.status}}
+
+
+
+                        </span>
+
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <!-- Default -->
+
+
+                    <td>
+
+
+
+                        <span
+
+
+                            *ngIf="item.isDefault"
+
+
+                            class="default-badge">
+
+
+
+                            Default
+
+
+
+                        </span>
+
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <!-- Actions -->
+
+
+                    <td>
+
+
+
+
+
+                        <button
+
+
+                            class="icon-btn"
+
+
+                            (click)="edit(item)">
+
+
+
+                            <i class="fa-solid fa-pen"></i>
+
+
+
+                        </button>
+
+
+
+
+
+
+
+
+                        <button
+
+
+                            class="icon-btn danger"
+
+
+                            (click)="delete(item.id)">
+
+
+
+                            <i class="fa-solid fa-trash"></i>
+
+
+
+                        </button>
+
+
+
+
+
+                    </td>
+
+
+
+
+
+
+                </tr>
+
+
+
+
+
+            </tbody>
+
+
+
+
+
+
+        </table>
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+</div>
+<!-- ======================================= -->
+<!-- Add / Edit Territory Modal -->
+<!-- ======================================= -->
+
+
+<div
+
+    class="modal-overlay"
+
+    *ngIf="showModal">
+
+
+
+
+
+    <div class="modal-box">
+
+
+
+
+
+
+        <!-- ========================= -->
+        <!-- Modal Header -->
+        <!-- ========================= -->
+
+
+        <div class="modal-header">
+
+
+
+
+
+            <h3>
+
+
+
+                {{isEdit ? 'Edit Territory' : 'Add Territory'}}
+
+
+
+            </h3>
+
+
+
+
+
+
+            <button
+
+
+                class="close-btn"
+
+
+                (click)="closeModal()">
+
+
+
+                ×
+
+
+
+            </button>
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+        <!-- ========================= -->
+        <!-- Modal Body -->
+        <!-- ========================= -->
+
+
+        <div class="modal-body">
+
+
+
+
+
+            <div class="form-grid">
+
+
+
+
+
+
+
+                <!-- Territory Name -->
+
+
+                <div>
+
+
+
+                    <label>
+
+
+
+                        Territory Name
+
+
+
+                    </label>
+
+
+
+
+
+
+                    <input
+
+
+                        type="text"
+
+
+                        placeholder="Enter territory name"
+
+
+                        [(ngModel)]="model.territoryName">
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Territory Code -->
+
+
+                <div>
+
+
+
+                    <label>
+
+
+
+                        Territory Code
+
+
+
+                    </label>
+
+
+
+
+
+
+                    <input
+
+
+                        type="text"
+
+
+                        placeholder="Example: SOUTH-01"
+
+
+                        [(ngModel)]="model.territoryCode">
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Region -->
+
+
+                <div>
+
+
+
+                    <label>
+
+
+
+                        Region
+
+
+
+                    </label>
+
+
+
+
+
+
+                    <select
+
+
+                        [(ngModel)]="model.region">
+
+
+
+
+
+                        <option>
+
+
+                            North Region
+
+
+                        </option>
+
+
+
+
+
+                        <option>
+
+
+                            South Region
+
+
+                        </option>
+
+
+
+
+
+                        <option>
+
+
+                            East Region
+
+
+                        </option>
+
+
+
+
+
+                        <option>
+
+
+                            West Region
+
+
+                        </option>
+
+
+
+
+
+                        <option>
+
+
+                            Central Region
+
+
+                        </option>
+
+
+
+
+
+                    </select>
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Territory Manager -->
+
+
+                <div>
+
+
+
+                    <label>
+
+
+
+                        Territory Manager
+
+
+
+                    </label>
+
+
+
+
+
+
+                    <input
+
+
+                        type="text"
+
+
+                        placeholder="Enter manager name"
+
+
+                        [(ngModel)]="model.managerName">
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Customer Count -->
+
+
+                <div>
+
+
+
+                    <label>
+
+
+
+                        Customer Count
+
+
+
+                    </label>
+
+
+
+
+
+
+                    <input
+
+
+                        type="number"
+
+
+                        min="0"
+
+
+                        placeholder="Enter customer count"
+
+
+                        [(ngModel)]="model.customerCount">
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Priority -->
+
+
+                <div>
+
+
+
+                    <label>
+
+
+
+                        Priority
+
+
+
+                    </label>
+
+
+
+
+
+
+                    <select
+
+
+                        [(ngModel)]="model.priority">
+
+
+
+
+
+                        <option value="High">
+
+
+                            High
+
+
+                        </option>
+
+
+
+
+
+                        <option value="Medium">
+
+
+                            Medium
+
+
+                        </option>
+
+
+
+
+
+                        <option value="Low">
+
+
+                            Low
+
+
+                        </option>
+
+
+
+
+
+                    </select>
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Status -->
+
+
+                <div>
+
+
+
+                    <label>
+
+
+
+                        Status
+
+
+
+                    </label>
+
+
+
+
+
+
+                    <select
+
+
+                        [(ngModel)]="model.status">
+
+
+
+
+
+                        <option>
+
+
+                            Active
+
+
+                        </option>
+
+
+
+
+
+                        <option>
+
+
+                            Inactive
+
+
+                        </option>
+
+
+
+
+
+                    </select>
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Description -->
+
+
+                <div class="full-width">
+
+
+
+                    <label>
+
+
+
+                        Description
+
+
+
+                    </label>
+
+
+
+
+
+
+                    <textarea
+
+
+                        rows="4"
+
+
+                        placeholder="Enter territory description"
+
+
+                        [(ngModel)]="model.description">
+
+
+
+                    </textarea>
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Default Territory -->
+
+
+                <div class="checkbox-group">
+
+
+
+
+
+                    <label>
+
+
+
+
+
+
+                        <input
+
+
+                            type="checkbox"
+
+
+                            [(ngModel)]="model.isDefault">
+
+
+
+
+
+                        Default Territory
+
+
+
+
+
+                    </label>
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+        <!-- ========================= -->
+        <!-- Modal Footer -->
+        <!-- ========================= -->
+
+
+        <div class="modal-footer">
+
+
+
+
+
+            <button
+
+
+                class="btn-secondary"
+
+
+                (click)="closeModal()">
+
+
+
+
+
+                Cancel
+
+
+
+
+
+            </button>
+
+
+
+
+
+
+
+
+
+            <button
+
+
+                class="btn-primary"
+
+
+                (click)="saveTerritory()">
+
+
+
+
+
+                {{isEdit ? 'Update Territory' : 'Save Territory'}}
+
+
+
+
+
+            </button>
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+</div>

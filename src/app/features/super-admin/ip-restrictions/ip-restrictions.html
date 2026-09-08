@@ -1,0 +1,244 @@
+<div class="container mt-4">
+
+    <div class="card">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4>IP Restrictions</h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+                    <label>Rule Name <span class="text-danger">*</span></label>
+                    <input class="form-control"
+                           placeholder="Corporate Office Access">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Applies To</label>
+                    <select class="form-select">
+                        <option>All Users</option>
+                        <option>Super Admin</option>
+                        <option>Company Admin</option>
+                        <option>Sales Team</option>
+                        <option>Support Team</option>
+                        <option>Finance Team</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Restriction Type</label>
+                    <select class="form-select">
+                        <option>Allow List</option>
+                        <option>Block List</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>IP Address / Range</label>
+                    <input class="form-control"
+                           placeholder="192.168.1.10 or 192.168.1.0/24">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Country</label>
+                    <select class="form-select">
+                        <option>All Countries</option>
+                        <option>India</option>
+                        <option>United States</option>
+                        <option>United Kingdom</option>
+                        <option>Australia</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Access Time</label>
+                    <select class="form-select">
+                        <option>24 x 7</option>
+                        <option>Business Hours</option>
+                        <option>Custom Schedule</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label>Description</label>
+                    <textarea class="form-control"
+                              rows="2"
+                              placeholder="Corporate network access only"></textarea>
+                </div>
+
+                <div class="col-md-3 mt-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Enable Logging
+                    </label>
+                </div>
+
+                <div class="col-md-3 mt-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Active
+                    </label>
+                </div>
+
+            </div>
+
+            <button class="btn btn-danger me-2">
+                Save
+            </button>
+
+            <button class="btn btn-secondary">
+                Clear
+            </button>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="row mb-3">
+
+        <div class="col-md-4">
+            <input class="form-control"
+                   placeholder="Search IP Restriction...">
+        </div>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-danger">
+
+            <tr>
+
+                <th>#</th>
+                <th>Rule Name</th>
+                <th>Applies To</th>
+                <th>Type</th>
+                <th>IP Address / Range</th>
+                <th>Country</th>
+                <th>Status</th>
+                <th width="170">Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+
+                <td>1</td>
+                <td>Corporate Office Access</td>
+                <td>All Users</td>
+                <td>Allow List</td>
+                <td>203.110.25.0/24</td>
+                <td>India</td>
+                <td>
+                    <span class="badge bg-success">Active</span>
+                </td>
+
+                <td>
+
+                    <button class="btn btn-warning btn-sm me-2">
+                        Edit
+                    </button>
+
+                    <button class="btn btn-danger btn-sm">
+                        Delete
+                    </button>
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>2</td>
+                <td>VPN Network</td>
+                <td>Company Admin</td>
+                <td>Allow List</td>
+                <td>10.10.0.0/16</td>
+                <td>All</td>
+                <td>
+                    <span class="badge bg-success">Active</span>
+                </td>
+
+                <td>
+
+                    <button class="btn btn-warning btn-sm me-2">
+                        Edit
+                    </button>
+
+                    <button class="btn btn-danger btn-sm">
+                        Delete
+                    </button>
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>3</td>
+                <td>Blocked Public IP</td>
+                <td>All Users</td>
+                <td>Block List</td>
+                <td>45.125.90.15</td>
+                <td>All</td>
+                <td>
+                    <span class="badge bg-success">Active</span>
+                </td>
+
+                <td>
+
+                    <button class="btn btn-warning btn-sm me-2">
+                        Edit
+                    </button>
+
+                    <button class="btn btn-danger btn-sm">
+                        Delete
+                    </button>
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>4</td>
+                <td>Remote Office</td>
+                <td>Sales Team</td>
+                <td>Allow List</td>
+                <td>192.168.100.0/24</td>
+                <td>India</td>
+                <td>
+                    <span class="badge bg-secondary">Inactive</span>
+                </td>
+
+                <td>
+
+                    <button class="btn btn-warning btn-sm me-2">
+                        Edit
+                    </button>
+
+                    <button class="btn btn-danger btn-sm">
+                        Delete
+                    </button>
+
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+
+
+</div>

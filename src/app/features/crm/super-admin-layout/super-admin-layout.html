@@ -1,0 +1,1007 @@
+<div
+  class="super-admin-layout"
+  [class.sidebar-collapsed]="sidebarCollapsed">
+
+  <!-- ==========================================================
+       SIDEBAR
+  =========================================================== -->
+
+  <aside class="admin-sidebar">
+
+    <!-- LOGO -->
+
+    <div class="sidebar-brand">
+
+      <div class="brand-logo">
+        C
+      </div>
+
+      <div
+        class="brand-content"
+        *ngIf="!sidebarCollapsed">
+
+        <strong>CorTracker</strong>
+
+        <span>CRM</span>
+
+      </div>
+
+    </div>
+
+
+    <!-- ADMIN LABEL -->
+
+    <div
+      class="admin-label"
+      *ngIf="!sidebarCollapsed">
+
+      SUPER ADMIN
+
+    </div>
+
+
+    <!-- MENU -->
+
+    <nav class="sidebar-menu">
+
+      <ng-container
+        *ngFor="let menu of menuItems">
+
+        <!-- MAIN MENU -->
+
+        <button
+          type="button"
+          class="menu-item"
+          [class.active]="isMenuActive(menu.id)"
+          (click)="setActiveMenu(menu.id)">
+
+          <i [class]="menu.icon"></i>
+
+          <span
+            *ngIf="!sidebarCollapsed">
+
+            {{ menu.title }}
+
+          </span>
+
+          <i
+            *ngIf="
+              menu.children &&
+              !sidebarCollapsed
+            "
+            class="bi bi-chevron-down menu-arrow">
+          </i>
+
+        </button>
+
+
+        <!-- SUB MENU -->
+
+        <div
+          class="submenu"
+          *ngIf="
+            menu.children &&
+            isMenuActive(menu.id) &&
+            !sidebarCollapsed
+          ">
+
+          <button
+            type="button"
+            class="submenu-item"
+            *ngFor="let child of menu.children"
+            [class.active]="
+              isSubMenuActive(child.id)
+            "
+            (click)="
+              setActiveSubMenu(
+                child.id,
+                menu.id
+              )
+            ">
+
+            <i [class]="child.icon"></i>
+
+            <span>
+              {{ child.title }}
+            </span>
+
+          </button>
+
+        </div>
+
+      </ng-container>
+
+    </nav>
+
+
+    <!-- SIDEBAR FOOTER -->
+
+    <div class="sidebar-footer">
+
+      <div class="system-status">
+
+        <span class="status-dot"></span>
+
+        <span *ngIf="!sidebarCollapsed">
+          All Systems Operational
+        </span>
+
+      </div>
+
+    </div>
+
+  </aside>
+
+
+  <!-- ==========================================================
+       MAIN AREA
+  =========================================================== -->
+
+  <div class="admin-main">
+
+    <!-- ========================================================
+         TOPBAR
+    ========================================================= -->
+
+    <header class="topbar">
+
+      <div class="topbar-left">
+
+        <button
+          type="button"
+          class="sidebar-toggle"
+          (click)="toggleSidebar()">
+
+          <i class="bi bi-list"></i>
+
+        </button>
+
+
+        <div class="topbar-search">
+
+          <i class="bi bi-search"></i>
+
+          <input
+            type="text"
+            [(ngModel)]="searchText"
+            placeholder="Search companies, users, invoices...">
+
+        </div>
+
+      </div>
+
+
+      <div class="topbar-right">
+
+        <!-- PERIOD -->
+
+        <select
+          class="period-select"
+          [(ngModel)]="selectedPeriod">
+
+          <option
+            *ngFor="let period of periods"
+            [value]="period">
+
+            {{ period }}
+
+          </option>
+
+        </select>
+
+
+        <!-- NOTIFICATIONS -->
+
+        <div class="topbar-action-wrapper">
+
+          <button
+            type="button"
+            class="topbar-action"
+            (click)="toggleNotifications()">
+
+            <i class="bi bi-bell"></i>
+
+            <span class="notification-dot"></span>
+
+          </button>
+
+
+          <div
+            class="notification-panel"
+            *ngIf="showNotifications">
+
+            <div class="panel-header">
+
+              <strong>Notifications</strong>
+
+              <span>5 new</span>
+
+            </div>
+
+            <div class="notification-item">
+
+              <i class="bi bi-building"></i>
+
+              <div>
+
+                <strong>New company</strong>
+
+                <span>
+                  TechNova Solutions registered
+                </span>
+
+              </div>
+
+            </div>
+
+            <div class="notification-item">
+
+              <i class="bi bi-credit-card"></i>
+
+              <div>
+
+                <strong>Subscription expiring</strong>
+
+                <span>
+                  7 subscriptions need attention
+                </span>
+
+              </div>
+
+            </div>
+
+            <div class="notification-item">
+
+              <i class="bi bi-shield-exclamation"></i>
+
+              <div>
+
+                <strong>Security alert</strong>
+
+                <span>
+                  Multiple failed login attempts
+                </span>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- PROFILE -->
+
+        <div class="profile-wrapper">
+
+          <button
+            type="button"
+            class="profile-button"
+            (click)="toggleProfile()">
+
+            <div class="profile-avatar">
+              SA
+            </div>
+
+            <div class="profile-info">
+
+              <strong>Super Admin</strong>
+
+              <span>System Administrator</span>
+
+            </div>
+
+            <i class="bi bi-chevron-down"></i>
+
+          </button>
+
+
+          <div
+            class="profile-menu"
+            *ngIf="showProfileMenu">
+
+            <button type="button">
+
+              <i class="bi bi-person"></i>
+
+              My Profile
+
+            </button>
+
+            <button type="button">
+
+              <i class="bi bi-gear"></i>
+
+              Settings
+
+            </button>
+
+            <hr>
+
+            <button
+              type="button"
+              class="logout-button"
+              (click)="logout()">
+
+              <i class="bi bi-box-arrow-right"></i>
+
+              Logout
+
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </header>
+
+
+    <!-- ========================================================
+         CONTENT
+    ========================================================= -->
+
+    <main class="admin-content">
+
+      <!-- PAGE HEADER -->
+
+      <div class="content-header">
+
+        <div>
+
+          <div class="breadcrumb">
+
+            <span>Super Admin</span>
+
+            <i class="bi bi-chevron-right"></i>
+
+            <strong>Dashboard</strong>
+
+          </div>
+
+          <h1>Admin Dashboard</h1>
+
+          <p>
+            Monitor your entire CRM SaaS platform.
+          </p>
+
+        </div>
+
+
+        <div class="header-date">
+
+          <i class="bi bi-calendar3"></i>
+
+          {{ selectedPeriod }}
+
+        </div>
+
+      </div>
+
+
+      <!-- ======================================================
+           KPI CARDS
+      ======================================================= -->
+
+      <div class="kpi-grid">
+
+        <!-- COMPANIES -->
+
+        <div class="kpi-card">
+
+          <div class="kpi-top">
+
+            <div class="kpi-icon companies">
+              <i class="bi bi-buildings"></i>
+            </div>
+
+            <span class="kpi-growth positive">
+              +12.4%
+            </span>
+
+          </div>
+
+          <span class="kpi-label">
+            Total Companies
+          </span>
+
+          <strong class="kpi-value">
+            {{ totalCompanies | number }}
+          </strong>
+
+          <div class="kpi-footer">
+
+            <span>
+              {{ activeCompanies }} active
+            </span>
+
+            <span>
+              {{ trialCompanies }} trial
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <!-- USERS -->
+
+        <div class="kpi-card">
+
+          <div class="kpi-top">
+
+            <div class="kpi-icon users">
+              <i class="bi bi-people"></i>
+            </div>
+
+            <span class="kpi-growth positive">
+              +8.7%
+            </span>
+
+          </div>
+
+          <span class="kpi-label">
+            Total Users
+          </span>
+
+          <strong class="kpi-value">
+            {{ totalUsers | number }}
+          </strong>
+
+          <div class="kpi-footer">
+
+            <span>
+              {{ activeUsers }} active
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <!-- REVENUE -->
+
+        <div class="kpi-card">
+
+          <div class="kpi-top">
+
+            <div class="kpi-icon revenue">
+              <i class="bi bi-currency-rupee"></i>
+            </div>
+
+            <span class="kpi-growth positive">
+              +18.2%
+            </span>
+
+          </div>
+
+          <span class="kpi-label">
+            Monthly Revenue
+          </span>
+
+          <strong class="kpi-value">
+            {{ formatCurrency(monthlyRevenue) }}
+          </strong>
+
+          <div class="kpi-footer">
+
+            <span>
+              Annual {{ formatCurrency(yearlyRevenue) }}
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <!-- SUBSCRIPTIONS -->
+
+        <div class="kpi-card">
+
+          <div class="kpi-top">
+
+            <div class="kpi-icon subscriptions">
+              <i class="bi bi-credit-card"></i>
+            </div>
+
+            <span class="kpi-growth warning">
+              {{ expiringSubscriptions }} expiring
+            </span>
+
+          </div>
+
+          <span class="kpi-label">
+            Active Subscriptions
+          </span>
+
+          <strong class="kpi-value">
+            {{ activeSubscriptions }}
+          </strong>
+
+          <div class="kpi-footer">
+
+            <span>
+              {{ expiringSubscriptions }}
+              require attention
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- ======================================================
+           CRM USAGE
+      ======================================================= -->
+
+      <section class="section-card">
+
+        <div class="section-header">
+
+          <div>
+
+            <h2>CRM Platform Usage</h2>
+
+            <p>
+              Overall CRM activity across all companies.
+            </p>
+
+          </div>
+
+          <button
+            type="button"
+            class="outline-button"
+            (click)="openReports()">
+
+            View Reports
+
+            <i class="bi bi-arrow-right"></i>
+
+          </button>
+
+        </div>
+
+
+        <div class="usage-grid">
+
+          <div class="usage-item">
+
+            <div class="usage-icon leads">
+              <i class="bi bi-person-lines-fill"></i>
+            </div>
+
+            <div>
+
+              <span>Leads</span>
+
+              <strong>
+                {{ totalLeads | number }}
+              </strong>
+
+            </div>
+
+          </div>
+
+
+          <div class="usage-item">
+
+            <div class="usage-icon opportunities">
+              <i class="bi bi-funnel"></i>
+            </div>
+
+            <div>
+
+              <span>Opportunities</span>
+
+              <strong>
+                {{ totalOpportunities | number }}
+              </strong>
+
+            </div>
+
+          </div>
+
+
+          <div class="usage-item">
+
+            <div class="usage-icon orders">
+              <i class="bi bi-cart3"></i>
+            </div>
+
+            <div>
+
+              <span>Orders</span>
+
+              <strong>
+                {{ totalOrders | number }}
+              </strong>
+
+            </div>
+
+          </div>
+
+
+          <div class="usage-item">
+
+            <div class="usage-icon invoices">
+              <i class="bi bi-receipt"></i>
+            </div>
+
+            <div>
+
+              <span>Invoices</span>
+
+              <strong>
+                {{ totalInvoices | number }}
+              </strong>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- ======================================================
+           MAIN DASHBOARD GRID
+      ======================================================= -->
+
+      <div class="dashboard-grid">
+
+        <!-- TOP COMPANIES -->
+
+        <section class="section-card">
+
+          <div class="section-header">
+
+            <div>
+
+              <h2>Top Companies</h2>
+
+              <p>
+                Highest revenue customers.
+              </p>
+
+            </div>
+
+            <button
+              type="button"
+              class="text-button"
+              (click)="openCompany()">
+
+              View All
+
+            </button>
+
+          </div>
+
+
+          <div class="company-list">
+
+            <div
+              class="company-row"
+              *ngFor="let company of topCompanies">
+
+              <div class="company-avatar">
+
+                {{ company.name.charAt(0) }}
+
+              </div>
+
+              <div class="company-details">
+
+                <strong>
+                  {{ company.name }}
+                </strong>
+
+                <span>
+                  {{ company.users }} users
+                </span>
+
+              </div>
+
+              <strong class="company-revenue">
+
+                {{ formatCurrency(company.revenue) }}
+
+              </strong>
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <!-- RECENT ACTIVITY -->
+
+        <section class="section-card">
+
+          <div class="section-header">
+
+            <div>
+
+              <h2>Recent Activity</h2>
+
+              <p>
+                Latest platform events.
+              </p>
+
+            </div>
+
+            <button
+              type="button"
+              class="text-button">
+
+              View All
+
+            </button>
+
+          </div>
+
+
+          <div class="activity-list">
+
+            <div
+              class="activity-row"
+              *ngFor="
+                let activity of recentActivities
+              ">
+
+              <div class="activity-icon">
+
+                <i [class]="activity.icon"></i>
+
+              </div>
+
+              <div class="activity-content">
+
+                <strong>
+                  {{ activity.title }}
+                </strong>
+
+                <span>
+                  {{ activity.description }}
+                </span>
+
+                <small>
+                  {{ activity.time }}
+                </small>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+      </div>
+
+
+      <!-- ======================================================
+           COMPANY MANAGEMENT PREVIEW
+      ======================================================= -->
+
+      <section class="section-card companies-section">
+
+        <div class="section-header">
+
+          <div>
+
+            <h2>Company Management</h2>
+
+            <p>
+              Manage CRM tenants and subscriptions.
+            </p>
+
+          </div>
+
+          <button
+            type="button"
+            class="primary-small"
+            (click)="openCompany()">
+
+            <i class="bi bi-plus"></i>
+
+            Add Company
+
+          </button>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+          <table>
+
+            <thead>
+
+              <tr>
+
+                <th>Company</th>
+
+                <th>Plan</th>
+
+                <th>Users</th>
+
+                <th>Revenue</th>
+
+                <th>Status</th>
+
+                <th>Created</th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody>
+
+              <tr
+                *ngFor="
+                  let company of filteredCompanies
+                ">
+
+                <td>
+
+                  <div class="company-cell">
+
+                    <div class="table-avatar">
+
+                      {{ company.name.charAt(0) }}
+
+                    </div>
+
+                    <div>
+
+                      <strong>
+                        {{ company.name }}
+                      </strong>
+
+                      <span>
+                        {{ company.code }}
+                      </span>
+
+                    </div>
+
+                  </div>
+
+                </td>
+
+
+                <td>
+
+                  <span class="plan-badge">
+
+                    {{ company.plan }}
+
+                  </span>
+
+                </td>
+
+
+                <td>
+
+                  {{ company.users }}
+
+                </td>
+
+
+                <td>
+
+                  <strong>
+                    {{ formatCurrency(company.revenue) }}
+                  </strong>
+
+                </td>
+
+
+                <td>
+
+                  <span
+                    class="status-badge"
+                    [ngClass]="
+                      getCompanyStatusClass(
+                        company.status
+                      )
+                    ">
+
+                    {{ company.status }}
+
+                  </span>
+
+                </td>
+
+
+                <td>
+
+                  {{ company.createdDate }}
+
+                </td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+
+      <!-- ======================================================
+           QUICK ACTIONS
+      ======================================================= -->
+
+      <section class="quick-actions">
+
+        <button
+          type="button"
+          class="quick-action"
+          (click)="openCompany()">
+
+          <i class="bi bi-building-add"></i>
+
+          <span>
+            Add Company
+          </span>
+
+        </button>
+
+
+        <button
+          type="button"
+          class="quick-action"
+          (click)="openUser()">
+
+          <i class="bi bi-person-plus"></i>
+
+          <span>
+            Add User
+          </span>
+
+        </button>
+
+
+        <button
+          type="button"
+          class="quick-action"
+          (click)="openSubscription()">
+
+          <i class="bi bi-credit-card"></i>
+
+          <span>
+            Manage Subscriptions
+          </span>
+
+        </button>
+
+
+        <button
+          type="button"
+          class="quick-action"
+          (click)="openReports()">
+
+          <i class="bi bi-bar-chart"></i>
+
+          <span>
+            Analytics
+          </span>
+
+        </button>
+
+      </section>
+
+    </main>
+
+  </div>
+
+</div>

@@ -1,0 +1,213 @@
+<div class="container mt-4">
+
+    <div class="card">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4>Notification Rules</h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+                    <label>Module</label>
+                    <select class="form-select">
+                        <option>Leads</option>
+                        <option>Sales</option>
+                        <option>Support</option>
+                        <option>Projects</option>
+                        <option>Billing</option>
+                        <option>HR</option>
+                        <option>Subscription</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Trigger Event</label>
+                    <select class="form-select">
+                        <option>Record Created</option>
+                        <option>Record Updated</option>
+                        <option>Status Changed</option>
+                        <option>Assignment</option>
+                        <option>Approval</option>
+                        <option>Rejection</option>
+                        <option>Due Date Reminder</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Notification Channel</label>
+                    <select class="form-select">
+                        <option>Email</option>
+                        <option>SMS</option>
+                        <option>WhatsApp</option>
+                        <option>Push Notification</option>
+                        <option>In-App Notification</option>
+                        <option>All Channels</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Notify Record Owner
+                    </label>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Notify Reporting Manager
+                    </label>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Active
+                    </label>
+                </div>
+
+            </div>
+
+            <button class="btn btn-danger me-2">
+                Save
+            </button>
+
+            <button class="btn btn-secondary me-2">
+                Clear
+            </button>
+
+            <button class="btn btn-success">
+                Add Rule
+            </button>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="row mb-3">
+
+        <div class="col-md-3">
+            <input class="form-control"
+                   placeholder="Search Rule...">
+        </div>
+
+        <div class="col-md-3">
+            <select class="form-select">
+                <option>All Modules</option>
+                <option>Sales</option>
+                <option>Support</option>
+                <option>Billing</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <select class="form-select">
+                <option>All Status</option>
+                <option>Active</option>
+                <option>Inactive</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <button class="btn btn-danger w-100">
+                Search
+            </button>
+        </div>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-danger">
+
+            <tr>
+
+                <th>#</th>
+                <th>Rule Name</th>
+                <th>Module</th>
+                <th>Trigger Event</th>
+                <th>Channel</th>
+                <th>Recipients</th>
+                <th>Status</th>
+                <th width="200">Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>1</td>
+                <td>Lead Assigned Alert</td>
+                <td>Leads</td>
+                <td>Assignment</td>
+                <td>Email + Push</td>
+                <td>Owner, Manager</td>
+                <td><span class="badge bg-success">Active</span></td>
+                <td>
+                    <button class="btn btn-info btn-sm me-1">View</button>
+                    <button class="btn btn-warning btn-sm me-1">Edit</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>2</td>
+                <td>Invoice Due Reminder</td>
+                <td>Billing</td>
+                <td>Due Date Reminder</td>
+                <td>Email + SMS</td>
+                <td>Customer</td>
+                <td><span class="badge bg-success">Active</span></td>
+                <td>
+                    <button class="btn btn-info btn-sm me-1">View</button>
+                    <button class="btn btn-warning btn-sm me-1">Edit</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>3</td>
+                <td>Ticket Escalation</td>
+                <td>Support</td>
+                <td>Status Changed</td>
+                <td>Email + WhatsApp</td>
+                <td>Manager</td>
+                <td><span class="badge bg-success">Active</span></td>
+                <td>
+                    <button class="btn btn-info btn-sm me-1">View</button>
+                    <button class="btn btn-warning btn-sm me-1">Edit</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>4</td>
+                <td>Project Deadline Alert</td>
+                <td>Projects</td>
+                <td>Due Date Reminder</td>
+                <td>Push Notification</td>
+                <td>Project Team</td>
+                <td><span class="badge bg-secondary">Inactive</span></td>
+                <td>
+                    <button class="btn btn-info btn-sm me-1">View</button>
+                    <button class="btn btn-warning btn-sm me-1">Edit</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+
+
+</div>

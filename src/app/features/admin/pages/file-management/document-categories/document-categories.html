@@ -1,0 +1,376 @@
+<div class="container mt-4">
+
+    <!-- ========================================= -->
+    <!-- Document Categories Form -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4 class="mb-0">
+
+                <i class="fa fa-folder me-2"></i>
+
+                Document Categories
+
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <!-- Category Name -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Category Name
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Category Name"
+                        [(ngModel)]="documentCategory.categoryName">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !documentCategory.categoryName">
+
+                        Category Name is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Category Code -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Category Code
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Category Code"
+                        [(ngModel)]="documentCategory.categoryCode">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !documentCategory.categoryCode">
+
+                        Category Code is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Parent Category -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Parent Category
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="documentCategory.parentCategory">
+
+                        <option value="">None</option>
+                        <option>HR Documents</option>
+                        <option>Finance Documents</option>
+                        <option>Customer Documents</option>
+                        <option>Legal Documents</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Allowed File Types -->
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Allowed File Types
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="PDF, DOCX, XLSX, JPG"
+                        [(ngModel)]="documentCategory.allowedFileTypes">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !documentCategory.allowedFileTypes">
+
+                        Allowed File Types are required.
+
+                    </div>
+
+                </div>
+
+                <!-- Retention Period -->
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Retention Period (Days)
+
+                    </label>
+
+                    <input type="number" class="form-control" placeholder="Enter Retention Period"
+                        [(ngModel)]="documentCategory.retentionPeriod">
+
+                </div>
+
+                <!-- Active -->
+                <div class="col-md-4 mb-3 d-flex align-items-end">
+
+                    <div class="form-check">
+
+                        <input type="checkbox" id="isActive" class="form-check-input"
+                            [(ngModel)]="documentCategory.isActive">
+
+                        <label class="form-check-label ms-2" for="isActive">
+
+                            Active
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <!-- Description -->
+                <div class="col-md-12 mb-3">
+
+                    <label class="form-label">
+
+                        Description
+
+                    </label>
+
+                    <textarea rows="4" class="form-control" placeholder="Enter Description"
+                        [(ngModel)]="documentCategory.description">
+
+                    </textarea>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <button class="btn btn-danger me-2" (click)="saveDocumentCategory()">
+
+                <i class="fa fa-save me-1"></i>
+
+                {{ isEdit ? 'Update' : 'Save' }}
+
+            </button>
+
+            <button class="btn btn-secondary" (click)="clear()">
+
+                <i class="fa fa-eraser me-1"></i>
+
+                Clear
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- ========================================= -->
+<!-- Search -->
+<!-- ========================================= -->
+
+<div class="row mt-4 mb-3">
+
+    <div class="col-md-4">
+
+        <input type="text" class="form-control" placeholder="Search Document Categories..." [(ngModel)]="searchText">
+
+    </div>
+
+</div>
+
+
+
+
+
+<!-- ========================================= -->
+<!-- Document Categories Listing -->
+<!-- ========================================= -->
+
+<div class="table-responsive">
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-danger">
+
+            <tr>
+
+                <th>#</th>
+
+                <th>Category Name</th>
+
+                <th>Category Code</th>
+
+                <th>Parent Category</th>
+
+                <th>Allowed File Types</th>
+
+                <th>Retention Period</th>
+
+                <th>Active</th>
+
+                <th width="140">
+
+                    Action
+
+                </th>
+
+            </tr>
+
+        </thead>
+
+
+
+
+
+        <tbody>
+
+            <tr *ngIf="pagedDocumentCategories.length == 0">
+
+                <td colspan="8" class="text-center text-muted">
+
+                    No Document Categories Found
+
+                </td>
+
+            </tr>
+
+
+
+
+
+            <tr *ngFor="let item of pagedDocumentCategories; let i=index">
+
+                <td>
+
+                    {{ ((page - 1) * pageSize) + i + 1 }}
+
+                </td>
+
+
+
+
+
+                <td>
+
+                    {{ item.categoryName }}
+
+                </td>
+
+
+
+
+
+                <td>
+
+                    <span class="badge bg-primary">
+
+                        {{ item.categoryCode }}
+
+                    </span>
+
+                </td>
+
+
+
+
+
+                <td>
+
+                    {{ item.parentCategory || 'None' }}
+
+                </td>
+
+
+
+
+
+                <td>
+
+                    {{ item.allowedFileTypes }}
+
+                </td>
+
+
+
+
+
+                <td>
+
+                    {{ item.retentionPeriod || 0 }} Days
+
+                </td>
+
+
+
+
+
+                <td>
+
+                    <span class="badge" [ngClass]="item.isActive ? 'bg-success' : 'bg-danger'">
+
+                        {{ item.isActive ? 'Yes' : 'No' }}
+
+                    </span>
+
+                </td>
+
+
+
+
+
+                <td>
+
+                    <button class="btn btn-warning btn-sm me-2" (click)="edit(item.documentCategoryId)">
+
+                        <i class="fa fa-edit"></i>
+
+                    </button>
+
+
+
+
+
+                    <button class="btn btn-danger btn-sm" (click)="delete(item.documentCategoryId)">
+
+                        <i class="fa fa-trash"></i>
+
+                    </button>
+
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+
+
+
+
+
+<!-- ========================================= -->
+<!-- Pagination -->
+<!-- ========================================= -->
+
+<app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredDocumentCategories.length"
+    (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
+
+</app-pagination>
+

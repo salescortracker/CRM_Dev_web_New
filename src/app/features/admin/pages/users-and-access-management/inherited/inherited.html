@@ -1,0 +1,490 @@
+<div class="container mt-4">
+
+    <!-- ========================================= -->
+    <!-- Inherited Permissions Form -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4 class="mb-0">
+
+                <i class="fa fa-share-nodes me-2"></i>
+
+                Inherited Permissions
+
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <!-- Inheritance Name -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Inheritance Name
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Inheritance Name"
+                        [(ngModel)]="inheritance.inheritanceName">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !inheritance.inheritanceName">
+
+                        Inheritance Name is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Parent Type -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Parent Type
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="inheritance.parentType">
+
+                        <option value="">Select Parent Type</option>
+
+                        <option>Role</option>
+                        <option>User Group</option>
+                        <option>Department</option>
+                        <option>Team</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !inheritance.parentType">
+
+                        Parent Type is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Parent Name -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Parent Name
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="inheritance.parentName">
+
+                        <option value="">Select Parent Name</option>
+
+                        <option>Administrator</option>
+                        <option>Sales Manager</option>
+                        <option>HR Manager</option>
+                        <option>Finance Manager</option>
+                        <option>IT Team</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !inheritance.parentName">
+
+                        Parent Name is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Child Type -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Child Type
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="inheritance.childType">
+
+                        <option value="">Select Child Type</option>
+
+                        <option>User</option>
+                        <option>User Group</option>
+                        <option>Department</option>
+                        <option>Team</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !inheritance.childType">
+
+                        Child Type is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Child Name -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Child Name
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="inheritance.childName">
+
+                        <option value="">Select Child Name</option>
+
+                        <option>Rahul Sharma</option>
+                        <option>Priya Reddy</option>
+                        <option>Sales Executives</option>
+                        <option>HR Executives</option>
+                        <option>Finance Team</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !inheritance.childName">
+
+                        Child Name is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Inheritance Level -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Inheritance Level
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="inheritance.inheritanceLevel">
+
+                        <option value="">Select Level</option>
+
+                        <option>Full</option>
+                        <option>Partial</option>
+                        <option>Read Only</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !inheritance.inheritanceLevel">
+
+                        Inheritance Level is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Permission Scope -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Permission Scope
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="inheritance.permissionScope">
+
+                        <option value="">Select Permission Scope</option>
+
+                        <option>All Modules</option>
+                        <option>Selected Modules</option>
+                        <option>CRM Only</option>
+                        <option>HR Only</option>
+                        <option>Reports Only</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !inheritance.permissionScope">
+
+                        Permission Scope is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Effective From -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Effective From
+
+                    </label>
+
+                    <input type="date" class="form-control" [(ngModel)]="inheritance.effectiveFrom">
+
+                </div>
+
+                <!-- Effective To -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Effective To
+
+                    </label>
+
+                    <input type="date" class="form-control" [(ngModel)]="inheritance.effectiveTo">
+
+                </div>
+
+                <!-- Status -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Status
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="inheritance.status">
+
+                        <option value="">Select Status</option>
+
+                        <option>Active</option>
+                        <option>Inactive</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !inheritance.status">
+
+                        Status is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Description -->
+                <div class="col-md-8 mb-3">
+
+                    <label class="form-label">
+
+                        Description
+
+                    </label>
+
+                    <textarea rows="4" class="form-control" placeholder="Enter Description"
+                        [(ngModel)]="inheritance.description">
+
+                    </textarea>
+
+                </div>
+
+                <!-- Active -->
+                <div class="col-md-4 mb-3 d-flex align-items-end">
+
+                    <div class="form-check">
+
+                        <input type="checkbox" class="form-check-input" id="inheritanceActive"
+                            [(ngModel)]="inheritance.isActive">
+
+                        <label class="form-check-label ms-2" for="inheritanceActive">
+
+                            Active
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <button class="btn btn-danger me-2" (click)="saveInheritance()">
+
+                <i class="fa fa-save me-1"></i>
+
+                {{ isEdit ? 'Update' : 'Save' }}
+
+            </button>
+
+            <button class="btn btn-secondary" (click)="clear()">
+
+                <i class="fa fa-eraser me-1"></i>
+
+                Clear
+
+            </button>
+
+        </div>
+
+    </div>
+    <!-- ========================================= -->
+    <!-- Search -->
+    <!-- ========================================= -->
+
+    <div class="row mt-4 mb-3">
+
+        <div class="col-md-4">
+
+            <input type="text" class="form-control" placeholder="Search Inherited Permissions..."
+                [(ngModel)]="searchText">
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Inherited Permissions Listing -->
+    <!-- ========================================= -->
+
+    <div class="table-responsive">
+
+        <table class="table table-bordered table-hover">
+
+            <thead class="table-danger">
+
+                <tr>
+
+                    <th width="60">#</th>
+                    <th>Inheritance Name</th>
+                    <th>Parent Type</th>
+                    <th>Parent Name</th>
+                    <th>Child Type</th>
+                    <th>Child Name</th>
+                    <th>Level</th>
+                    <th>Permission Scope</th>
+                    <th>Status</th>
+                    <th width="140">Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr *ngIf="pagedInheritances.length == 0">
+
+                    <td colspan="10" class="text-center text-muted">
+
+                        No Inherited Permissions Found
+
+                    </td>
+
+                </tr>
+
+                <tr *ngFor="let item of pagedInheritances; let i = index">
+
+                    <td>
+
+                        {{ ((page - 1) * pageSize) + i + 1 }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.inheritanceName }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.parentType }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.parentName }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.childType }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.childName }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.inheritanceLevel }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.permissionScope }}
+
+                    </td>
+
+                    <td>
+
+                        <span class="badge" [ngClass]="{
+                                'bg-success': item.status == 'Active',
+                                'bg-danger': item.status == 'Inactive'
+                            }">
+
+                            {{ item.status }}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <button class="btn btn-warning btn-sm me-2" (click)="edit(item.inheritanceId)">
+
+                            <i class="fa fa-edit"></i>
+
+                        </button>
+
+                        <button class="btn btn-danger btn-sm" (click)="delete(item.inheritanceId)">
+
+                            <i class="fa fa-trash"></i>
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Pagination -->
+    <!-- ========================================= -->
+
+    <app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredInheritances.length"
+        (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
+
+    </app-pagination>
+
+</div>

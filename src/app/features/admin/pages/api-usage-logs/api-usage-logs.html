@@ -1,0 +1,486 @@
+<div class="container mt-4">
+
+    <!-- ========================================= -->
+    <!-- API Usage Logs Form -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4 class="mb-0">
+
+                <i class="fa fa-code me-2"></i>
+
+                API Usage Logs
+
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <!-- API Name -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        API Name
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter API Name" [(ngModel)]="apiUsage.apiName">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !apiUsage.apiName">
+
+                        API Name is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Endpoint URL -->
+                <div class="col-md-8 mb-3">
+
+                    <label class="form-label">
+                        Endpoint URL
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="/api/leads/create"
+                        [(ngModel)]="apiUsage.endpointUrl">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !apiUsage.endpointUrl">
+
+                        Endpoint URL is required.
+
+                    </div>
+
+                </div>
+
+                <!-- HTTP Method -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+                        HTTP Method
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="apiUsage.httpMethod">
+
+                        <option value="">Select Method</option>
+                        <option>GET</option>
+                        <option>POST</option>
+                        <option>PUT</option>
+                        <option>DELETE</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !apiUsage.httpMethod">
+
+                        HTTP Method is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Request By -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+                        Request By
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter User Name"
+                        [(ngModel)]="apiUsage.requestBy">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !apiUsage.requestBy">
+
+                        Request By is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Response Status -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+                        Response Status
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="apiUsage.responseStatus">
+
+                        <option value="">Select Status</option>
+                        <option>200</option>
+                        <option>201</option>
+                        <option>400</option>
+                        <option>401</option>
+                        <option>404</option>
+                        <option>500</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !apiUsage.responseStatus">
+
+                        Response Status is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Response Time -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+                        Response Time (ms)
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="number" class="form-control" placeholder="Enter Response Time"
+                        [(ngModel)]="apiUsage.responseTime">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !apiUsage.responseTime">
+
+                        Response Time is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Request Date -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Request Date & Time
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="datetime-local" class="form-control" [(ngModel)]="apiUsage.requestDate">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !apiUsage.requestDate">
+
+                        Request Date is required.
+
+                    </div>
+
+                </div>
+
+                <!-- IP Address -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        IP Address
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="192.168.1.100"
+                        [(ngModel)]="apiUsage.ipAddress">
+
+                </div>
+
+                <!-- Active -->
+                <div class="col-md-4 mb-3 d-flex align-items-end">
+
+                    <div class="form-check">
+
+                        <input type="checkbox" id="isActive" class="form-check-input" [(ngModel)]="apiUsage.isActive">
+
+                        <label class="form-check-label ms-2" for="isActive">
+
+                            Active
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <!-- Description -->
+                <div class="col-md-12 mb-3">
+
+                    <label class="form-label">
+
+                        Description
+
+                    </label>
+
+                    <textarea rows="4" class="form-control" placeholder="Enter Description"
+                        [(ngModel)]="apiUsage.description">
+
+                    </textarea>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <button class="btn btn-danger me-2" (click)="saveApiUsageLog()">
+
+                <i class="fa fa-save me-1"></i>
+
+                {{ isEdit ? 'Update' : 'Save' }}
+
+            </button>
+
+            <button class="btn btn-secondary" (click)="clear()">
+
+                <i class="fa fa-eraser me-1"></i>
+
+                Clear
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- ========================================= -->
+<!-- Search -->
+<!-- ========================================= -->
+
+<div class="row mt-4 mb-3">
+
+    <div class="col-md-4">
+
+        <input type="text" class="form-control" placeholder="Search API Usage Logs..." [(ngModel)]="searchText">
+
+    </div>
+
+</div>
+
+
+
+
+
+<!-- ========================================= -->
+<!-- API Usage Logs Listing -->
+<!-- ========================================= -->
+
+<div class="table-responsive">
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-danger">
+
+            <tr>
+
+                <th>#</th>
+
+                <th>API Name</th>
+
+                <th>HTTP Method</th>
+
+                <th>Endpoint URL</th>
+
+                <th>Request By</th>
+
+                <th>Response Status</th>
+
+                <th>Response Time</th>
+
+                <th>Request Date</th>
+
+                <th>Active</th>
+
+                <th width="140">
+
+                    Action
+
+                </th>
+
+            </tr>
+
+        </thead>
+
+
+
+
+
+        <tbody>
+
+            <tr *ngIf="pagedApiUsageLogs.length == 0">
+
+                <td colspan="10" class="text-center text-muted">
+
+                    No API Usage Logs Found
+
+                </td>
+
+            </tr>
+
+
+
+
+
+            <tr *ngFor="let item of pagedApiUsageLogs; let i = index">
+
+                <td>
+
+                    {{ ((page - 1) * pageSize) + i + 1 }}
+
+                </td>
+
+
+
+
+
+                <td>
+
+                    {{ item.apiName }}
+
+                </td>
+
+
+
+
+
+                <td>
+
+                    <span class="badge" [ngClass]="{
+
+                                'bg-success': item.httpMethod == 'GET',
+
+                                'bg-primary': item.httpMethod == 'POST',
+
+                                'bg-warning text-dark': item.httpMethod == 'PUT',
+
+                                'bg-danger': item.httpMethod == 'DELETE'
+
+                            }">
+
+                        {{ item.httpMethod }}
+
+                    </span>
+
+                </td>
+
+
+
+
+
+                <td>
+
+                    {{ item.endpointUrl }}
+
+                </td>
+
+
+
+
+
+                <td>
+
+                    {{ item.requestBy }}
+
+                </td>
+
+
+
+
+
+                <td>
+
+                    <span class="badge" [ngClass]="{
+
+                                'bg-success': item.responseStatus == 200 || item.responseStatus == 201,
+
+                                'bg-warning text-dark': item.responseStatus == 400 || item.responseStatus == 401,
+
+                                'bg-info': item.responseStatus == 404,
+
+                                'bg-danger': item.responseStatus == 500
+
+                            }">
+
+                        {{ item.responseStatus }}
+
+                    </span>
+
+                </td>
+
+
+
+
+
+                <td>
+
+                    {{ item.responseTime }} ms
+
+                </td>
+
+
+
+
+
+                <td>
+
+                    {{ item.requestDate | date:'dd-MM-yyyy HH:mm' }}
+
+                </td>
+
+
+
+
+
+                <td>
+
+                    <span class="badge" [ngClass]="item.isActive ? 'bg-success' : 'bg-danger'">
+
+                        {{ item.isActive ? 'Yes' : 'No' }}
+
+                    </span>
+
+                </td>
+
+
+
+
+
+                <td>
+
+                    <button class="btn btn-warning btn-sm me-2" (click)="edit(item.apiUsageLogId)">
+
+                        <i class="fa fa-edit"></i>
+
+                    </button>
+
+
+
+
+
+                    <button class="btn btn-danger btn-sm" (click)="delete(item.apiUsageLogId)">
+
+                        <i class="fa fa-trash"></i>
+
+                    </button>
+
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+
+
+
+
+
+<!-- ========================================= -->
+<!-- Pagination -->
+<!-- ========================================= -->
+
+<app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredApiUsageLogs.length"
+    (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
+
+</app-pagination>
+

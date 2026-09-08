@@ -1,0 +1,470 @@
+<div class="container mt-4">
+
+    <!-- ========================================= -->
+    <!-- User Groups Form -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4 class="mb-0">
+
+                <i class="fa fa-users-viewfinder me-2"></i>
+
+                User Groups
+
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <!-- Group Name -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Group Name
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Group Name"
+                        [(ngModel)]="userGroup.groupName">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !userGroup.groupName">
+
+                        Group Name is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Group Code -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Group Code
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Group Code"
+                        [(ngModel)]="userGroup.groupCode">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !userGroup.groupCode">
+
+                        Group Code is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Group Type -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Group Type
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="userGroup.groupType">
+
+                        <option value="">Select Group Type</option>
+
+                        <option>Administration</option>
+                        <option>Sales</option>
+                        <option>Marketing</option>
+                        <option>Human Resources</option>
+                        <option>Finance</option>
+                        <option>Customer Support</option>
+                        <option>IT</option>
+                        <option>Operations</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !userGroup.groupType">
+
+                        Group Type is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Department -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Department
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="userGroup.department">
+
+                        <option value="">Select Department</option>
+
+                        <option>Human Resources</option>
+                        <option>Sales</option>
+                        <option>Marketing</option>
+                        <option>Finance</option>
+                        <option>IT</option>
+                        <option>Operations</option>
+                        <option>Customer Support</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Team -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Team
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="userGroup.team">
+
+                        <option value="">Select Team</option>
+
+                        <option>Team Alpha</option>
+                        <option>Team Bravo</option>
+                        <option>Team Charlie</option>
+                        <option>Team Delta</option>
+                        <option>Team Omega</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Reporting Manager -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Reporting Manager
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="userGroup.reportingManager">
+
+                        <option value="">Select Reporting Manager</option>
+
+                        <option>Rahul Sharma</option>
+                        <option>Priya Reddy</option>
+                        <option>Arjun Kumar</option>
+                        <option>Sneha Patel</option>
+                        <option>Kiran Verma</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Default Role -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Default Role
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="userGroup.defaultRole">
+
+                        <option value="">Select Default Role</option>
+
+                        <option>Administrator</option>
+                        <option>Manager</option>
+                        <option>Team Lead</option>
+                        <option>Executive</option>
+                        <option>Employee</option>
+                        <option>Viewer</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !userGroup.defaultRole">
+
+                        Default Role is required.
+
+                    </div>
+
+                </div>
+
+                <!-- User Limit -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        User Limit
+
+                    </label>
+
+                    <input type="number" class="form-control" placeholder="Enter User Limit"
+                        [(ngModel)]="userGroup.userLimit">
+
+                </div>
+
+                <!-- Priority -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Priority
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="userGroup.priority">
+
+                        <option>High</option>
+                        <option>Medium</option>
+                        <option>Low</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Status -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Status
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="userGroup.status">
+
+                        <option value="">Select Status</option>
+
+                        <option>Active</option>
+                        <option>Inactive</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !userGroup.status">
+
+                        Status is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Description -->
+                <div class="col-md-8 mb-3">
+
+                    <label class="form-label">
+
+                        Description
+
+                    </label>
+
+                    <textarea rows="4" class="form-control" placeholder="Enter Description"
+                        [(ngModel)]="userGroup.description">
+
+                    </textarea>
+
+                </div>
+
+                <!-- Active -->
+                <div class="col-md-4 mb-3 d-flex align-items-end">
+
+                    <div class="form-check">
+
+                        <input type="checkbox" class="form-check-input" id="groupActive"
+                            [(ngModel)]="userGroup.isActive">
+
+                        <label class="form-check-label ms-2" for="groupActive">
+
+                            Active
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <button class="btn btn-danger me-2" (click)="saveUserGroup()">
+
+                <i class="fa fa-save me-1"></i>
+
+                {{ isEdit ? 'Update' : 'Save' }}
+
+            </button>
+
+            <button class="btn btn-secondary" (click)="clear()">
+
+                <i class="fa fa-eraser me-1"></i>
+
+                Clear
+
+            </button>
+
+        </div>
+
+    </div>
+    <!-- ========================================= -->
+    <!-- Search -->
+    <!-- ========================================= -->
+
+    <div class="row mt-4 mb-3">
+
+        <div class="col-md-4">
+
+            <input type="text" class="form-control" placeholder="Search User Group..." [(ngModel)]="searchText">
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- User Groups Listing -->
+    <!-- ========================================= -->
+
+    <div class="table-responsive">
+
+        <table class="table table-bordered table-hover">
+
+            <thead class="table-danger">
+
+                <tr>
+
+                    <th width="60">#</th>
+                    <th>Group Name</th>
+                    <th>Group Code</th>
+                    <th>Group Type</th>
+                    <th>Department</th>
+                    <th>Team</th>
+                    <th>Default Role</th>
+                    <th>User Limit</th>
+                    <th>Status</th>
+                    <th width="140">Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr *ngIf="pagedUserGroups.length == 0">
+
+                    <td colspan="10" class="text-center text-muted">
+
+                        No User Groups Found
+
+                    </td>
+
+                </tr>
+
+                <tr *ngFor="let item of pagedUserGroups; let i = index">
+
+                    <td>
+
+                        {{ ((page - 1) * pageSize) + i + 1 }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.groupName }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.groupCode }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.groupType }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.department }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.team }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.defaultRole }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.userLimit }}
+
+                    </td>
+
+                    <td>
+
+                        <span class="badge" [ngClass]="item.isActive ? 'bg-success' : 'bg-danger'">
+
+                            {{ item.status }}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <button class="btn btn-warning btn-sm me-2" (click)="edit(item.groupId)">
+
+                            <i class="fa fa-edit"></i>
+
+                        </button>
+
+                        <button class="btn btn-danger btn-sm" (click)="delete(item.groupId)">
+
+                            <i class="fa fa-trash"></i>
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Pagination -->
+    <!-- ========================================= -->
+
+    <app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredUserGroups.length"
+        (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
+
+    </app-pagination>
+
+</div>

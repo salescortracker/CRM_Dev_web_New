@@ -1,0 +1,517 @@
+<div class="container mt-4">
+
+    <!-- ========================================= -->
+    <!-- Order Form -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4 class="mb-0">
+                <i class="fa fa-cart-shopping me-2"></i>
+                Order Management
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <!-- Order Number -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Order Number
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Order Number"
+                        [(ngModel)]="order.orderNumber">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !order.orderNumber">
+
+                        Order Number is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Order Name -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Order Name
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Order Name"
+                        [(ngModel)]="order.orderName">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !order.orderName">
+
+                        Order Name is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Quotation -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Quotation
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="order.quotation">
+
+                        <option value="">Select Quotation</option>
+                        <option>CRM Software Proposal</option>
+                        <option>HRMS Proposal</option>
+                        <option>ERP Integration Proposal</option>
+                        <option>Cloud Migration Proposal</option>
+                        <option>Digital Marketing Package</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !order.quotation">
+
+                        Quotation is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Account -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Account
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="order.account">
+
+                        <option value="">Select Account</option>
+                        <option>ABC Technologies</option>
+                        <option>XYZ Solutions</option>
+                        <option>Future Vision</option>
+                        <option>Global InfoTech</option>
+                        <option>NextGen Pvt Ltd</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !order.account">
+
+                        Account is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Contact -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Contact
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="order.contact">
+
+                        <option value="">Select Contact</option>
+                        <option>Rahul Sharma</option>
+                        <option>Priya Reddy</option>
+                        <option>Arjun Kumar</option>
+                        <option>Sneha Patel</option>
+                        <option>Kiran Verma</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !order.contact">
+
+                        Contact is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Sales Executive -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Sales Executive
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Sales Executive"
+                        [(ngModel)]="order.salesExecutive">
+
+                </div>
+
+                <!-- Order Date -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Order Date
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="date" class="form-control" [(ngModel)]="order.orderDate">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !order.orderDate">
+
+                        Order Date is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Delivery Date -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Expected Delivery Date
+                    </label>
+
+                    <input type="date" class="form-control" [(ngModel)]="order.deliveryDate">
+
+                </div>
+
+                <!-- Payment Method -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Payment Method
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="order.paymentMethod">
+
+                        <option value="">Select Payment Method</option>
+                        <option>Cash</option>
+                        <option>UPI</option>
+                        <option>Credit Card</option>
+                        <option>Debit Card</option>
+                        <option>Bank Transfer</option>
+                        <option>Cheque</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Tax -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+                        Tax (%)
+                    </label>
+
+                    <input type="number" class="form-control" placeholder="Tax" [(ngModel)]="order.tax">
+
+                </div>
+
+                <!-- Discount -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+                        Discount (%)
+                    </label>
+
+                    <input type="number" class="form-control" placeholder="Discount" [(ngModel)]="order.discount">
+
+                </div>
+
+                <!-- Shipping Charges -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+                        Shipping Charges
+                    </label>
+
+                    <input type="number" class="form-control" placeholder="Shipping Charges"
+                        [(ngModel)]="order.shippingCharges">
+
+                </div>
+
+                <!-- Order Amount -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+                        Order Amount
+                    </label>
+
+                    <input type="number" class="form-control" placeholder="Order Amount"
+                        [(ngModel)]="order.orderAmount">
+
+                </div>
+
+                <!-- Shipping Address -->
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+                        Shipping Address
+                    </label>
+
+                    <textarea rows="3" class="form-control" placeholder="Enter Shipping Address"
+                        [(ngModel)]="order.shippingAddress">
+
+                    </textarea>
+
+                </div>
+
+                <!-- Billing Address -->
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+                        Billing Address
+                    </label>
+
+                    <textarea rows="3" class="form-control" placeholder="Enter Billing Address"
+                        [(ngModel)]="order.billingAddress">
+
+                    </textarea>
+
+                </div>
+
+                <!-- Status -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Order Status
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="order.status">
+
+                        <option value="">Select Status</option>
+                        <option>Pending</option>
+                        <option>Processing</option>
+                        <option>Shipped</option>
+                        <option>Delivered</option>
+                        <option>Cancelled</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !order.status">
+
+                        Order Status is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Description -->
+                <div class="col-md-8 mb-3">
+
+                    <label class="form-label">
+                        Description
+                    </label>
+
+                    <textarea rows="3" class="form-control" placeholder="Enter Description"
+                        [(ngModel)]="order.description">
+
+                    </textarea>
+
+                </div>
+
+                <!-- Active -->
+                <div class="col-md-4 mb-3 d-flex align-items-end">
+
+                    <div class="form-check">
+
+                        <input type="checkbox" class="form-check-input" id="orderActive" [(ngModel)]="order.isActive">
+
+                        <label class="form-check-label ms-2" for="orderActive">
+
+                            Active
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <button class="btn btn-danger me-2" (click)="saveOrder()">
+
+                <i class="fa fa-save me-1"></i>
+
+                {{ isEdit ? 'Update' : 'Save' }}
+
+            </button>
+
+            <button class="btn btn-secondary" (click)="clear()">
+
+                <i class="fa fa-eraser me-1"></i>
+
+                Clear
+
+            </button>
+
+        </div>
+
+    </div>
+    <!-- ========================================= -->
+    <!-- Search -->
+    <!-- ========================================= -->
+
+    <div class="row mt-4 mb-3">
+
+        <div class="col-md-4">
+
+            <input type="text" class="form-control" placeholder="Search Order..." [(ngModel)]="searchText">
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Orders Table -->
+    <!-- ========================================= -->
+
+    <div class="table-responsive">
+
+        <table class="table table-bordered table-hover">
+
+            <thead class="table-danger">
+
+                <tr>
+
+                    <th>#</th>
+                    <th>Order No.</th>
+                    <th>Order Name</th>
+                    <th>Quotation</th>
+                    <th>Account</th>
+                    <th>Contact</th>
+                    <th>Order Date</th>
+                    <th>Delivery Date</th>
+                    <th>Order Amount</th>
+                    <th>Status</th>
+                    <th width="150">Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr *ngIf="pagedOrders.length == 0">
+
+                    <td colspan="11" class="text-center text-muted">
+
+                        No Orders Found
+
+                    </td>
+
+                </tr>
+
+                <tr *ngFor="let item of pagedOrders; let i = index">
+
+                    <td>
+
+                        {{ ((page - 1) * pageSize) + i + 1 }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.orderNumber }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.orderName }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.quotation }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.account }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.contact }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.orderDate }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.deliveryDate }}
+
+                    </td>
+
+                    <td>
+
+                        ₹ {{ item.orderAmount | number }}
+
+                    </td>
+
+                    <td>
+
+                        <span class="badge" [ngClass]="{
+                                'bg-secondary': item.status == 'Pending',
+                                'bg-primary': item.status == 'Processing',
+                                'bg-info': item.status == 'Shipped',
+                                'bg-success': item.status == 'Delivered',
+                                'bg-danger': item.status == 'Cancelled'
+                            }">
+
+                            {{ item.status }}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <button class="btn btn-warning btn-sm me-2" (click)="edit(item.orderId)">
+
+                            <i class="fa fa-edit"></i>
+
+                        </button>
+
+                        <button class="btn btn-danger btn-sm" (click)="delete(item.orderId)">
+
+                            <i class="fa fa-trash"></i>
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Pagination -->
+    <!-- ========================================= -->
+
+    <app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredOrders.length"
+        (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
+
+    </app-pagination>
+
+</div>

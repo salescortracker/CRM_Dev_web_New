@@ -1,0 +1,463 @@
+<div class="corcrm-login">
+
+  <!-- =====================================================
+       LEFT : CORCRM INFINITY EXPERIENCE
+  ====================================================== -->
+  <section class="infinity-panel">
+
+    <!-- Background -->
+    <div class="bg-grid"></div>
+    <div class="bg-glow glow-one"></div>
+    <div class="bg-glow glow-two"></div>
+
+    <!-- ================= BRAND ================= -->
+
+    <div class="brand">
+
+      <div class="brand-icon">
+        C
+      </div>
+
+      <div class="brand-name">
+        COR<span>CRM</span>
+      </div>
+
+    </div>
+
+
+    <!-- ================= HERO CONTENT ================= -->
+
+    <div class="hero-content">
+
+      <div class="eyebrow">
+        CUSTOMER RELATIONSHIP PLATFORM
+      </div>
+
+      <h1>
+        One journey.
+        <br>
+        <span>Infinite growth.</span>
+      </h1>
+
+      <p>
+        Connect leads, customers, sales activities and revenue
+        in one intelligent workspace built for modern businesses.
+      </p>
+
+    </div>
+
+
+    <!-- =================================================
+         INFINITY CRM VISUAL
+    ================================================== -->
+
+    <div class="infinity-area">
+
+      <!-- Outer glow -->
+      <div class="infinity-glow"></div>
+
+
+      <!-- Infinity -->
+      <div class="infinity">
+
+        <div class="loop loop-left"></div>
+
+        <div class="loop loop-right"></div>
+
+        <!-- Moving data points -->
+
+        <div class="data-point point-one"></div>
+        <div class="data-point point-two"></div>
+        <div class="data-point point-three"></div>
+        <div class="data-point point-four"></div>
+
+
+        <!-- Center -->
+        <div class="infinity-center">
+
+          <div class="center-logo">
+            C
+          </div>
+
+          <strong>
+            CORCRM
+          </strong>
+
+          <span>
+            CONNECT • MANAGE • GROW
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <!-- =================================================
+           CRM STAGE CARDS
+      ================================================== -->
+
+      <div class="crm-stage lead-stage">
+
+        <div class="stage-icon lead-icon">
+          <i class="fa fa-user-plus"></i>
+        </div>
+
+        <div>
+          <small>01</small>
+          <strong>Lead</strong>
+          <span>New opportunity</span>
+        </div>
+
+      </div>
+
+
+      <div class="crm-stage contact-stage">
+
+        <div class="stage-icon contact-icon">
+          <i class="fa fa-address-book"></i>
+        </div>
+
+        <div>
+          <small>02</small>
+          <strong>Contact</strong>
+          <span>Build relationship</span>
+        </div>
+
+      </div>
+
+
+      <div class="crm-stage company-stage">
+
+        <div class="stage-icon company-icon">
+          <i class="fa fa-building"></i>
+        </div>
+
+        <div>
+          <small>03</small>
+          <strong>Company</strong>
+          <span>Manage accounts</span>
+        </div>
+
+      </div>
+
+
+      <div class="crm-stage opportunity-stage">
+
+        <div class="stage-icon opportunity-icon">
+          <i class="fa fa-chart-line"></i>
+        </div>
+
+        <div>
+          <small>04</small>
+          <strong>Opportunity</strong>
+          <span>Grow pipeline</span>
+        </div>
+
+      </div>
+
+
+      <div class="crm-stage revenue-stage">
+
+        <div class="stage-icon revenue-icon">
+          <i class="fa fa-indian-rupee-sign"></i>
+        </div>
+
+        <div>
+          <small>05</small>
+          <strong>Revenue</strong>
+          <span>Increase growth</span>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ================= BOTTOM ================= -->
+
+    <div class="infinity-footer">
+
+      <div>
+        <strong>360°</strong>
+        <span>Customer View</span>
+      </div>
+
+      <i></i>
+
+      <div>
+        <strong>24/7</strong>
+        <span>Business Visibility</span>
+      </div>
+
+      <i></i>
+
+      <div>
+        <strong>01</strong>
+        <span>Connected Platform</span>
+      </div>
+
+    </div>
+
+
+    <div class="copyright-left">
+      CORTRACKER TECHNOLOGIES
+      <span>•</span>
+      POWERING SMARTER BUSINESS
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       RIGHT : LOGIN
+  ====================================================== -->
+
+  <section class="login-panel">
+
+    <div class="login-wrapper">
+
+
+      <!-- Mobile Logo -->
+
+      <div class="mobile-logo">
+
+        <div class="mobile-logo-icon">
+          C
+        </div>
+
+        <strong>
+          COR<span>CRM</span>
+        </strong>
+
+      </div>
+
+
+      <!-- ================= HEADER ================= -->
+
+      <div class="login-header">
+
+        <div class="welcome-label">
+          <span></span>
+          WELCOME BACK
+        </div>
+
+        <h2>
+          Sign in to your
+          <span>workspace.</span>
+        </h2>
+
+        <p>
+          Enter your credentials to continue to CORCRM.
+        </p>
+
+      </div>
+
+
+      <!-- ================= FORM ================= -->
+
+      <form
+        (ngSubmit)="login()"
+        #loginForm="ngForm"
+        novalidate
+      >
+
+
+        <!-- Username -->
+
+        <div class="form-group">
+
+          <label>
+            Username
+            <em>*</em>
+          </label>
+
+          <div class="input-wrapper">
+
+            <i class="fa fa-user input-icon"></i>
+
+            <input
+              type="text"
+              name="username"
+              [(ngModel)]="username"
+              placeholder="Enter your username"
+              autocomplete="username"
+              required
+            />
+
+          </div>
+
+        </div>
+
+
+        <!-- Password -->
+
+        <div class="form-group">
+
+          <label>
+            Password
+            <em>*</em>
+          </label>
+
+          <div class="input-wrapper">
+
+            <i class="fa fa-lock input-icon"></i>
+
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              name="password"
+              [(ngModel)]="password"
+              placeholder="Enter your password"
+              autocomplete="current-password"
+              required
+            />
+
+            <button
+              type="button"
+              class="password-button"
+              (click)="showPassword = !showPassword"
+            >
+
+              <i
+                class="fa"
+                [ngClass]="{
+                  'fa-eye': !showPassword,
+                  'fa-eye-slash': showPassword
+                }"
+              ></i>
+
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <!-- Options -->
+
+        <div class="login-options">
+
+          <label class="remember">
+
+            <input
+              type="checkbox"
+              name="rememberMe"
+              [(ngModel)]="rememberMe"
+            />
+
+            <span class="checkmark"></span>
+
+            Remember me
+
+          </label>
+
+
+          <a routerLink="/forgot-password">
+            Forgot password?
+          </a>
+
+        </div>
+
+
+        <!-- Error -->
+
+        <div
+          class="error-box"
+          *ngIf="errorMessage"
+        >
+
+          <i class="fa fa-circle-exclamation"></i>
+
+          <span>
+            {{ errorMessage }}
+          </span>
+
+        </div>
+
+
+        <!-- Login -->
+
+        <button
+          type="submit"
+          class="login-button"
+          [disabled]="loading || loginForm.invalid"
+        >
+
+          <ng-container *ngIf="!loading">
+
+            <span>
+              Sign in to CORCRM
+            </span>
+
+            <div class="arrow">
+              <i class="fa fa-arrow-right"></i>
+            </div>
+
+          </ng-container>
+
+
+          <ng-container *ngIf="loading">
+
+            <span class="loader"></span>
+
+            <span>
+              Signing in...
+            </span>
+
+          </ng-container>
+
+        </button>
+
+      </form>
+
+
+      <!-- ================= SECURITY ================= -->
+
+      <div class="security">
+
+        <div class="security-card">
+
+          <div class="security-icon">
+            <i class="fa fa-shield-halved"></i>
+          </div>
+
+          <div>
+            <strong>Secure access</strong>
+            <span>Enterprise authentication</span>
+          </div>
+
+        </div>
+
+
+        <div class="security-card">
+
+          <div class="security-icon">
+            <i class="fa fa-lock"></i>
+          </div>
+
+          <div>
+            <strong>Protected data</strong>
+            <span>Your information stays private</span>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- Footer -->
+
+      <div class="login-footer">
+
+        © 2026 CORCRM
+
+        <span></span>
+
+        CORTRACKER TECHNOLOGIES
+
+      </div>
+
+    </div>
+
+  </section>
+
+</div>

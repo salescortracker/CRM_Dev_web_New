@@ -1,0 +1,1122 @@
+<div class="page-container">
+
+
+    <!-- ========================= -->
+    <!-- Page Header -->
+    <!-- ========================= -->
+
+
+    <div class="page-header">
+
+
+        <div>
+
+
+            <p class="page-subtitle">
+                CRM MODULE CONFIGURATION
+            </p>
+
+
+            <h1>
+                Opportunity Stages
+            </h1>
+
+
+            <p class="page-description">
+                Configure opportunity lifecycle stages, sales probability, forecasting categories and deal progression
+                workflow.
+            </p>
+
+
+        </div>
+
+
+
+
+
+        <div class="header-buttons">
+
+
+
+            <button class="btn btn-light" (click)="refresh()">
+
+
+
+                <i class="fa-solid fa-rotate"></i>
+
+                Refresh
+
+
+
+            </button>
+
+
+
+
+
+
+
+            <button class="btn btn-danger" (click)="openAddModal()">
+
+
+
+                <i class="fa-solid fa-plus"></i>
+
+                Add Stage
+
+
+
+            </button>
+
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+    <!-- ========================= -->
+    <!-- Statistics -->
+    <!-- ========================= -->
+
+
+    <div class="stats-grid">
+
+
+
+        <div class="stat-card">
+
+
+            <span>
+                Total Stages
+            </span>
+
+
+            <h2>
+                {{stages.length}}
+            </h2>
+
+
+        </div>
+
+
+
+
+
+
+        <div class="stat-card">
+
+
+            <span>
+                Active Stages
+            </span>
+
+
+            <h2>
+                {{activeCount}}
+            </h2>
+
+
+        </div>
+
+
+
+
+
+
+        <div class="stat-card">
+
+
+            <span>
+                Inactive Stages
+            </span>
+
+
+            <h2>
+                {{inactiveCount}}
+            </h2>
+
+
+        </div>
+
+
+
+
+
+
+        <div class="stat-card">
+
+
+            <span>
+                Default Stage
+            </span>
+
+
+            <h2>
+                {{defaultStage}}
+            </h2>
+
+
+        </div>
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+    <!-- ========================= -->
+    <!-- Search Filter -->
+    <!-- ========================= -->
+
+
+    <div class="search-panel">
+
+
+
+        <div class="search-box">
+
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+
+
+            <input type="text" placeholder="Search opportunity stage..." [(ngModel)]="searchText">
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+        <select class="form-control" [(ngModel)]="statusFilter">
+
+
+
+            <option value="">
+                All Status
+            </option>
+
+
+            <option value="Active">
+                Active
+            </option>
+
+
+            <option value="Inactive">
+                Inactive
+            </option>
+
+
+
+        </select>
+
+
+
+
+
+
+
+        <button class="btn btn-secondary" (click)="clearFilters()">
+
+
+
+            Clear
+
+
+
+        </button>
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+    <!-- ========================= -->
+    <!-- Opportunity Stage Table -->
+    <!-- ========================= -->
+
+
+    <div class="table-card">
+
+
+
+        <div class="table-header">
+
+
+
+            <h3>
+                Opportunity Stage Configuration
+            </h3>
+
+
+
+
+            <span>
+
+                {{filteredStages.length}} Records
+
+            </span>
+
+
+
+        </div>
+
+
+
+
+
+
+
+        <table>
+
+
+
+            <thead>
+
+
+                <tr>
+
+
+                    <th>
+                        Stage Name
+                    </th>
+
+
+
+                    <th>
+                        Probability
+                    </th>
+
+
+
+                    <th>
+                        Stage Order
+                    </th>
+
+
+
+                    <th>
+                        Forecast Category
+                    </th>
+
+
+
+                    <th>
+                        Stage Type
+                    </th>
+
+
+
+                    <th>
+                        Status
+                    </th>
+
+
+
+                    <th>
+                        Default
+                    </th>
+
+
+
+                    <th width="170">
+                        Actions
+                    </th>
+
+
+
+                </tr>
+
+
+            </thead>
+
+
+
+
+
+
+
+
+            <tbody>
+
+
+
+                <tr *ngFor="let item of filteredStages">
+
+
+
+
+
+
+                    <td>
+
+
+                        <div class="provider-info">
+
+
+
+                            <div class="provider-icon">
+
+
+                                <i class="fa-solid fa-layer-group"></i>
+
+
+                            </div>
+
+
+
+
+
+
+                            <div>
+
+
+                                <strong>
+
+                                    {{item.stageName}}
+
+                                </strong>
+
+
+
+                                <small>
+
+                                    {{item.stageCode}}
+
+                                </small>
+
+
+
+                            </div>
+
+
+
+                        </div>
+
+
+
+                    </td>
+
+
+
+
+
+
+
+
+                    <td>
+
+
+                        <span class="percentage-badge">
+
+
+                            {{item.probability}}%
+
+
+
+                        </span>
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <td>
+
+
+                        {{item.stageOrder}}
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <td>
+
+
+                        <span class="forecast-badge">
+
+                            {{item.forecastCategory}}
+
+                        </span>
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <td>
+
+
+                        <span class="type-badge">
+
+                            {{item.stageType}}
+
+                        </span>
+
+
+                    </td>
+
+
+
+
+
+
+
+
+                    <td>
+
+
+
+                        <span class="status" [ngClass]="item.status.toLowerCase()">
+
+
+
+                            {{item.status}}
+
+
+
+                        </span>
+
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <td>
+
+
+
+                        <span *ngIf="item.isDefault" class="default-badge">
+
+
+
+                            Default
+
+
+
+                        </span>
+
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <td>
+
+
+
+
+                        <button class="icon-btn" (click)="edit(item)">
+
+
+
+                            <i class="fa-solid fa-pen"></i>
+
+
+
+                        </button>
+
+
+
+
+
+
+
+                        <button class="icon-btn danger" (click)="delete(item.id)">
+
+
+
+                            <i class="fa-solid fa-trash"></i>
+
+
+
+                        </button>
+
+
+
+
+
+                    </td>
+
+
+
+
+
+
+
+                </tr>
+
+
+
+
+
+            </tbody>
+
+
+
+
+        </table>
+
+
+
+
+    </div>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- ================================= -->
+<!-- Add / Edit Opportunity Stage Modal -->
+<!-- ================================= -->
+
+
+<div class="modal-overlay" *ngIf="showModal">
+
+
+
+
+
+    <div class="modal-box">
+
+
+
+
+
+
+        <!-- Modal Header -->
+
+
+        <div class="modal-header">
+
+
+
+            <h3>
+
+
+                {{isEdit ? 'Edit Opportunity Stage':'Add Opportunity Stage'}}
+
+
+
+            </h3>
+
+
+
+
+
+
+            <button class="close-btn" (click)="closeModal()">
+
+
+
+                ×
+
+
+
+            </button>
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+        <!-- Modal Body -->
+
+
+        <div class="modal-body">
+
+
+
+            <div class="form-grid">
+
+
+
+
+
+
+
+                <!-- Stage Name -->
+
+
+                <div>
+
+
+                    <label>
+                        Stage Name
+                    </label>
+
+
+
+                    <input type="text" placeholder="Enter stage name" [(ngModel)]="model.stageName">
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Stage Code -->
+
+
+                <div>
+
+
+                    <label>
+                        Stage Code
+                    </label>
+
+
+
+                    <input type="text" placeholder="Example: QUALIFICATION" [(ngModel)]="model.stageCode">
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Probability -->
+
+
+                <div>
+
+
+                    <label>
+                        Probability (%)
+                    </label>
+
+
+
+
+                    <input type="number" min="0" max="100" [(ngModel)]="model.probability">
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Stage Order -->
+
+
+                <div>
+
+
+                    <label>
+                        Stage Order
+                    </label>
+
+
+
+
+                    <input type="number" [(ngModel)]="model.stageOrder">
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Forecast Category -->
+
+
+                <div>
+
+
+                    <label>
+                        Forecast Category
+                    </label>
+
+
+
+
+                    <select [(ngModel)]="model.forecastCategory">
+
+
+
+                        <option>
+                            Pipeline
+                        </option>
+
+
+                        <option>
+                            Best Case
+                        </option>
+
+
+                        <option>
+                            Commit
+                        </option>
+
+
+                        <option>
+                            Closed
+                        </option>
+
+
+                        <option>
+                            Omitted
+                        </option>
+
+
+
+                    </select>
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Stage Type -->
+
+
+                <div>
+
+
+                    <label>
+                        Stage Type
+                    </label>
+
+
+
+
+                    <select [(ngModel)]="model.stageType">
+
+
+
+                        <option>
+                            Open
+                        </option>
+
+
+                        <option>
+                            Won
+                        </option>
+
+
+                        <option>
+                            Lost
+                        </option>
+
+
+
+                    </select>
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Status -->
+
+
+                <div>
+
+
+                    <label>
+                        Status
+                    </label>
+
+
+
+
+                    <select [(ngModel)]="model.status">
+
+
+
+                        <option>
+                            Active
+                        </option>
+
+
+                        <option>
+                            Inactive
+                        </option>
+
+
+
+                    </select>
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Default Stage -->
+
+
+                <div class="checkbox-group">
+
+
+
+                    <label>
+
+
+
+                        <input type="checkbox" [(ngModel)]="model.isDefault">
+
+
+
+                        Default Stage
+
+
+
+                    </label>
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Won Stage -->
+
+
+                <div class="checkbox-group">
+
+
+
+                    <label>
+
+
+
+                        <input type="checkbox" [(ngModel)]="model.isWonStage">
+
+
+
+                        Won Stage
+
+
+
+                    </label>
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Lost Stage -->
+
+
+                <div class="checkbox-group">
+
+
+
+                    <label>
+
+
+
+                        <input type="checkbox" [(ngModel)]="model.isLostStage">
+
+
+
+                        Lost Stage
+
+
+
+                    </label>
+
+
+
+                </div>
+
+
+
+
+
+
+            </div>
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+        <!-- Modal Footer -->
+
+
+        <div class="modal-footer">
+
+
+
+
+
+            <button class="btn-secondary" (click)="closeModal()">
+
+
+
+                Cancel
+
+
+
+            </button>
+
+
+
+
+
+
+
+            <button class="btn-primary" (click)="saveStage()">
+
+
+
+                {{isEdit ? 'Update Stage':'Save Stage'}}
+
+
+
+            </button>
+
+
+
+
+
+        </div>
+    </div>
+</div>

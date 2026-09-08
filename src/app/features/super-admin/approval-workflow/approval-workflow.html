@@ -1,0 +1,213 @@
+<div class="container mt-4">
+
+    <div class="card">
+
+        <div class="card-header bg-danger text-white">
+            <h4>Approval Workflow</h4>
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+                    <label>Workflow Name <span class="text-danger">*</span></label>
+                    <input class="form-control" placeholder="Sales Quote Approval">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Module <span class="text-danger">*</span></label>
+                    <select class="form-select">
+                        <option>Quotations</option>
+                        <option>Orders</option>
+                        <option>Invoices</option>
+                        <option>Leads</option>
+                        <option>Opportunities</option>
+                        <option>Discount Approval</option>
+                        <option>Refund Requests</option>
+                        <option>Support Tickets</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Approval Level</label>
+                    <select class="form-select">
+                        <option>Level 1</option>
+                        <option>Level 2</option>
+                        <option>Level 3</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Approver Role</label>
+                    <select class="form-select">
+                        <option>Sales Executive</option>
+                        <option>Sales Manager</option>
+                        <option>Finance Manager</option>
+                        <option>Company Admin</option>
+                        <option>CEO</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Approval Type</label>
+                    <select class="form-select">
+                        <option>Single Approval</option>
+                        <option>Multiple Approval</option>
+                        <option>Sequential Approval</option>
+                        <option>Parallel Approval</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Auto Approve After (Days)</label>
+                    <input type="number" class="form-control" value="3">
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label>Approval Condition</label>
+                    <input class="form-control"
+                        placeholder="Quote Amount > 5000">
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label>Priority</label>
+                    <select class="form-select">
+                        <option>High</option>
+                        <option>Medium</option>
+                        <option>Low</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3 mt-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Active
+                    </label>
+                </div>
+
+            </div>
+
+            <button class="btn btn-danger me-2">
+                Save
+            </button>
+
+            <button class="btn btn-secondary">
+                Clear
+            </button>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="row mb-3">
+
+        <div class="col-md-4">
+            <input class="form-control"
+                placeholder="Search Approval Workflow...">
+        </div>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-danger">
+
+            <tr>
+
+                <th>#</th>
+                <th>Workflow</th>
+                <th>Module</th>
+                <th>Approval Level</th>
+                <th>Approver</th>
+                <th>Approval Type</th>
+                <th>Condition</th>
+                <th>Status</th>
+                <th width="150">Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+
+                <td>1</td>
+                <td>Sales Quote Approval</td>
+                <td>Quotation</td>
+                <td>Level 1</td>
+                <td>Sales Manager</td>
+                <td>Sequential</td>
+                <td>Amount > $5,000</td>
+                <td>Active</td>
+
+                <td>
+                    <button class="btn btn-warning btn-sm me-2">Edit</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>2</td>
+                <td>Discount Approval</td>
+                <td>Orders</td>
+                <td>Level 2</td>
+                <td>Finance Manager</td>
+                <td>Single</td>
+                <td>Discount > 20%</td>
+                <td>Active</td>
+
+                <td>
+                    <button class="btn btn-warning btn-sm me-2">Edit</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>3</td>
+                <td>Invoice Approval</td>
+                <td>Invoices</td>
+                <td>Level 1</td>
+                <td>Finance Manager</td>
+                <td>Parallel</td>
+                <td>Amount > $10,000</td>
+                <td>Active</td>
+
+                <td>
+                    <button class="btn btn-warning btn-sm me-2">Edit</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>4</td>
+                <td>Refund Approval</td>
+                <td>Refund</td>
+                <td>Level 3</td>
+                <td>Company Admin</td>
+                <td>Sequential</td>
+                <td>Refund > $2,000</td>
+                <td>Inactive</td>
+
+                <td>
+                    <button class="btn btn-warning btn-sm me-2">Edit</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+
+</div>

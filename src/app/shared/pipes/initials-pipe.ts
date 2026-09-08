@@ -1,0 +1,17 @@
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'initials',
+})
+export class InitialsPipe implements PipeTransform {
+  transform(name: string): string {
+
+    if (!name) return '';
+
+    return name
+      .split(' ')
+      .map(x => x.charAt(0))
+      .join('')
+      .toUpperCase();
+  }
+}

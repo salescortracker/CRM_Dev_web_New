@@ -1,0 +1,512 @@
+<div class="container mt-4">
+
+    <!-- ========================================= -->
+    <!-- User Limit Form -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4 class="mb-0">
+
+                <i class="fa fa-user-check me-2"></i>
+
+                User Limit Management
+
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <!-- Company -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Company
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="userLimit.company">
+
+                        <option value="">Select Company</option>
+
+                        <option>ABC Technologies</option>
+                        <option>XYZ Solutions</option>
+                        <option>Future Vision</option>
+                        <option>Global InfoTech</option>
+                        <option>NextGen Pvt Ltd</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !userLimit.company">
+
+                        Company is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Branch -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Branch
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="userLimit.branch">
+
+                        <option value="">Select Branch</option>
+
+                        <option>Hyderabad</option>
+                        <option>Bangalore</option>
+                        <option>Chennai</option>
+                        <option>Mumbai</option>
+                        <option>Pune</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !userLimit.branch">
+
+                        Branch is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Department -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Department
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="userLimit.department">
+
+                        <option value="">Select Department</option>
+
+                        <option>Sales</option>
+                        <option>HR</option>
+                        <option>Finance</option>
+                        <option>IT</option>
+                        <option>Marketing</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !userLimit.department">
+
+                        Department is required.
+
+                    </div>
+
+                </div>
+
+                <!-- User Category -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        User Category
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="userLimit.userCategory">
+
+                        <option value="">Select User Category</option>
+
+                        <option>Employee</option>
+                        <option>Manager</option>
+                        <option>Administrator</option>
+                        <option>Sales Executive</option>
+                        <option>Support Executive</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !userLimit.userCategory">
+
+                        User Category is required.
+
+                    </div>
+
+                </div>
+
+                <!-- License Type -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        License Type
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="userLimit.licenseType">
+
+                        <option value="">Select License Type</option>
+
+                        <option>Basic</option>
+                        <option>Standard</option>
+                        <option>Professional</option>
+                        <option>Enterprise</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !userLimit.licenseType">
+
+                        License Type is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Maximum Users -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Maximum Users
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="number" class="form-control" placeholder="Enter Maximum Users"
+                        [(ngModel)]="userLimit.maximumUsers">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !userLimit.maximumUsers">
+
+                        Maximum Users is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Used Users -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Used Users
+
+                    </label>
+
+                    <input type="number" class="form-control" placeholder="Used Users"
+                        [(ngModel)]="userLimit.usedUsers">
+
+                </div>
+
+                <!-- Available Users -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Available Users
+
+                    </label>
+
+                    <input type="number" class="form-control" [value]="userLimit.maximumUsers - userLimit.usedUsers"
+                        readonly>
+
+                </div>
+
+                <!-- Effective From -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Effective From
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="date" class="form-control" [(ngModel)]="userLimit.effectiveFrom">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !userLimit.effectiveFrom">
+
+                        Effective From is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Expiry Date -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Expiry Date
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="date" class="form-control" [(ngModel)]="userLimit.expiryDate">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !userLimit.expiryDate">
+
+                        Expiry Date is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Status -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Status
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="userLimit.status">
+
+                        <option value="">Select Status</option>
+
+                        <option>Active</option>
+                        <option>Inactive</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !userLimit.status">
+
+                        Status is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Description -->
+                <div class="col-md-8 mb-3">
+
+                    <label class="form-label">
+
+                        Description
+
+                    </label>
+
+                    <textarea rows="4" class="form-control" placeholder="Enter Description"
+                        [(ngModel)]="userLimit.description">
+
+                    </textarea>
+
+                </div>
+
+                <!-- Active -->
+                <div class="col-md-4 mb-3 d-flex align-items-end">
+
+                    <div class="form-check">
+
+                        <input type="checkbox" class="form-check-input" id="userLimitActive"
+                            [(ngModel)]="userLimit.isActive">
+
+                        <label class="form-check-label ms-2" for="userLimitActive">
+
+                            Active
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <button class="btn btn-danger me-2" (click)="saveUserLimit()">
+
+                <i class="fa fa-save me-1"></i>
+
+                {{ isEdit ? 'Update' : 'Save' }}
+
+            </button>
+
+            <button class="btn btn-secondary" (click)="clear()">
+
+                <i class="fa fa-eraser me-1"></i>
+
+                Clear
+
+            </button>
+
+        </div>
+
+    </div>
+    <!-- ========================================= -->
+    <!-- Search -->
+    <!-- ========================================= -->
+
+    <div class="row mt-4 mb-3">
+
+        <div class="col-md-4">
+
+            <input type="text" class="form-control" placeholder="Search User Limit..." [(ngModel)]="searchText">
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- User Limit Listing -->
+    <!-- ========================================= -->
+
+    <div class="table-responsive">
+
+        <table class="table table-bordered table-hover">
+
+            <thead class="table-danger">
+
+                <tr>
+
+                    <th>#</th>
+                    <th>Company</th>
+                    <th>Branch</th>
+                    <th>Department</th>
+                    <th>User Category</th>
+                    <th>License</th>
+                    <th>Max Users</th>
+                    <th>Used</th>
+                    <th>Available</th>
+                    <th>Status</th>
+                    <th width="140">Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr *ngIf="pagedUserLimits.length == 0">
+
+                    <td colspan="11" class="text-center text-muted">
+
+                        No User Limit Records Found
+
+                    </td>
+
+                </tr>
+
+                <tr *ngFor="let item of pagedUserLimits; let i = index">
+
+                    <td>
+
+                        {{ ((page - 1) * pageSize) + i + 1 }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.company }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.branch }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.department }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.userCategory }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.licenseType }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.maximumUsers }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.usedUsers }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.availableUsers }}
+
+                    </td>
+
+                    <td>
+
+                        <span class="badge" [ngClass]="{
+                                'bg-success': item.status == 'Active',
+                                'bg-danger': item.status == 'Inactive'
+                            }">
+
+                            {{ item.status }}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <button class="btn btn-warning btn-sm me-2" (click)="edit(item.userLimitId)">
+
+                            <i class="fa fa-edit"></i>
+
+                        </button>
+
+                        <button class="btn btn-danger btn-sm" (click)="delete(item.userLimitId)">
+
+                            <i class="fa fa-trash"></i>
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Pagination -->
+    <!-- ========================================= -->
+
+    <app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredUserLimits.length"
+        (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
+
+    </app-pagination>
+
+</div>

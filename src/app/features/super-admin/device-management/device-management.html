@@ -1,0 +1,206 @@
+<div class="container mt-4">
+
+    <div class="card">
+
+        <div class="card-header bg-danger text-white">
+            <h4>Device Management</h4>
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+                    <label>Device Policy Name <span class="text-danger">*</span></label>
+                    <input class="form-control"
+                           placeholder="Corporate Device Policy">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Applies To</label>
+                    <select class="form-select">
+                        <option>All Users</option>
+                        <option>Super Admin</option>
+                        <option>Company Admin</option>
+                        <option>Sales Team</option>
+                        <option>Support Team</option>
+                        <option>Finance Team</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Allowed Device Type</label>
+                    <select class="form-select">
+                        <option>All Devices</option>
+                        <option>Desktop Only</option>
+                        <option>Laptop Only</option>
+                        <option>Mobile Only</option>
+                        <option>Tablet Only</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Maximum Devices Per User</label>
+                    <input type="number"
+                           class="form-control"
+                           value="3">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Device Approval</label>
+                    <select class="form-select">
+                        <option>Automatic</option>
+                        <option>Admin Approval Required</option>
+                        <option>User Approval</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Device Trust Duration (Days)</label>
+                    <input type="number"
+                           class="form-control"
+                           value="30">
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label>Description</label>
+                    <textarea class="form-control"
+                              rows="2"
+                              placeholder="Enter device management policy"></textarea>
+                </div>
+
+                <div class="col-md-3 mt-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Allow Trusted Devices
+                    </label>
+                </div>
+
+                <div class="col-md-3 mt-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Active
+                    </label>
+                </div>
+
+            </div>
+
+            <button class="btn btn-danger me-2">
+                Save
+            </button>
+
+            <button class="btn btn-secondary">
+                Clear
+            </button>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="row mb-3">
+
+        <div class="col-md-4">
+            <input class="form-control"
+                   placeholder="Search Device Policy...">
+        </div>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-danger">
+
+            <tr>
+
+                <th>#</th>
+                <th>Policy Name</th>
+                <th>Applies To</th>
+                <th>Allowed Devices</th>
+                <th>Max Devices</th>
+                <th>Approval</th>
+                <th>Status</th>
+                <th width="170">Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+
+                <td>1</td>
+                <td>Corporate Device Policy</td>
+                <td>All Users</td>
+                <td>Desktop & Laptop</td>
+                <td>3</td>
+                <td>Automatic</td>
+                <td><span class="badge bg-success">Active</span></td>
+
+                <td>
+                    <button class="btn btn-warning btn-sm me-2">Edit</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>2</td>
+                <td>Administrator Devices</td>
+                <td>Super Admin</td>
+                <td>Desktop Only</td>
+                <td>2</td>
+                <td>Admin Approval</td>
+                <td><span class="badge bg-success">Active</span></td>
+
+                <td>
+                    <button class="btn btn-warning btn-sm me-2">Edit</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>3</td>
+                <td>Sales Mobile Access</td>
+                <td>Sales Team</td>
+                <td>Mobile</td>
+                <td>2</td>
+                <td>Automatic</td>
+                <td><span class="badge bg-success">Active</span></td>
+
+                <td>
+                    <button class="btn btn-warning btn-sm me-2">Edit</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>4</td>
+                <td>Support Team Devices</td>
+                <td>Support Team</td>
+                <td>All Devices</td>
+                <td>5</td>
+                <td>User Approval</td>
+                <td><span class="badge bg-secondary">Inactive</span></td>
+
+                <td>
+                    <button class="btn btn-warning btn-sm me-2">Edit</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+ 
+
+</div>

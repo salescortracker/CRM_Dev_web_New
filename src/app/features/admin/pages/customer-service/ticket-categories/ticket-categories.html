@@ -1,0 +1,985 @@
+<!-- ticket-categories.html -->
+
+<div class="container mt-4">
+
+
+    <!-- ========================================= -->
+    <!-- Ticket Category Form -->
+    <!-- ========================================= -->
+
+
+    <div class="card shadow-sm">
+
+
+        <div class="card-header bg-danger text-white">
+
+
+            <h4 class="mb-0">
+
+                <i class="fa fa-tags me-2"></i>
+
+                Ticket Categories Management
+
+            </h4>
+
+
+        </div>
+
+
+
+
+        <div class="card-body">
+
+
+
+            <div class="row">
+
+
+
+                <!-- Category Name -->
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+                        Category Name
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+
+                    <input type="text" class="form-control" placeholder="Enter Category Name"
+                        [(ngModel)]="ticketCategory.categoryName">
+
+
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !ticketCategory.categoryName">
+
+
+                        Category Name is required.
+
+
+                    </div>
+
+
+                </div>
+
+
+
+
+
+                <!-- Category Code -->
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+                        Category Code
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+
+                    <input type="text" class="form-control" placeholder="Enter Category Code"
+                        [(ngModel)]="ticketCategory.categoryCode">
+
+
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !ticketCategory.categoryCode">
+
+
+                        Category Code is required.
+
+
+                    </div>
+
+
+                </div>
+
+
+
+
+
+                <!-- Parent Category -->
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+                        Parent Category
+
+                    </label>
+
+
+                    <select class="form-select" [(ngModel)]="ticketCategory.parentCategory">
+
+
+                        <option value="">
+
+                            Select Parent Category
+
+                        </option>
+
+
+                        <option>
+
+                            Customer Support
+
+                        </option>
+
+
+                        <option>
+
+                            Technical Support
+
+                        </option>
+
+
+                        <option>
+
+                            Billing Support
+
+                        </option>
+
+
+                        <option>
+
+                            Product Support
+
+                        </option>
+
+
+                    </select>
+
+
+                </div>
+
+
+
+
+
+                <!-- Category Type -->
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+                        Category Type
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+
+                    <select class="form-select" [(ngModel)]="ticketCategory.categoryType">
+
+
+                        <option value="">
+
+                            Select Category Type
+
+                        </option>
+
+
+                        <option>
+
+                            Technical Support
+
+                        </option>
+
+
+                        <option>
+
+                            Billing Support
+
+                        </option>
+
+
+                        <option>
+
+                            Product Support
+
+                        </option>
+
+
+                        <option>
+
+                            Customer Complaint
+
+                        </option>
+
+
+                        <option>
+
+                            General Query
+
+                        </option>
+
+
+                    </select>
+
+
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !ticketCategory.categoryType">
+
+
+                        Category Type is required.
+
+
+                    </div>
+
+
+                </div>
+
+
+
+
+
+                <!-- Priority -->
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+                        Priority
+
+                    </label>
+
+
+                    <select class="form-select" [(ngModel)]="ticketCategory.priority">
+
+
+                        <option value="">
+
+                            Select Priority
+
+                        </option>
+
+
+                        <option>
+
+                            Low
+
+                        </option>
+
+
+                        <option>
+
+                            Medium
+
+                        </option>
+
+
+                        <option>
+
+                            High
+
+                        </option>
+
+
+                        <option>
+
+                            Critical
+
+                        </option>
+
+
+                    </select>
+
+
+                </div>
+
+
+
+
+
+                <!-- SLA Hours -->
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+                        SLA Hours
+
+                    </label>
+
+
+                    <input type="number" class="form-control" placeholder="Enter SLA Hours"
+                        [(ngModel)]="ticketCategory.slaHours">
+
+
+                </div>
+
+
+
+
+
+                <!-- Assigned Team -->
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+                        Assigned Team
+
+                    </label>
+
+
+                    <select class="form-select" [(ngModel)]="ticketCategory.assignedTeam">
+
+
+                        <option value="">
+
+                            Select Team
+
+                        </option>
+
+
+                        <option>
+
+                            Support Team
+
+                        </option>
+
+
+                        <option>
+
+                            Technical Team
+
+                        </option>
+
+
+                        <option>
+
+                            Sales Team
+
+                        </option>
+
+
+                        <option>
+
+                            Billing Team
+
+                        </option>
+
+
+                        <option>
+
+                            Customer Success Team
+
+                        </option>
+
+
+                    </select>
+
+
+                </div>
+
+
+
+
+
+                <!-- Status -->
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+                        Status
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+
+                    <select class="form-select" [(ngModel)]="ticketCategory.status">
+
+
+                        <option value="">
+
+                            Select Status
+
+                        </option>
+
+
+                        <option>
+
+                            Active
+
+                        </option>
+
+
+                        <option>
+
+                            Inactive
+
+                        </option>
+
+
+                        <option>
+
+                            Draft
+
+                        </option>
+
+
+                        <option>
+
+                            Archived
+
+                        </option>
+
+
+                    </select>
+
+
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !ticketCategory.status">
+
+
+                        Status is required.
+
+
+                    </div>
+
+
+                </div>
+
+
+
+
+
+                <!-- Description -->
+                <div class="col-md-8 mb-3">
+
+
+                    <label class="form-label">
+
+                        Description
+
+                    </label>
+
+
+                    <textarea rows="4" class="form-control" placeholder="Enter Description"
+                        [(ngModel)]="ticketCategory.description">
+
+
+                    </textarea>
+
+
+                </div>
+
+
+
+
+
+                <!-- Active -->
+                <div class="col-md-4 mb-3 d-flex align-items-end">
+
+
+                    <div class="form-check">
+
+
+                        <input type="checkbox" class="form-check-input" id="ticketCategoryActive"
+                            [(ngModel)]="ticketCategory.isActive">
+
+
+
+                        <label class="form-check-label ms-2" for="ticketCategoryActive">
+
+
+                            Active
+
+
+                        </label>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+
+            </div>
+
+
+
+
+
+            <hr>
+
+
+
+
+
+            <button class="btn btn-danger me-2" (click)="saveTicketCategory()">
+
+
+
+                <i class="fa fa-save me-1"></i>
+
+
+
+                {{ isEdit ? 'Update' : 'Save' }}
+
+
+
+            </button>
+
+
+
+
+
+            <button class="btn btn-secondary" (click)="clear()">
+
+
+
+                <i class="fa fa-eraser me-1"></i>
+
+
+
+                Clear
+
+
+
+            </button>
+
+
+
+
+        </div>
+
+
+
+    </div>
+    <!-- ========================================= -->
+    <!-- Search -->
+    <!-- ========================================= -->
+
+
+    <div class="row mt-4 mb-3">
+
+
+        <div class="col-md-4">
+
+
+            <input type="text" class="form-control" placeholder="Search Ticket Category..." [(ngModel)]="searchText">
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+    <!-- ========================================= -->
+    <!-- Ticket Categories Table -->
+    <!-- ========================================= -->
+
+
+    <div class="table-responsive">
+
+
+
+        <table class="table table-bordered table-hover">
+
+
+
+            <thead class="table-danger">
+
+
+
+                <tr>
+
+
+                    <th>#</th>
+
+
+                    <th>Category Code</th>
+
+
+                    <th>Category Name</th>
+
+
+                    <th>Category Type</th>
+
+
+                    <th>Priority</th>
+
+
+                    <th>SLA Hours</th>
+
+
+                    <th>Assigned Team</th>
+
+
+                    <th>Status</th>
+
+
+                    <th width="140">
+
+                        Action
+
+                    </th>
+
+
+                </tr>
+
+
+
+            </thead>
+
+
+
+
+
+            <tbody>
+
+
+
+
+
+                <tr *ngIf="pagedTicketCategories.length == 0">
+
+
+                    <td colspan="9" class="text-center text-muted">
+
+
+
+                        No Ticket Categories Found
+
+
+
+                    </td>
+
+
+                </tr>
+
+
+
+
+
+
+
+                <tr *ngFor="let item of pagedTicketCategories; let i=index">
+
+
+
+
+
+                    <td>
+
+
+                        {{ ((page - 1) * pageSize) + i + 1 }}
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+                        {{ item.categoryCode }}
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+                        {{ item.categoryName }}
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+                        <span class="badge" [ngClass]="{
+
+
+                                'bg-primary':
+
+                                item.categoryType == 'Technical Support',
+
+
+
+                                'bg-success':
+
+                                item.categoryType == 'Billing Support',
+
+
+
+                                'bg-info text-dark':
+
+                                item.categoryType == 'Product Support',
+
+
+
+                                'bg-warning text-dark':
+
+                                item.categoryType == 'Customer Complaint',
+
+
+
+                                'bg-secondary':
+
+                                item.categoryType == 'General Query'
+
+
+
+                            }">
+
+
+
+                            {{ item.categoryType }}
+
+
+
+                        </span>
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+                        <span class="badge" [ngClass]="{
+
+
+                                'bg-secondary':
+
+                                item.priority == 'Low',
+
+
+
+                                'bg-warning text-dark':
+
+                                item.priority == 'Medium',
+
+
+
+                                'bg-danger':
+
+                                item.priority == 'High',
+
+
+
+                                'bg-dark':
+
+                                item.priority == 'Critical'
+
+
+
+                            }">
+
+
+
+                            {{ item.priority }}
+
+
+
+                        </span>
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+                        {{ item.slaHours }}
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+                        {{ item.assignedTeam }}
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+
+                        <span class="badge" [ngClass]="{
+
+
+                                'bg-success':
+
+                                item.status == 'Active',
+
+
+
+                                'bg-secondary':
+
+                                item.status == 'Inactive',
+
+
+
+                                'bg-warning text-dark':
+
+                                item.status == 'Draft',
+
+
+
+                                'bg-danger':
+
+                                item.status == 'Archived'
+
+
+
+                            }">
+
+
+
+                            {{ item.status }}
+
+
+
+                        </span>
+
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+
+
+
+                        <button class="btn btn-warning btn-sm me-2" (click)="edit(item.ticketCategoryId)">
+
+
+
+                            <i class="fa fa-edit"></i>
+
+
+
+                        </button>
+
+
+
+
+
+
+
+                        <button class="btn btn-danger btn-sm" (click)="delete(item.ticketCategoryId)">
+
+
+
+                            <i class="fa fa-trash"></i>
+
+
+
+                        </button>
+
+
+
+
+
+                    </td>
+
+
+
+
+
+                </tr>
+
+
+
+
+
+            </tbody>
+
+
+
+
+
+        </table>
+
+
+
+
+    </div>
+
+
+
+
+
+
+    <!-- ========================================= -->
+    <!-- Pagination -->
+    <!-- ========================================= -->
+
+
+
+    <app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredTicketCategories.length"
+        (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
+
+
+
+    </app-pagination>
+
+
+
+
+
+</div>

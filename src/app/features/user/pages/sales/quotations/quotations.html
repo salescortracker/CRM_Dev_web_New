@@ -1,0 +1,500 @@
+<div class="container mt-4">
+
+    <!-- ========================================= -->
+    <!-- Quotation Form -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4 class="mb-0">
+                <i class="fa fa-file-signature me-2"></i>
+                Quotation Management
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <!-- Quotation Number -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Quotation Number
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Quotation Number"
+                        [(ngModel)]="quotation.quotationNumber">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !quotation.quotationNumber">
+
+                        Quotation Number is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Quotation Name -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Quotation Name
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Quotation Name"
+                        [(ngModel)]="quotation.quotationName">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !quotation.quotationName">
+
+                        Quotation Name is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Account -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Account
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="quotation.account">
+
+                        <option value="">Select Account</option>
+                        <option>ABC Technologies</option>
+                        <option>XYZ Solutions</option>
+                        <option>Future Vision</option>
+                        <option>Global InfoTech</option>
+                        <option>NextGen Pvt Ltd</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !quotation.account">
+
+                        Account is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Contact -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Contact
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="quotation.contact">
+
+                        <option value="">Select Contact</option>
+                        <option>Rahul Sharma</option>
+                        <option>Priya Reddy</option>
+                        <option>Arjun Kumar</option>
+                        <option>Sneha Patel</option>
+                        <option>Kiran Verma</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !quotation.contact">
+
+                        Contact is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Opportunity -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Opportunity
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="quotation.opportunity">
+
+                        <option value="">Select Opportunity</option>
+                        <option>CRM Implementation</option>
+                        <option>HRMS Upgrade</option>
+                        <option>ERP Integration</option>
+                        <option>Cloud Migration</option>
+                        <option>Digital Marketing Package</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !quotation.opportunity">
+
+                        Opportunity is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Sales Executive -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Sales Executive
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Sales Executive"
+                        [(ngModel)]="quotation.salesExecutive">
+
+                </div>
+
+                <!-- Quote Date -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Quote Date
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="date" class="form-control" [(ngModel)]="quotation.quoteDate">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !quotation.quoteDate">
+
+                        Quote Date is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Valid Until -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Valid Until
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="date" class="form-control" [(ngModel)]="quotation.validUntil">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !quotation.validUntil">
+
+                        Valid Until is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Currency -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Currency
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="quotation.currency">
+
+                        <option>INR</option>
+                        <option>USD</option>
+                        <option>EUR</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Payment Terms -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Payment Terms
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="quotation.paymentTerms">
+
+                        <option value="">Select Payment Terms</option>
+                        <option>Advance Payment</option>
+                        <option>Net 15 Days</option>
+                        <option>Net 30 Days</option>
+                        <option>Net 45 Days</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Tax -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+                        Tax (%)
+                    </label>
+
+                    <input type="number" class="form-control" placeholder="Tax" [(ngModel)]="quotation.tax">
+
+                </div>
+
+                <!-- Discount -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+                        Discount (%)
+                    </label>
+
+                    <input type="number" class="form-control" placeholder="Discount" [(ngModel)]="quotation.discount">
+
+                </div>
+
+                <!-- Total Amount -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+                        Total Amount
+                    </label>
+
+                    <input type="number" class="form-control" placeholder="Total Amount"
+                        [(ngModel)]="quotation.totalAmount">
+
+                </div>
+
+                <!-- Status -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+                        Status
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="quotation.status">
+
+                        <option value="">Select Status</option>
+                        <option>Draft</option>
+                        <option>Sent</option>
+                        <option>Approved</option>
+                        <option>Rejected</option>
+                        <option>Expired</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !quotation.status">
+
+                        Status is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Description -->
+                <div class="col-md-8 mb-3">
+
+                    <label class="form-label">
+                        Description
+                    </label>
+
+                    <textarea rows="4" class="form-control" placeholder="Enter Description"
+                        [(ngModel)]="quotation.description">
+
+                    </textarea>
+
+                </div>
+
+                <!-- Active -->
+                <div class="col-md-4 mb-3 d-flex align-items-end">
+
+                    <div class="form-check">
+
+                        <input type="checkbox" class="form-check-input" id="quotationActive"
+                            [(ngModel)]="quotation.isActive">
+
+                        <label class="form-check-label ms-2" for="quotationActive">
+
+                            Active
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <button class="btn btn-danger me-2" (click)="saveQuotation()">
+
+                <i class="fa fa-save me-1"></i>
+
+                {{ isEdit ? 'Update' : 'Save' }}
+
+            </button>
+
+            <button class="btn btn-secondary" (click)="clear()">
+
+                <i class="fa fa-eraser me-1"></i>
+
+                Clear
+
+            </button>
+
+        </div>
+
+    </div>
+    <!-- ========================================= -->
+    <!-- Search -->
+    <!-- ========================================= -->
+
+    <div class="row mt-4 mb-3">
+
+        <div class="col-md-4">
+
+            <input type="text" class="form-control" placeholder="Search Quotation..." [(ngModel)]="searchText">
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Quotations Table -->
+    <!-- ========================================= -->
+
+    <div class="table-responsive">
+
+        <table class="table table-bordered table-hover">
+
+            <thead class="table-danger">
+
+                <tr>
+
+                    <th>#</th>
+                    <th>Quotation No.</th>
+                    <th>Quotation Name</th>
+                    <th>Account</th>
+                    <th>Contact</th>
+                    <th>Opportunity</th>
+                    <th>Quote Date</th>
+                    <th>Valid Until</th>
+                    <th>Total Amount</th>
+                    <th>Status</th>
+                    <th width="150">Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr *ngIf="pagedQuotations.length == 0">
+
+                    <td colspan="11" class="text-center text-muted">
+
+                        No Quotations Found
+
+                    </td>
+
+                </tr>
+
+                <tr *ngFor="let item of pagedQuotations; let i = index">
+
+                    <td>
+
+                        {{ ((page - 1) * pageSize) + i + 1 }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.quotationNumber }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.quotationName }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.account }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.contact }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.opportunity }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.quoteDate }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.validUntil }}
+
+                    </td>
+
+                    <td>
+
+                        ₹ {{ item.totalAmount | number }}
+
+                    </td>
+
+                    <td>
+
+                        <span class="badge" [ngClass]="{
+                                'bg-secondary': item.status == 'Draft',
+                                'bg-primary': item.status == 'Sent',
+                                'bg-success': item.status == 'Approved',
+                                'bg-danger': item.status == 'Rejected',
+                                'bg-warning text-dark': item.status == 'Expired'
+                            }">
+
+                            {{ item.status }}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <button class="btn btn-warning btn-sm me-2" (click)="edit(item.quotationId)">
+
+                            <i class="fa fa-edit"></i>
+
+                        </button>
+
+                        <button class="btn btn-danger btn-sm" (click)="delete(item.quotationId)">
+
+                            <i class="fa fa-trash"></i>
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Pagination -->
+    <!-- ========================================= -->
+
+    <app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredQuotations.length"
+        (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
+
+    </app-pagination>
+
+</div>

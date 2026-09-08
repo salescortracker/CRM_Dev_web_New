@@ -1,0 +1,820 @@
+/*==================================================
+  PAGE
+==================================================*/
+
+.page-container {
+    padding: 24px;
+    background: #f5f7fb;
+    min-height: 100vh;
+}
+
+/*==================================================
+  HEADER
+==================================================*/
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    background: #fff;
+    border: 1px solid #e6ebf2;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, .04);
+}
+
+.page-subtitle {
+    margin: 0;
+    font-size: 12px;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: .6px;
+    color: #5b677a;
+}
+
+.page-header h1 {
+    margin: 6px 0;
+    font-size: 42px;
+    font-weight: 700;
+    color: #1f2a44;
+}
+
+.page-description {
+    margin: 0;
+    color: #667085;
+    font-size: 15px;
+}
+
+.header-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+/*==================================================
+  BUTTONS
+==================================================*/
+
+.btn {
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 10px 18px;
+    transition: .25s;
+}
+
+.btn-light {
+    background: #fff;
+    border: 1px solid #d8dee9;
+    color: #344054;
+}
+
+.btn-light:hover {
+    background: #f4f6f8;
+}
+
+.btn-danger {
+    background: #dc3545;
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background: #c82333;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: #fff;
+}
+
+/*==================================================
+  STATS
+==================================================*/
+
+.stats-grid {
+
+    display: grid;
+
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 18px;
+
+    margin-bottom: 20px;
+
+}
+
+.stat-card {
+
+    background: #fff;
+
+    border-radius: 12px;
+
+    border: 1px solid #e6ebf2;
+
+    padding: 22px;
+
+    box-shadow: 0 8px 20px rgba(15, 23, 42, .04);
+
+}
+
+.stat-card span {
+
+    display: block;
+
+    color: #667085;
+
+    font-size: 13px;
+
+    margin-bottom: 8px;
+
+}
+
+.stat-card h2 {
+
+    margin: 0;
+
+    color: #1f2a44;
+
+    font-size: 34px;
+
+}
+
+/*==================================================
+  SEARCH
+==================================================*/
+
+.search-panel {
+
+    display: grid;
+
+    grid-template-columns: 1fr 220px auto;
+
+    gap: 15px;
+
+    background: #fff;
+
+    border-radius: 12px;
+
+    padding: 20px;
+
+    margin-bottom: 20px;
+
+    border: 1px solid #e6ebf2;
+
+    box-shadow: 0 8px 20px rgba(15, 23, 42, .04);
+
+}
+
+.search-box {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    border: 1px solid #d8dee9;
+
+    border-radius: 8px;
+
+    padding: 0 14px;
+
+}
+
+.search-box input {
+
+    width: 100%;
+
+    height: 42px;
+
+    border: none;
+
+    outline: none;
+
+    background: transparent;
+
+}
+
+.search-box i {
+
+    color: #98a2b3;
+
+}
+
+.form-control {
+
+    border: 1px solid #d8dee9;
+
+    border-radius: 8px;
+
+    height: 44px;
+
+    padding: 0 12px;
+
+    outline: none;
+
+}
+
+/*==================================================
+  TABLE
+==================================================*/
+
+.table-card {
+
+    background: #fff;
+
+    border-radius: 12px;
+
+    border: 1px solid #e6ebf2;
+
+    overflow: hidden;
+
+    box-shadow: 0 8px 20px rgba(15, 23, 42, .04);
+
+}
+
+.table-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 20px;
+
+    border-bottom: 1px solid #edf1f5;
+
+}
+
+.table-header h3 {
+
+    margin: 0;
+
+    color: #1f2a44;
+
+}
+
+.table-header span {
+
+    color: #667085;
+
+}
+
+table {
+
+    width: 100%;
+
+    border-collapse: collapse;
+
+}
+
+thead {
+
+    background: #fafbfc;
+
+}
+
+thead th {
+
+    padding: 16px;
+
+    font-size: 13px;
+
+    color: #667085;
+
+    text-align: left;
+
+    border-bottom: 1px solid #edf1f5;
+
+}
+
+tbody td {
+
+    padding: 16px;
+
+    border-bottom: 1px solid #edf1f5;
+
+    color: #344054;
+
+    vertical-align: middle;
+
+}
+
+tbody tr:hover {
+
+    background: #fafcff;
+
+}
+
+/*==================================================
+  PROVIDER
+==================================================*/
+
+.provider-info {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+}
+
+.provider-icon {
+
+    width: 46px;
+
+    height: 46px;
+
+    border-radius: 10px;
+
+    background: #fdecee;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    color: #dc3545;
+
+    font-size: 18px;
+
+}
+
+.provider-info strong {
+
+    display: block;
+
+    color: #1f2a44;
+
+}
+
+.provider-info small {
+
+    color: #667085;
+
+}
+
+/*==================================================
+ BADGES
+==================================================*/
+
+.badge {
+
+    padding: 6px 12px;
+
+    border-radius: 20px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+}
+
+.badge-success {
+
+    background: #e9f9ef;
+
+    color: #0b8f3c;
+
+}
+
+.badge-danger {
+
+    background: #fdecee;
+
+    color: #dc3545;
+
+}
+
+.status {
+
+    padding: 6px 12px;
+
+    border-radius: 20px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+}
+
+.status.connected {
+
+    background: #e9f9ef;
+
+    color: #0b8f3c;
+
+}
+
+.status.disconnected {
+
+    background: #fdecee;
+
+    color: #dc3545;
+
+}
+
+.default-badge {
+
+    background: #eef3ff;
+
+    color: #2952cc;
+
+    padding: 6px 12px;
+
+    border-radius: 20px;
+
+    font-size: 12px;
+
+}
+
+/*==================================================
+ ACTION BUTTONS
+==================================================*/
+
+.icon-btn {
+
+    width: 36px;
+
+    height: 36px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: #eef2f7;
+
+    cursor: pointer;
+
+    margin-right: 6px;
+
+    transition: .25s;
+
+}
+
+.icon-btn:hover {
+
+    background: #dde7f5;
+
+}
+
+.icon-btn.danger {
+
+    background: #fdecee;
+
+    color: #dc3545;
+
+}
+
+/*==================================================
+ MODAL
+==================================================*/
+
+.modal-overlay {
+
+    position: fixed;
+
+    inset: 0;
+
+    background: rgba(0, 0, 0, .45);
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    z-index: 1000;
+
+}
+
+.modal-box {
+
+    width: 820px;
+
+    background: #fff;
+
+    border-radius: 12px;
+
+    overflow: hidden;
+
+    animation: popup .25s ease;
+
+}
+
+@keyframes popup {
+
+    from {
+
+        transform: scale(.9);
+
+        opacity: 0;
+
+    }
+
+    to {
+
+        transform: scale(1);
+
+        opacity: 1;
+
+    }
+
+}
+
+.modal-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 18px 24px;
+
+    border-bottom: 1px solid #edf1f5;
+
+}
+
+.modal-header h3 {
+
+    margin: 0;
+
+    color: #1f2a44;
+
+}
+
+.close-btn {
+
+    border: none;
+
+    background: none;
+
+    font-size: 28px;
+
+    cursor: pointer;
+
+}
+
+.modal-body {
+
+    padding: 24px;
+
+}
+
+.form-grid {
+
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 18px;
+
+}
+
+.form-grid label {
+
+    display: block;
+
+    margin-bottom: 8px;
+
+    font-size: 13px;
+
+    color: #667085;
+
+}
+
+.form-grid input,
+
+.form-grid select {
+
+    width: 100%;
+
+    height: 44px;
+
+    border: 1px solid #d8dee9;
+
+    border-radius: 8px;
+
+    padding: 0 12px;
+
+    outline: none;
+
+}
+
+.checkbox-group {
+
+    display: flex;
+
+    align-items: center;
+
+}
+
+.checkbox-group label {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+}
+
+.modal-footer {
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 12px;
+
+    padding: 20px 24px;
+
+    border-top: 1px solid #edf1f5;
+
+}
+
+/*==================================================
+ RESPONSIVE
+==================================================*/
+
+@media(max-width:992px) {
+
+    .stats-grid {
+
+        grid-template-columns: repeat(2, 1fr);
+
+    }
+
+    .search-panel {
+
+        grid-template-columns: 1fr;
+
+    }
+
+    .form-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+    .modal-box {
+
+        width: 95%;
+
+    }
+
+    .page-header {
+
+        flex-direction: column;
+
+        gap: 18px;
+
+    }
+
+}
+
+@media(max-width:768px) {
+
+    .stats-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+    .page-header h1 {
+
+        font-size: 30px;
+
+    }
+
+    .table-card {
+
+        overflow: auto;
+
+    }
+
+    table {
+
+        min-width: 900px;
+
+    }
+
+}
+
+.btn-edit {
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    padding: 7px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-right: 8px;
+}
+
+.btn-delete {
+    background: #dc2626;
+    color: #fff;
+    border: none;
+    padding: 7px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-secondary {
+    background: #64748b;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.active {
+    color: #16a34a;
+    font-weight: 700;
+}
+
+.inactive {
+    color: #dc2626;
+    font-weight: 700;
+}
+
+/* ======================================
+   MODAL ACTION BUTTONS
+====================================== */
+
+
+.btn-primary {
+
+
+    background: #f1072e;
+
+    color: #fff;
+
+    border: none;
+
+    padding: 11px 24px;
+
+    border-radius: 8px;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: .25s;
+
+}
+
+
+
+.btn-primary:hover {
+
+
+    background: #1d4ed8;
+
+    transform: translateY(-1px);
+
+}
+
+
+
+
+
+.modal-footer .btn-secondary {
+
+
+    background: #64748b;
+
+    color: #fff;
+
+    border: none;
+
+    padding: 11px 24px;
+
+    border-radius: 8px;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+}
+
+
+
+.modal-footer .btn-secondary:hover {
+
+
+    background: #475569;
+
+}

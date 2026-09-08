@@ -1,0 +1,690 @@
+<div class="super-admin-dashboard">
+
+  <!-- =====================================================
+       PAGE HEADER
+  ====================================================== -->
+
+  <div class="dashboard-header">
+
+    <div class="header-left">
+
+      <div class="breadcrumb">
+        <span>Administration</span>
+        <i class="bi bi-chevron-right"></i>
+        <strong>Super Admin Dashboard</strong>
+      </div>
+
+      <h1>Super Admin Dashboard</h1>
+
+      <p>
+        Monitor your CRM platform, companies, users,
+        subscriptions and business performance.
+      </p>
+
+    </div>
+
+
+    <div class="header-right">
+
+      <div class="date-box">
+
+        <i class="bi bi-calendar3"></i>
+
+        <span>
+          {{ currentDate | date:'dd MMM yyyy' }}
+        </span>
+
+      </div>
+
+      <button
+        type="button"
+        class="refresh-btn"
+       >
+
+        <i class="bi bi-arrow-clockwise"></i>
+
+      </button>
+
+      <button
+        type="button"
+        class="add-company-btn"
+        (click)="addCompany()">
+
+        <i class="bi bi-building-add"></i>
+
+        Add Company
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       MAIN STATISTICS
+  ====================================================== -->
+
+  <div class="stats-grid">
+
+    <div
+      class="stat-card"
+      *ngFor="let stat of statCards">
+
+      <div class="stat-card-top">
+
+        <div
+          class="stat-icon"
+          [ngClass]="stat.cssClass">
+
+          <i [class]="stat.icon"></i>
+
+        </div>
+
+        <span
+          class="trend"
+          [ngClass]="stat.trendUp
+            ? 'trend-up'
+            : 'trend-down'">
+
+          <i
+            [class]="stat.trendUp
+              ? 'bi bi-arrow-up'
+              : 'bi bi-arrow-down'">
+          </i>
+
+          {{ stat.trend }}
+
+        </span>
+
+      </div>
+
+
+      <div class="stat-content">
+
+        <span class="stat-title">
+          {{ stat.title }}
+        </span>
+
+        <strong class="stat-value">
+          {{ stat.value }}
+        </strong>
+
+        <small>
+          {{ stat.subtitle }}
+        </small>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       SECONDARY METRICS
+  ====================================================== -->
+
+  <div class="secondary-grid">
+
+    <div
+      class="secondary-card"
+      *ngFor="let stat of secondaryStats">
+
+      <div
+        class="secondary-icon"
+        [ngClass]="stat.cssClass">
+
+        <i [class]="stat.icon"></i>
+
+      </div>
+
+      <div>
+
+        <span>
+          {{ stat.title }}
+        </span>
+
+        <strong>
+          {{ stat.value }}
+        </strong>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       MAIN CONTENT GRID
+  ====================================================== -->
+
+  <div class="main-grid">
+
+
+    <!-- =================================================
+         REVENUE CHART
+    ================================================== -->
+
+    <div class="panel revenue-panel">
+
+      <div class="panel-header">
+
+        <div>
+
+          <span class="panel-label">
+            FINANCIAL OVERVIEW
+          </span>
+
+          <h2>
+            Revenue Overview
+          </h2>
+
+          <p>
+            Monthly subscription revenue
+          </p>
+
+        </div>
+
+        <button
+          type="button"
+          class="view-report-btn"
+          (click)="navigate('/superadmindashboard/reports')">
+
+          View Report
+
+          <i class="bi bi-arrow-right"></i>
+
+        </button>
+
+      </div>
+
+
+      <div class="revenue-summary">
+
+        <strong>
+          ₹18.42L
+        </strong>
+
+        <span class="positive">
+          <i class="bi bi-arrow-up"></i>
+          12.6%
+        </span>
+
+        <small>
+          vs previous month
+        </small>
+
+      </div>
+
+
+      <div class="chart-area">
+
+        <div class="chart-y-axis">
+
+          <span>20L</span>
+          <span>15L</span>
+          <span>10L</span>
+          <span>5L</span>
+          <span>0</span>
+
+        </div>
+
+
+        <div class="chart">
+
+          <div class="chart-grid-line line-1"></div>
+          <div class="chart-grid-line line-2"></div>
+          <div class="chart-grid-line line-3"></div>
+          <div class="chart-grid-line line-4"></div>
+          <div class="chart-grid-line line-5"></div>
+
+
+          <div
+            class="chart-column"
+            *ngFor="let item of revenueData">
+
+            <div class="bar-wrapper">
+
+              <div
+                class="revenue-bar"
+                [style.height.%]="getRevenueHeight(item.value)"
+                [title]="item.value + 'L'">
+              </div>
+
+            </div>
+
+            <span>
+              {{ item.month }}
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- =================================================
+         SUBSCRIPTION PLAN
+    ================================================== -->
+
+    <div class="panel subscription-panel">
+
+      <div class="panel-header">
+
+        <div>
+
+          <span class="panel-label">
+            SUBSCRIPTIONS
+          </span>
+
+          <h2>
+            Plans
+          </h2>
+
+          <p>
+            Current subscription distribution
+          </p>
+
+        </div>
+
+        <button
+          type="button"
+          class="icon-action"
+          (click)="navigate('/superadmindashboard/subscriptions')">
+
+          <i class="bi bi-three-dots"></i>
+
+        </button>
+
+      </div>
+
+
+      <div class="subscription-total">
+
+        <strong>
+          221
+        </strong>
+
+        <span>
+          Active subscriptions
+        </span>
+
+      </div>
+
+
+      <div class="plan-list">
+
+        <div
+          class="plan-item"
+          *ngFor="let plan of subscriptionPlans">
+
+          <div class="plan-info">
+
+            <div>
+
+              <span
+                class="plan-dot"
+                [ngClass]="plan.cssClass">
+              </span>
+
+              <strong>
+                {{ plan.name }}
+              </strong>
+
+            </div>
+
+            <span>
+              {{ plan.count }}
+            </span>
+
+          </div>
+
+
+          <div class="plan-progress">
+
+            <span
+              [ngClass]="plan.cssClass"
+              [style.width.%]="plan.percentage">
+            </span>
+
+          </div>
+
+
+          <small>
+            {{ plan.percentage }}% of active subscriptions
+          </small>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       QUICK ACTIONS
+  ====================================================== -->
+
+  <div class="quick-actions">
+
+    <div class="section-title">
+
+      <div>
+
+        <span>
+          ADMINISTRATION
+        </span>
+
+        <h2>
+          Quick Actions
+        </h2>
+
+      </div>
+
+    </div>
+
+
+    <div class="quick-action-grid">
+
+      <button
+        type="button"
+        class="quick-action"
+        *ngFor="let action of quickActions"
+        (click)="navigate(action.route)">
+
+        <div
+          class="quick-action-icon"
+          [ngClass]="action.cssClass">
+
+          <i [class]="action.icon"></i>
+
+        </div>
+
+        <span>
+          {{ action.title }}
+        </span>
+
+        <i class="bi bi-arrow-up-right"></i>
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       LOWER GRID
+  ====================================================== -->
+
+  <div class="lower-grid">
+
+
+    <!-- =================================================
+         RECENT COMPANIES
+    ================================================== -->
+
+    <div class="panel companies-panel">
+
+      <div class="panel-header">
+
+        <div>
+
+          <span class="panel-label">
+            TENANT MANAGEMENT
+          </span>
+
+          <h2>
+            Recent Companies
+          </h2>
+
+          <p>
+            Latest companies registered on the platform
+          </p>
+
+        </div>
+
+        <button
+          type="button"
+          class="view-all-btn"
+          (click)="navigate('/superadmindashboard/companies')">
+
+          View All
+
+          <i class="bi bi-arrow-right"></i>
+
+        </button>
+
+      </div>
+
+
+      <div class="company-table">
+
+        <div class="table-header">
+
+          <span>Company</span>
+          <span>Plan</span>
+          <span>Users</span>
+          <span>Status</span>
+          <span>Revenue</span>
+
+        </div>
+
+
+        <div
+          class="company-row"
+          *ngFor="let company of companies"
+          (click)="viewCompany(company.id)">
+
+          <div class="company-info">
+
+            <div class="company-avatar">
+
+              {{ company.name.charAt(0).toUpperCase() }}
+
+            </div>
+
+            <div>
+
+              <strong>
+                {{ company.name }}
+              </strong>
+
+              <span>
+                {{ company.email }}
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <span
+            class="plan-badge"
+            [ngClass]="getPlanClass(company.plan)">
+
+            {{ company.plan }}
+
+          </span>
+
+
+          <span class="user-count">
+
+            <i class="bi bi-people"></i>
+
+            {{ company.users }}
+
+          </span>
+
+
+          <span
+            class="status-badge"
+            [ngClass]="getStatusClass(company.status)">
+
+            <span></span>
+
+            {{ company.status }}
+
+          </span>
+
+
+          <strong class="company-revenue">
+
+            {{ formatCurrency(company.revenue) }}
+
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- =================================================
+         RECENT ACTIVITY
+    ================================================== -->
+
+    <div class="panel activity-panel">
+
+      <div class="panel-header">
+
+        <div>
+
+          <span class="panel-label">
+            SYSTEM
+          </span>
+
+          <h2>
+            Recent Activity
+          </h2>
+
+          <p>
+            Latest platform activities
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="activity-list">
+
+        <div
+          class="activity-item"
+          *ngFor="let activity of activities">
+
+          <div
+            class="activity-icon"
+            [ngClass]="activity.cssClass">
+
+            <i [class]="activity.icon"></i>
+
+          </div>
+
+
+          <div class="activity-content">
+
+            <strong>
+              {{ activity.title }}
+            </strong>
+
+            <span>
+              {{ activity.description }}
+            </span>
+
+            <small>
+              {{ activity.time }}
+            </small>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       SYSTEM HEALTH
+  ====================================================== -->
+
+  <div class="panel system-panel">
+
+    <div class="panel-header">
+
+      <div>
+
+        <span class="panel-label">
+          PLATFORM MONITORING
+        </span>
+
+        <h2>
+          System Health
+        </h2>
+
+        <p>
+          Current status of CRM platform services
+        </p>
+
+      </div>
+
+      <span class="system-status">
+
+        <span></span>
+
+        All Systems Operational
+
+      </span>
+
+    </div>
+
+
+    <div class="health-grid">
+
+      <div
+        class="health-card"
+        *ngFor="let service of systemHealth">
+
+        <div class="health-left">
+
+          <div class="health-check">
+            <i class="bi bi-check-lg"></i>
+          </div>
+
+          <div>
+
+            <strong>
+              {{ service.name }}
+            </strong>
+
+            <span>
+              {{ service.status }}
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <strong class="uptime">
+          {{ service.value }}%
+        </strong>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

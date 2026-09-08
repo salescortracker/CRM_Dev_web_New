@@ -1,0 +1,468 @@
+<div class="container mt-4">
+
+    <!-- ========================================= -->
+    <!-- Notes Form -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4 class="mb-0">
+
+                <i class="fa fa-sticky-note me-2"></i>
+
+                Notes Management
+
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <!-- Note Title -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Note Title
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Note Title" [(ngModel)]="note.noteTitle">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !note.noteTitle">
+
+                        Note Title is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Category -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Category
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="note.category">
+
+                        <option value="">Select Category</option>
+                        <option>Meeting Notes</option>
+                        <option>Call Notes</option>
+                        <option>Sales Notes</option>
+                        <option>Follow-up Notes</option>
+                        <option>Support Notes</option>
+                        <option>Internal Notes</option>
+                        <option>Customer Notes</option>
+                        <option>Other</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !note.category">
+
+                        Category is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Related To -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Related To
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="note.relatedTo">
+
+                        <option value="">Select Module</option>
+                        <option>Lead</option>
+                        <option>Account</option>
+                        <option>Contact</option>
+                        <option>Opportunity</option>
+                        <option>Quotation</option>
+                        <option>Order</option>
+                        <option>Invoice</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Customer -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Customer / Account
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="note.customer">
+
+                        <option value="">Select Customer</option>
+                        <option>ABC Technologies</option>
+                        <option>XYZ Solutions</option>
+                        <option>Future Vision</option>
+                        <option>Global InfoTech</option>
+                        <option>NextGen Pvt Ltd</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Contact Person -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Contact Person
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="note.contactPerson">
+
+                        <option value="">Select Contact</option>
+                        <option>Rahul Sharma</option>
+                        <option>Priya Reddy</option>
+                        <option>Arjun Kumar</option>
+                        <option>Sneha Patel</option>
+                        <option>Kiran Verma</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Assigned To -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Assigned To
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Assigned Employee"
+                        [(ngModel)]="note.assignedTo">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !note.assignedTo">
+
+                        Assigned To is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Priority -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Priority
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="note.priority">
+
+                        <option value="">Select Priority</option>
+                        <option>High</option>
+                        <option>Medium</option>
+                        <option>Low</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Created Date -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Created Date
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="date" class="form-control" [(ngModel)]="note.createdDate">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !note.createdDate">
+
+                        Created Date is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Reminder Date -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Reminder Date
+
+                    </label>
+
+                    <input type="date" class="form-control" [(ngModel)]="note.reminderDate">
+
+                </div>
+
+                <!-- Status -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Status
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="note.status">
+
+                        <option value="">Select Status</option>
+                        <option>Open</option>
+                        <option>In Progress</option>
+                        <option>Completed</option>
+                        <option>Closed</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !note.status">
+
+                        Status is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Active -->
+                <div class="col-md-2 mb-3 d-flex align-items-end">
+
+                    <div class="form-check">
+
+                        <input id="noteActive" type="checkbox" class="form-check-input" [(ngModel)]="note.isActive">
+
+                        <label for="noteActive" class="form-check-label ms-2">
+
+                            Active
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <!-- Description -->
+                <div class="col-md-12 mb-3">
+
+                    <label class="form-label">
+
+                        Note Description
+
+                    </label>
+
+                    <textarea rows="5" class="form-control" placeholder="Enter Note Description"
+                        [(ngModel)]="note.description">
+
+                    </textarea>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <button class="btn btn-danger me-2" (click)="saveNote()">
+
+                <i class="fa fa-save me-1"></i>
+
+                {{isEdit ? 'Update' : 'Save'}}
+
+            </button>
+
+            <button class="btn btn-secondary" (click)="clear()">
+
+                <i class="fa fa-eraser me-1"></i>
+
+                Clear
+
+            </button>
+
+        </div>
+
+    </div>
+    <!-- ========================================= -->
+    <!-- Search -->
+    <!-- ========================================= -->
+
+    <div class="row mt-4 mb-3">
+
+        <div class="col-md-4">
+
+            <input type="text" class="form-control" placeholder="Search Note..." [(ngModel)]="searchText">
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Notes Table -->
+    <!-- ========================================= -->
+
+    <div class="table-responsive">
+
+        <table class="table table-bordered table-hover">
+
+            <thead class="table-danger">
+
+                <tr>
+
+                    <th>#</th>
+                    <th>Note Title</th>
+                    <th>Customer</th>
+                    <th>Assigned To</th>
+                    <th>Category</th>
+                    <th>Created Date</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                    <th width="150">Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr *ngIf="pagedNotes.length == 0">
+
+                    <td colspan="9" class="text-center text-muted">
+
+                        No Notes Found
+
+                    </td>
+
+                </tr>
+
+                <tr *ngFor="let item of pagedNotes; let i=index">
+
+                    <td>
+
+                        {{ ((page-1) * pageSize) + i + 1 }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.noteTitle }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.customer }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.assignedTo }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.category }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.createdDate }}
+
+                    </td>
+
+                    <td>
+
+                        <span class="badge" [ngClass]="{
+
+                                'bg-danger': item.priority == 'High',
+
+                                'bg-warning text-dark': item.priority == 'Medium',
+
+                                'bg-success': item.priority == 'Low'
+
+                            }">
+
+                            {{ item.priority }}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <span class="badge" [ngClass]="{
+
+                                'bg-primary': item.status == 'Open',
+
+                                'bg-warning text-dark': item.status == 'In Progress',
+
+                                'bg-success': item.status == 'Completed',
+
+                                'bg-secondary': item.status == 'Closed'
+
+                            }">
+
+                            {{ item.status }}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <button class="btn btn-warning btn-sm me-2" (click)="edit(item.noteId)">
+
+                            <i class="fa fa-edit"></i>
+
+                        </button>
+
+                        <button class="btn btn-danger btn-sm" (click)="delete(item.noteId)">
+
+                            <i class="fa fa-trash"></i>
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Pagination -->
+    <!-- ========================================= -->
+
+    <app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredNotes.length"
+        (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
+    </app-pagination>
+
+</div>

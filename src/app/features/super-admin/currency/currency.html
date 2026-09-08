@@ -1,0 +1,233 @@
+<div class="container mt-4">
+
+    <div class="card">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4>Currency Management</h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+                    <label>Currency Name <span class="text-danger">*</span></label>
+                    <input type="text"
+                           class="form-control"
+                           placeholder="US Dollar">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Currency Code <span class="text-danger">*</span></label>
+                    <input type="text"
+                           class="form-control"
+                           placeholder="USD">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Currency Symbol</label>
+                    <input type="text"
+                           class="form-control"
+                           placeholder="$">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Country</label>
+                    <select class="form-select">
+                        <option>United States</option>
+                        <option>India</option>
+                        <option>United Kingdom</option>
+                        <option>Canada</option>
+                        <option>Australia</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Decimal Places</label>
+                    <select class="form-select">
+                        <option>2</option>
+                        <option>0</option>
+                        <option>3</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Number Format</label>
+                    <select class="form-select">
+                        <option>1,234,567.89</option>
+                        <option>1.234.567,89</option>
+                        <option>12,34,567.89</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Symbol Position</label>
+                    <select class="form-select">
+                        <option>Before Amount ($100)</option>
+                        <option>After Amount (100€)</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Exchange Rate Source</label>
+                    <select class="form-select">
+                        <option>Manual</option>
+                        <option>API</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Status</label><br>
+                    <label>
+                        <input type="checkbox" checked>
+                        Active
+                    </label>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Default Currency
+                    </label>
+                </div>
+
+            </div>
+
+            <button class="btn btn-danger me-2">
+                Save
+            </button>
+
+            <button class="btn btn-warning me-2">
+                Update
+            </button>
+
+            <button class="btn btn-secondary">
+                Clear
+            </button>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="row mb-3">
+
+        <div class="col-md-4">
+            <input type="text"
+                   class="form-control"
+                   placeholder="Search Currency...">
+        </div>
+
+        <div class="col-md-4">
+            <select class="form-select">
+                <option>All Countries</option>
+                <option>United States</option>
+                <option>India</option>
+                <option>United Kingdom</option>
+                <option>Canada</option>
+            </select>
+        </div>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-danger">
+
+            <tr>
+
+                <th>#</th>
+                <th>Currency</th>
+                <th>Code</th>
+                <th>Symbol</th>
+                <th>Country</th>
+                <th>Decimals</th>
+                <th>Default</th>
+                <th>Status</th>
+                <th width="170">Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+
+                <td>1</td>
+                <td>US Dollar</td>
+                <td>USD</td>
+                <td>$</td>
+                <td>United States</td>
+                <td>2</td>
+                <td><span class="badge bg-primary">Yes</span></td>
+                <td><span class="badge bg-success">Active</span></td>
+
+                <td>
+                    <button class="btn btn-warning btn-sm me-1">
+                        Edit
+                    </button>
+
+                    <button class="btn btn-danger btn-sm">
+                        Delete
+                    </button>
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>2</td>
+                <td>Indian Rupee</td>
+                <td>INR</td>
+                <td>₹</td>
+                <td>India</td>
+                <td>2</td>
+                <td>No</td>
+                <td><span class="badge bg-success">Active</span></td>
+
+                <td>
+                    <button class="btn btn-warning btn-sm me-1">
+                        Edit
+                    </button>
+
+                    <button class="btn btn-danger btn-sm">
+                        Delete
+                    </button>
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>3</td>
+                <td>Euro</td>
+                <td>EUR</td>
+                <td>€</td>
+                <td>European Union</td>
+                <td>2</td>
+                <td>No</td>
+                <td><span class="badge bg-success">Active</span></td>
+
+                <td>
+                    <button class="btn btn-warning btn-sm me-1">
+                        Edit
+                    </button>
+
+                    <button class="btn btn-danger btn-sm">
+                        Delete
+                    </button>
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+ 
+
+</div>

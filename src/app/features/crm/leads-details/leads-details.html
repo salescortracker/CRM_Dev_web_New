@@ -1,0 +1,4180 @@
+<div class="lead-details-page">
+
+  <!-- ========================================================= -->
+  <!-- PAGE HEADER -->
+  <!-- ========================================================= -->
+
+  <div class="page-header">
+
+    <div class="breadcrumb">
+      <span>CRM</span>
+      <i class="bi bi-chevron-right"></i>
+      <span>Leads</span>
+      <i class="bi bi-chevron-right"></i>
+      <strong>{{ lead.fullName }}</strong>
+    </div>
+
+    <div class="header-row">
+
+      <div class="lead-header-info">
+
+        <div class="lead-avatar">
+          {{ getInitials(lead.fullName) }}
+        </div>
+
+        <div class="lead-title">
+
+          <div class="title-row">
+
+            <h1>{{ lead.fullName }}</h1>
+
+            <span
+              class="status-badge"
+              [ngClass]="getLeadStatusClass()">
+              {{ lead.status }}
+            </span>
+
+          </div>
+
+          <p>
+            <i class="bi bi-building"></i>
+            {{ lead.company.name }}
+          </p>
+
+          <div class="lead-meta">
+
+            <span>
+              <i class="bi bi-envelope"></i>
+              {{ lead.email }}
+            </span>
+
+            <span>
+              <i class="bi bi-telephone"></i>
+              {{ lead.phone }}
+            </span>
+
+            <span>
+              <i class="bi bi-person"></i>
+              Owner: {{ lead.owner }}
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="header-actions">
+
+        <button
+          type="button"
+          class="btn btn-light"
+          (click)="editLead()">
+          <i class="bi bi-pencil"></i>
+          Edit
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-danger"
+          (click)="makeCall()">
+          <i class="bi bi-telephone"></i>
+          Call
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-outline-danger"
+          (click)="composeEmail()">
+          <i class="bi bi-envelope"></i>
+          Email
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ========================================================= -->
+  <!-- QUICK ACTIONS -->
+  <!-- ========================================================= -->
+
+  <div class="quick-actions">
+
+    <button
+      type="button"
+      class="quick-action"
+      (click)="makeCall()">
+
+      <span class="quick-icon call">
+        <i class="bi bi-telephone"></i>
+      </span>
+
+      <span>
+        <strong>Call</strong>
+        <small>Log a call</small>
+      </span>
+
+    </button>
+
+
+    <button
+      type="button"
+      class="quick-action"
+      (click)="scheduleFollowUp()">
+
+      <span class="quick-icon followup">
+        <i class="bi bi-calendar-check"></i>
+      </span>
+
+      <span>
+        <strong>Follow-up</strong>
+        <small>Schedule follow-up</small>
+      </span>
+
+    </button>
+
+
+    <button
+      type="button"
+      class="quick-action"
+      (click)="composeEmail()">
+
+      <span class="quick-icon email">
+        <i class="bi bi-envelope"></i>
+      </span>
+
+      <span>
+        <strong>Email</strong>
+        <small>Send email</small>
+      </span>
+
+    </button>
+
+
+    <button
+      type="button"
+      class="quick-action"
+      (click)="scheduleMeeting()">
+
+      <span class="quick-icon meeting">
+        <i class="bi bi-calendar-event"></i>
+      </span>
+
+      <span>
+        <strong>Meeting</strong>
+        <small>Schedule meeting</small>
+      </span>
+
+    </button>
+
+
+    <button
+      type="button"
+      class="quick-action"
+      (click)="createTask()">
+
+      <span class="quick-icon task">
+        <i class="bi bi-check2-square"></i>
+      </span>
+
+      <span>
+        <strong>Task</strong>
+        <small>Create task</small>
+      </span>
+
+    </button>
+
+
+    <button
+      type="button"
+      class="quick-action"
+      (click)="addNote()">
+
+      <span class="quick-icon note">
+        <i class="bi bi-sticky"></i>
+      </span>
+
+      <span>
+        <strong>Note</strong>
+        <small>Add note</small>
+      </span>
+
+    </button>
+
+  </div>
+
+
+  <!-- ========================================================= -->
+  <!-- SUMMARY -->
+  <!-- ========================================================= -->
+
+  <div class="summary-grid">
+
+    <div class="summary-card">
+
+      <div class="summary-icon score">
+        <i class="bi bi-stars"></i>
+      </div>
+
+      <div>
+        <span>Lead Score</span>
+
+        <strong [ngClass]="getScoreClass(lead.score)">
+          {{ lead.score }}
+        </strong>
+
+        <small>Excellent</small>
+      </div>
+
+    </div>
+
+
+    <div class="summary-card">
+
+      <div class="summary-icon value">
+        <i class="bi bi-currency-rupee"></i>
+      </div>
+
+      <div>
+        <span>Lead Value</span>
+        <strong>{{ lead.value }}</strong>
+        <small>{{ lead.status }}</small>
+      </div>
+
+    </div>
+
+
+    <div class="summary-card">
+
+      <div class="summary-icon activity">
+        <i class="bi bi-activity"></i>
+      </div>
+
+      <div>
+        <span>Total Activities</span>
+        <strong>{{ totalActivities }}</strong>
+        <small>All activities</small>
+      </div>
+
+    </div>
+
+
+    <div class="summary-card">
+
+      <div class="summary-icon follow">
+        <i class="bi bi-calendar-check"></i>
+      </div>
+
+      <div>
+        <span>Upcoming Follow-ups</span>
+        <strong>{{ upcomingFollowUps }}</strong>
+        <small>Scheduled</small>
+      </div>
+
+    </div>
+
+
+    <div class="summary-card">
+
+      <div class="summary-icon call">
+        <i class="bi bi-telephone"></i>
+      </div>
+
+      <div>
+        <span>Completed Calls</span>
+        <strong>{{ completedCalls }}</strong>
+        <small>Connected</small>
+      </div>
+
+    </div>
+
+
+    <div class="summary-card">
+
+      <div class="summary-icon task">
+        <i class="bi bi-check2-square"></i>
+      </div>
+
+      <div>
+        <span>Pending Tasks</span>
+        <strong>{{ pendingTasks }}</strong>
+        <small>Requires action</small>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ========================================================= -->
+  <!-- TAB NAVIGATION -->
+  <!-- ========================================================= -->
+
+  <div class="tabs-wrapper">
+
+    <div class="tabs">
+
+      <button
+        type="button"
+        *ngFor="let tab of tabs"
+        class="tab"
+        [class.active]="activeTab === tab"
+        (click)="setActiveTab(tab)">
+
+        <span>{{ tab }}</span>
+
+        <span
+          *ngIf="getTabCount(tab) !== null"
+          class="tab-count">
+          {{ getTabCount(tab) }}
+        </span>
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- ========================================================= -->
+  <!-- TAB CONTENT -->
+  <!-- ========================================================= -->
+
+  <div class="tab-content">
+
+
+    <!-- ======================================================= -->
+    <!-- OVERVIEW -->
+    <!-- ======================================================= -->
+
+    <ng-container *ngIf="activeTab === 'Overview'">
+
+      <div class="content-grid">
+
+        <div class="main-column">
+
+          <div class="card">
+
+            <div class="card-header">
+
+              <div>
+                <span class="eyebrow">Lead Information</span>
+                <h2>Overview</h2>
+              </div>
+
+              <button
+                type="button"
+                class="icon-button"
+                (click)="editLead()">
+
+                <i class="bi bi-pencil"></i>
+
+              </button>
+
+            </div>
+
+            <div class="info-grid">
+
+              <div class="info-item">
+                <span>Lead Name</span>
+                <strong>{{ lead.fullName }}</strong>
+              </div>
+
+              <div class="info-item">
+                <span>Lead Source</span>
+                <strong>{{ lead.source }}</strong>
+              </div>
+
+              <div class="info-item">
+                <span>Status</span>
+                <strong>
+                  <span
+                    class="status-badge"
+                    [ngClass]="getLeadStatusClass()">
+                    {{ lead.status }}
+                  </span>
+                </strong>
+              </div>
+
+              <div class="info-item">
+                <span>Lead Owner</span>
+                <strong>{{ lead.owner }}</strong>
+              </div>
+
+              <div class="info-item">
+                <span>Lead Value</span>
+                <strong>{{ lead.value }}</strong>
+              </div>
+
+              <div class="info-item">
+                <span>Expected Close</span>
+                <strong>{{ lead.expectedClose }}</strong>
+              </div>
+
+              <div class="info-item">
+                <span>Created Date</span>
+                <strong>{{ lead.createdDate }}</strong>
+              </div>
+
+              <div class="info-item">
+                <span>Last Contacted</span>
+                <strong>{{ lead.lastContacted }}</strong>
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="card">
+
+            <div class="card-header">
+
+              <div>
+                <span class="eyebrow">Engagement</span>
+                <h2>Recent Activities</h2>
+              </div>
+
+              <button
+                type="button"
+                class="link-button"
+                (click)="setActiveTab('Timeline')">
+
+                View Timeline
+                <i class="bi bi-arrow-right"></i>
+
+              </button>
+
+            </div>
+
+            <div
+              class="activity-preview"
+              *ngFor="let item of timeline | slice:0:5; trackBy: trackById">
+
+              <div
+                class="activity-icon"
+                [ngClass]="getTimelineTypeClass(item.type)">
+
+                <i [class]="'bi ' + item.icon"></i>
+
+              </div>
+
+              <div class="activity-info">
+
+                <strong>{{ item.title }}</strong>
+
+                <p>{{ item.description }}</p>
+
+                <small>
+                  {{ item.date }} · {{ item.time }}
+                </small>
+
+              </div>
+
+            </div>
+
+            <div
+              class="empty-state"
+              *ngIf="timeline.length === 0">
+
+              <i class="bi bi-clock-history"></i>
+              <p>No activities found.</p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="side-column">
+
+          <div class="card">
+
+            <div class="card-header">
+              <div>
+                <span class="eyebrow">Primary Contact</span>
+                <h2>Contact</h2>
+              </div>
+            </div>
+
+            <div class="contact-profile">
+
+              <div class="contact-avatar">
+                {{ getInitials(lead.fullName) }}
+              </div>
+
+              <div>
+                <strong>{{ lead.fullName }}</strong>
+                <span>{{ lead.contact.designation }}</span>
+              </div>
+
+            </div>
+
+            <div class="contact-list">
+
+              <div>
+                <i class="bi bi-envelope"></i>
+                <span>{{ lead.contact.email }}</span>
+              </div>
+
+              <div>
+                <i class="bi bi-telephone"></i>
+                <span>{{ lead.contact.phone }}</span>
+              </div>
+
+              <div>
+                <i class="bi bi-phone"></i>
+                <span>{{ lead.contact.alternatePhone }}</span>
+              </div>
+
+              <div>
+                <i class="bi bi-diagram-3"></i>
+                <span>{{ lead.contact.department }}</span>
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="card">
+
+            <div class="card-header">
+
+              <div>
+                <span class="eyebrow">Organization</span>
+                <h2>Company</h2>
+              </div>
+
+            </div>
+
+            <div class="company-profile">
+
+              <div class="company-logo">
+                <i class="bi bi-building"></i>
+              </div>
+
+              <div>
+                <strong>{{ lead.company.name }}</strong>
+                <span>{{ lead.company.industry }}</span>
+              </div>
+
+            </div>
+
+            <div class="company-details">
+
+              <div>
+                <span>Website</span>
+                <strong>{{ lead.company.website }}</strong>
+              </div>
+
+              <div>
+                <span>Company Size</span>
+                <strong>{{ lead.company.size }}</strong>
+              </div>
+
+              <div>
+                <span>Location</span>
+                <strong>
+                  {{ lead.company.city }},
+                  {{ lead.company.state }}
+                </strong>
+              </div>
+
+              <div>
+                <span>Country</span>
+                <strong>{{ lead.company.country }}</strong>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </ng-container>
+
+
+    <!-- ======================================================= -->
+    <!-- COMPANY -->
+    <!-- ======================================================= -->
+
+    <ng-container *ngIf="activeTab === 'Company'">
+
+      <div class="card">
+
+        <div class="card-header">
+
+          <div>
+            <span class="eyebrow">Organization</span>
+            <h2>Company Details</h2>
+          </div>
+
+        </div>
+
+        <div class="company-large">
+
+          <div class="company-logo large">
+            <i class="bi bi-building"></i>
+          </div>
+
+          <div>
+
+            <h3>{{ lead.company.name }}</h3>
+
+            <p>
+              {{ lead.company.industry }}
+            </p>
+
+          </div>
+
+        </div>
+
+        <div class="info-grid">
+
+          <div class="info-item">
+            <span>Company Name</span>
+            <strong>{{ lead.company.name }}</strong>
+          </div>
+
+          <div class="info-item">
+            <span>Industry</span>
+            <strong>{{ lead.company.industry }}</strong>
+          </div>
+
+          <div class="info-item">
+            <span>Company Size</span>
+            <strong>{{ lead.company.size }}</strong>
+          </div>
+
+          <div class="info-item">
+            <span>Website</span>
+            <strong>{{ lead.company.website }}</strong>
+          </div>
+
+          <div class="info-item">
+            <span>City</span>
+            <strong>{{ lead.company.city }}</strong>
+          </div>
+
+          <div class="info-item">
+            <span>State</span>
+            <strong>{{ lead.company.state }}</strong>
+          </div>
+
+          <div class="info-item">
+            <span>Country</span>
+            <strong>{{ lead.company.country }}</strong>
+          </div>
+
+        </div>
+
+      </div>
+
+    </ng-container>
+
+
+    <!-- ======================================================= -->
+    <!-- CONTACT -->
+    <!-- ======================================================= -->
+
+    <ng-container *ngIf="activeTab === 'Contact'">
+
+      <div class="card">
+
+        <div class="card-header">
+
+          <div>
+            <span class="eyebrow">Lead Contact</span>
+            <h2>Contact Details</h2>
+          </div>
+
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="composeEmail()">
+
+            <i class="bi bi-envelope"></i>
+            Send Email
+
+          </button>
+
+        </div>
+
+        <div class="contact-large">
+
+          <div class="contact-avatar large">
+            {{ getInitials(lead.fullName) }}
+          </div>
+
+          <div>
+
+            <h3>{{ lead.fullName }}</h3>
+
+            <p>
+              {{ lead.contact.designation }}
+              ·
+              {{ lead.contact.department }}
+            </p>
+
+          </div>
+
+        </div>
+
+        <div class="info-grid">
+
+          <div class="info-item">
+            <span>Full Name</span>
+            <strong>{{ lead.fullName }}</strong>
+          </div>
+
+          <div class="info-item">
+            <span>Designation</span>
+            <strong>{{ lead.contact.designation }}</strong>
+          </div>
+
+          <div class="info-item">
+            <span>Department</span>
+            <strong>{{ lead.contact.department }}</strong>
+          </div>
+
+          <div class="info-item">
+            <span>Email</span>
+            <strong>{{ lead.contact.email }}</strong>
+          </div>
+
+          <div class="info-item">
+            <span>Phone</span>
+            <strong>{{ lead.contact.phone }}</strong>
+          </div>
+
+          <div class="info-item">
+            <span>Alternate Phone</span>
+            <strong>{{ lead.contact.alternatePhone }}</strong>
+          </div>
+
+        </div>
+
+      </div>
+
+    </ng-container>
+
+
+    <!-- ======================================================= -->
+    <!-- CALLS -->
+    <!-- ======================================================= -->
+
+    <ng-container *ngIf="activeTab === 'Calls'">
+
+      <div class="card">
+
+        <div class="card-header">
+
+          <div>
+            <span class="eyebrow">Communication</span>
+            <h2>Call History</h2>
+          </div>
+
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="makeCall()">
+
+            <i class="bi bi-telephone"></i>
+            Log Call
+
+          </button>
+
+        </div>
+
+        <div class="table-wrapper">
+
+          <table class="data-table">
+
+            <thead>
+
+              <tr>
+                <th>Type</th>
+                <th>Date & Time</th>
+                <th>Duration</th>
+                <th>Status</th>
+                <th>Outcome</th>
+                <th>Notes</th>
+                <th></th>
+              </tr>
+
+            </thead>
+
+            <tbody>
+
+              <tr
+                *ngFor="let call of calls; trackBy: trackById">
+
+                <td>
+
+                  <span class="activity-type">
+
+                    <i
+                      [class]="'bi ' + getCallIcon(call.type)">
+                    </i>
+
+                    {{ call.type }}
+
+                  </span>
+
+                </td>
+
+                <td>
+                  <strong>{{ call.date }}</strong>
+                  <small>{{ call.time }}</small>
+                </td>
+
+                <td>
+                  {{ call.duration }}
+                </td>
+
+                <td>
+                  <span
+                    class="status-badge"
+                    [ngClass]="getStatusClass(call.status)">
+                    {{ call.status }}
+                  </span>
+                </td>
+
+                <td>
+                  {{ call.outcome }}
+                </td>
+
+                <td>
+                  <span class="table-description">
+                    {{ call.notes }}
+                  </span>
+                </td>
+
+                <td>
+
+                  <button
+                    type="button"
+                    class="table-action danger"
+                    (click)="deleteCall(call.id)">
+
+                    <i class="bi bi-trash"></i>
+
+                  </button>
+
+                </td>
+
+              </tr>
+
+              <tr *ngIf="calls.length === 0">
+
+                <td
+                  colspan="7"
+                  class="empty-table">
+
+                  No calls found.
+
+                </td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </ng-container>
+
+
+    <!-- ======================================================= -->
+    <!-- FOLLOW UPS -->
+    <!-- ======================================================= -->
+
+    <ng-container *ngIf="activeTab === 'Follow-ups'">
+
+      <div class="card">
+
+        <div class="card-header">
+
+          <div>
+            <span class="eyebrow">Activities</span>
+            <h2>Follow-ups</h2>
+          </div>
+
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="scheduleFollowUp()">
+
+            <i class="bi bi-plus-lg"></i>
+            Schedule Follow-up
+
+          </button>
+
+        </div>
+
+        <div class="followup-list">
+
+          <div
+            class="followup-item"
+            *ngFor="let item of followUps; trackBy: trackById">
+
+            <div
+              class="followup-icon"
+              [ngClass]="getPriorityClass(item.priority)">
+
+              <i
+                [class]="'bi ' + getFollowUpIcon(item.type)">
+              </i>
+
+            </div>
+
+            <div class="followup-content">
+
+              <div class="followup-top">
+
+                <h3>{{ item.title }}</h3>
+
+                <span
+                  class="status-badge"
+                  [ngClass]="getStatusClass(item.status)">
+                  {{ item.status }}
+                </span>
+
+              </div>
+
+              <p>{{ item.description }}</p>
+
+              <div class="followup-meta">
+
+                <span>
+                  <i class="bi bi-calendar"></i>
+                  {{ item.date }}
+                </span>
+
+                <span>
+                  <i class="bi bi-clock"></i>
+                  {{ item.time }}
+                </span>
+
+                <span
+                  class="priority"
+                  [ngClass]="getPriorityClass(item.priority)">
+                  {{ item.priority }}
+                </span>
+
+              </div>
+
+            </div>
+
+            <div class="item-actions">
+
+              <button
+                type="button"
+                class="table-action success"
+                *ngIf="item.status !== 'Completed'"
+                (click)="markFollowUpCompleted(item)">
+
+                <i class="bi bi-check-lg"></i>
+
+              </button>
+
+              <button
+                type="button"
+                class="table-action danger"
+                (click)="deleteFollowUp(item.id)">
+
+                <i class="bi bi-trash"></i>
+
+              </button>
+
+            </div>
+
+          </div>
+
+          <div
+            class="empty-state"
+            *ngIf="followUps.length === 0">
+
+            <i class="bi bi-calendar-x"></i>
+            <p>No follow-ups found.</p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </ng-container>
+
+
+    <!-- ======================================================= -->
+    <!-- EMAILS -->
+    <!-- ======================================================= -->
+
+    <ng-container *ngIf="activeTab === 'Emails'">
+
+      <div class="card">
+
+        <div class="card-header">
+
+          <div>
+            <span class="eyebrow">Communication</span>
+            <h2>Email History</h2>
+          </div>
+
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="composeEmail()">
+
+            <i class="bi bi-envelope"></i>
+            Compose Email
+
+          </button>
+
+        </div>
+
+        <div class="email-list">
+
+          <div
+            class="email-item"
+            *ngFor="let email of emails; trackBy: trackById">
+
+            <div class="email-icon">
+              <i
+                [class]="'bi ' + getEmailIcon(email.status)">
+              </i>
+            </div>
+
+            <div class="email-content">
+
+              <div class="email-top">
+
+                <h3>{{ email.subject }}</h3>
+
+                <span
+                  class="status-badge"
+                  [ngClass]="getStatusClass(email.status)">
+                  {{ email.status }}
+                </span>
+
+              </div>
+
+              <div class="email-address">
+
+                <span>
+                  <strong>From:</strong>
+                  {{ email.from }}
+                </span>
+
+                <span>
+                  <strong>To:</strong>
+                  {{ email.to }}
+                </span>
+
+              </div>
+
+              <p>{{ email.preview }}</p>
+
+              <small>
+                {{ email.date }} · {{ email.time }}
+              </small>
+
+            </div>
+
+            <button
+              type="button"
+              class="table-action danger"
+              (click)="deleteEmail(email.id)">
+
+              <i class="bi bi-trash"></i>
+
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </ng-container>
+
+
+    <!-- ======================================================= -->
+    <!-- MEETINGS -->
+    <!-- ======================================================= -->
+
+    <ng-container *ngIf="activeTab === 'Meetings'">
+
+      <div class="card">
+
+        <div class="card-header">
+
+          <div>
+            <span class="eyebrow">Calendar</span>
+            <h2>Meetings</h2>
+          </div>
+
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="scheduleMeeting()">
+
+            <i class="bi bi-plus-lg"></i>
+            Schedule Meeting
+
+          </button>
+
+        </div>
+
+        <div class="table-wrapper">
+
+          <table class="data-table">
+
+            <thead>
+
+              <tr>
+                <th>Meeting</th>
+                <th>Date & Time</th>
+                <th>Duration</th>
+                <th>Type</th>
+                <th>Location</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+
+            </thead>
+
+            <tbody>
+
+              <tr
+                *ngFor="let meeting of meetings; trackBy: trackById">
+
+                <td>
+
+                  <div class="table-primary">
+
+                    <div class="mini-icon">
+                      <i
+                        [class]="'bi ' + getMeetingIcon(meeting.type)">
+                      </i>
+                    </div>
+
+                    <div>
+                      <strong>{{ meeting.title }}</strong>
+                      <small>{{ meeting.owner }}</small>
+                    </div>
+
+                  </div>
+
+                </td>
+
+                <td>
+                  <strong>{{ meeting.date }}</strong>
+                  <small>{{ meeting.time }}</small>
+                </td>
+
+                <td>
+                  {{ meeting.duration }}
+                </td>
+
+                <td>
+                  {{ meeting.type }}
+                </td>
+
+                <td>
+                  {{ meeting.location }}
+                </td>
+
+                <td>
+                  <span
+                    class="status-badge"
+                    [ngClass]="getStatusClass(meeting.status)">
+                    {{ meeting.status }}
+                  </span>
+                </td>
+
+                <td>
+
+                  <button
+                    type="button"
+                    class="table-action danger"
+                    (click)="deleteMeeting(meeting.id)">
+
+                    <i class="bi bi-trash"></i>
+
+                  </button>
+
+                </td>
+
+              </tr>
+
+              <tr *ngIf="meetings.length === 0">
+
+                <td
+                  colspan="7"
+                  class="empty-table">
+
+                  No meetings found.
+
+                </td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </ng-container>
+
+
+    <!-- ======================================================= -->
+    <!-- TASKS -->
+    <!-- ======================================================= -->
+
+    <ng-container *ngIf="activeTab === 'Tasks'">
+
+      <div class="card">
+
+        <div class="card-header">
+
+          <div>
+            <span class="eyebrow">Work Items</span>
+            <h2>Tasks</h2>
+          </div>
+
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="createTask()">
+
+            <i class="bi bi-plus-lg"></i>
+            Create Task
+
+          </button>
+
+        </div>
+
+        <div class="task-list">
+
+          <div
+            class="task-item"
+            *ngFor="let task of tasks; trackBy: trackById">
+
+            <div class="task-check">
+
+              <button
+                type="button"
+                *ngIf="task.status !== 'Completed'"
+                [class.completed]="task.status === 'Completed'"
+                (click)="markTaskCompleted(task)">
+
+                <i class="bi bi-check"></i>
+
+              </button>
+
+              <span
+                class="completed-check"
+                *ngIf="task.status === 'Completed'">
+
+                <i class="bi bi-check-lg"></i>
+
+              </span>
+
+            </div>
+
+            <div class="task-content">
+
+              <div class="task-top">
+
+                <h3>{{ task.title }}</h3>
+
+                <span
+                  class="status-badge"
+                  [ngClass]="getStatusClass(task.status)">
+                  {{ task.status }}
+                </span>
+
+              </div>
+
+              <div class="task-meta">
+
+                <span>
+                  <i class="bi bi-calendar"></i>
+                  Due {{ task.dueDate }}
+                </span>
+
+                <span
+                  class="priority"
+                  [ngClass]="getPriorityClass(task.priority)">
+                  {{ task.priority }}
+                </span>
+
+                <span>
+                  <i class="bi bi-person"></i>
+                  {{ task.owner }}
+                </span>
+
+              </div>
+
+            </div>
+
+            <button
+              type="button"
+              class="table-action danger"
+              (click)="deleteTask(task.id)">
+
+              <i class="bi bi-trash"></i>
+
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </ng-container>
+
+
+    <!-- ======================================================= -->
+    <!-- NOTES -->
+    <!-- ======================================================= -->
+
+    <ng-container *ngIf="activeTab === 'Notes'">
+
+      <div class="card">
+
+        <div class="card-header">
+
+          <div>
+            <span class="eyebrow">Information</span>
+            <h2>Notes</h2>
+          </div>
+
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="addNote()">
+
+            <i class="bi bi-plus-lg"></i>
+            Add Note
+
+          </button>
+
+        </div>
+
+        <div class="notes-grid">
+
+          <div
+            class="note-card"
+            *ngFor="let note of notes; trackBy: trackById">
+
+            <div class="note-header">
+
+              <div class="note-category">
+
+                <i class="bi bi-sticky"></i>
+                {{ note.category }}
+
+              </div>
+
+              <div class="note-actions">
+
+                <button
+                  type="button"
+                  class="table-action"
+                  [class.active]="note.pinned"
+                  (click)="toggleNotePin(note)">
+
+                  <i
+                    [class]="note.pinned
+                      ? 'bi bi-pin-fill'
+                      : 'bi bi-pin'">
+                  </i>
+
+                </button>
+
+                <button
+                  type="button"
+                  class="table-action danger"
+                  (click)="deleteNote(note.id)">
+
+                  <i class="bi bi-trash"></i>
+
+                </button>
+
+              </div>
+
+            </div>
+
+            <h3>{{ note.title }}</h3>
+
+            <p>{{ note.description }}</p>
+
+            <div class="note-footer">
+
+              <span>
+                <i class="bi bi-person"></i>
+                {{ note.createdBy }}
+              </span>
+
+              <span>
+                {{ note.date }}
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </ng-container>
+
+
+    <!-- ======================================================= -->
+    <!-- QUOTATIONS -->
+    <!-- ======================================================= -->
+
+    <ng-container *ngIf="activeTab === 'Quotations'">
+
+      <div class="card">
+
+        <div class="card-header">
+
+          <div>
+            <span class="eyebrow">Sales</span>
+            <h2>Quotations</h2>
+          </div>
+
+          <div class="header-actions">
+
+            <div class="header-stat">
+
+              <span>Total</span>
+
+              <strong>
+                ₹{{ quotationTotal | number:'1.0-0' }}
+              </strong>
+
+            </div>
+
+            <!-- CREATE QUOTATION -->
+
+            <button
+              type="button"
+              class="btn btn-danger"
+              (click)="openNewQuotation()">
+
+              <i class="bi bi-plus-lg"></i>
+              Create Quotation
+
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <div class="financial-summary">
+
+          <div>
+            <span>Total Quotations</span>
+            <strong>{{ quotations.length }}</strong>
+          </div>
+
+          <div>
+            <span>Quotation Value</span>
+            <strong>
+              ₹{{ quotationTotal | number:'1.0-0' }}
+            </strong>
+          </div>
+
+          <div>
+            <span>Accepted</span>
+            <strong>
+              {{ quotations | json | slice:0:0 }}
+              {{ quotationAcceptedCount }}
+            </strong>
+          </div>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+          <table class="data-table">
+
+            <thead>
+
+              <tr>
+                <th>Quotation</th>
+                <th>Date</th>
+                <th>Valid Until</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+
+            </thead>
+
+            <tbody>
+
+              <tr
+                *ngFor="let quotation of quotations; trackBy: trackById">
+
+                <td>
+
+                  <div class="table-primary">
+
+                    <div class="mini-icon">
+                      <i class="bi bi-file-earmark-text"></i>
+                    </div>
+
+                    <div>
+                      <strong>
+                        {{ quotation.number }}
+                      </strong>
+
+                      <small>
+                        {{ quotation.subject || 'Sales quotation' }}
+                      </small>
+                    </div>
+
+                  </div>
+
+                </td>
+
+                <td>
+                  {{ quotation.date }}
+                </td>
+
+                <td>
+                  {{ quotation.validUntil || quotation.date }}
+                </td>
+
+                <td>
+                  <strong>
+                    ₹{{ quotation.amount | number:'1.2-2' }}
+                  </strong>
+                </td>
+
+                <td>
+
+                  <span
+                    class="status-badge"
+                    [ngClass]="getStatusClass(quotation.status)">
+
+                    {{ quotation.status }}
+
+                  </span>
+
+                </td>
+
+                <td>
+
+                  <div class="table-actions">
+
+                    <button
+                      type="button"
+                      class="table-action"
+                      title="View Quotation"
+                      (click)="viewQuotation(quotation)">
+
+                      <i class="bi bi-eye"></i>
+
+                    </button>
+
+                    <button
+                      type="button"
+                      class="table-action danger"
+                      title="Delete Quotation"
+                      (click)="deleteQuotation(quotation.id)">
+
+                      <i class="bi bi-trash"></i>
+
+                    </button>
+
+                  </div>
+
+                </td>
+
+              </tr>
+
+              <tr *ngIf="quotations.length === 0">
+
+                <td
+                  colspan="6"
+                  class="empty-table">
+
+                  No quotations found.
+
+                </td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </ng-container>
+
+
+    <!-- ======================================================= -->
+    <!-- ORDERS -->
+    <!-- ======================================================= -->
+
+    <ng-container *ngIf="activeTab === 'Orders'">
+
+      <div class="card">
+
+        <div class="card-header">
+
+          <div>
+            <span class="eyebrow">Sales</span>
+            <h2>Orders</h2>
+          </div>
+
+          <div class="header-actions">
+
+            <div class="header-stat">
+
+              <span>Total</span>
+
+              <strong>
+                ₹{{ orderTotal | number:'1.0-0' }}
+              </strong>
+
+            </div>
+
+            <!-- CREATE ORDER -->
+
+            <button
+              type="button"
+              class="btn btn-danger"
+              (click)="openNewOrder()">
+
+              <i class="bi bi-plus-lg"></i>
+              Create Order
+
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <div class="financial-summary">
+
+          <div>
+            <span>Total Orders</span>
+            <strong>{{ orders.length }}</strong>
+          </div>
+
+          <div>
+            <span>Order Value</span>
+            <strong>
+              ₹{{ orderTotal | number:'1.0-0' }}
+            </strong>
+          </div>
+
+          <div>
+            <span>Pending</span>
+            <strong>{{ pendingOrderCount }}</strong>
+          </div>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+          <table class="data-table">
+
+            <thead>
+
+              <tr>
+                <th>Order</th>
+                <th>Date</th>
+                <th>Expected Delivery</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+
+            </thead>
+
+            <tbody>
+
+              <tr
+                *ngFor="let order of orders; trackBy: trackById">
+
+                <td>
+
+                  <div class="table-primary">
+
+                    <div class="mini-icon">
+                      <i class="bi bi-cart-check"></i>
+                    </div>
+
+                    <div>
+
+                      <strong>
+                        {{ order.number }}
+                      </strong>
+
+                      <small>
+                        {{ order.subject || 'Customer order' }}
+                      </small>
+
+                    </div>
+
+                  </div>
+
+                </td>
+
+                <td>
+                  {{ order.date }}
+                </td>
+
+                <td>
+                  {{ order.expectedDelivery || '-' }}
+                </td>
+
+                <td>
+
+                  <strong>
+                    ₹{{ order.amount | number:'1.2-2' }}
+                  </strong>
+
+                </td>
+
+                <td>
+
+                  <span
+                    class="status-badge"
+                    [ngClass]="getStatusClass(order.status)">
+
+                    {{ order.status }}
+
+                  </span>
+
+                </td>
+
+                <td>
+
+                  <div class="table-actions">
+
+                    <button
+                      type="button"
+                      class="table-action"
+                      title="View Order"
+                      (click)="viewOrder(order)">
+
+                      <i class="bi bi-eye"></i>
+
+                    </button>
+
+                    <button
+                      type="button"
+                      class="table-action danger"
+                      title="Delete Order"
+                      (click)="deleteOrder(order.id)">
+
+                      <i class="bi bi-trash"></i>
+
+                    </button>
+
+                  </div>
+
+                </td>
+
+              </tr>
+
+              <tr *ngIf="orders.length === 0">
+
+                <td
+                  colspan="6"
+                  class="empty-table">
+
+                  No orders found.
+
+                </td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </ng-container>
+
+
+    <!-- ======================================================= -->
+    <!-- INVOICES -->
+    <!-- ======================================================= -->
+
+    <ng-container *ngIf="activeTab === 'Invoices'">
+
+      <div class="card">
+
+        <div class="card-header">
+
+          <div>
+            <span class="eyebrow">Financial</span>
+            <h2>Invoices</h2>
+          </div>
+
+          <div class="header-actions">
+
+            <div class="header-stat">
+
+              <span>Total</span>
+
+              <strong>
+                ₹{{ invoiceTotal | number:'1.0-0' }}
+              </strong>
+
+            </div>
+
+            <button
+              type="button"
+              class="btn btn-danger"
+              (click)="openNewInvoice()">
+
+              <i class="bi bi-plus-lg"></i>
+              New Invoice
+
+            </button>
+
+          </div>
+
+        </div>
+
+        <div class="financial-summary">
+
+          <div>
+            <span>Invoice Total</span>
+            <strong>
+              ₹{{ invoiceTotal | number:'1.0-0' }}
+            </strong>
+          </div>
+
+          <div>
+            <span>Paid</span>
+            <strong>
+              ₹{{ paidTotal | number:'1.0-0' }}
+            </strong>
+          </div>
+
+          <div>
+            <span>Outstanding</span>
+            <strong class="danger-text">
+              ₹{{ outstandingTotal | number:'1.0-0' }}
+            </strong>
+          </div>
+
+        </div>
+
+        <div class="table-wrapper">
+
+          <table class="data-table">
+
+            <thead>
+
+              <tr>
+                <th>Invoice</th>
+                <th>Date</th>
+                <th>Due Date</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+
+            </thead>
+
+            <tbody>
+
+              <tr
+                *ngFor="let invoice of invoices; trackBy: trackById">
+
+                <td>
+                  <strong>{{ invoice.number }}</strong>
+                </td>
+
+                <td>
+                  {{ invoice.date }}
+                </td>
+
+                <td>
+                  {{ invoice.dueDate }}
+                </td>
+
+                <td>
+                  <strong>{{ invoice.amount }}</strong>
+                </td>
+
+                <td>
+
+                  <span
+                    class="status-badge"
+                    [ngClass]="getStatusClass(invoice.status)">
+
+                    {{ invoice.status }}
+
+                  </span>
+
+                </td>
+
+                <td>
+
+                  <div class="table-actions">
+
+                    <button
+                      type="button"
+                      class="table-action"
+                      title="View Invoice"
+                      (click)="viewInvoice(invoice)">
+
+                      <i class="bi bi-eye"></i>
+
+                    </button>
+
+                    <button
+                      type="button"
+                      class="table-action danger"
+                      title="Delete Invoice"
+                      (click)="deleteInvoice(invoice.id)">
+
+                      <i class="bi bi-trash"></i>
+
+                    </button>
+
+                  </div>
+
+                </td>
+
+              </tr>
+
+              <tr *ngIf="invoices.length === 0">
+
+                <td
+                  colspan="6"
+                  class="empty-table">
+
+                  No invoices found.
+
+                </td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </ng-container>
+
+
+    <!-- ======================================================= -->
+    <!-- PAYMENTS -->
+    <!-- ======================================================= -->
+
+    <ng-container *ngIf="activeTab === 'Payments'">
+
+      <div class="card">
+
+        <div class="card-header">
+
+          <div>
+            <span class="eyebrow">Financial</span>
+            <h2>Payments</h2>
+          </div>
+
+          <div class="header-stat">
+
+            <span>Total Paid</span>
+
+            <strong>
+              ₹{{ paidTotal | number:'1.0-0' }}
+            </strong>
+
+          </div>
+
+        </div>
+
+        <div class="table-wrapper">
+
+          <table class="data-table">
+
+            <thead>
+
+              <tr>
+                <th>Payment</th>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Mode</th>
+                <th>Status</th>
+              </tr>
+
+            </thead>
+
+            <tbody>
+
+              <tr
+                *ngFor="let payment of payments; trackBy: trackById">
+
+                <td>
+
+                  <div class="table-primary">
+
+                    <div class="mini-icon">
+
+                      <i
+                        [class]="'bi ' + getPaymentIcon(payment.mode)">
+                      </i>
+
+                    </div>
+
+                    <strong>
+                      {{ payment.number }}
+                    </strong>
+
+                  </div>
+
+                </td>
+
+                <td>
+                  {{ payment.date }}
+                </td>
+
+                <td>
+                  <strong>{{ payment.amount }}</strong>
+                </td>
+
+                <td>
+                  {{ payment.mode }}
+                </td>
+
+                <td>
+
+                  <span
+                    class="status-badge"
+                    [ngClass]="getStatusClass(payment.status)">
+
+                    {{ payment.status }}
+
+                  </span>
+
+                </td>
+
+              </tr>
+
+              <tr *ngIf="payments.length === 0">
+
+                <td
+                  colspan="5"
+                  class="empty-table">
+
+                  No payments found.
+
+                </td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </ng-container>
+
+
+    <!-- ======================================================= -->
+    <!-- TIMELINE -->
+    <!-- ======================================================= -->
+
+    <ng-container *ngIf="activeTab === 'Timeline'">
+
+      <div class="card">
+
+        <div class="card-header">
+
+          <div>
+            <span class="eyebrow">Activity Stream</span>
+            <h2>Timeline</h2>
+          </div>
+
+          <span class="timeline-count">
+            {{ timeline.length }} Activities
+          </span>
+
+        </div>
+
+        <div class="timeline">
+
+          <div
+            class="timeline-item"
+            *ngFor="let item of timeline; trackBy: trackById">
+
+            <div
+              class="timeline-icon"
+              [ngClass]="getTimelineTypeClass(item.type)">
+
+              <i [class]="'bi ' + item.icon"></i>
+
+            </div>
+
+            <div class="timeline-line"></div>
+
+            <div class="timeline-content">
+
+              <div class="timeline-header">
+
+                <h3>{{ item.title }}</h3>
+
+                <span>
+                  {{ item.date }} · {{ item.time }}
+                </span>
+
+              </div>
+
+              <p>{{ item.description }}</p>
+
+            </div>
+
+          </div>
+
+          <div
+            class="empty-state"
+            *ngIf="timeline.length === 0">
+
+            <i class="bi bi-clock-history"></i>
+            <p>No timeline activities found.</p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </ng-container>
+
+  </div>
+
+
+  <!-- ========================================================= -->
+  <!-- ========================================================= -->
+  <!-- CREATE / ACTIVITY MODALS -->
+  <!-- ========================================================= -->
+  <!-- ========================================================= -->
+
+  <div
+    class="modal-overlay"
+    *ngIf="activeModal !== null"
+    (click)="closeModal()">
+
+    <div
+      class="crm-modal"
+      [class.sales-modal]="
+        activeModal === 'quotation' ||
+        activeModal === 'order'
+      "
+      (click)="$event.stopPropagation()">
+
+
+      <!-- ===================================================== -->
+      <!-- MODAL HEADER -->
+      <!-- ===================================================== -->
+
+      <div class="modal-header">
+
+        <div>
+
+          <span class="eyebrow">
+            CRM
+          </span>
+
+          <h2>
+            {{ getModalTitle() }}
+          </h2>
+
+        </div>
+
+        <button
+          type="button"
+          class="modal-close"
+          (click)="closeModal()">
+
+          <i class="bi bi-x-lg"></i>
+
+        </button>
+
+      </div>
+
+
+      <!-- ===================================================== -->
+      <!-- CALL MODAL -->
+      <!-- ===================================================== -->
+
+      <div
+        class="modal-body"
+        *ngIf="activeModal === 'call'">
+
+        <div class="form-grid">
+
+          <div class="form-group">
+
+            <label>Call Type</label>
+
+            <select
+              class="form-control"
+              [(ngModel)]="callForm.type">
+
+              <option value="Outbound">
+                Outbound
+              </option>
+
+              <option value="Inbound">
+                Inbound
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>Duration</label>
+
+            <input
+              type="text"
+              class="form-control"
+              placeholder="00:00"
+              [(ngModel)]="callForm.duration">
+
+          </div>
+
+
+          <div class="form-group full">
+
+            <label>Call Outcome</label>
+
+            <select
+              class="form-control"
+              [(ngModel)]="callForm.outcome">
+
+              <option value="">
+                Select outcome
+              </option>
+
+              <option value="Connected">
+                Connected
+              </option>
+
+              <option value="Interested">
+                Interested
+              </option>
+
+              <option value="Follow-up Required">
+                Follow-up Required
+              </option>
+
+              <option value="Not Interested">
+                Not Interested
+              </option>
+
+              <option value="No Answer">
+                No Answer
+              </option>
+
+              <option value="Busy">
+                Busy
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group full">
+
+            <label>Notes</label>
+
+            <textarea
+              class="form-control textarea"
+              rows="5"
+              placeholder="Enter call notes..."
+              [(ngModel)]="callForm.notes">
+            </textarea>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- ===================================================== -->
+      <!-- FOLLOW-UP MODAL -->
+      <!-- ===================================================== -->
+
+      <div
+        class="modal-body"
+        *ngIf="activeModal === 'followup'">
+
+        <div class="form-grid">
+
+          <div class="form-group full">
+
+            <label>Follow-up Title</label>
+
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Enter follow-up title"
+              [(ngModel)]="followupForm.title">
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>Type</label>
+
+            <select
+              class="form-control"
+              [(ngModel)]="followupForm.type">
+
+              <option value="Call">Call</option>
+              <option value="Email">Email</option>
+              <option value="Meeting">Meeting</option>
+              <option value="Task">Task</option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>Priority</label>
+
+            <select
+              class="form-control"
+              [(ngModel)]="followupForm.priority">
+
+              <option value="Low">Low</option>
+              <option value="Medium">Medium</option>
+              <option value="High">High</option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>Date</label>
+
+            <input
+              type="date"
+              class="form-control"
+              [(ngModel)]="followupForm.date">
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>Time</label>
+
+            <input
+              type="time"
+              class="form-control"
+              [(ngModel)]="followupForm.time">
+
+          </div>
+
+
+          <div class="form-group full">
+
+            <label>Description</label>
+
+            <textarea
+              class="form-control textarea"
+              rows="4"
+              placeholder="Enter description..."
+              [(ngModel)]="followupForm.description">
+            </textarea>
+
+          </div>
+
+
+          <div class="form-group full">
+
+            <label class="checkbox-row">
+
+              <input
+                type="checkbox"
+                [(ngModel)]="followupForm.reminder">
+
+              <span>
+                Set reminder
+              </span>
+
+            </label>
+
+          </div>
+
+
+          <div
+            class="form-group"
+            *ngIf="followupForm.reminder">
+
+            <label>Reminder Before</label>
+
+            <select
+              class="form-control"
+              [(ngModel)]="followupForm.reminderMinutes">
+
+              <option [ngValue]="5">
+                5 minutes
+              </option>
+
+              <option [ngValue]="15">
+                15 minutes
+              </option>
+
+              <option [ngValue]="30">
+                30 minutes
+              </option>
+
+              <option [ngValue]="60">
+                1 hour
+              </option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- ===================================================== -->
+      <!-- EMAIL MODAL -->
+      <!-- ===================================================== -->
+
+      <div
+        class="modal-body"
+        *ngIf="activeModal === 'email'">
+
+        <div class="form-grid">
+
+          <div class="form-group full">
+
+            <label>To</label>
+
+            <input
+              type="email"
+              class="form-control"
+              placeholder="recipient@example.com"
+              [(ngModel)]="emailForm.to">
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>CC</label>
+
+            <input
+              type="text"
+              class="form-control"
+              placeholder="CC recipients"
+              [(ngModel)]="emailForm.cc">
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>BCC</label>
+
+            <input
+              type="text"
+              class="form-control"
+              placeholder="BCC recipients"
+              [(ngModel)]="emailForm.bcc">
+
+          </div>
+
+
+          <div class="form-group full">
+
+            <label>Subject</label>
+
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Enter email subject"
+              [(ngModel)]="emailForm.subject">
+
+          </div>
+
+
+          <div class="form-group full">
+
+            <label>Message</label>
+
+            <textarea
+              class="form-control textarea email-message"
+              rows="9"
+              placeholder="Write your email..."
+              [(ngModel)]="emailForm.message">
+            </textarea>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- ===================================================== -->
+      <!-- MEETING MODAL -->
+      <!-- ===================================================== -->
+
+      <div
+        class="modal-body"
+        *ngIf="activeModal === 'meeting'">
+
+        <div class="form-grid">
+
+          <div class="form-group full">
+
+            <label>Meeting Title</label>
+
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Enter meeting title"
+              [(ngModel)]="meetingForm.title">
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>Date</label>
+
+            <input
+              type="date"
+              class="form-control"
+              [(ngModel)]="meetingForm.date">
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>Time</label>
+
+            <input
+              type="time"
+              class="form-control"
+              [(ngModel)]="meetingForm.time">
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>Duration</label>
+
+            <select
+              class="form-control"
+              [(ngModel)]="meetingForm.duration">
+
+              <option value="15">15 Minutes</option>
+              <option value="30">30 Minutes</option>
+              <option value="45">45 Minutes</option>
+              <option value="60">60 Minutes</option>
+              <option value="90">90 Minutes</option>
+              <option value="120">120 Minutes</option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>Meeting Type</label>
+
+            <select
+              class="form-control"
+              [(ngModel)]="meetingForm.type">
+
+              <option value="Online">
+                Online
+              </option>
+
+              <option value="In-Person">
+                In-Person
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group full">
+
+            <label>Location / Meeting Link</label>
+
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Microsoft Teams / Google Meet / Office"
+              [(ngModel)]="meetingForm.location">
+
+          </div>
+
+
+          <div class="form-group full">
+
+            <label>Description</label>
+
+            <textarea
+              class="form-control textarea"
+              rows="4"
+              placeholder="Enter meeting details..."
+              [(ngModel)]="meetingForm.description">
+            </textarea>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- ===================================================== -->
+      <!-- TASK MODAL -->
+      <!-- ===================================================== -->
+
+      <div
+        class="modal-body"
+        *ngIf="activeModal === 'task'">
+
+        <div class="form-grid">
+
+          <div class="form-group full">
+
+            <label>Task Title</label>
+
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Enter task title"
+              [(ngModel)]="taskForm.title">
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>Due Date</label>
+
+            <input
+              type="date"
+              class="form-control"
+              [(ngModel)]="taskForm.dueDate">
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>Priority</label>
+
+            <select
+              class="form-control"
+              [(ngModel)]="taskForm.priority">
+
+              <option value="Low">Low</option>
+              <option value="Medium">Medium</option>
+              <option value="High">High</option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group full">
+
+            <label>Description</label>
+
+            <textarea
+              class="form-control textarea"
+              rows="5"
+              placeholder="Enter task description..."
+              [(ngModel)]="taskForm.description">
+            </textarea>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- ===================================================== -->
+      <!-- NOTE MODAL -->
+      <!-- ===================================================== -->
+
+      <div
+        class="modal-body"
+        *ngIf="activeModal === 'note'">
+
+        <div class="form-grid">
+
+          <div class="form-group full">
+
+            <label>Note Title</label>
+
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Enter note title"
+              [(ngModel)]="noteForm.title">
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>Category</label>
+
+            <select
+              class="form-control"
+              [(ngModel)]="noteForm.category">
+
+              <option value="General">General</option>
+              <option value="Requirement">Requirement</option>
+              <option value="Commercial">Commercial</option>
+              <option value="Technical">Technical</option>
+              <option value="Internal">Internal</option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>Visibility</label>
+
+            <select
+              class="form-control"
+              [(ngModel)]="noteForm.visibility">
+
+              <option value="Everyone">Everyone</option>
+              <option value="Sales Team">Sales Team</option>
+              <option value="Private">Private</option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group full">
+
+            <label class="checkbox-row">
+
+              <input
+                type="checkbox"
+                [(ngModel)]="noteForm.pinned">
+
+              <span>
+                Pin this note
+              </span>
+
+            </label>
+
+          </div>
+
+
+          <div class="form-group full">
+
+            <label>Description</label>
+
+            <textarea
+              class="form-control textarea"
+              rows="8"
+              placeholder="Write your note..."
+              [(ngModel)]="noteForm.description">
+            </textarea>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- ===================================================== -->
+      <!-- CREATE QUOTATION MODAL -->
+      <!-- ===================================================== -->
+
+      <div
+        class="modal-body sales-form-body"
+        *ngIf="activeModal === 'quotation'">
+
+        <!-- CUSTOMER -->
+
+        <div class="sales-section">
+
+          <div class="sales-section-header">
+
+            <div>
+              <span class="eyebrow">Customer</span>
+              <h3>Quotation Information</h3>
+            </div>
+
+            <span class="document-badge quotation">
+              <i class="bi bi-file-earmark-text"></i>
+              QUOTATION
+            </span>
+
+          </div>
+
+
+          <div class="form-grid">
+
+            <div class="form-group">
+
+              <label>Quotation Number</label>
+
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="quotationForm.number"
+                placeholder="QT-2026-001">
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label>Quotation Date</label>
+
+              <input
+                type="date"
+                class="form-control"
+                [(ngModel)]="quotationForm.date">
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label>Valid Until</label>
+
+              <input
+                type="date"
+                class="form-control"
+                [(ngModel)]="quotationForm.validUntil">
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label>Status</label>
+
+              <select
+                class="form-control"
+                [(ngModel)]="quotationForm.status">
+
+                <option value="Draft">
+                  Draft
+                </option>
+
+                <option value="Sent">
+                  Sent
+                </option>
+
+                <option value="Accepted">
+                  Accepted
+                </option>
+
+                <option value="Rejected">
+                  Rejected
+                </option>
+
+                <option value="Expired">
+                  Expired
+                </option>
+
+              </select>
+
+            </div>
+
+
+            <div class="form-group full">
+
+              <label>Subject</label>
+
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="quotationForm.subject"
+                placeholder="Quotation for CRM implementation">
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label>Company</label>
+
+              <input
+                type="text"
+                class="form-control"
+                [value]="lead.company.name"
+                readonly>
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label>Contact Person</label>
+
+              <input
+                type="text"
+                class="form-control"
+                [value]="lead.fullName"
+                readonly>
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label>Email</label>
+
+              <input
+                type="text"
+                class="form-control"
+                [value]="lead.email"
+                readonly>
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label>Phone</label>
+
+              <input
+                type="text"
+                class="form-control"
+                [value]="lead.phone"
+                readonly>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- ITEMS -->
+
+        <div class="sales-section">
+
+          <div class="sales-section-header">
+
+            <div>
+              <span class="eyebrow">Products & Services</span>
+              <h3>Quotation Items</h3>
+            </div>
+
+            <button
+              type="button"
+              class="btn btn-light"
+              (click)="addQuotationItem()">
+
+              <i class="bi bi-plus-lg"></i>
+              Add Item
+
+            </button>
+
+          </div>
+
+
+          <div class="sales-items-wrapper">
+
+            <table class="sales-items-table">
+
+              <thead>
+
+                <tr>
+                  <th width="30%">Product / Service</th>
+                  <th width="20%">Description</th>
+                  <th width="10%">Qty</th>
+                  <th width="15%">Rate</th>
+                  <th width="10%">Discount %</th>
+                  <th width="15%">Amount</th>
+                  <th width="5%"></th>
+                </tr>
+
+              </thead>
+
+              <tbody>
+
+                <tr
+                  *ngFor="
+                    let item of quotationForm.items;
+                    let i = index
+                  ">
+
+                  <td>
+
+                    <input
+                      type="text"
+                      class="form-control"
+                      [(ngModel)]="item.product"
+                      placeholder="Product / Service">
+
+                  </td>
+
+
+                  <td>
+
+                    <input
+                      type="text"
+                      class="form-control"
+                      [(ngModel)]="item.description"
+                      placeholder="Description">
+
+                  </td>
+
+
+                  <td>
+
+                    <input
+                      type="number"
+                      class="form-control text-right"
+                      min="1"
+                      [(ngModel)]="item.quantity"
+                      (ngModelChange)="calculateQuotationItemTotal(item)">
+
+                  </td>
+
+
+                  <td>
+
+                    <input
+                      type="number"
+                      class="form-control text-right"
+                      min="0"
+                      [(ngModel)]="item.rate"
+                      (ngModelChange)="calculateQuotationItemTotal(item)">
+
+                  </td>
+
+
+                  <td>
+
+                    <input
+                      type="number"
+                      class="form-control text-right"
+                      min="0"
+                      max="100"
+                      [(ngModel)]="item.discount"
+                      (ngModelChange)="calculateQuotationItemTotal(item)">
+
+                  </td>
+
+
+                  <td>
+
+                    <strong class="item-total">
+                      ₹{{ calculateQuotationItemTotal(item) | number:'1.2-2' }}
+                    </strong>
+
+                  </td>
+
+
+                  <td>
+
+                    <button
+                      type="button"
+                      class="table-action danger"
+                      *ngIf="quotationForm.items.length > 1"
+                      (click)="removeQuotationItem(i)">
+
+                      <i class="bi bi-trash"></i>
+
+                    </button>
+
+                  </td>
+
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+
+        <!-- TOTALS -->
+
+        <div class="sales-total-layout">
+
+          <div class="sales-notes">
+
+            <div class="form-group">
+
+              <label>Customer Notes</label>
+
+              <textarea
+                class="form-control textarea"
+                rows="4"
+                placeholder="Add notes for the customer..."
+                [(ngModel)]="quotationForm.notes">
+              </textarea>
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label>Terms & Conditions</label>
+
+              <textarea
+                class="form-control textarea"
+                rows="4"
+                placeholder="Payment terms, delivery terms..."
+                [(ngModel)]="quotationForm.terms">
+              </textarea>
+
+            </div>
+
+          </div>
+
+
+          <div class="sales-total-box">
+
+            <div>
+
+              <span>Sub Total</span>
+
+              <strong>
+                ₹{{ quotationSubTotal | number:'1.2-2' }}
+              </strong>
+
+            </div>
+
+
+            <div>
+
+              <span>Discount</span>
+
+              <strong>
+                - ₹{{ quotationDiscount | number:'1.2-2' }}
+              </strong>
+
+            </div>
+
+
+            <div class="sales-tax-row">
+
+              <span>Tax</span>
+
+              <div class="tax-inline">
+
+                <input
+                  type="number"
+                  class="form-control tax-input"
+                  min="0"
+                  max="100"
+                  [(ngModel)]="quotationForm.taxPercent"
+                  (ngModelChange)="calculateQuotationTotals()">
+
+                <span>%</span>
+
+              </div>
+
+              <strong>
+                ₹{{ quotationTax | number:'1.2-2' }}
+              </strong>
+
+            </div>
+
+
+            <div class="grand-total">
+
+              <span>Grand Total</span>
+
+              <strong>
+                ₹{{ quotationGrandTotal | number:'1.2-2' }}
+              </strong>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- ===================================================== -->
+      <!-- CREATE ORDER MODAL -->
+      <!-- ===================================================== -->
+
+      <div
+        class="modal-body sales-form-body"
+        *ngIf="activeModal === 'order'">
+
+        <!-- ORDER INFORMATION -->
+
+        <div class="sales-section">
+
+          <div class="sales-section-header">
+
+            <div>
+              <span class="eyebrow">Sales Order</span>
+              <h3>Order Information</h3>
+            </div>
+
+            <span class="document-badge order">
+              <i class="bi bi-cart-check"></i>
+              SALES ORDER
+            </span>
+
+          </div>
+
+
+          <div class="form-grid">
+
+            <div class="form-group">
+
+              <label>Order Number</label>
+
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="orderForm.number"
+                placeholder="SO-2026-001">
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label>Order Date</label>
+
+              <input
+                type="date"
+                class="form-control"
+                [(ngModel)]="orderForm.date">
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label>Expected Delivery</label>
+
+              <input
+                type="date"
+                class="form-control"
+                [(ngModel)]="orderForm.expectedDelivery">
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label>Status</label>
+
+              <select
+                class="form-control"
+                [(ngModel)]="orderForm.status">
+
+                <option value="Draft">
+                  Draft
+                </option>
+
+                <option value="Confirmed">
+                  Confirmed
+                </option>
+
+                <option value="Processing">
+                  Processing
+                </option>
+
+                <option value="Shipped">
+                  Shipped
+                </option>
+
+                <option value="Delivered">
+                  Delivered
+                </option>
+
+                <option value="Cancelled">
+                  Cancelled
+                </option>
+
+              </select>
+
+            </div>
+
+
+            <div class="form-group full">
+
+              <label>Subject</label>
+
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="orderForm.subject"
+                placeholder="Customer sales order">
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label>Company</label>
+
+              <input
+                type="text"
+                class="form-control"
+                [value]="lead.company.name"
+                readonly>
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label>Contact Person</label>
+
+              <input
+                type="text"
+                class="form-control"
+                [value]="lead.fullName"
+                readonly>
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label>Email</label>
+
+              <input
+                type="text"
+                class="form-control"
+                [value]="lead.email"
+                readonly>
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label>Phone</label>
+
+              <input
+                type="text"
+                class="form-control"
+                [value]="lead.phone"
+                readonly>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- ORDER ITEMS -->
+
+        <div class="sales-section">
+
+          <div class="sales-section-header">
+
+            <div>
+              <span class="eyebrow">Products & Services</span>
+              <h3>Order Items</h3>
+            </div>
+
+            <button
+              type="button"
+              class="btn btn-light"
+              (click)="addOrderItem()">
+
+              <i class="bi bi-plus-lg"></i>
+              Add Item
+
+            </button>
+
+          </div>
+
+
+          <div class="sales-items-wrapper">
+
+            <table class="sales-items-table">
+
+              <thead>
+
+                <tr>
+                  <th width="30%">Product / Service</th>
+                  <th width="20%">Description</th>
+                  <th width="10%">Qty</th>
+                  <th width="15%">Rate</th>
+                  <th width="10%">Discount %</th>
+                  <th width="15%">Amount</th>
+                  <th width="5%"></th>
+                </tr>
+
+              </thead>
+
+              <tbody>
+
+                <tr
+                  *ngFor="
+                    let item of orderForm.items;
+                    let i = index
+                  ">
+
+                  <td>
+
+                    <input
+                      type="text"
+                      class="form-control"
+                      [(ngModel)]="item.product"
+                      placeholder="Product / Service">
+
+                  </td>
+
+
+                  <td>
+
+                    <input
+                      type="text"
+                      class="form-control"
+                      [(ngModel)]="item.description"
+                      placeholder="Description">
+
+                  </td>
+
+
+                  <td>
+
+                    <input
+                      type="number"
+                      class="form-control text-right"
+                      min="1"
+                      [(ngModel)]="item.quantity"
+                      (ngModelChange)="calculateOrderItemTotal(item)">
+
+                  </td>
+
+
+                  <td>
+
+                    <input
+                      type="number"
+                      class="form-control text-right"
+                      min="0"
+                      [(ngModel)]="item.rate"
+                      (ngModelChange)="calculateOrderItemTotal(item)">
+
+                  </td>
+
+
+                  <td>
+
+                    <input
+                      type="number"
+                      class="form-control text-right"
+                      min="0"
+                      max="100"
+                      [(ngModel)]="item.discount"
+                      (ngModelChange)="calculateOrderItemTotal(item)">
+
+                  </td>
+
+
+                  <td>
+
+                    <strong class="item-total">
+                      ₹{{ calculateOrderItemTotal(item) | number:'1.2-2' }}
+                    </strong>
+
+                  </td>
+
+
+                  <td>
+
+                    <button
+                      type="button"
+                      class="table-action danger"
+                      *ngIf="orderForm.items.length > 1"
+                      (click)="removeOrderItem(i)">
+
+                      <i class="bi bi-trash"></i>
+
+                    </button>
+
+                  </td>
+
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+
+        <!-- ORDER TOTALS -->
+
+        <div class="sales-total-layout">
+
+          <div class="sales-notes">
+
+            <div class="form-group">
+
+              <label>Shipping Address</label>
+
+              <textarea
+                class="form-control textarea"
+                rows="5"
+                placeholder="Enter delivery / shipping address..."
+                [(ngModel)]="orderForm.shippingAddress">
+              </textarea>
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label>Order Notes</label>
+
+              <textarea
+                class="form-control textarea"
+                rows="4"
+                placeholder="Add order notes..."
+                [(ngModel)]="orderForm.notes">
+              </textarea>
+
+            </div>
+
+          </div>
+
+
+          <div class="sales-total-box">
+
+            <div>
+
+              <span>Sub Total</span>
+
+              <strong>
+                ₹{{ orderSubTotal | number:'1.2-2' }}
+              </strong>
+
+            </div>
+
+
+            <div>
+
+              <span>Discount</span>
+
+              <strong>
+                - ₹{{ orderDiscount | number:'1.2-2' }}
+              </strong>
+
+            </div>
+
+
+            <div class="sales-tax-row">
+
+              <span>Tax</span>
+
+              <div class="tax-inline">
+
+                <input
+                  type="number"
+                  class="form-control tax-input"
+                  min="0"
+                  max="100"
+                  [(ngModel)]="orderForm.taxPercent"
+                  (ngModelChange)="calculateOrderTotals()">
+
+                <span>%</span>
+
+              </div>
+
+              <strong>
+                ₹{{ orderTax | number:'1.2-2' }}
+              </strong>
+
+            </div>
+
+
+            <div class="grand-total">
+
+              <span>Grand Total</span>
+
+              <strong>
+                ₹{{ orderGrandTotal | number:'1.2-2' }}
+              </strong>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- ===================================================== -->
+      <!-- MODAL FOOTER -->
+      <!-- ===================================================== -->
+
+      <div class="modal-footer">
+
+        <button
+          type="button"
+          class="btn btn-light"
+          (click)="closeModal()">
+
+          Cancel
+
+        </button>
+
+
+        <!-- CALL -->
+
+        <button
+          type="button"
+          class="btn btn-danger"
+          *ngIf="activeModal === 'call'"
+          (click)="saveCall()">
+
+          <i class="bi bi-check-lg"></i>
+          Save Call
+
+        </button>
+
+
+        <!-- FOLLOW UP -->
+
+        <button
+          type="button"
+          class="btn btn-danger"
+          *ngIf="activeModal === 'followup'"
+          (click)="saveFollowUp()">
+
+          <i class="bi bi-calendar-check"></i>
+          Schedule Follow-up
+
+        </button>
+
+
+        <!-- EMAIL -->
+
+        <button
+          type="button"
+          class="btn btn-danger"
+          *ngIf="activeModal === 'email'"
+          (click)="sendEmail()">
+
+          <i class="bi bi-send"></i>
+          Send Email
+
+        </button>
+
+
+        <!-- MEETING -->
+
+        <button
+          type="button"
+          class="btn btn-danger"
+          *ngIf="activeModal === 'meeting'"
+          (click)="saveMeeting()">
+
+          <i class="bi bi-calendar-check"></i>
+          Schedule Meeting
+
+        </button>
+
+
+        <!-- TASK -->
+
+        <button
+          type="button"
+          class="btn btn-danger"
+          *ngIf="activeModal === 'task'"
+          (click)="saveTask()">
+
+          <i class="bi bi-check2-square"></i>
+          Create Task
+
+        </button>
+
+
+        <!-- NOTE -->
+
+        <button
+          type="button"
+          class="btn btn-danger"
+          *ngIf="activeModal === 'note'"
+          (click)="saveNote()">
+
+          <i class="bi bi-sticky"></i>
+          Save Note
+
+        </button>
+
+
+        <!-- QUOTATION -->
+
+        <button
+          type="button"
+          class="btn btn-danger"
+          *ngIf="activeModal === 'quotation'"
+          (click)="saveQuotation()">
+
+          <i class="bi bi-file-earmark-check"></i>
+          Save Quotation
+
+        </button>
+
+
+        <!-- ORDER -->
+
+        <button
+          type="button"
+          class="btn btn-danger"
+          *ngIf="activeModal === 'order'"
+          (click)="saveOrder()">
+
+          <i class="bi bi-cart-check"></i>
+          Create Order
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ========================================================= -->
+  <!-- INVOICE VIEW MODAL -->
+  <!-- ========================================================= -->
+
+  <div
+    class="modal-overlay invoice-overlay"
+    *ngIf="selectedInvoice"
+    (click)="closeInvoice()">
+
+    <div
+      class="invoice-modal"
+      (click)="$event.stopPropagation()">
+
+      <div class="invoice-toolbar no-print">
+
+        <div>
+
+          <span class="eyebrow">
+            Financial Document
+          </span>
+
+          <h2>
+            {{ selectedInvoice.number }}
+          </h2>
+
+        </div>
+
+        <div class="invoice-toolbar-actions">
+
+          <button
+            type="button"
+            class="btn btn-light"
+            (click)="closeInvoice()">
+
+            <i class="bi bi-x-lg"></i>
+            Close
+
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="printInvoice()">
+
+            <i class="bi bi-printer"></i>
+            Print
+
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <div class="invoice-paper">
+
+        <div class="invoice-company-header">
+
+          <div class="invoice-brand">
+
+            <div class="invoice-logo">
+              CR
+            </div>
+
+            <div>
+
+              <h1>
+                CORCRM
+              </h1>
+
+              <span>
+                CUSTOMER RELATIONSHIP MANAGEMENT
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <div class="invoice-title">
+
+            <span>
+              SALES INVOICE
+            </span>
+
+            <h2>
+              {{ selectedInvoice.number }}
+            </h2>
+
+          </div>
+
+        </div>
+
+
+        <div class="invoice-divider"></div>
+
+
+        <div class="invoice-meta-grid">
+
+          <div>
+            <span>Invoice Number</span>
+            <strong>
+              {{ selectedInvoice.number }}
+            </strong>
+          </div>
+
+          <div>
+            <span>Invoice Date</span>
+            <strong>
+              {{ selectedInvoice.date }}
+            </strong>
+          </div>
+
+          <div>
+            <span>Due Date</span>
+            <strong>
+              {{ selectedInvoice.dueDate }}
+            </strong>
+          </div>
+
+          <div>
+            <span>Status</span>
+            <strong>
+
+              <span
+                class="invoice-status"
+                [ngClass]="getStatusClass(selectedInvoice.status)">
+
+                {{ selectedInvoice.status }}
+
+              </span>
+
+            </strong>
+          </div>
+
+        </div>
+
+
+        <div class="invoice-address-grid">
+
+          <div class="invoice-address-box">
+
+            <span>Bill From</span>
+
+            <strong>
+              CORCRM Technologies
+            </strong>
+
+            <p>
+              Hyderabad, Telangana
+            </p>
+
+            <p>
+              India
+            </p>
+
+            <p>
+              sales@corcrm.com
+            </p>
+
+          </div>
+
+
+          <div class="invoice-address-box">
+
+            <span>Bill To</span>
+
+            <strong>
+              {{ lead.company.name }}
+            </strong>
+
+            <p>
+              {{ lead.fullName }}
+            </p>
+
+            <p>
+              {{ lead.company.city }},
+              {{ lead.company.state }}
+            </p>
+
+            <p>
+              {{ lead.company.country }}
+            </p>
+
+            <p>
+              {{ lead.email }}
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <table class="invoice-table">
+
+          <thead>
+
+            <tr>
+              <th>#</th>
+              <th>Description</th>
+              <th>Qty</th>
+              <th>Rate</th>
+              <th>Amount</th>
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            <tr>
+
+              <td>1</td>
+
+              <td>
+
+                <strong>
+                  CRM Services
+                </strong>
+
+                <br>
+
+                <small>
+                  Customer relationship management services
+                </small>
+
+              </td>
+
+              <td>
+                1
+              </td>
+
+              <td>
+                {{ selectedInvoice.amount }}
+              </td>
+
+              <td>
+                {{ selectedInvoice.amount }}
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+
+        <div class="invoice-bottom">
+
+          <div class="invoice-payment-note">
+
+            <span>
+              PAYMENT STATUS
+            </span>
+
+            <strong
+              [class.paid]="selectedInvoice.status === 'Paid'">
+
+              {{ selectedInvoice.status }}
+
+            </strong>
+
+          </div>
+
+
+          <div class="invoice-total-box">
+
+            <div>
+
+              <span>
+                Sub Total
+              </span>
+
+              <strong>
+                {{ selectedInvoice.amount }}
+              </strong>
+
+            </div>
+
+
+            <div>
+
+              <span>
+                Tax
+              </span>
+
+              <strong>
+                ₹0
+              </strong>
+
+            </div>
+
+
+            <div class="invoice-grand-total">
+
+              <span>
+                Grand Total
+              </span>
+
+              <strong>
+                {{ selectedInvoice.amount }}
+              </strong>
+
+            </div>
+
+
+            <div class="invoice-balance">
+
+              <span>
+                Balance Due
+              </span>
+
+              <strong>
+                {{ selectedInvoice.status === 'Paid'
+                  ? '₹0'
+                  : selectedInvoice.amount }}
+              </strong>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="invoice-terms">
+
+          <strong>
+            Terms & Conditions
+          </strong>
+
+          <p>
+            Payment is due on or before the invoice due date.
+            Please mention the invoice number while making payment.
+            All services are subject to the agreed commercial terms.
+          </p>
+
+        </div>
+
+
+        <div class="invoice-footer">
+
+          <span>
+            Thank you for your business.
+          </span>
+
+          <span>
+            CORCRM · sales@corcrm.com
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

@@ -1,0 +1,584 @@
+<div class="container mt-4">
+
+    <!-- ========================================= -->
+    <!-- Storage Usage Form -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4 class="mb-0">
+
+                <i class="fa fa-hard-drive me-2"></i>
+
+                Storage Usage
+
+            </h4>
+
+        </div>
+
+
+        <div class="card-body">
+
+
+            <div class="row">
+
+
+                <!-- Storage Name -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Storage Name
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+
+                    <input type="text" class="form-control" placeholder="Enter Storage Name"
+                        [(ngModel)]="storageUsage.storageName">
+
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !storageUsage.storageName">
+
+                        Storage Name is required.
+
+                    </div>
+
+                </div>
+
+
+
+
+                <!-- Storage Type -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Storage Type
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+
+                    <select class="form-select" [(ngModel)]="storageUsage.storageType">
+
+
+                        <option value="">
+                            Select Storage Type
+                        </option>
+
+
+                        <option>
+                            Local Storage
+                        </option>
+
+
+                        <option>
+                            Azure Blob Storage
+                        </option>
+
+
+                        <option>
+                            Amazon S3
+                        </option>
+
+
+                        <option>
+                            Google Cloud Storage
+                        </option>
+
+
+                    </select>
+
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !storageUsage.storageType">
+
+                        Storage Type is required.
+
+                    </div>
+
+
+                </div>
+
+
+
+
+
+                <!-- Provider Name -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Provider Name
+
+                    </label>
+
+
+                    <input type="text" class="form-control" placeholder="Enter Provider Name"
+                        [(ngModel)]="storageUsage.providerName">
+
+
+                </div>
+
+
+
+
+
+                <!-- Total Capacity -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Total Capacity (GB)
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+
+                    <input type="number" class="form-control" placeholder="Enter Total Capacity"
+                        [(ngModel)]="storageUsage.totalCapacity">
+
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !storageUsage.totalCapacity">
+
+                        Total Capacity is required.
+
+                    </div>
+
+
+                </div>
+
+
+
+
+
+                <!-- Used Capacity -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Used Capacity (GB)
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+
+                    <input type="number" class="form-control" placeholder="Enter Used Capacity"
+                        [(ngModel)]="storageUsage.usedCapacity">
+
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !storageUsage.usedCapacity">
+
+                        Used Capacity is required.
+
+                    </div>
+
+
+                </div>
+
+
+
+
+
+                <!-- Available Capacity -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Available Capacity (GB)
+
+                    </label>
+
+
+                    <input type="number" class="form-control" placeholder="Available Capacity"
+                        [(ngModel)]="storageUsage.availableCapacity">
+
+
+                </div>
+
+
+
+
+
+                <!-- Usage Percentage -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Usage Percentage (%)
+
+                    </label>
+
+
+                    <input type="number" class="form-control" placeholder="Usage Percentage"
+                        [(ngModel)]="storageUsage.usagePercentage">
+
+
+                </div>
+
+
+
+
+
+                <!-- Active -->
+                <div class="col-md-4 mb-3 d-flex align-items-end">
+
+
+                    <div class="form-check">
+
+
+                        <input type="checkbox" id="isActive" class="form-check-input"
+                            [(ngModel)]="storageUsage.isActive">
+
+
+                        <label class="form-check-label ms-2" for="isActive">
+
+                            Active
+
+                        </label>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+
+
+                <!-- Description -->
+                <div class="col-md-12 mb-3">
+
+
+                    <label class="form-label">
+
+                        Description
+
+                    </label>
+
+
+                    <textarea rows="4" class="form-control" placeholder="Enter Description"
+                        [(ngModel)]="storageUsage.description">
+
+                    </textarea>
+
+
+                </div>
+
+
+            </div>
+
+
+
+
+            <hr>
+
+
+
+
+            <button class="btn btn-danger me-2" (click)="saveStorageUsage()">
+
+
+                <i class="fa fa-save me-1"></i>
+
+
+                {{ isEdit ? 'Update' : 'Save' }}
+
+
+            </button>
+
+
+
+
+
+            <button class="btn btn-secondary" (click)="clear()">
+
+
+                <i class="fa fa-eraser me-1"></i>
+
+
+                Clear
+
+
+            </button>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+<!-- ========================================= -->
+<!-- Search -->
+<!-- ========================================= -->
+
+<div class="row mt-4 mb-3">
+
+    <div class="col-md-4">
+
+        <input type="text" class="form-control" placeholder="Search Storage Usage..." [(ngModel)]="searchText">
+
+    </div>
+
+</div>
+
+
+
+
+
+<!-- ========================================= -->
+<!-- Storage Usage Listing -->
+<!-- ========================================= -->
+
+<div class="table-responsive">
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-danger">
+
+            <tr>
+
+                <th>#</th>
+
+                <th>Storage Name</th>
+
+                <th>Storage Type</th>
+
+                <th>Total Capacity</th>
+
+                <th>Used Capacity</th>
+
+                <th>Available Capacity</th>
+
+                <th>Usage %</th>
+
+                <th>Provider Name</th>
+
+                <th>Active</th>
+
+                <th width="140">
+
+                    Action
+
+                </th>
+
+            </tr>
+
+        </thead>
+
+
+
+
+
+        <tbody>
+
+
+            <tr *ngIf="pagedStorageUsages.length == 0">
+
+                <td colspan="10" class="text-center text-muted">
+
+                    No Storage Usage Records Found
+
+                </td>
+
+            </tr>
+
+
+
+
+
+            <tr *ngFor="let item of pagedStorageUsages; let i=index">
+
+
+                <td>
+
+                    {{ ((page - 1) * pageSize) + i + 1 }}
+
+                </td>
+
+
+
+
+
+                <td>
+
+                    {{ item.storageName }}
+
+                </td>
+
+
+
+
+
+                <td>
+
+                    <span class="badge" [ngClass]="{
+
+
+                                'bg-primary': item.storageType == 'Local Storage',
+
+
+                                'bg-success': item.storageType == 'Azure Blob Storage',
+
+
+                                'bg-warning text-dark': item.storageType == 'Amazon S3',
+
+
+                                'bg-info text-dark': item.storageType == 'Google Cloud Storage'
+
+
+                            }">
+
+
+                        {{ item.storageType }}
+
+
+                    </span>
+
+
+                </td>
+
+
+
+
+
+                <td>
+
+                    {{ item.totalCapacity }} GB
+
+                </td>
+
+
+
+
+
+                <td>
+
+                    {{ item.usedCapacity }} GB
+
+                </td>
+
+
+
+
+
+                <td>
+
+                    {{ item.availableCapacity }} GB
+
+                </td>
+
+
+
+
+
+                <td>
+
+
+                    <div class="progress">
+
+
+                        <div class="progress-bar" role="progressbar" [style.width.%]="item.usagePercentage">
+
+
+                            {{ item.usagePercentage }}%
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </td>
+
+
+
+
+
+                <td>
+
+                    {{ item.providerName }}
+
+                </td>
+
+
+
+
+
+                <td>
+
+                    <span class="badge" [ngClass]="item.isActive ? 'bg-success' : 'bg-danger'">
+
+
+                        {{ item.isActive ? 'Yes' : 'No' }}
+
+
+                    </span>
+
+
+                </td>
+
+
+
+
+
+                <td>
+
+
+                    <button class="btn btn-warning btn-sm me-2" (click)="edit(item.storageUsageId)">
+
+
+                        <i class="fa fa-edit"></i>
+
+
+                    </button>
+
+
+
+
+
+                    <button class="btn btn-danger btn-sm" (click)="delete(item.storageUsageId)">
+
+
+                        <i class="fa fa-trash"></i>
+
+
+                    </button>
+
+
+                </td>
+
+
+            </tr>
+
+
+        </tbody>
+
+
+    </table>
+
+
+</div>
+
+
+
+
+
+<!-- ========================================= -->
+<!-- Pagination -->
+<!-- ========================================= -->
+
+
+<app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredStorageUsages.length"
+    (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
+
+
+</app-pagination>
+
+

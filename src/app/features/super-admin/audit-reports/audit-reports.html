@@ -1,0 +1,211 @@
+<div class="container mt-4">
+
+    <div class="card">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4>Audit Reports</h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-3 mb-3">
+                    <label>Company</label>
+                    <select class="form-select">
+                        <option>All Companies</option>
+                        <option>ABC Technologies</option>
+                        <option>XYZ Solutions</option>
+                        <option>Demo Company</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label>Module</label>
+                    <select class="form-select">
+                        <option>All Modules</option>
+                        <option>Leads</option>
+                        <option>Contacts</option>
+                        <option>Sales</option>
+                        <option>Support</option>
+                        <option>Projects</option>
+                        <option>Settings</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label>Activity Type</label>
+                    <select class="form-select">
+                        <option>All Activities</option>
+                        <option>Create</option>
+                        <option>Update</option>
+                        <option>Delete</option>
+                        <option>Approve</option>
+                        <option>Reject</option>
+                        <option>Login</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label>Report Period</label>
+                    <select class="form-select">
+                        <option>Today</option>
+                        <option>This Week</option>
+                        <option>This Month</option>
+                        <option>This Quarter</option>
+                        <option>This Year</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Include User Details
+                    </label>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Include IP Address
+                    </label>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox">
+                        Include Device Information
+                    </label>
+                </div>
+
+            </div>
+
+            <button class="btn btn-danger me-2">
+                Generate Report
+            </button>
+
+            <button class="btn btn-secondary me-2">
+                Clear
+            </button>
+
+            <button class="btn btn-success">
+                Export Report
+            </button>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="row mb-3">
+
+        <div class="col-md-4">
+            <input class="form-control"
+                   placeholder="Search User or Module...">
+        </div>
+
+        <div class="col-md-4">
+            <select class="form-select">
+                <option>All Activities</option>
+                <option>Create</option>
+                <option>Update</option>
+                <option>Delete</option>
+                <option>Login</option>
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <button class="btn btn-danger w-100">
+                Search
+            </button>
+        </div>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-danger">
+
+            <tr>
+
+                <th>#</th>
+                <th>User</th>
+                <th>Company</th>
+                <th>Module</th>
+                <th>Activity</th>
+                <th>Records</th>
+                <th>Last Activity</th>
+                <th width="180">Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>1</td>
+                <td>admin@crm.com</td>
+                <td>ABC Technologies</td>
+                <td>Leads</td>
+                <td>Create</td>
+                <td>145</td>
+                <td>27-Jul-2026 10:15 AM</td>
+                <td>
+                    <button class="btn btn-info btn-sm me-1">View</button>
+                    <button class="btn btn-success btn-sm">Export</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>2</td>
+                <td>sales@abc.com</td>
+                <td>ABC Technologies</td>
+                <td>Sales</td>
+                <td>Update</td>
+                <td>218</td>
+                <td>27-Jul-2026 09:55 AM</td>
+                <td>
+                    <button class="btn btn-info btn-sm me-1">View</button>
+                    <button class="btn btn-success btn-sm">Export</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>3</td>
+                <td>support@demo.com</td>
+                <td>Demo Company</td>
+                <td>Support</td>
+                <td>Ticket Update</td>
+                <td>97</td>
+                <td>27-Jul-2026 08:40 AM</td>
+                <td>
+                    <button class="btn btn-info btn-sm me-1">View</button>
+                    <button class="btn btn-success btn-sm">Export</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>4</td>
+                <td>finance@xyz.com</td>
+                <td>XYZ Solutions</td>
+                <td>Billing</td>
+                <td>Invoice Approval</td>
+                <td>58</td>
+                <td>26-Jul-2026 05:45 PM</td>
+                <td>
+                    <button class="btn btn-info btn-sm me-1">View</button>
+                    <button class="btn btn-success btn-sm">Export</button>
+                </td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+  
+
+</div>

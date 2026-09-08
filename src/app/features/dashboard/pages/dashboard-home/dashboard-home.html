@@ -1,0 +1,530 @@
+<div class="dashboard-page">
+
+  <!-- =====================================================
+       PAGE HEADER
+  ====================================================== -->
+
+  <section class="dashboard-header">
+
+    <div class="header-content">
+
+      <div class="breadcrumb">
+
+        <span>CRM</span>
+
+        <i class="fa-solid fa-chevron-right"></i>
+
+        <strong>Dashboard</strong>
+
+      </div>
+
+      <h1>
+        Customer 360
+      </h1>
+
+      <p>
+        Monitor your customer journey, sales pipeline and business growth.
+      </p>
+
+    </div>
+
+
+    <div class="header-actions">
+
+      <button class="date-button">
+
+        <i class="fa-regular fa-calendar"></i>
+
+        <span>This Month</span>
+
+        <i class="fa-solid fa-chevron-down"></i>
+
+      </button>
+
+
+      <button class="new-lead-button">
+
+        <i class="fa-solid fa-plus"></i>
+
+        New Lead
+
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       KPI CARDS
+  ====================================================== -->
+
+  <section class="kpi-grid">
+
+    <div
+      class="kpi-card"
+      *ngFor="let kpi of kpis; let i = index"
+    >
+
+      <div class="kpi-content">
+
+        <div>
+
+          <span class="kpi-label">
+            {{ kpi.label }}
+          </span>
+
+          <h2>
+            {{ kpi.value }}
+          </h2>
+
+        </div>
+
+
+        <div class="kpi-icon">
+
+          <i
+            class="fa-solid"
+            [ngClass]="kpi.icon"
+          ></i>
+
+        </div>
+
+      </div>
+
+
+      <div class="kpi-footer">
+
+        <span class="growth">
+
+          <i class="fa-solid fa-arrow-up"></i>
+
+          {{ kpi.growth }}
+
+        </span>
+
+        <span>
+          vs last month
+        </span>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       MAIN DASHBOARD
+  ====================================================== -->
+
+  <section class="main-grid">
+
+
+    <!-- ===================================================
+         SALES PIPELINE
+    ==================================================== -->
+
+    <div class="dashboard-card pipeline-card">
+
+      <div class="card-header">
+
+        <div>
+
+          <span class="card-label">
+            SALES PERFORMANCE
+          </span>
+
+          <h3>
+            Sales Pipeline
+          </h3>
+
+        </div>
+
+
+        <button class="more-button">
+
+          <i class="fa-solid fa-ellipsis"></i>
+
+        </button>
+
+      </div>
+
+
+      <div class="pipeline-list">
+
+        <div
+          class="pipeline-row"
+          *ngFor="let stage of pipelineStages"
+        >
+
+          <div class="pipeline-name">
+
+            <span>
+              {{ stage.name }}
+            </span>
+
+            <strong>
+              {{ stage.count }}
+            </strong>
+
+          </div>
+
+
+          <div class="pipeline-progress">
+
+            <div class="progress-track">
+
+              <div
+                class="progress-value"
+                [style.width.%]="stage.percentage"
+              ></div>
+
+            </div>
+
+          </div>
+
+
+          <div class="pipeline-value">
+
+            {{ stage.value }}
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ===================================================
+         RECENT ACTIVITY
+    ==================================================== -->
+
+    <div class="dashboard-card activity-card">
+
+      <div class="card-header">
+
+        <div>
+
+          <span class="card-label">
+            CUSTOMER ENGAGEMENT
+          </span>
+
+          <h3>
+            Recent Activity
+          </h3>
+
+        </div>
+
+
+        <button class="view-all-button">
+          View all
+        </button>
+
+      </div>
+
+
+      <div class="activity-list">
+
+        <div
+          class="activity-item"
+          *ngFor="let activity of recentActivities; let i = index"
+        >
+
+          <div class="activity-avatar">
+
+            {{ activity.initials }}
+
+          </div>
+
+
+          <div class="activity-content">
+
+            <strong>
+              {{ activity.name }}
+            </strong>
+
+            <span>
+              {{ activity.activity }}
+            </span>
+
+          </div>
+
+
+          <small>
+            {{ activity.time }}
+          </small>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       SECOND ROW
+  ====================================================== -->
+
+  <section class="secondary-grid">
+
+
+    <!-- ===================================================
+         SALES SUMMARY
+    ==================================================== -->
+
+    <div class="dashboard-card summary-card">
+
+      <div class="card-header">
+
+        <div>
+
+          <span class="card-label">
+            SALES OVERVIEW
+          </span>
+
+          <h3>
+            Pipeline Summary
+          </h3>
+
+        </div>
+
+        <button class="more-button">
+          <i class="fa-solid fa-ellipsis"></i>
+        </button>
+
+      </div>
+
+
+      <div class="summary-list">
+
+        <div
+          class="summary-item"
+          *ngFor="let item of salesSummary"
+        >
+
+          <div class="summary-top">
+
+            <span>
+              {{ item.label }}
+            </span>
+
+            <strong>
+              {{ item.value }}
+            </strong>
+
+          </div>
+
+
+          <div class="summary-progress">
+
+            <div
+              class="summary-progress-value"
+              [style.width.%]="item.percentage"
+            ></div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ===================================================
+         TOP PERFORMERS
+    ==================================================== -->
+
+    <div class="dashboard-card performer-card">
+
+      <div class="card-header">
+
+        <div>
+
+          <span class="card-label">
+            TEAM PERFORMANCE
+          </span>
+
+          <h3>
+            Top Performers
+          </h3>
+
+        </div>
+
+        <button class="view-all-button">
+          View team
+        </button>
+
+      </div>
+
+
+      <div class="performer-list">
+
+        <div
+          class="performer-item"
+          *ngFor="let performer of topPerformers"
+        >
+
+          <div class="performer-avatar">
+
+            {{ performer.initials }}
+
+          </div>
+
+
+          <div class="performer-info">
+
+            <strong>
+              {{ performer.name }}
+            </strong>
+
+            <span>
+              {{ performer.deals }} deals closed
+            </span>
+
+          </div>
+
+
+          <div class="performer-revenue">
+
+            <strong>
+              {{ performer.revenue }}
+            </strong>
+
+            <span>
+              Revenue
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       CUSTOMER JOURNEY
+  ====================================================== -->
+
+  <section class="customer-journey-card">
+
+    <div class="journey-header">
+
+      <div>
+
+        <span class="card-label">
+          END-TO-END CUSTOMER JOURNEY
+        </span>
+
+        <h3>
+          From Lead to Revenue
+        </h3>
+
+      </div>
+
+
+      <div class="live-status">
+
+        <span></span>
+
+        Live CRM Flow
+
+      </div>
+
+    </div>
+
+
+    <div class="journey-flow">
+
+      <ng-container
+        *ngFor="
+          let journey of customerJourney;
+          let i = index
+        "
+      >
+
+        <div class="journey-step">
+
+          <div class="journey-icon">
+
+            <i
+              class="fa-solid"
+              [ngClass]="journey.icon"
+            ></i>
+
+          </div>
+
+          <strong>
+            {{ journey.title }}
+          </strong>
+
+          <span>
+            {{ journey.subtitle }}
+          </span>
+
+        </div>
+
+
+        <div
+          class="journey-connector"
+          *ngIf="i < customerJourney.length - 1"
+        ></div>
+
+      </ng-container>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       BOTTOM BUSINESS INSIGHT
+  ====================================================== -->
+
+  <section class="insight-banner">
+
+    <div class="insight-icon">
+
+      <i class="fa-solid fa-chart-line"></i>
+
+    </div>
+
+
+    <div class="insight-content">
+
+      <span>
+        BUSINESS INSIGHT
+      </span>
+
+      <strong>
+        Your pipeline is performing 24.8% better than last month.
+      </strong>
+
+      <p>
+        Qualified leads are increasing steadily and your conversion
+        rate is currently at 32.6%.
+      </p>
+
+    </div>
+
+
+    <button class="insight-button">
+
+      View Analytics
+
+      <i class="fa-solid fa-arrow-right"></i>
+
+    </button>
+
+  </section>
+
+</div>

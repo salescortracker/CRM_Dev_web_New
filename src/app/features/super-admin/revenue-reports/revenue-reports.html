@@ -1,0 +1,205 @@
+<div class="container mt-4">
+
+    <div class="card">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4>Revenue Reports</h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-3 mb-3">
+                    <label>Company</label>
+                    <select class="form-select">
+                        <option>All Companies</option>
+                        <option>ABC Technologies</option>
+                        <option>XYZ Solutions</option>
+                        <option>Demo Company</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label>Subscription Plan</label>
+                    <select class="form-select">
+                        <option>All Plans</option>
+                        <option>Basic</option>
+                        <option>Professional</option>
+                        <option>Enterprise</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label>Payment Status</label>
+                    <select class="form-select">
+                        <option>All</option>
+                        <option>Paid</option>
+                        <option>Pending</option>
+                        <option>Overdue</option>
+                        <option>Refunded</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label>Report Period</label>
+                    <select class="form-select">
+                        <option>This Month</option>
+                        <option>Last Month</option>
+                        <option>This Quarter</option>
+                        <option>This Year</option>
+                        <option>Custom</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Include Taxes
+                    </label>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Include Renewals
+                    </label>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox">
+                        Email Report
+                    </label>
+                </div>
+
+            </div>
+
+            <button class="btn btn-danger me-2">
+                Generate Report
+            </button>
+
+            <button class="btn btn-secondary me-2">
+                Clear
+            </button>
+
+            <button class="btn btn-success">
+                Export Report
+            </button>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="row mb-3">
+
+        <div class="col-md-4">
+            <input class="form-control"
+                   placeholder="Search Company...">
+        </div>
+
+        <div class="col-md-4">
+            <select class="form-select">
+                <option>All Plans</option>
+                <option>Basic</option>
+                <option>Professional</option>
+                <option>Enterprise</option>
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <button class="btn btn-danger w-100">
+                Search
+            </button>
+        </div>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-danger">
+
+            <tr>
+
+                <th>#</th>
+                <th>Company</th>
+                <th>Plan</th>
+                <th>Invoice</th>
+                <th>Amount</th>
+                <th>Payment Status</th>
+                <th>Paid Date</th>
+                <th width="180">Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>1</td>
+                <td>ABC Technologies</td>
+                <td>Enterprise</td>
+                <td>INV-2026-1001</td>
+                <td>$4,500.00</td>
+                <td><span class="badge bg-success">Paid</span></td>
+                <td>25-Jul-2026</td>
+                <td>
+                    <button class="btn btn-info btn-sm me-1">View</button>
+                    <button class="btn btn-success btn-sm">Invoice</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>2</td>
+                <td>XYZ Solutions</td>
+                <td>Professional</td>
+                <td>INV-2026-1002</td>
+                <td>$1,850.00</td>
+                <td><span class="badge bg-warning">Pending</span></td>
+                <td>-</td>
+                <td>
+                    <button class="btn btn-info btn-sm me-1">View</button>
+                    <button class="btn btn-warning btn-sm">Reminder</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>3</td>
+                <td>Demo Company</td>
+                <td>Basic</td>
+                <td>INV-2026-1003</td>
+                <td>$499.00</td>
+                <td><span class="badge bg-danger">Overdue</span></td>
+                <td>-</td>
+                <td>
+                    <button class="btn btn-info btn-sm me-1">View</button>
+                    <button class="btn btn-danger btn-sm">Follow Up</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>4</td>
+                <td>Future Corp</td>
+                <td>Enterprise</td>
+                <td>INV-2026-1004</td>
+                <td>$6,250.00</td>
+                <td><span class="badge bg-success">Paid</span></td>
+                <td>20-Jul-2026</td>
+                <td>
+                    <button class="btn btn-info btn-sm me-1">View</button>
+                    <button class="btn btn-success btn-sm">Invoice</button>
+                </td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+
+
+</div>

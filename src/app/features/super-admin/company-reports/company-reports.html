@@ -1,0 +1,204 @@
+<div class="container mt-4">
+
+    <div class="card">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4>Company Reports</h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-3 mb-3">
+                    <label>Company</label>
+                    <select class="form-select">
+                        <option>All Companies</option>
+                        <option>ABC Technologies</option>
+                        <option>XYZ Solutions</option>
+                        <option>Demo Company</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label>Subscription Plan</label>
+                    <select class="form-select">
+                        <option>All Plans</option>
+                        <option>Basic</option>
+                        <option>Professional</option>
+                        <option>Enterprise</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label>Company Status</label>
+                    <select class="form-select">
+                        <option>All</option>
+                        <option>Active</option>
+                        <option>Inactive</option>
+                        <option>Suspended</option>
+                        <option>Trial</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label>Report Period</label>
+                    <select class="form-select">
+                        <option>This Month</option>
+                        <option>Last Month</option>
+                        <option>This Quarter</option>
+                        <option>This Year</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Include Subscription Details
+                    </label>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Include User Statistics
+                    </label>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox">
+                        Include Storage Usage
+                    </label>
+                </div>
+
+            </div>
+
+            <button class="btn btn-danger me-2">
+                Generate Report
+            </button>
+
+            <button class="btn btn-secondary me-2">
+                Clear
+            </button>
+
+            <button class="btn btn-success">
+                Export Report
+            </button>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="row mb-3">
+
+        <div class="col-md-4">
+            <input class="form-control"
+                   placeholder="Search Company...">
+        </div>
+
+        <div class="col-md-4">
+            <select class="form-select">
+                <option>All Plans</option>
+                <option>Basic</option>
+                <option>Professional</option>
+                <option>Enterprise</option>
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <button class="btn btn-danger w-100">
+                Search
+            </button>
+        </div>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-danger">
+
+            <tr>
+
+                <th>#</th>
+                <th>Company</th>
+                <th>Plan</th>
+                <th>Users</th>
+                <th>Storage</th>
+                <th>Subscription Expiry</th>
+                <th>Status</th>
+                <th width="180">Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>1</td>
+                <td>ABC Technologies</td>
+                <td>Enterprise</td>
+                <td>248 / 300</td>
+                <td>180 GB / 250 GB</td>
+                <td>31-Dec-2026</td>
+                <td><span class="badge bg-success">Active</span></td>
+                <td>
+                    <button class="btn btn-info btn-sm me-1">View</button>
+                    <button class="btn btn-success btn-sm">Download</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>2</td>
+                <td>XYZ Solutions</td>
+                <td>Professional</td>
+                <td>96 / 100</td>
+                <td>42 GB / 100 GB</td>
+                <td>15-Oct-2026</td>
+                <td><span class="badge bg-success">Active</span></td>
+                <td>
+                    <button class="btn btn-info btn-sm me-1">View</button>
+                    <button class="btn btn-success btn-sm">Download</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>3</td>
+                <td>Demo Company</td>
+                <td>Basic</td>
+                <td>18 / 25</td>
+                <td>8 GB / 25 GB</td>
+                <td>05-Aug-2026</td>
+                <td><span class="badge bg-warning">Trial</span></td>
+                <td>
+                    <button class="btn btn-info btn-sm me-1">View</button>
+                    <button class="btn btn-success btn-sm">Download</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>4</td>
+                <td>Future Corp</td>
+                <td>Enterprise</td>
+                <td>315 / 500</td>
+                <td>240 GB / 500 GB</td>
+                <td>20-Jan-2027</td>
+                <td><span class="badge bg-primary">Renewed</span></td>
+                <td>
+                    <button class="btn btn-info btn-sm me-1">View</button>
+                    <button class="btn btn-success btn-sm">Download</button>
+                </td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+
+
+</div>

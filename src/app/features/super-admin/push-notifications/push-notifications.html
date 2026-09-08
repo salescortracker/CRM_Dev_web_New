@@ -1,0 +1,211 @@
+<div class="container mt-4">
+
+    <div class="card">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4>Push Notification Templates</h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+                    <label>Module</label>
+                    <select class="form-select">
+                        <option>All Modules</option>
+                        <option>Leads</option>
+                        <option>Sales</option>
+                        <option>Support</option>
+                        <option>Projects</option>
+                        <option>Billing</option>
+                        <option>Subscription</option>
+                        <option>HR</option>
+                        <option>Marketing</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Notification Type</label>
+                    <select class="form-select">
+                        <option>Browser Push</option>
+                        <option>Mobile Push</option>
+                        <option>Desktop Push</option>
+                        <option>Web Push</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Priority</label>
+                    <select class="form-select">
+                        <option>Low</option>
+                        <option>Medium</option>
+                        <option>High</option>
+                        <option>Critical</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Enable Push Notifications
+                    </label>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Send Sound Alert
+                    </label>
+                </div>
+
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" checked>
+                        Active
+                    </label>
+                </div>
+
+            </div>
+
+            <button class="btn btn-danger me-2">
+                Save
+            </button>
+
+            <button class="btn btn-secondary me-2">
+                Clear
+            </button>
+
+            <button class="btn btn-success">
+                Add Notification
+            </button>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="row mb-3">
+
+        <div class="col-md-3">
+            <input class="form-control"
+                   placeholder="Search Notification...">
+        </div>
+
+        <div class="col-md-3">
+            <select class="form-select">
+                <option>All Modules</option>
+                <option>Sales</option>
+                <option>Support</option>
+                <option>Billing</option>
+                <option>Marketing</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <select class="form-select">
+                <option>All Status</option>
+                <option>Active</option>
+                <option>Inactive</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <button class="btn btn-danger w-100">
+                Search
+            </button>
+        </div>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-danger">
+
+            <tr>
+
+                <th>#</th>
+                <th>Template Name</th>
+                <th>Module</th>
+                <th>Notification Type</th>
+                <th>Priority</th>
+                <th>Target Platform</th>
+                <th>Status</th>
+                <th width="200">Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>1</td>
+                <td>New Lead Assigned</td>
+                <td>Leads</td>
+                <td>Mobile Push</td>
+                <td>High</td>
+                <td>Android / iOS</td>
+                <td><span class="badge bg-success">Active</span></td>
+                <td>
+                    <button class="btn btn-info btn-sm me-1">Preview</button>
+                    <button class="btn btn-warning btn-sm me-1">Edit</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>2</td>
+                <td>Quotation Approved</td>
+                <td>Sales</td>
+                <td>Browser Push</td>
+                <td>Medium</td>
+                <td>Web</td>
+                <td><span class="badge bg-success">Active</span></td>
+                <td>
+                    <button class="btn btn-info btn-sm me-1">Preview</button>
+                    <button class="btn btn-warning btn-sm me-1">Edit</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>3</td>
+                <td>Ticket Assigned</td>
+                <td>Support</td>
+                <td>Desktop Push</td>
+                <td>Critical</td>
+                <td>Windows</td>
+                <td><span class="badge bg-success">Active</span></td>
+                <td>
+                    <button class="btn btn-info btn-sm me-1">Preview</button>
+                    <button class="btn btn-warning btn-sm me-1">Edit</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>4</td>
+                <td>Subscription Expiry</td>
+                <td>Subscription</td>
+                <td>Web Push</td>
+                <td>High</td>
+                <td>Browser</td>
+                <td><span class="badge bg-secondary">Inactive</span></td>
+                <td>
+                    <button class="btn btn-info btn-sm me-1">Preview</button>
+                    <button class="btn btn-warning btn-sm me-1">Edit</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+ 
+
+</div>

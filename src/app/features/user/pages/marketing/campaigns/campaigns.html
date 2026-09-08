@@ -1,0 +1,451 @@
+<div class="container mt-4">
+
+    <!-- ========================================= -->
+    <!-- Campaign Form -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4 class="mb-0">
+
+                <i class="fa fa-bullhorn me-2"></i>
+
+                Campaign Management
+
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <!-- Campaign Name -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Campaign Name
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Campaign Name"
+                        [(ngModel)]="campaign.campaignName">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !campaign.campaignName">
+
+                        Campaign Name is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Campaign Type -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Campaign Type
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="campaign.campaignType">
+
+                        <option value="">Select Campaign Type</option>
+                        <option>Product Launch</option>
+                        <option>Promotional</option>
+                        <option>Lead Generation</option>
+                        <option>Brand Awareness</option>
+                        <option>Seasonal Offer</option>
+                        <option>Customer Retention</option>
+                        <option>Referral Program</option>
+                        <option>Event Marketing</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !campaign.campaignType">
+
+                        Campaign Type is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Marketing Channel -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Marketing Channel
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="campaign.channel">
+
+                        <option value="">Select Channel</option>
+                        <option>Email</option>
+                        <option>SMS</option>
+                        <option>WhatsApp</option>
+                        <option>Facebook</option>
+                        <option>Instagram</option>
+                        <option>LinkedIn</option>
+                        <option>Google Ads</option>
+                        <option>Multi Channel</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !campaign.channel">
+
+                        Marketing Channel is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Target Audience -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Target Audience
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="campaign.targetAudience">
+
+                        <option value="">Select Audience</option>
+                        <option>All Customers</option>
+                        <option>New Leads</option>
+                        <option>Existing Customers</option>
+                        <option>VIP Customers</option>
+                        <option>Inactive Customers</option>
+                        <option>Prospects</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Budget -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Budget
+
+                    </label>
+
+                    <input type="number" class="form-control" placeholder="Enter Budget" [(ngModel)]="campaign.budget">
+
+                </div>
+
+                <!-- Campaign Owner -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Campaign Owner
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="text" class="form-control" placeholder="Enter Campaign Owner"
+                        [(ngModel)]="campaign.owner">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !campaign.owner">
+
+                        Campaign Owner is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Start Date -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Start Date
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="date" class="form-control" [(ngModel)]="campaign.startDate">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !campaign.startDate">
+
+                        Start Date is required.
+
+                    </div>
+
+                </div>
+
+                <!-- End Date -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        End Date
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="date" class="form-control" [(ngModel)]="campaign.endDate">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !campaign.endDate">
+
+                        End Date is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Status -->
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Status
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="campaign.status">
+
+                        <option value="">Select Status</option>
+                        <option>Planned</option>
+                        <option>Active</option>
+                        <option>Completed</option>
+                        <option>Cancelled</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !campaign.status">
+
+                        Status is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Active -->
+                <div class="col-md-2 mb-3 d-flex align-items-end">
+
+                    <div class="form-check">
+
+                        <input id="campaignActive" type="checkbox" class="form-check-input"
+                            [(ngModel)]="campaign.isActive">
+
+                        <label for="campaignActive" class="form-check-label ms-2">
+
+                            Active
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <!-- Description -->
+                <div class="col-md-12 mb-3">
+
+                    <label class="form-label">
+
+                        Campaign Description
+
+                    </label>
+
+                    <textarea rows="5" class="form-control" placeholder="Enter Campaign Description"
+                        [(ngModel)]="campaign.description">
+
+                    </textarea>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <button class="btn btn-danger me-2" (click)="saveCampaign()">
+
+                <i class="fa fa-save me-1"></i>
+
+                {{ isEdit ? 'Update' : 'Save' }}
+
+            </button>
+
+            <button class="btn btn-secondary" (click)="clear()">
+
+                <i class="fa fa-eraser me-1"></i>
+
+                Clear
+
+            </button>
+
+        </div>
+
+    </div>
+    <!-- ========================================= -->
+    <!-- Search -->
+    <!-- ========================================= -->
+
+    <div class="row mt-4 mb-3">
+
+        <div class="col-md-4">
+
+            <input type="text" class="form-control" placeholder="Search Campaign..." [(ngModel)]="searchText">
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Campaigns Table -->
+    <!-- ========================================= -->
+
+    <div class="table-responsive">
+
+        <table class="table table-bordered table-hover">
+
+            <thead class="table-danger">
+
+                <tr>
+
+                    <th>#</th>
+                    <th>Campaign Name</th>
+                    <th>Campaign Type</th>
+                    <th>Channel</th>
+                    <th>Budget</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Status</th>
+                    <th width="150">Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr *ngIf="pagedCampaigns.length == 0">
+
+                    <td colspan="9" class="text-center text-muted">
+
+                        No Campaigns Found
+
+                    </td>
+
+                </tr>
+
+                <tr *ngFor="let item of pagedCampaigns; let i = index">
+
+                    <td>
+
+                        {{ ((page - 1) * pageSize) + i + 1 }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.campaignName }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.campaignType }}
+
+                    </td>
+
+                    <td>
+
+                        <span class="badge bg-info text-dark">
+
+                            {{ item.channel }}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        {{ item.budget | currency:'USD':'symbol':'1.0-0' }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.startDate }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.endDate }}
+
+                    </td>
+
+                    <td>
+
+                        <span class="badge" [ngClass]="{
+
+                                'bg-primary': item.status == 'Planned',
+
+                                'bg-success': item.status == 'Active',
+
+                                'bg-secondary': item.status == 'Completed',
+
+                                'bg-danger': item.status == 'Cancelled'
+
+                            }">
+
+                            {{ item.status }}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <button class="btn btn-warning btn-sm me-2" (click)="edit(item.campaignId)">
+
+                            <i class="fa fa-edit"></i>
+
+                        </button>
+
+                        <button class="btn btn-danger btn-sm" (click)="delete(item.campaignId)">
+
+                            <i class="fa fa-trash"></i>
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Pagination -->
+    <!-- ========================================= -->
+
+    <app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredCampaigns.length"
+        (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
+    </app-pagination>
+
+</div>

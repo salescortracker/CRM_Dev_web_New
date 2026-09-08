@@ -1,0 +1,196 @@
+<div class="container mt-4">
+
+    <div class="card">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4>Company Masters</h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+                    <label>Company Name<span class="text-danger">*</span></label>
+                    <input class="form-control" [(ngModel)]="company.companyName">
+                    <div class="text-danger mt-1" *ngIf="submitted && !company.companyName">
+
+                        Company Name is required.
+
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Company Code<span class="text-danger">*</span></label>
+                    <input class="form-control" [(ngModel)]="company.companyCode">
+                    <div class="text-danger mt-1" *ngIf="submitted && !company.companyCode">
+
+                        Company Code is required.
+
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Industry</label>
+                    <input class="form-control" [(ngModel)]="company.industryType">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Headquarters</label>
+                    <input class="form-control" [(ngModel)]="company.headquarters">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Email</label>
+                    <input class="form-control" [(ngModel)]="company.companyEmail">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>Contact</label>
+                    <input class="form-control" [(ngModel)]="company.companyContact" type="number">
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label>Address</label>
+                    <textarea class="form-control" [(ngModel)]="company.companyAddress"></textarea>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label>Plan Start<span class="text-danger">*</span></label>
+                    <input type="date" class="form-control" [(ngModel)]="company.planStartDate">
+                    <div class="text-danger mt-1" *ngIf="submitted && !company.planStartDate">
+
+                        Plan Start Date is required.
+
+                    </div>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label>Expiry Date<span class="text-danger">*</span></label>
+                    <input type="date" class="form-control" [(ngModel)]="company.expiryDate">
+                    <div class="text-danger mt-1" *ngIf="submitted && !company.expiryDate">
+
+                        Expiry Date is required.
+
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+
+                    <label>
+
+                        <input type="checkbox" [(ngModel)]="company.isActive">
+
+                        Active
+
+                    </label>
+
+                </div>
+
+            </div>
+
+            <button class="btn btn-danger me-2" (click)="saveCompany()">
+
+                {{isEdit?'Update':'Save'}}
+
+            </button>
+
+            <button class="btn btn-secondary" (click)="clear()">
+
+                Clear
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <br>
+    <div class="row mb-3">
+
+        <div class="col-md-4">
+
+            <input type="text" class="form-control" placeholder="Search Company..." [(ngModel)]="searchText">
+
+        </div>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-danger">
+
+            <tr>
+
+                <th>#</th>
+
+                <th>Name</th>
+
+                <th>Code</th>
+
+                <th>Industry</th>
+
+                <th>Email</th>
+
+                <th>Contact</th>
+
+                <th>Status</th>
+
+                <th width="150">Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr *ngFor="let item of pagedCompanies; let i=index">
+
+                <td>{{i+1}}</td>
+
+                <td>{{item.companyName}}</td>
+
+                <td>{{item.companyCode}}</td>
+
+                <td>{{item.industryType}}</td>
+
+                <td>{{item.companyEmail}}</td>
+
+                <td>{{item.companyContact}}</td>
+
+                <td>
+
+                    {{item.isActive?'Active':'Inactive'}}
+
+                </td>
+
+                <td>
+
+                    <button class="btn btn-warning btn-sm me-2" (click)="edit(item.companyId)">
+
+                        Edit
+
+                    </button>
+
+                    <button class="btn btn-danger btn-sm" (click)="delete(item.companyId)">
+
+                        Delete
+
+                    </button>
+
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+    <app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredCompanies.length"
+        (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
+
+    </app-pagination>
+
+</div>

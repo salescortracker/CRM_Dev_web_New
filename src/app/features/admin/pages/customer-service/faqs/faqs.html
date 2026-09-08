@@ -1,0 +1,960 @@
+<div class="container mt-4">
+
+
+    <!-- ========================================= -->
+    <!-- FAQ Form -->
+    <!-- ========================================= -->
+
+
+    <div class="card shadow-sm">
+
+
+        <div class="card-header bg-danger text-white">
+
+
+            <h4 class="mb-0">
+
+                <i class="fa fa-circle-question me-2"></i>
+
+                FAQ Management
+
+            </h4>
+
+
+        </div>
+
+
+
+
+
+        <div class="card-body">
+
+
+
+            <div class="row">
+
+
+
+
+
+                <!-- FAQ Title -->
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+                        FAQ Title
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+
+
+                    <input type="text" class="form-control" placeholder="Enter FAQ Title" [(ngModel)]="faq.faqTitle">
+
+
+
+
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !faq.faqTitle">
+
+
+                        FAQ Title is required.
+
+
+                    </div>
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <!-- FAQ Code -->
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+                        FAQ Code
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+
+
+                    <input type="text" class="form-control" placeholder="Enter FAQ Code" [(ngModel)]="faq.faqCode">
+
+
+
+
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !faq.faqCode">
+
+
+                        FAQ Code is required.
+
+
+                    </div>
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <!-- Category -->
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+                        Category
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+
+
+                    <select class="form-select" [(ngModel)]="faq.category">
+
+
+                        <option value="">
+
+                            Select Category
+
+                        </option>
+
+
+                        <option>
+
+                            Account
+
+                        </option>
+
+
+                        <option>
+
+                            Billing
+
+                        </option>
+
+
+                        <option>
+
+                            Product
+
+                        </option>
+
+
+                        <option>
+
+                            Technical
+
+                        </option>
+
+
+                        <option>
+
+                            General
+
+                        </option>
+
+
+                    </select>
+
+
+
+
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !faq.category">
+
+
+                        Category is required.
+
+
+                    </div>
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <!-- Question -->
+                <div class="col-md-6 mb-3">
+
+
+                    <label class="form-label">
+
+                        Question
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+
+
+                    <textarea rows="3" class="form-control" placeholder="Enter Question" [(ngModel)]="faq.question">
+
+
+                    </textarea>
+
+
+
+
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !faq.question">
+
+
+                        Question is required.
+
+
+                    </div>
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <!-- Answer -->
+                <div class="col-md-6 mb-3">
+
+
+                    <label class="form-label">
+
+                        Answer
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+
+
+                    <textarea rows="3" class="form-control" placeholder="Enter Answer" [(ngModel)]="faq.answer">
+
+
+                    </textarea>
+
+
+
+
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !faq.answer">
+
+
+                        Answer is required.
+
+
+                    </div>
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <!-- Visibility -->
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+                        Visibility
+
+                    </label>
+
+
+
+                    <select class="form-select" [(ngModel)]="faq.visibility">
+
+
+                        <option value="">
+
+                            Select Visibility
+
+                        </option>
+
+
+                        <option>
+
+                            Public
+
+                        </option>
+
+
+                        <option>
+
+                            Internal
+
+                        </option>
+
+
+                        <option>
+
+                            Customer Portal
+
+                        </option>
+
+
+                    </select>
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <!-- Display Order -->
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+                        Display Order
+
+                    </label>
+
+
+
+                    <input type="number" class="form-control" placeholder="Enter Display Order"
+                        [(ngModel)]="faq.displayOrder">
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <!-- Created By -->
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+                        Created By
+
+                    </label>
+
+
+
+                    <input type="text" class="form-control" placeholder="Created By" [(ngModel)]="faq.createdBy">
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <!-- Status -->
+                <div class="col-md-4 mb-3">
+
+
+                    <label class="form-label">
+
+                        Status
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+
+
+                    <select class="form-select" [(ngModel)]="faq.status">
+
+
+                        <option value="">
+
+                            Select Status
+
+                        </option>
+
+
+                        <option>
+
+                            Active
+
+                        </option>
+
+
+                        <option>
+
+                            Inactive
+
+                        </option>
+
+
+                        <option>
+
+                            Draft
+
+                        </option>
+
+
+                        <option>
+
+                            Archived
+
+                        </option>
+
+
+                    </select>
+
+
+
+
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !faq.status">
+
+
+                        Status is required.
+
+
+                    </div>
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <!-- Active -->
+                <div class="col-md-4 mb-3 d-flex align-items-end">
+
+
+                    <div class="form-check">
+
+
+                        <input type="checkbox" class="form-check-input" id="faqActive" [(ngModel)]="faq.isActive">
+
+
+
+                        <label class="form-check-label ms-2" for="faqActive">
+
+
+                            Active
+
+
+                        </label>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+
+
+            </div>
+
+
+
+
+
+            <hr>
+
+
+
+
+
+            <button class="btn btn-danger me-2" (click)="saveFaq()">
+
+
+
+                <i class="fa fa-save me-1"></i>
+
+
+
+                {{ isEdit ? 'Update' : 'Save' }}
+
+
+
+            </button>
+
+
+
+
+
+
+
+            <button class="btn btn-secondary" (click)="clear()">
+
+
+
+                <i class="fa fa-eraser me-1"></i>
+
+
+
+                Clear
+
+
+
+            </button>
+
+
+
+
+
+        </div>
+
+
+    </div>
+    <!-- ========================================= -->
+    <!-- Search -->
+    <!-- ========================================= -->
+
+
+    <div class="row mt-4 mb-3">
+
+
+        <div class="col-md-4">
+
+
+            <input type="text" class="form-control" placeholder="Search FAQ..." [(ngModel)]="searchText">
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+    <!-- ========================================= -->
+    <!-- FAQs Table -->
+    <!-- ========================================= -->
+
+
+    <div class="table-responsive">
+
+
+
+        <table class="table table-bordered table-hover">
+
+
+
+            <thead class="table-danger">
+
+
+
+                <tr>
+
+
+                    <th>#</th>
+
+
+                    <th>FAQ Code</th>
+
+
+                    <th>FAQ Title</th>
+
+
+                    <th>Category</th>
+
+
+                    <th>Visibility</th>
+
+
+                    <th>Display Order</th>
+
+
+                    <th>Created By</th>
+
+
+                    <th>Status</th>
+
+
+                    <th width="140">
+
+                        Action
+
+                    </th>
+
+
+                </tr>
+
+
+
+            </thead>
+
+
+
+
+
+            <tbody>
+
+
+
+
+
+                <tr *ngIf="pagedFaqs.length == 0">
+
+
+                    <td colspan="9" class="text-center text-muted">
+
+
+
+                        No FAQs Found
+
+
+
+                    </td>
+
+
+                </tr>
+
+
+
+
+
+
+
+                <tr *ngFor="let item of pagedFaqs; let i=index">
+
+
+
+
+
+                    <td>
+
+
+                        {{ ((page - 1) * pageSize) + i + 1 }}
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+                        {{ item.faqCode }}
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+                        {{ item.faqTitle }}
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+                        <span class="badge" [ngClass]="{
+
+
+                                'bg-primary':
+
+                                item.category == 'Account',
+
+
+
+                                'bg-success':
+
+                                item.category == 'Billing',
+
+
+
+                                'bg-info text-dark':
+
+                                item.category == 'Product',
+
+
+
+                                'bg-warning text-dark':
+
+                                item.category == 'Technical',
+
+
+
+                                'bg-secondary':
+
+                                item.category == 'General'
+
+
+
+                            }">
+
+
+                            {{ item.category }}
+
+
+                        </span>
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+                        <span class="badge" [ngClass]="{
+
+
+                                'bg-success':
+
+                                item.visibility == 'Public',
+
+
+
+                                'bg-warning text-dark':
+
+                                item.visibility == 'Internal',
+
+
+
+                                'bg-primary':
+
+                                item.visibility == 'Customer Portal'
+
+
+
+                            }">
+
+
+                            {{ item.visibility }}
+
+
+                        </span>
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+                        {{ item.displayOrder }}
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+                        {{ item.createdBy }}
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+
+                        <span class="badge" [ngClass]="{
+
+
+                                'bg-success':
+
+                                item.status == 'Active',
+
+
+
+                                'bg-secondary':
+
+                                item.status == 'Inactive',
+
+
+
+                                'bg-warning text-dark':
+
+                                item.status == 'Draft',
+
+
+
+                                'bg-danger':
+
+                                item.status == 'Archived'
+
+
+
+                            }">
+
+
+
+                            {{ item.status }}
+
+
+
+                        </span>
+
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+
+
+
+                        <button class="btn btn-warning btn-sm me-2" (click)="edit(item.faqId)">
+
+
+
+                            <i class="fa fa-edit"></i>
+
+
+
+                        </button>
+
+
+
+
+
+
+
+                        <button class="btn btn-danger btn-sm" (click)="delete(item.faqId)">
+
+
+
+                            <i class="fa fa-trash"></i>
+
+
+
+                        </button>
+
+
+
+
+
+                    </td>
+
+
+
+
+
+                </tr>
+
+
+
+
+
+            </tbody>
+
+
+
+
+
+        </table>
+
+
+
+
+    </div>
+
+
+
+
+
+
+    <!-- ========================================= -->
+    <!-- Pagination -->
+    <!-- ========================================= -->
+
+
+
+    <app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredFaqs.length"
+        (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
+
+
+
+    </app-pagination>
+
+
+
+
+
+</div>

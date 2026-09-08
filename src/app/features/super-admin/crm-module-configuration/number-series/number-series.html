@@ -1,0 +1,1563 @@
+<div class="page-container">
+
+
+    <!-- ================================= -->
+    <!-- Page Header -->
+    <!-- ================================= -->
+
+
+    <div class="page-header">
+
+
+        <div>
+
+
+            <p class="page-subtitle">
+
+                CRM MODULE CONFIGURATION
+
+            </p>
+
+
+
+            <h1>
+
+                Number Series
+
+            </h1>
+
+
+
+            <p class="page-description">
+
+                Configure automatic numbering formats for CRM modules like Leads, Contacts, Opportunities and Deals.
+
+            </p>
+
+
+        </div>
+
+
+
+
+
+        <div class="header-buttons">
+
+
+
+            <button
+
+                class="btn btn-light"
+
+                (click)="refresh()">
+
+
+
+                <i class="fa-solid fa-rotate"></i>
+
+
+                Refresh
+
+
+
+            </button>
+
+
+
+
+
+
+
+            <button
+
+                class="btn btn-danger"
+
+                (click)="openAddModal()">
+
+
+
+                <i class="fa-solid fa-plus"></i>
+
+
+                Add Number Series
+
+
+
+            </button>
+
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+    <!-- ================================= -->
+    <!-- Statistics Cards -->
+    <!-- ================================= -->
+
+
+    <div class="stats-grid">
+
+
+
+
+
+        <div class="stat-card">
+
+
+
+            <span>
+
+                Total Series
+
+            </span>
+
+
+
+            <h2>
+
+                {{numberSeries.length}}
+
+            </h2>
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+        <div class="stat-card">
+
+
+
+            <span>
+
+                Active Series
+
+            </span>
+
+
+
+            <h2>
+
+                {{activeCount}}
+
+            </h2>
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+        <div class="stat-card">
+
+
+
+            <span>
+
+                Inactive Series
+
+            </span>
+
+
+
+            <h2>
+
+                {{inactiveCount}}
+
+            </h2>
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+        <div class="stat-card">
+
+
+
+            <span>
+
+                Default Series
+
+            </span>
+
+
+
+            <h2>
+
+                {{defaultSeries}}
+
+            </h2>
+
+
+
+        </div>
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+    <!-- ================================= -->
+    <!-- Search Section -->
+    <!-- ================================= -->
+
+
+    <div class="search-panel">
+
+
+
+
+
+        <div class="search-box">
+
+
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+
+
+
+
+            <input
+
+
+                type="text"
+
+
+                placeholder="Search number series..."
+
+
+                [(ngModel)]="searchText">
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+        <select
+
+
+            class="form-control"
+
+
+            [(ngModel)]="statusFilter">
+
+
+
+
+
+            <option value="">
+
+
+                All Status
+
+
+            </option>
+
+
+
+
+
+            <option value="Active">
+
+
+                Active
+
+
+            </option>
+
+
+
+
+
+            <option value="Inactive">
+
+
+                Inactive
+
+
+            </option>
+
+
+
+
+
+        </select>
+
+
+
+
+
+
+
+
+
+        <button
+
+
+            class="btn btn-secondary"
+
+
+            (click)="clearFilters()">
+
+
+
+            Clear
+
+
+
+        </button>
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+    <!-- ================================= -->
+    <!-- Table -->
+    <!-- ================================= -->
+
+
+    <div class="table-card">
+
+
+
+
+
+        <div class="table-header">
+
+
+
+            <h3>
+
+
+                Number Series List
+
+
+            </h3>
+
+
+
+
+
+            <span>
+
+
+                {{filteredSeries.length}} Records
+
+
+            </span>
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+        <table>
+
+
+
+
+            <thead>
+
+
+
+                <tr>
+
+
+
+
+                    <th>
+
+                        Series Name
+
+                    </th>
+
+
+
+
+
+                    <th>
+
+                        Module
+
+                    </th>
+
+
+
+
+
+                    <th>
+
+                        Prefix
+
+                    </th>
+
+
+
+
+
+                    <th>
+
+                        Starting No
+
+                    </th>
+
+
+
+
+
+                    <th>
+
+                        Current No
+
+                    </th>
+
+
+
+
+
+                    <th>
+
+                        Format
+
+                    </th>
+
+
+
+
+
+                    <th>
+
+                        Status
+
+                    </th>
+
+
+
+
+
+                    <th>
+
+                        Default
+
+                    </th>
+
+
+
+
+
+                    <th width="170">
+
+                        Actions
+
+                    </th>
+
+
+
+
+                </tr>
+
+
+
+            </thead>
+
+
+
+
+
+
+
+
+
+            <tbody>
+
+
+
+
+
+                <tr
+
+
+                    *ngFor="let item of filteredSeries">
+
+
+
+
+
+
+
+                    <!-- Series Name -->
+
+
+                    <td>
+
+
+
+
+                        <div class="provider-info">
+
+
+
+
+
+                            <div class="provider-icon">
+
+
+
+                                <i class="fa-solid fa-hashtag"></i>
+
+
+
+                            </div>
+
+
+
+
+
+
+                            <div>
+
+
+
+                                <strong>
+
+
+                                    {{item.seriesName}}
+
+
+                                </strong>
+
+
+
+
+                                <small>
+
+
+                                    {{item.description}}
+
+
+                                </small>
+
+
+
+                            </div>
+
+
+
+
+
+                        </div>
+
+
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <!-- Module -->
+
+
+                    <td>
+
+
+                        <span class="module-badge">
+
+
+                            {{item.moduleName}}
+
+
+                        </span>
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <!-- Prefix -->
+
+
+                    <td>
+
+
+                        <span class="prefix-badge">
+
+
+                            {{item.prefix}}
+
+
+                        </span>
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <!-- Starting Number -->
+
+
+                    <td>
+
+
+                        {{item.startNumber}}
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <!-- Current Number -->
+
+
+                    <td>
+
+
+                        {{item.currentNumber}}
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <!-- Format -->
+
+
+                    <td>
+
+
+                        <code>
+
+
+                            {{item.format}}
+
+
+                        </code>
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <!-- Status -->
+
+
+                    <td>
+
+
+
+
+                        <span
+
+
+                            class="status"
+
+
+                            [ngClass]="item.status.toLowerCase()">
+
+
+
+
+
+                            {{item.status}}
+
+
+
+
+
+                        </span>
+
+
+
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <!-- Default -->
+
+
+                    <td>
+
+
+
+
+                        <span
+
+
+                            *ngIf="item.isDefault"
+
+
+                            class="default-badge">
+
+
+
+                            Default
+
+
+
+                        </span>
+
+
+
+
+
+                    </td>
+
+
+
+
+
+
+
+
+
+                    <!-- Actions -->
+
+
+                    <td>
+
+
+
+
+                        <button
+
+
+                            class="icon-btn"
+
+
+                            (click)="edit(item)">
+
+
+
+                            <i class="fa-solid fa-pen"></i>
+
+
+
+                        </button>
+
+
+
+
+
+
+
+
+
+                        <button
+
+
+                            class="icon-btn danger"
+
+
+                            (click)="delete(item.id)">
+
+
+
+                            <i class="fa-solid fa-trash"></i>
+
+
+
+                        </button>
+
+
+
+
+
+                    </td>
+
+
+
+
+
+                </tr>
+
+
+
+
+
+            </tbody>
+
+
+
+
+
+        </table>
+
+
+
+
+
+    </div>
+
+
+
+
+
+</div>
+<!-- ======================================= -->
+<!-- Add / Edit Number Series Modal -->
+<!-- ======================================= -->
+
+
+<div
+
+    class="modal-overlay"
+
+    *ngIf="showModal">
+
+
+
+
+
+    <div class="modal-box">
+
+
+
+
+
+
+        <!-- ========================= -->
+        <!-- Modal Header -->
+        <!-- ========================= -->
+
+
+        <div class="modal-header">
+
+
+
+            <h3>
+
+
+                {{isEdit ? 'Edit Number Series' : 'Add Number Series'}}
+
+
+            </h3>
+
+
+
+
+
+            <button
+
+
+                class="close-btn"
+
+
+                (click)="closeModal()">
+
+
+
+                ×
+
+
+
+            </button>
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+        <!-- ========================= -->
+        <!-- Modal Body -->
+        <!-- ========================= -->
+
+
+        <div class="modal-body">
+
+
+
+
+
+            <div class="form-grid">
+
+
+
+
+
+
+
+                <!-- Series Name -->
+
+
+                <div>
+
+
+
+                    <label>
+
+                        Series Name
+
+                    </label>
+
+
+
+
+
+                    <input
+
+
+                        type="text"
+
+
+                        placeholder="Enter series name"
+
+
+                        [(ngModel)]="model.seriesName">
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Module Name -->
+
+
+                <div>
+
+
+
+                    <label>
+
+                        Module Name
+
+                    </label>
+
+
+
+
+
+                    <select
+
+
+                        [(ngModel)]="model.moduleName">
+
+
+
+
+
+                        <option>
+
+                            Lead
+
+                        </option>
+
+
+
+
+
+                        <option>
+
+                            Contact
+
+                        </option>
+
+
+
+
+
+                        <option>
+
+                            Opportunity
+
+                        </option>
+
+
+
+
+
+                        <option>
+
+                            Deal
+
+                        </option>
+
+
+
+
+
+                        <option>
+
+                            Invoice
+
+                        </option>
+
+
+
+
+
+                        <option>
+
+                            Customer
+
+                        </option>
+
+
+
+
+
+                    </select>
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Prefix -->
+
+
+                <div>
+
+
+
+                    <label>
+
+                        Prefix
+
+                    </label>
+
+
+
+
+
+                    <input
+
+
+                        type="text"
+
+
+                        placeholder="Example: LEAD"
+
+
+                        [(ngModel)]="model.prefix">
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Starting Number -->
+
+
+                <div>
+
+
+
+                    <label>
+
+                        Starting Number
+
+                    </label>
+
+
+
+
+
+                    <input
+
+
+                        type="number"
+
+
+                        placeholder="Enter starting number"
+
+
+                        [(ngModel)]="model.startNumber">
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Current Number -->
+
+
+                <div>
+
+
+
+                    <label>
+
+                        Current Number
+
+                    </label>
+
+
+
+
+
+                    <input
+
+
+                        type="number"
+
+
+                        placeholder="Enter current number"
+
+
+                        [(ngModel)]="model.currentNumber">
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Number Format -->
+
+
+                <div>
+
+
+
+                    <label>
+
+                        Number Format
+
+                    </label>
+
+
+
+
+
+                    <input
+
+
+                        type="text"
+
+
+                        placeholder="Example: LEAD-{YYYY}-{0000}"
+
+
+                        [(ngModel)]="model.format">
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Status -->
+
+
+                <div>
+
+
+
+                    <label>
+
+                        Status
+
+                    </label>
+
+
+
+
+
+                    <select
+
+
+                        [(ngModel)]="model.status">
+
+
+
+
+
+                        <option>
+
+                            Active
+
+                        </option>
+
+
+
+
+
+                        <option>
+
+                            Inactive
+
+                        </option>
+
+
+
+
+
+                    </select>
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Description -->
+
+
+                <div class="full-width">
+
+
+
+                    <label>
+
+                        Description
+
+                    </label>
+
+
+
+
+
+                    <textarea
+
+
+                        rows="4"
+
+
+                        placeholder="Enter description"
+
+
+                        [(ngModel)]="model.description">
+
+
+
+                    </textarea>
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- Default Series -->
+
+
+                <div class="checkbox-group">
+
+
+
+
+
+                    <label>
+
+
+
+
+
+
+                        <input
+
+
+                            type="checkbox"
+
+
+                            [(ngModel)]="model.isDefault">
+
+
+
+
+
+                        Default Number Series
+
+
+
+
+
+                    </label>
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+        <!-- ========================= -->
+        <!-- Modal Footer -->
+        <!-- ========================= -->
+
+
+        <div class="modal-footer">
+
+
+
+
+
+            <button
+
+
+                class="btn-secondary"
+
+
+                (click)="closeModal()">
+
+
+
+
+
+                Cancel
+
+
+
+
+
+            </button>
+
+
+
+
+
+
+
+
+
+            <button
+
+
+                class="btn-primary"
+
+
+                (click)="saveSeries()">
+
+
+
+
+
+                {{isEdit ? 'Update Series' : 'Save Series'}}
+
+
+
+
+
+            </button>
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+</div>
