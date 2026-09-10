@@ -717,7 +717,7 @@
 
                         <span
 
-                            *ngIf="item.isRequired"
+                            *ngIf="item.requiredField"
 
                             class="required-badge">
 
@@ -734,7 +734,7 @@
 
                         <span
 
-                            *ngIf="!item.isRequired">
+                            *ngIf="!item.requiredField">
 
 
                             No
@@ -836,7 +836,7 @@
                             class="icon-btn danger"
 
 
-                            (click)="delete(item.id)">
+                            (click)="delete(item.customFieldId)">
 
 
 
@@ -1526,7 +1526,7 @@
                             type="checkbox"
 
 
-                            [(ngModel)]="model.isRequired">
+                            [(ngModel)]="model.requiredField">
 
 
 
@@ -1576,7 +1576,7 @@
                             type="checkbox"
 
 
-                            [(ngModel)]="model.isUnique">
+                            [(ngModel)]="model.uniqueField">
 
 
 

@@ -3,6 +3,7 @@ import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Alertservice } from '../../../../core/services/alertservice';
 import { Spinnerservice } from '../../../../core/services/spinnerservice';
+import { ControlsystemService } from '../../services/controlsystem-service';
 
 @Component({
   selector: 'app-sources',
@@ -18,7 +19,8 @@ export class Sources {
 
     private spinner: Spinnerservice,
 
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private controlsystemService: ControlsystemService
 
   ) { }
 
@@ -67,139 +69,7 @@ export class Sources {
   // =================================
 
 
-  sources: any[] = [
-
-
-
-    {
-
-      id: 1,
-
-      sourceName: 'Website',
-
-      sourceCode: 'WEB',
-
-      category: 'Digital Marketing',
-
-      conversionRate: 35,
-
-      priority: 'High',
-
-      description: 'Leads generated from company website',
-
-      status: 'Active',
-
-      isDefault: true
-
-    },
-
-
-
-
-
-    {
-
-      id: 2,
-
-      sourceName: 'Google Ads',
-
-      sourceCode: 'GADS',
-
-      category: 'Digital Marketing',
-
-      conversionRate: 40,
-
-      priority: 'High',
-
-      description: 'Paid search marketing campaigns',
-
-      status: 'Active',
-
-      isDefault: false
-
-    },
-
-
-
-
-
-    {
-
-      id: 3,
-
-      sourceName: 'Customer Referral',
-
-      sourceCode: 'REF',
-
-      category: 'Referral',
-
-      conversionRate: 60,
-
-      priority: 'Medium',
-
-      description: 'Leads received from existing customers',
-
-      status: 'Active',
-
-      isDefault: false
-
-    },
-
-
-
-
-
-    {
-
-      id: 4,
-
-      sourceName: 'Social Media',
-
-      sourceCode: 'SOCIAL',
-
-      category: 'Campaign',
-
-      conversionRate: 25,
-
-      priority: 'Medium',
-
-      description: 'Facebook, Instagram and LinkedIn campaigns',
-
-      status: 'Active',
-
-      isDefault: false
-
-    },
-
-
-
-
-
-    {
-
-      id: 5,
-
-      sourceName: 'Cold Calling',
-
-      sourceCode: 'CALL',
-
-      category: 'Sales',
-
-      conversionRate: 15,
-
-      priority: 'Low',
-
-      description: 'Outbound sales calling leads',
-
-      status: 'Inactive',
-
-      isDefault: false
-
-    }
-
-
-
-  ];
+  sources: any[] = [];
 
 
 
@@ -216,729 +86,638 @@ export class Sources {
 
   model: any = this.emptyModel();
 
+ngOnInit(): void {
 
+    this.getSources();
 
+  }
 
+// =================================
+  // EMPTY MODEL
+  // =================================
 
-
-  emptyModel() {
-
-
+  emptyModel(): any {
 
     return {
 
-
-
-      id: 0,
-
+      sourceId: 0,
 
       sourceName: '',
 
-
       sourceCode: '',
-
 
       category: 'Digital Marketing',
 
-
       conversionRate: 0,
-
 
       priority: 'Medium',
 
-
-      description: '',
-
-
       status: 'Active',
 
-
-      isDefault: false
-
-
+      description: ''
 
     };
 
+  }
+
+
+  // =================================
+  // GET ALL SOURCES
+  // =================================
+
+  getSources(): void {
+
+    this.spinner.show();
+
+    this.controlsystemService
+      .getSources()
+      .subscribe({
+
+        next: (response: any) => {
+
+          this.spinner.hide();
+
+          if (response && response.success) {
+
+            this.sources = response.data || [];
+
+          }
+          else {
+
+            this.sources = [];
+
+            this.alert.warning(
+              response?.message ||
+              'Unable to load sources.'
+            );
+
+          }
+
+          this.cd.detectChanges();
+
+        },
+
+        error: (error) => {
+
+          this.spinner.hide();
+
+          console.error(
+            'Error loading sources:',
+            error
+          );
+
+          this.sources = [];
+
+          this.alert.error(
+            error?.error?.message ||
+            'Failed to load sources.'
+          );
+
+          this.cd.detectChanges();
+
+        }
+
+      });
 
   }
 
 
-
-
-
-
-
-
-
   // =================================
-  // Statistics
+  // STATISTICS
   // =================================
 
-
-  get activeCount() {
-
+  get activeCount(): number {
 
     return this.sources.filter(
-
       x => x.status === 'Active'
-
     ).length;
-
 
   }
 
 
-
-
-
-
-
-  get inactiveCount() {
-
+  get inactiveCount(): number {
 
     return this.sources.filter(
-
       x => x.status === 'Inactive'
-
     ).length;
 
+  }
+
+
+  /*
+   * Backend model does not contain IsDefault.
+   *
+   * Kept for compatibility with existing HTML.
+   */
+
+  get defaultSource(): string {
+
+    return '-';
 
   }
 
 
-
-
-
-
-
-  get defaultSource() {
-
-
-    const item = this.sources.find(
-
-      x => x.isDefault
-
-    );
-
-
-    return item ? item.sourceName : '-';
-
-
-  }
-
-
-
-
-
-
-
-
-
   // =================================
-  // Filter Sources
+  // FILTER SOURCES
   // =================================
 
+  get filteredSources(): any[] {
 
-  get filteredSources() {
-
-
+    const searchValue =
+      this.searchText.trim().toLowerCase();
 
     return this.sources.filter(item => {
 
-
-
-
-
       const search =
 
+        !searchValue ||
 
-
-
-
-        item.sourceName
-
+        (item.sourceName || '')
           .toLowerCase()
+          .includes(searchValue) ||
 
-          .includes(
-
-            this.searchText.toLowerCase()
-
-          )
-
-
-
-
-
-        ||
-
-
-
-
-
-        item.sourceCode
-
+        (item.sourceCode || '')
           .toLowerCase()
+          .includes(searchValue) ||
 
-          .includes(
-
-            this.searchText.toLowerCase()
-
-          )
-
-
-
-
-
-        ||
-
-
-
-
-
-        item.category
-
+        (item.category || '')
           .toLowerCase()
+          .includes(searchValue) ||
 
-          .includes(
-
-            this.searchText.toLowerCase()
-
-          );
-
-
-
-
-
-
-
+        (item.description || '')
+          .toLowerCase()
+          .includes(searchValue);
 
 
       const status =
 
-
-
-
-
-        this.statusFilter === ''
-
-        ||
+        this.statusFilter === '' ||
 
         item.status === this.statusFilter;
 
 
-
-
-
-
-
       return search && status;
-
-
 
     });
 
+  }
 
+
+  // =================================
+  // REFRESH
+  // =================================
+
+  refresh(): void {
+
+    this.getSources();
 
   }
 
 
-
-
-
-
-
-
-
   // =================================
-  // Refresh
+  // OPEN ADD MODAL
   // =================================
 
-
-  refresh() {
-
-
-
-    this.spinner.show();
-
-
-
-    setTimeout(() => {
-
-
-
-      this.spinner.hide();
-
-
-
-      this.alert.success(
-
-        'Sources refreshed successfully.'
-
-      );
-
-
-
-    }, 500);
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-  // =================================
-  // Add Modal
-  // =================================
-
-
-  openAddModal() {
-
-
+  openAddModal(): void {
 
     this.isEdit = false;
 
-
     this.editId = 0;
 
-
     this.model = this.emptyModel();
-
 
     this.showModal = true;
 
-
-
   }
 
 
-
-
-
-
-
-
-
   // =================================
-  // Close Modal
+  // CLOSE MODAL
   // =================================
 
-
-  closeModal() {
-
-
+  closeModal(): void {
 
     this.showModal = false;
 
-
     this.model = this.emptyModel();
-
 
     this.isEdit = false;
 
-
     this.editId = 0;
 
-
-
   }
 
 
-
-
-
-
-
-
-
   // =================================
-  // Save / Update Source
+  // SAVE / UPDATE SOURCE
   // =================================
 
+  saveSource(): void {
 
-  saveSource() {
+    // ---------------------------------
+    // Source Name Validation
+    // ---------------------------------
 
-
-
-
-
-    if (!this.model.sourceName.trim()) {
-
-
+    if (
+      !this.model.sourceName ||
+      !this.model.sourceName.trim()
+    ) {
 
       this.alert.warning(
-
         'Source Name is required.'
-
       );
 
-
       return;
-
 
     }
 
 
+    // ---------------------------------
+    // Source Code Validation
+    // ---------------------------------
 
-
-
-
-
-    if (!this.model.sourceCode.trim()) {
-
-
+    if (
+      !this.model.sourceCode ||
+      !this.model.sourceCode.trim()
+    ) {
 
       this.alert.warning(
-
         'Source Code is required.'
-
       );
 
-
       return;
-
 
     }
 
 
+    // ---------------------------------
+    // Category Validation
+    // ---------------------------------
 
+    if (
+      !this.model.category ||
+      !this.model.category.trim()
+    ) {
 
+      this.alert.warning(
+        'Category is required.'
+      );
 
+      return;
 
+    }
 
-    this.spinner.show();
 
+    // ---------------------------------
+    // Conversion Rate Validation
+    // ---------------------------------
 
+    if (
+      this.model.conversionRate === null ||
+      this.model.conversionRate === undefined ||
+      this.model.conversionRate < 0 ||
+      this.model.conversionRate > 100
+    ) {
 
+      this.alert.warning(
+        'Conversion Rate must be between 0 and 100.'
+      );
 
+      return;
 
+    }
 
-    setTimeout(() => {
 
+    // ---------------------------------
+    // Priority
+    // ---------------------------------
 
+    if (!this.model.priority) {
 
+      this.model.priority = 'Medium';
 
+    }
 
 
-      if (this.isEdit) {
+    // ---------------------------------
+    // Status
+    // ---------------------------------
 
+    if (!this.model.status) {
 
+      this.model.status = 'Active';
 
+    }
 
 
+    // ---------------------------------
+    // API PAYLOAD
+    // ---------------------------------
 
-        const index = this.sources.findIndex(
+    const payload = {
 
-          x => x.id === this.editId
+      sourceId:
+        this.isEdit ? this.editId : 0,
 
-        );
+      sourceName:
+        this.model.sourceName.trim(),
 
+      sourceCode:
+        this.model.sourceCode.trim(),
 
+      category:
+        this.model.category.trim(),
 
+      conversionRate:
+        Number(this.model.conversionRate),
 
+      priority:
+        this.model.priority,
 
+      status:
+        this.model.status,
 
-
-        if (index !== -1) {
-
-
-
-
-
-          this.sources[index] = {
-
-
-
-            ...this.model,
-
-
-            id: this.editId
-
-
-
-          };
-
-
-
-
-
-        }
-
-
-
-
-
-
-
-        this.alert.success(
-
-          'Source updated successfully.'
-
-        );
-
-
-
-
-
-
-      }
-
-      else {
-
-
-
-
-
-
-        this.model.id = new Date().getTime();
-
-
-
-
-
-
-        this.sources.unshift({
-
-
-
-          ...this.model
-
-
-
-        });
-
-
-
-
-
-
-
-        this.alert.success(
-
-          'Source created successfully.'
-
-        );
-
-
-
-
-
-      }
-
-
-
-
-
-
-
-      this.spinner.hide();
-
-
-
-
-
-      // Close Modal
-
-      this.closeModal();
-
-
-
-
-
-      // Refresh UI
-
-      this.cd.detectChanges();
-
-
-
-
-
-
-
-    }, 500);
-
-
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-  // =================================
-  // Edit Source
-  // =================================
-
-
-  edit(item: any) {
-
-
-
-    this.isEdit = true;
-
-
-    this.editId = item.id;
-
-
-
-
-    this.model = {
-
-
-
-      ...item
-
-
+      description:
+        this.model.description
+          ? this.model.description.trim()
+          : null
 
     };
 
 
+    // ---------------------------------
+    // SHOW SPINNER
+    // ---------------------------------
 
+    this.spinner.show();
+
+
+    // =================================
+    // UPDATE
+    // =================================
+
+    if (this.isEdit) {
+
+      this.controlsystemService
+        .updateSource(payload)
+        .subscribe({
+
+          next: (response: any) => {
+
+            this.spinner.hide();
+
+            if (response && response.success) {
+
+              this.alert.success(
+                response.message ||
+                'Source updated successfully.'
+              );
+
+              this.closeModal();
+
+              this.getSources();
+
+            }
+            else {
+
+              this.alert.warning(
+                response?.message ||
+                'Unable to update source.'
+              );
+
+            }
+
+            this.cd.detectChanges();
+
+          },
+
+          error: (error) => {
+
+            this.spinner.hide();
+
+            console.error(
+              'Update Source Error:',
+              error
+            );
+
+            this.alert.error(
+              error?.error?.message ||
+              'Failed to update source.'
+            );
+
+            this.cd.detectChanges();
+
+          }
+
+        });
+
+    }
+
+
+    // =================================
+    // CREATE
+    // =================================
+
+    else {
+
+      this.controlsystemService
+        .createSource(payload)
+        .subscribe({
+
+          next: (response: any) => {
+
+            this.spinner.hide();
+
+            if (response && response.success) {
+
+              this.alert.success(
+                response.message ||
+                'Source created successfully.'
+              );
+
+              this.closeModal();
+
+              this.getSources();
+
+            }
+            else {
+
+              this.alert.warning(
+                response?.message ||
+                'Unable to create source.'
+              );
+
+            }
+
+            this.cd.detectChanges();
+
+          },
+
+          error: (error) => {
+
+            this.spinner.hide();
+
+            console.error(
+              'Create Source Error:',
+              error
+            );
+
+            this.alert.error(
+              error?.error?.message ||
+              'Failed to create source.'
+            );
+
+            this.cd.detectChanges();
+
+          }
+
+        });
+
+    }
+
+  }
+
+
+  // =================================
+  // EDIT SOURCE
+  // =================================
+
+  edit(item: any): void {
+
+    this.isEdit = true;
+
+    this.editId = item.sourceId;
+
+
+    this.model = {
+
+      sourceId:
+        item.sourceId,
+
+      sourceName:
+        item.sourceName || '',
+
+      sourceCode:
+        item.sourceCode || '',
+
+      category:
+        item.category || 'Digital Marketing',
+
+      conversionRate:
+        item.conversionRate ?? 0,
+
+      priority:
+        item.priority || 'Medium',
+
+      status:
+        item.status || 'Active',
+
+      description:
+        item.description || ''
+
+    };
 
 
     this.showModal = true;
 
-
-
   }
 
 
-
-
-
-
-
-
-
   // =================================
-  // Delete Source
+  // DELETE SOURCE
   // =================================
 
+  delete(id: number): void {
 
-  delete(id: number) {
+    if (!id) {
 
+      this.alert.warning(
+        'Invalid source.'
+      );
+
+      return;
+
+    }
 
 
     this.alert.deleteConfirm()
-
       .then(result => {
 
+        if (!result.isConfirmed) {
 
-
-
-
-        if (result.isConfirmed) {
-
-
-
-
-
-          this.spinner.show();
-
-
-
-
-
-
-          setTimeout(() => {
-
-
-
-
-
-            this.sources = this.sources.filter(
-
-
-
-              x => x.id !== id
-
-
-
-            );
-
-
-
-
-
-
-            this.spinner.hide();
-
-
-
-
-
-
-            this.alert.success(
-
-              'Source deleted successfully.'
-
-            );
-
-
-
-
-
-
-            this.cd.detectChanges();
-
-
-
-
-
-
-
-          }, 500);
-
-
-
-
+          return;
 
         }
 
 
+        this.spinner.show();
 
 
+        this.controlsystemService
+          .deleteSource(id)
+          .subscribe({
+
+            next: (response: any) => {
+
+              this.spinner.hide();
+
+              if (response && response.success) {
+
+                this.alert.success(
+                  response.message ||
+                  'Source deleted successfully.'
+                );
+
+                this.getSources();
+
+              }
+              else {
+
+                this.alert.warning(
+                  response?.message ||
+                  'Unable to delete source.'
+                );
+
+              }
+
+              this.cd.detectChanges();
+
+            },
+
+            error: (error) => {
+
+              this.spinner.hide();
+
+              console.error(
+                'Delete Source Error:',
+                error
+              );
+
+              this.alert.error(
+                error?.error?.message ||
+                'Failed to delete source.'
+              );
+
+              this.cd.detectChanges();
+
+            }
+
+          });
 
       });
-
-
 
   }
 
 
-
-
-
-
-
-
-
   // =================================
-  // Clear Filter
+  // CLEAR FILTERS
   // =================================
 
-
-  clearFilters() {
-
-
+  clearFilters(): void {
 
     this.searchText = '';
 
-
     this.statusFilter = '';
-
-
 
   }
 }

@@ -3,6 +3,7 @@ import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Alertservice } from '../../../../core/services/alertservice';
 import { Spinnerservice } from '../../../../core/services/spinnerservice';
+import { ControlsystemService } from '../../services/controlsystem-service';
 
 @Component({
   selector: 'app-territories',
@@ -18,7 +19,8 @@ export class Territories {
 
     private spinner: Spinnerservice,
 
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private controlSystemService: ControlsystemService
 
   ) {}
 
@@ -68,121 +70,7 @@ export class Territories {
   // =====================================
 
 
-  territories:any[] = [
-
-
-
-    {
-
-      id:1,
-
-      territoryName:'South India Sales',
-
-      territoryCode:'SOUTH-001',
-
-      region:'South Region',
-
-      managerName:'Ravi Kumar',
-
-      customerCount:120,
-
-      priority:'High',
-
-      description:'Covers Andhra Pradesh, Telangana and Karnataka regions',
-
-      status:'Active',
-
-      isDefault:true
-
-    },
-
-
-
-
-
-    {
-
-      id:2,
-
-      territoryName:'North India Sales',
-
-      territoryCode:'NORTH-001',
-
-      region:'North Region',
-
-      managerName:'Amit Sharma',
-
-      customerCount:95,
-
-      priority:'High',
-
-      description:'Covers Delhi, Punjab and Haryana regions',
-
-      status:'Active',
-
-      isDefault:false
-
-    },
-
-
-
-
-
-    {
-
-      id:3,
-
-      territoryName:'West India Sales',
-
-      territoryCode:'WEST-001',
-
-      region:'West Region',
-
-      managerName:'Priya Patel',
-
-      customerCount:75,
-
-      priority:'Medium',
-
-      description:'Covers Maharashtra and Gujarat regions',
-
-      status:'Active',
-
-      isDefault:false
-
-    },
-
-
-
-
-
-    {
-
-      id:4,
-
-      territoryName:'East India Sales',
-
-      territoryCode:'EAST-001',
-
-      region:'East Region',
-
-      managerName:'Suresh Das',
-
-      customerCount:60,
-
-      priority:'Medium',
-
-      description:'Covers West Bengal and Odisha regions',
-
-      status:'Inactive',
-
-      isDefault:false
-
-    }
-
-
-
-  ];
+  territories:any[] = [];
 
 
 
@@ -199,767 +87,575 @@ export class Territories {
 
   model:any = this.emptyModel();
 
-
-
-
-
-
-  emptyModel(){
-
-
-
+emptyModel() {
     return {
-
-
-
-      id:0,
-
-
-      territoryName:'',
-
-
-      territoryCode:'',
-
-
-      region:'South Region',
-
-
-      managerName:'',
-
-
-      customerCount:0,
-
-
-      priority:'Medium',
-
-
-      description:'',
-
-
-      status:'Active',
-
-
-      isDefault:false
-
-
-
+      territoryId: 0,
+      territoryName: '',
+      territoryCode: '',
+      region: 'South Region',
+      territoryManager: '',
+      customerCount: 0,
+      priority: 'Medium',
+      status: 'Active',
+      description: ''
     };
-
-
   }
 
 
+  // =====================================
+  // Lifecycle
+  // =====================================
+
+  ngOnInit(): void {
+    this.getTerritories();
+  }
 
 
+  // =====================================
+  // Get All Territories
+  // =====================================
 
+  getTerritories(): void {
 
+    this.spinner.show();
 
+    this.controlSystemService.getTerritories().subscribe({
+
+      next: (response: any) => {
+
+        this.spinner.hide();
+
+        if (response?.success) {
+
+          this.territories = response.data || [];
+
+        } else {
+
+          this.territories = [];
+
+          this.alert.warning(
+            response?.message || 'Unable to load territories.'
+          );
+
+        }
+
+        this.cd.detectChanges();
+      },
+
+      error: (error) => {
+
+        this.spinner.hide();
+
+        console.error(
+          'Get Territories Error:',
+          error
+        );
+
+        this.territories = [];
+
+        this.alert.error(
+          error?.error?.message ||
+          'Failed to load territories.'
+        );
+
+        this.cd.detectChanges();
+      }
+
+    });
+
+  }
 
 
   // =====================================
   // Statistics
   // =====================================
 
-
-  get activeCount(){
-
-
+  get activeCount() {
 
     return this.territories.filter(
-
       x => x.status === 'Active'
-
     ).length;
-
-
 
   }
 
 
-
-
-
-
-
-  get inactiveCount(){
-
-
+  get inactiveCount() {
 
     return this.territories.filter(
-
       x => x.status === 'Inactive'
-
     ).length;
 
-
-
   }
-
-
-
-
-
-
-
-  get defaultTerritory(){
-
-
-
-    const item = this.territories.find(
-
-      x => x.isDefault
-
-    );
-
-
-
-    return item ? item.territoryName : '-';
-
-
-
-  }
-
-
-
-
-
-
-
 
 
   // =====================================
   // Filter Territories
   // =====================================
 
+  get filteredTerritories() {
 
-  get filteredTerritories(){
-
-
-
-    return this.territories.filter(item=>{
-
-
-
-
-
-      const search =
-
-
-
-        item.territoryName
-
+    const search =
+      this.searchText
         .toLowerCase()
+        .trim();
 
-        .includes(
+    return this.territories.filter(item => {
 
-          this.searchText.toLowerCase()
+      const territoryName =
+        (item.territoryName || '')
+          .toLowerCase();
 
-        )
+      const territoryCode =
+        (item.territoryCode || '')
+          .toLowerCase();
 
+      const region =
+        (item.region || '')
+          .toLowerCase();
 
+      const territoryManager =
+        (item.territoryManager || '')
+          .toLowerCase();
 
+      const description =
+        (item.description || '')
+          .toLowerCase();
 
+      const searchMatch =
+        !search ||
+        territoryName.includes(search) ||
+        territoryCode.includes(search) ||
+        region.includes(search) ||
+        territoryManager.includes(search) ||
+        description.includes(search);
 
-        ||
-
-
-
-
-
-        item.territoryCode
-
-        .toLowerCase()
-
-        .includes(
-
-          this.searchText.toLowerCase()
-
-        )
-
-
-
-
-
-        ||
-
-
-
-
-
-        item.region
-
-        .toLowerCase()
-
-        .includes(
-
-          this.searchText.toLowerCase()
-
-        )
-
-
-
-
-
-        ||
-
-
-
-
-
-        item.managerName
-
-        .toLowerCase()
-
-        .includes(
-
-          this.searchText.toLowerCase()
-
-        );
-
-
-
-
-
-
-
-      const status =
-
-
-
-        this.statusFilter === ''
-
-        ||
-
+      const statusMatch =
+        this.statusFilter === '' ||
         item.status === this.statusFilter;
 
-
-
-
-
-
-
-      return search && status;
-
-
+      return searchMatch && statusMatch;
 
     });
 
-
-
   }
-
-
-
-
-
-
-
 
 
   // =====================================
   // Refresh
   // =====================================
 
+  refresh(): void {
 
-  refresh(){
-
-
-
-    this.spinner.show();
-
-
-
-    setTimeout(()=>{
-
-
-
-      this.spinner.hide();
-
-
-
-      this.alert.success(
-
-        'Territories refreshed successfully.'
-
-      );
-
-
-
-    },500);
-
-
+    this.getTerritories();
 
   }
-
-
-
-
-
-
-
 
 
   // =====================================
   // Open Add Modal
   // =====================================
 
-
-  openAddModal(){
-
-
+  openAddModal(): void {
 
     this.isEdit = false;
 
-
     this.editId = 0;
-
 
     this.model = this.emptyModel();
 
-
     this.showModal = true;
 
-
-
   }
-
-
-
-
-
-
-
 
 
   // =====================================
   // Close Modal
   // =====================================
 
-
-  closeModal(){
-
-
+  closeModal(): void {
 
     this.showModal = false;
 
-
     this.model = this.emptyModel();
-
 
     this.isEdit = false;
 
-
     this.editId = 0;
 
-
-
   }
-
-
-
-
-
-
-
 
 
   // =====================================
   // Save / Update Territory
   // =====================================
 
+  saveTerritory(): void {
 
-  saveTerritory(){
+    // -------------------------------------
+    // Territory Name Validation
+    // -------------------------------------
 
-
-
-
-
-    if(!this.model.territoryName.trim()){
-
-
+    if (!this.model.territoryName?.trim()) {
 
       this.alert.warning(
-
         'Territory Name is required.'
-
       );
 
-
       return;
-
-
     }
 
 
+    // -------------------------------------
+    // Territory Code Validation
+    // -------------------------------------
 
-
-
-
-
-    if(!this.model.territoryCode.trim()){
-
-
+    if (!this.model.territoryCode?.trim()) {
 
       this.alert.warning(
-
         'Territory Code is required.'
-
       );
 
-
       return;
-
-
     }
 
 
+    // -------------------------------------
+    // Region Validation
+    // -------------------------------------
+
+    if (!this.model.region?.trim()) {
+
+      this.alert.warning(
+        'Region is required.'
+      );
+
+      return;
+    }
 
 
+    // -------------------------------------
+    // Customer Count Validation
+    // -------------------------------------
+
+    if (
+      this.model.customerCount === null ||
+      this.model.customerCount === undefined ||
+      Number(this.model.customerCount) < 0
+    ) {
+
+      this.alert.warning(
+        'Customer Count cannot be negative.'
+      );
+
+      return;
+    }
 
 
+    // -------------------------------------
+    // Prepare Request
+    // -------------------------------------
+
+    const request = {
+
+      territoryId:
+        this.isEdit
+          ? this.editId
+          : 0,
+
+      territoryName:
+        this.model.territoryName.trim(),
+
+      territoryCode:
+        this.model.territoryCode.trim(),
+
+      region:
+        this.model.region,
+
+      territoryManager:
+        this.model.territoryManager?.trim() || null,
+
+      customerCount:
+        Number(this.model.customerCount) || 0,
+
+      priority:
+        this.model.priority,
+
+      status:
+        this.model.status,
+
+      description:
+        this.model.description?.trim() || null
+
+    };
+
+
+    // -------------------------------------
+    // Show Spinner
+    // -------------------------------------
 
     this.spinner.show();
 
 
+    // =====================================
+    // UPDATE
+    // =====================================
 
+    if (this.isEdit) {
 
+      this.controlSystemService
+        .updateTerritory(request)
+        .subscribe({
 
+          next: (response: any) => {
 
+            this.spinner.hide();
 
-    setTimeout(()=>{
+            if (response?.success) {
 
+              this.alert.success(
+                response.message ||
+                'Territory updated successfully.'
+              );
 
+              this.closeModal();
 
+              this.getTerritories();
 
+            } else {
 
-      if(this.isEdit){
+              this.alert.warning(
+                response?.message ||
+                'Unable to update territory.'
+              );
 
+            }
 
+            this.cd.detectChanges();
 
+          },
 
+          error: (error) => {
 
-        const index = this.territories.findIndex(
+            this.spinner.hide();
 
+            console.error(
+              'Update Territory Error:',
+              error
+            );
 
+            this.alert.error(
+              error?.error?.message ||
+              'Failed to update territory.'
+            );
 
-          x => x.id === this.editId
+            this.cd.detectChanges();
 
-
-
-        );
-
-
-
-
-
-
-
-        if(index !== -1){
-
-
-
-
-
-          this.territories[index] = {
-
-
-
-            ...this.model,
-
-
-            id:this.editId
-
-
-
-          };
-
-
-
-
-
-        }
-
-
-
-
-
-
-
-        this.alert.success(
-
-          'Territory updated successfully.'
-
-        );
-
-
-
-
-
-      }
-
-      else{
-
-
-
-
-
-        this.model.id = new Date().getTime();
-
-
-
-
-
-
-
-        this.territories.unshift({
-
-
-
-          ...this.model
-
-
+          }
 
         });
 
+    }
 
 
+    // =====================================
+    // CREATE
+    // =====================================
 
+    else {
 
+      this.controlSystemService
+        .createTerritory(request)
+        .subscribe({
 
+          next: (response: any) => {
 
-        this.alert.success(
+            this.spinner.hide();
 
-          'Territory created successfully.'
+            if (response?.success) {
 
-        );
+              this.alert.success(
+                response.message ||
+                'Territory created successfully.'
+              );
 
+              this.closeModal();
 
+              this.getTerritories();
 
+            } else {
 
+              this.alert.warning(
+                response?.message ||
+                'Unable to create territory.'
+              );
 
-      }
+            }
 
+            this.cd.detectChanges();
 
+          },
 
+          error: (error) => {
 
+            this.spinner.hide();
 
+            console.error(
+              'Create Territory Error:',
+              error
+            );
 
+            this.alert.error(
+              error?.error?.message ||
+              'Failed to create territory.'
+            );
 
+            this.cd.detectChanges();
 
+          }
 
-      this.spinner.hide();
+        });
 
-
-
-
-
-
-
-      // Auto Close Modal
-
-      this.closeModal();
-
-
-
-
-
-
-
-      // Refresh UI
-
-      this.cd.detectChanges();
-
-
-
-
-
-
-
-    },500);
-
-
-
-
+    }
 
   }
-
-
-
-
-
-
-
 
 
   // =====================================
   // Edit Territory
   // =====================================
 
-
-  edit(item:any){
-
-
+  edit(item: any): void {
 
     this.isEdit = true;
 
-
-    this.editId = item.id;
-
-
-
-
+    this.editId = item.territoryId;
 
     this.model = {
 
+      territoryId:
+        item.territoryId,
 
+      territoryName:
+        item.territoryName || '',
 
-      ...item
+      territoryCode:
+        item.territoryCode || '',
 
+      region:
+        item.region || 'South Region',
 
+      territoryManager:
+        item.territoryManager || '',
+
+      customerCount:
+        item.customerCount ?? 0,
+
+      priority:
+        item.priority || 'Medium',
+
+      status:
+        item.status || 'Active',
+
+      description:
+        item.description || ''
 
     };
 
-
-
-
-
-
-
     this.showModal = true;
 
-
-
   }
-
-
-
-
-
-
-
 
 
   // =====================================
   // Delete Territory
   // =====================================
 
+  delete(id: number): void {
 
-  delete(id:number){
+    if (!id) {
 
+      this.alert.warning(
+        'Invalid Territory ID.'
+      );
+
+      return;
+
+    }
 
 
     this.alert.deleteConfirm()
+      .then(result => {
 
-    .then(result=>{
+        if (result.isConfirmed) {
 
+          this.spinner.show();
 
+          this.controlSystemService
+            .deleteTerritory(id)
+            .subscribe({
 
+              next: (response: any) => {
 
+                this.spinner.hide();
 
-      if(result.isConfirmed){
+                if (response?.success) {
 
+                  this.alert.success(
+                    response.message ||
+                    'Territory deleted successfully.'
+                  );
 
+                  this.getTerritories();
 
+                } else {
 
+                  this.alert.warning(
+                    response?.message ||
+                    'Unable to delete territory.'
+                  );
 
-        this.spinner.show();
+                }
 
+                this.cd.detectChanges();
 
+              },
 
+              error: (error) => {
 
+                this.spinner.hide();
 
+                console.error(
+                  'Delete Territory Error:',
+                  error
+                );
 
-        setTimeout(()=>{
+                this.alert.error(
+                  error?.error?.message ||
+                  'Failed to delete territory.'
+                );
 
+                this.cd.detectChanges();
 
+              }
 
+            });
 
+        }
 
-          this.territories = this.territories.filter(
-
-
-
-            x => x.id !== id
-
-
-
-          );
-
-
-
-
-
-
-
-          this.spinner.hide();
-
-
-
-
-
-
-
-          this.alert.success(
-
-            'Territory deleted successfully.'
-
-          );
-
-
-
-
-
-
-
-          this.cd.detectChanges();
-
-
-
-
-
-
-
-        },500);
-
-
-
-
-
-      }
-
-
-
-
-
-    });
-
-
+      });
 
   }
-
-
-
-
-
-
-
 
 
   // =====================================
   // Clear Filters
   // =====================================
 
-
-  clearFilters(){
-
-
+  clearFilters(): void {
 
     this.searchText = '';
 
-
     this.statusFilter = '';
-
-
 
   }
 

@@ -194,40 +194,6 @@
 
         </div>
 
-
-
-
-
-
-
-
-
-        <div class="stat-card">
-
-
-
-            <span>
-
-                Default Series
-
-            </span>
-
-
-
-            <h2>
-
-                {{defaultSeries}}
-
-            </h2>
-
-
-
-        </div>
-
-
-
-
-
     </div>
 
 
@@ -501,19 +467,6 @@
                     </th>
 
 
-
-
-
-                    <th>
-
-                        Default
-
-                    </th>
-
-
-
-
-
                     <th width="170">
 
                         Actions
@@ -685,7 +638,7 @@
                     <td>
 
 
-                        {{item.startNumber}}
+                        {{item.startingNumber}}
 
 
                     </td>
@@ -726,7 +679,7 @@
                         <code>
 
 
-                            {{item.format}}
+                            {{item.numberFormat}}
 
 
                         </code>
@@ -776,52 +729,6 @@
 
                     </td>
 
-
-
-
-
-
-
-
-
-                    <!-- Default -->
-
-
-                    <td>
-
-
-
-
-                        <span
-
-
-                            *ngIf="item.isDefault"
-
-
-                            class="default-badge">
-
-
-
-                            Default
-
-
-
-                        </span>
-
-
-
-
-
-                    </td>
-
-
-
-
-
-
-
-
-
                     <!-- Actions -->
 
 
@@ -860,7 +767,7 @@
                             class="icon-btn danger"
 
 
-                            (click)="delete(item.id)">
+                            (click)="delete(item.numberSeriesId)">
 
 
 
@@ -1208,7 +1115,7 @@
                         placeholder="Enter starting number"
 
 
-                        [(ngModel)]="model.startNumber">
+                        [(ngModel)]="model.startingNumber">
 
 
 
@@ -1292,7 +1199,7 @@
                         placeholder="Example: LEAD-{YYYY}-{0000}"
 
 
-                        [(ngModel)]="model.format">
+                        [(ngModel)]="model.numberFormat">
 
 
 
@@ -1407,63 +1314,6 @@
 
 
                 </div>
-
-
-
-
-
-
-
-
-
-                <!-- Default Series -->
-
-
-                <div class="checkbox-group">
-
-
-
-
-
-                    <label>
-
-
-
-
-
-
-                        <input
-
-
-                            type="checkbox"
-
-
-                            [(ngModel)]="model.isDefault">
-
-
-
-
-
-                        Default Number Series
-
-
-
-
-
-                    </label>
-
-
-
-
-
-                </div>
-
-
-
-
-
-
-
 
 
             </div>

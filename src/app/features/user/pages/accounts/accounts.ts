@@ -78,7 +78,7 @@ interface AccountForm {
 @Component({
   selector: 'app-accounts',
   standalone: true,
-  imports: [CommonModule,FormsModule,Pagination],
+  imports: [CommonModule,FormsModule],
   templateUrl: './accounts.html',
   styleUrl: './accounts.css',
 })

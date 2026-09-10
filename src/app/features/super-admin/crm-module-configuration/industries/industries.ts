@@ -3,6 +3,7 @@ import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Alertservice } from '../../../../core/services/alertservice';
 import { Spinnerservice } from '../../../../core/services/spinnerservice';
+import { ControlsystemService } from '../../services/controlsystem-service';
 
 @Component({
   selector: 'app-industries',
@@ -18,7 +19,8 @@ export class Industries {
 
     private spinner: Spinnerservice,
 
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private controlSystemService: ControlsystemService
 
   ) { }
 
@@ -67,139 +69,7 @@ export class Industries {
   // =================================
 
 
-  industries: any[] = [
-
-
-
-    {
-
-      id: 1,
-
-      industryName: 'Information Technology',
-
-      industryCode: 'IT',
-
-      category: 'Technology',
-
-      customerCount: 150,
-
-      priority: 'High',
-
-      description: 'Software development and IT service companies',
-
-      status: 'Active',
-
-      isDefault: true
-
-    },
-
-
-
-
-
-    {
-
-      id: 2,
-
-      industryName: 'Healthcare',
-
-      industryCode: 'HEALTH',
-
-      category: 'Healthcare',
-
-      customerCount: 85,
-
-      priority: 'High',
-
-      description: 'Hospitals, clinics and healthcare organizations',
-
-      status: 'Active',
-
-      isDefault: false
-
-    },
-
-
-
-
-
-    {
-
-      id: 3,
-
-      industryName: 'Banking & Finance',
-
-      industryCode: 'BFSI',
-
-      category: 'Finance',
-
-      customerCount: 120,
-
-      priority: 'Medium',
-
-      description: 'Banks, insurance and financial institutions',
-
-      status: 'Active',
-
-      isDefault: false
-
-    },
-
-
-
-
-
-    {
-
-      id: 4,
-
-      industryName: 'Manufacturing',
-
-      industryCode: 'MFG',
-
-      category: 'Manufacturing',
-
-      customerCount: 70,
-
-      priority: 'Medium',
-
-      description: 'Industrial and manufacturing businesses',
-
-      status: 'Active',
-
-      isDefault: false
-
-    },
-
-
-
-
-
-    {
-
-      id: 5,
-
-      industryName: 'Education',
-
-      industryCode: 'EDU',
-
-      category: 'Education',
-
-      customerCount: 45,
-
-      priority: 'Low',
-
-      description: 'Schools, colleges and educational institutes',
-
-      status: 'Inactive',
-
-      isDefault: false
-
-    }
-
-
-
-  ];
+  industries: any[] = [];
 
 
 
@@ -223,60 +93,100 @@ export class Industries {
 
   emptyModel() {
 
-
-
     return {
 
-
-
-      id: 0,
-
+      industryId: 0,
 
       industryName: '',
 
-
       industryCode: '',
 
-
-      category: 'Technology',
-
+      industryCategory: 'Technology',
 
       customerCount: 0,
 
-
       priority: 'Medium',
-
-
-      description: '',
-
 
       status: 'Active',
 
-
-      isDefault: false
-
-
+      description: ''
 
     };
-
 
   }
 
 
+  // =================================
+  // Component Initialization
+  // =================================
+
+  ngOnInit(): void {
+
+    this.getIndustries();
+
+  }
 
 
+  // =================================
+  // Get All Industries
+  // =================================
 
+  getIndustries(): void {
 
+    this.spinner.show();
 
+    this.controlSystemService.getIndustries().subscribe({
+
+      next: (response: any) => {
+
+        this.spinner.hide();
+
+        if (response?.success) {
+
+          this.industries = response.data || [];
+
+        }
+        else {
+
+          this.industries = [];
+
+          this.alert.warning(
+            response?.message || 'Unable to load industries.'
+          );
+
+        }
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (error) => {
+
+        this.spinner.hide();
+
+        console.error('Get Industries Error:', error);
+
+        this.industries = [];
+
+        this.alert.error(
+          error?.error?.message ||
+          'Failed to load industries.'
+        );
+
+        this.cd.detectChanges();
+
+      }
+
+    });
+
+  }
 
 
   // =================================
   // Statistics
   // =================================
 
-
   get activeCount() {
-
 
     return this.industries.filter(
 
@@ -284,17 +194,10 @@ export class Industries {
 
     ).length;
 
-
   }
 
 
-
-
-
-
-
   get inactiveCount() {
-
 
     return this.industries.filter(
 
@@ -302,643 +205,468 @@ export class Industries {
 
     ).length;
 
-
   }
-
-
-
-
-
-
-
-  get defaultIndustry() {
-
-
-    const item = this.industries.find(
-
-      x => x.isDefault
-
-    );
-
-
-    return item ? item.industryName : '-';
-
-
-  }
-
-
-
-
-
-
-
 
 
   // =================================
   // Filter Industries
   // =================================
 
-
   get filteredIndustries() {
 
-
+    const search = this.searchText
+      .toLowerCase()
+      .trim();
 
     return this.industries.filter(item => {
 
+      const industryName =
+        (item.industryName || '').toLowerCase();
+
+      const industryCode =
+        (item.industryCode || '').toLowerCase();
+
+      const industryCategory =
+        (item.industryCategory || '').toLowerCase();
+
+      const description =
+        (item.description || '').toLowerCase();
+
+      const searchMatch =
+
+        !search ||
+
+        industryName.includes(search) ||
+
+        industryCode.includes(search) ||
+
+        industryCategory.includes(search) ||
+
+        description.includes(search);
 
 
+      const statusMatch =
 
-
-      const search =
-
-
-
-
-
-        item.industryName
-
-          .toLowerCase()
-
-          .includes(
-
-            this.searchText.toLowerCase()
-
-          )
-
-
-
-
-
-        ||
-
-
-
-
-
-        item.industryCode
-
-          .toLowerCase()
-
-          .includes(
-
-            this.searchText.toLowerCase()
-
-          )
-
-
-
-
-
-        ||
-
-
-
-
-
-        item.category
-
-          .toLowerCase()
-
-          .includes(
-
-            this.searchText.toLowerCase()
-
-          );
-
-
-
-
-
-
-
-
-
-      const status =
-
-
-
-
-
-        this.statusFilter === ''
-
-        ||
+        this.statusFilter === '' ||
 
         item.status === this.statusFilter;
 
 
-
-
-
-
-
-      return search && status;
-
-
+      return searchMatch && statusMatch;
 
     });
 
-
-
   }
-
-
-
-
-
-
-
 
 
   // =================================
   // Refresh
   // =================================
 
+  refresh(): void {
 
-  refresh() {
-
-
-
-    this.spinner.show();
-
-
-
-    setTimeout(() => {
-
-
-
-      this.spinner.hide();
-
-
-
-      this.alert.success(
-
-        'Industries refreshed successfully.'
-
-      );
-
-
-
-    }, 500);
-
-
+    this.getIndustries();
 
   }
 
 
-
-
-
-
-
-
-
   // =================================
-  // Add Modal
+  // Add Industry Modal
   // =================================
 
-
-  openAddModal() {
-
-
+  openAddModal(): void {
 
     this.isEdit = false;
 
-
     this.editId = 0;
-
 
     this.model = this.emptyModel();
 
-
     this.showModal = true;
 
-
-
   }
-
-
-
-
-
-
-
 
 
   // =================================
   // Close Modal
   // =================================
 
-
-  closeModal() {
-
-
+  closeModal(): void {
 
     this.showModal = false;
 
-
     this.model = this.emptyModel();
-
 
     this.isEdit = false;
 
-
     this.editId = 0;
 
-
-
   }
-
-
-
-
-
-
-
 
 
   // =================================
   // Save / Update Industry
   // =================================
 
+  saveIndustry(): void {
 
-  saveIndustry() {
+    // ===============================
+    // Validation
+    // ===============================
 
-
-
-
-
-    if (!this.model.industryName.trim()) {
-
-
+    if (!this.model.industryName?.trim()) {
 
       this.alert.warning(
-
         'Industry Name is required.'
-
       );
 
-
       return;
-
 
     }
 
 
-
-
-
-
-
-    if (!this.model.industryCode.trim()) {
-
-
+    if (!this.model.industryCode?.trim()) {
 
       this.alert.warning(
-
         'Industry Code is required.'
-
       );
 
-
       return;
-
 
     }
 
 
+    if (!this.model.industryCategory?.trim()) {
+
+      this.alert.warning(
+        'Industry Category is required.'
+      );
+
+      return;
+
+    }
 
 
+    if (
+      this.model.customerCount === null ||
+      this.model.customerCount === undefined ||
+      this.model.customerCount < 0
+    ) {
+
+      this.alert.warning(
+        'Customer Count cannot be negative.'
+      );
+
+      return;
+
+    }
 
 
+    // ===============================
+    // Prepare Request
+    // ===============================
+
+    const request = {
+
+      industryId: this.isEdit
+        ? this.editId
+        : 0,
+
+      industryName:
+        this.model.industryName.trim(),
+
+      industryCode:
+        this.model.industryCode.trim(),
+
+      industryCategory:
+        this.model.industryCategory,
+
+      customerCount:
+        Number(this.model.customerCount) || 0,
+
+      priority:
+        this.model.priority,
+
+      status:
+        this.model.status,
+
+      description:
+        this.model.description?.trim() || null
+
+    };
+
+
+    // ===============================
+    // Show Spinner
+    // ===============================
 
     this.spinner.show();
 
 
+    // ===============================
+    // Update Industry
+    // ===============================
 
+    if (this.isEdit) {
 
+      this.controlSystemService
+        .updateIndustry(request)
+        .subscribe({
 
+          next: (response: any) => {
 
-    setTimeout(() => {
+            this.spinner.hide();
 
+            if (response?.success) {
 
+              this.alert.success(
+                response.message ||
+                'Industry updated successfully.'
+              );
 
+              this.closeModal();
 
+              this.getIndustries();
 
+            }
+            else {
 
-      if (this.isEdit) {
+              this.alert.warning(
+                response?.message ||
+                'Unable to update industry.'
+              );
 
+            }
 
+            this.cd.detectChanges();
 
+          },
 
+          error: (error) => {
 
+            this.spinner.hide();
 
-        const index = this.industries.findIndex(
+            console.error(
+              'Update Industry Error:',
+              error
+            );
 
-          x => x.id === this.editId
+            this.alert.error(
+              error?.error?.message ||
+              'Failed to update industry.'
+            );
 
-        );
+            this.cd.detectChanges();
 
-
-
-
-
-
-
-        if (index !== -1) {
-
-
-
-
-
-          this.industries[index] = {
-
-
-
-            ...this.model,
-
-
-            id: this.editId
-
-
-
-          };
-
-
-
-
-
-        }
-
-
-
-
-
-
-
-        this.alert.success(
-
-          'Industry updated successfully.'
-
-        );
-
-
-
-
-
-
-      }
-
-      else {
-
-
-
-
-
-
-        this.model.id = new Date().getTime();
-
-
-
-
-
-
-        this.industries.unshift({
-
-
-
-          ...this.model
-
-
+          }
 
         });
 
+    }
 
 
+    // ===============================
+    // Create Industry
+    // ===============================
 
+    else {
 
+      this.controlSystemService
+        .createIndustry(request)
+        .subscribe({
 
+          next: (response: any) => {
 
-        this.alert.success(
+            this.spinner.hide();
 
-          'Industry created successfully.'
+            if (response?.success) {
 
-        );
+              this.alert.success(
+                response.message ||
+                'Industry created successfully.'
+              );
 
+              this.closeModal();
 
+              this.getIndustries();
 
+            }
+            else {
 
+              this.alert.warning(
+                response?.message ||
+                'Unable to create industry.'
+              );
 
-      }
+            }
 
+            this.cd.detectChanges();
 
+          },
 
+          error: (error) => {
 
+            this.spinner.hide();
 
+            console.error(
+              'Create Industry Error:',
+              error
+            );
 
+            this.alert.error(
+              error?.error?.message ||
+              'Failed to create industry.'
+            );
 
-      this.spinner.hide();
+            this.cd.detectChanges();
 
+          }
 
+        });
 
-
-
-      // Close modal after save/update
-
-      this.closeModal();
-
-
-
-
-
-      // Refresh UI
-
-      this.cd.detectChanges();
-
-
-
-
-
-
-
-    }, 500);
-
-
-
-
+    }
 
   }
-
-
-
-
-
-
-
 
 
   // =================================
   // Edit Industry
   // =================================
 
-
-  edit(item: any) {
-
-
+  edit(item: any): void {
 
     this.isEdit = true;
 
-
-    this.editId = item.id;
-
-
+    this.editId = item.industryId;
 
 
     this.model = {
 
+      industryId:
+        item.industryId,
 
+      industryName:
+        item.industryName || '',
 
-      ...item
+      industryCode:
+        item.industryCode || '',
 
+      industryCategory:
+        item.industryCategory || 'Technology',
 
+      customerCount:
+        item.customerCount ?? 0,
+
+      priority:
+        item.priority || 'Medium',
+
+      status:
+        item.status || 'Active',
+
+      description:
+        item.description || ''
 
     };
 
 
-
-
-
     this.showModal = true;
 
-
-
   }
-
-
-
-
-
-
-
 
 
   // =================================
   // Delete Industry
   // =================================
 
+  delete(id: number): void {
 
-  delete(id: number) {
+    if (!id) {
 
+      this.alert.warning(
+        'Invalid Industry ID.'
+      );
+
+      return;
+
+    }
 
 
     this.alert.deleteConfirm()
 
       .then(result => {
 
-
-
-
-
         if (result.isConfirmed) {
-
-
-
-
 
           this.spinner.show();
 
 
+          this.controlSystemService
+            .deleteIndustry(id)
+            .subscribe({
 
+              next: (response: any) => {
 
+                this.spinner.hide();
 
+                if (response?.success) {
 
-          setTimeout(() => {
+                  this.alert.success(
+                    response.message ||
+                    'Industry deleted successfully.'
+                  );
 
+                  this.getIndustries();
 
+                }
+                else {
 
+                  this.alert.warning(
+                    response?.message ||
+                    'Unable to delete industry.'
+                  );
 
+                }
 
-            this.industries = this.industries.filter(
+                this.cd.detectChanges();
 
+              },
 
+              error: (error) => {
 
-              x => x.id !== id
+                this.spinner.hide();
 
+                console.error(
+                  'Delete Industry Error:',
+                  error
+                );
 
+                this.alert.error(
+                  error?.error?.message ||
+                  'Failed to delete industry.'
+                );
 
-            );
+                this.cd.detectChanges();
 
+              }
 
-
-
-
-
-            this.spinner.hide();
-
-
-
-
-
-
-            this.alert.success(
-
-              'Industry deleted successfully.'
-
-            );
-
-
-
-
-
-
-            this.cd.detectChanges();
-
-
-
-
-
-
-
-          }, 500);
-
-
-
-
+            });
 
         }
 
-
-
-
-
       });
-
-
 
   }
 
 
-
-
-
-
-
-
-
   // =================================
-  // Clear Filter
+  // Clear Filters
   // =================================
 
-
-  clearFilters() {
-
-
+  clearFilters(): void {
 
     this.searchText = '';
 
-
     this.statusFilter = '';
-
-
 
   }
 }

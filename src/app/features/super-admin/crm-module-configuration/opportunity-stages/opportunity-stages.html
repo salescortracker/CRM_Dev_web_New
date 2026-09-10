@@ -149,28 +149,6 @@
         </div>
 
 
-
-
-
-
-        <div class="stat-card">
-
-
-            <span>
-                Default Stage
-            </span>
-
-
-            <h2>
-                {{defaultStage}}
-            </h2>
-
-
-        </div>
-
-
-
-
     </div>
 
 
@@ -340,13 +318,6 @@
                     <th>
                         Status
                     </th>
-
-
-
-                    <th>
-                        Default
-                    </th>
-
 
 
                     <th width="170">
@@ -531,39 +502,6 @@
                     </td>
 
 
-
-
-
-
-
-
-
-                    <td>
-
-
-
-                        <span *ngIf="item.isDefault" class="default-badge">
-
-
-
-                            Default
-
-
-
-                        </span>
-
-
-
-                    </td>
-
-
-
-
-
-
-
-
-
                     <td>
 
 
@@ -585,7 +523,7 @@
 
 
 
-                        <button class="icon-btn danger" (click)="delete(item.id)">
+                        <button class="icon-btn danger" (click)="delete(item.opportunityStageId)">
 
 
 
@@ -960,47 +898,6 @@
 
                 </div>
 
-
-
-
-
-
-
-
-
-                <!-- Default Stage -->
-
-
-                <div class="checkbox-group">
-
-
-
-                    <label>
-
-
-
-                        <input type="checkbox" [(ngModel)]="model.isDefault">
-
-
-
-                        Default Stage
-
-
-
-                    </label>
-
-
-
-                </div>
-
-
-
-
-
-
-
-
-
                 <!-- Won Stage -->
 
 
@@ -1012,7 +909,7 @@
 
 
 
-                        <input type="checkbox" [(ngModel)]="model.isWonStage">
+                        <input type="checkbox" [(ngModel)]="model.WonStage">
 
 
 
@@ -1045,7 +942,7 @@
 
 
 
-                        <input type="checkbox" [(ngModel)]="model.isLostStage">
+                        <input type="checkbox" [(ngModel)]="model.lostStage">
 
 
 

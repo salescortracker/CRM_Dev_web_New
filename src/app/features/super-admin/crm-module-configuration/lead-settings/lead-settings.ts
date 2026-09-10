@@ -3,6 +3,7 @@ import { Alertservice } from '../../../../core/services/alertservice';
 import { Spinnerservice } from '../../../../core/services/spinnerservice';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ControlsystemService } from '../../services/controlsystem-service';
 
 @Component({
   selector: 'app-lead-settings',
@@ -18,7 +19,8 @@ export class LeadSettings {
 
     private spinner: Spinnerservice,
 
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+     private controlSystemService: ControlsystemService
 
   ) { }
 
@@ -64,129 +66,7 @@ export class LeadSettings {
   // ==============================
 
 
-  leadSettings:any[] = [
-
-
-
-    {
-
-
-      id:1,
-
-
-      settingName:'Default Lead Management',
-
-
-      defaultStatus:'New',
-
-
-      priority:'High',
-
-
-      assignmentRule:'Round Robin',
-
-
-      followUpDays:3,
-
-
-      autoAssignment:true,
-
-
-      emailNotification:true,
-
-
-      status:'Active',
-
-
-      isDefault:true
-
-
-
-    },
-
-
-
-
-
-    {
-
-
-      id:2,
-
-
-      settingName:'Enterprise Lead Process',
-
-
-      defaultStatus:'Qualified',
-
-
-      priority:'Critical',
-
-
-      assignmentRule:'Territory Based',
-
-
-      followUpDays:7,
-
-
-      autoAssignment:true,
-
-
-      emailNotification:true,
-
-
-      status:'Active',
-
-
-      isDefault:false
-
-
-
-    },
-
-
-
-
-
-    {
-
-
-      id:3,
-
-
-      settingName:'Manual Sales Leads',
-
-
-      defaultStatus:'Contacted',
-
-
-      priority:'Medium',
-
-
-      assignmentRule:'Manual Assignment',
-
-
-      followUpDays:5,
-
-
-      autoAssignment:false,
-
-
-      emailNotification:false,
-
-
-      status:'Inactive',
-
-
-      isDefault:false
-
-
-
-    }
-
-
-
-  ];
+  leadSettings:any[] = [];
 
 
 
@@ -202,646 +82,611 @@ export class LeadSettings {
 
 
   model:any = this.emptyModel();
-
-
-
-
-
-
-  emptyModel(){
-
-
-
+ emptyModel() {
     return {
 
+      leadSettingId: 0,
 
+      settingName: '',
 
-      id:0,
+      leadStatus: 'New',
 
+      leadPriority: 'Medium',
 
-      settingName:'',
+      assignmentRule: 'Round Robin',
 
+      followUpDays: 3,
 
-      defaultStatus:'New',
+      enableAutoAssignment: true,
 
+      emailNotification: true,
 
-      priority:'Medium',
-
-
-      assignmentRule:'Round Robin',
-
-
-      followUpDays:3,
-
-
-      autoAssignment:true,
-
-
-      emailNotification:true,
-
-
-      status:'Active',
-
-
-      isDefault:false
-
-
+      status: 'Active'
 
     };
+  }
 
 
+  // =========================================================
+  // Lifecycle
+  // =========================================================
+
+  ngOnInit(): void {
+
+    this.getLeadSettings();
 
   }
 
 
-
-
-
-
-
-
-
-  // ==============================
-  // Statistics
-  // ==============================
-
-
-  get activeCount(){
-
-
-    return this.leadSettings.filter(
-
-      x=>x.status==='Active'
-
-    ).length;
-
-
-
-  }
-
-
-
-
-
-
-
-
-  get inactiveCount(){
-
-
-    return this.leadSettings.filter(
-
-      x=>x.status==='Inactive'
-
-    ).length;
-
-
-
-  }
-
-
-
-
-
-
-
-
-  get defaultSetting(){
-
-
-    const item=this.leadSettings.find(
-
-      x=>x.isDefault
-
-    );
-
-
-
-    return item ? item.settingName : '-';
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-  // ==============================
-  // Filter
-  // ==============================
-
-
-  get filteredLeadSettings(){
-
-
-
-    return this.leadSettings.filter(item=>{
-
-
-
-      const search =
-
-
-
-      item.settingName
-
-      .toLowerCase()
-
-      .includes(this.searchText.toLowerCase())
-
-
-
-      ||
-
-
-
-      item.defaultStatus
-
-      .toLowerCase()
-
-      .includes(this.searchText.toLowerCase())
-
-
-
-      ||
-
-
-
-      item.assignmentRule
-
-      .toLowerCase()
-
-      .includes(this.searchText.toLowerCase());
-
-
-
-
-
-
-
-      const status =
-
-
-
-      this.statusFilter === ''
-
-
-
-      ||
-
-
-
-      item.status === this.statusFilter;
-
-
-
-
-
-
-
-      return search && status;
-
-
-
-    });
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-  // ==============================
-  // Refresh
-  // ==============================
-
-
-  refresh(){
-
-
+  // =========================================================
+  // Get All Lead Settings
+  // =========================================================
+
+  getLeadSettings(): void {
 
     this.spinner.show();
 
+    this.controlSystemService
+      .getLeadSettings()
+      .subscribe({
 
+        next: (response: any) => {
 
+          this.spinner.hide();
 
-    setTimeout(()=>{
+          if (response?.success) {
 
+            this.leadSettings = response.data || [];
 
+          }
+          else {
 
-      this.spinner.hide();
+            this.leadSettings = [];
 
+            this.alert.warning(
+              response?.message ||
+              'Unable to load lead settings.'
+            );
 
+          }
 
-      this.alert.success(
+          this.cd.detectChanges();
 
-        'Lead settings refreshed successfully.'
+        },
 
-      );
+        error: (error) => {
 
+          this.spinner.hide();
 
+          console.error(
+            'Get Lead Settings Error:',
+            error
+          );
 
-    },500);
+          this.leadSettings = [];
 
+          this.alert.error(
+            error?.error?.message ||
+            'Failed to load lead settings.'
+          );
 
+          this.cd.detectChanges();
+
+        }
+
+      });
 
   }
 
 
+  // =========================================================
+  // Statistics
+  // =========================================================
+
+  get activeCount(): number {
+
+    return this.leadSettings.filter(
+      x => x.status === 'Active'
+    ).length;
+
+  }
 
 
+  get inactiveCount(): number {
+
+    return this.leadSettings.filter(
+      x => x.status === 'Inactive'
+    ).length;
+
+  }
 
 
+  // =========================================================
+  // Filtered Lead Settings
+  // =========================================================
+
+  get filteredLeadSettings(): any[] {
+
+    const search =
+      this.searchText
+        .toLowerCase()
+        .trim();
+
+    return this.leadSettings.filter(item => {
+
+      const settingName =
+        (item.settingName || '')
+          .toLowerCase();
+
+      const leadStatus =
+        (item.leadStatus || '')
+          .toLowerCase();
+
+      const assignmentRule =
+        (item.assignmentRule || '')
+          .toLowerCase();
+
+      const leadPriority =
+        (item.leadPriority || '')
+          .toLowerCase();
+
+      const searchMatch =
+        !search ||
+        settingName.includes(search) ||
+        leadStatus.includes(search) ||
+        assignmentRule.includes(search) ||
+        leadPriority.includes(search);
+
+      const statusMatch =
+        this.statusFilter === '' ||
+        item.status === this.statusFilter;
+
+      return searchMatch && statusMatch;
+
+    });
+
+  }
 
 
+  // =========================================================
+  // Refresh
+  // =========================================================
 
-  // ==============================
+  refresh(): void {
+
+    this.getLeadSettings();
+
+  }
+
+
+  // =========================================================
   // Open Add Modal
-  // ==============================
+  // =========================================================
 
+  openAddModal(): void {
 
-  openAddModal(){
+    this.isEdit = false;
 
+    this.editId = 0;
 
+    this.model = this.emptyModel();
 
-    this.isEdit=false;
-
-
-    this.editId=0;
-
-
-    this.model=this.emptyModel();
-
-
-    this.showModal=true;
-
-
+    this.showModal = true;
 
   }
 
 
-
-
-
-
-
-
-
-  // ==============================
+  // =========================================================
   // Close Modal
-  // ==============================
+  // =========================================================
 
+  closeModal(): void {
 
-  closeModal(){
+    this.showModal = false;
 
+    this.model = this.emptyModel();
 
+    this.isEdit = false;
 
-    this.showModal=false;
-
-
-    this.model=this.emptyModel();
-
-
-    this.isEdit=false;
-
-
-    this.editId=0;
-
-
+    this.editId = 0;
 
   }
 
 
+  // =========================================================
+  // Save / Update Lead Setting
+  // =========================================================
 
+  saveLeadSetting(): void {
 
+    // =======================================================
+    // Setting Name Validation
+    // =======================================================
 
-
-
-
-
-  // ==============================
-  // Save / Update
-  // ==============================
-
-
-  saveLeadSetting(){
-
-
-
-    if(!this.model.settingName.trim()){
-
-
+    if (!this.model.settingName?.trim()) {
 
       this.alert.warning(
-
         'Setting Name is required.'
-
       );
 
-
       return;
-
 
     }
 
 
+    // =======================================================
+    // Lead Status Validation
+    // =======================================================
 
+    if (!this.model.leadStatus?.trim()) {
 
+      this.alert.warning(
+        'Lead Status is required.'
+      );
 
+      return;
 
-    this.spinner.show();
+    }
 
 
+    // =======================================================
+    // Lead Priority Validation
+    // =======================================================
 
+    if (!this.model.leadPriority?.trim()) {
 
+      this.alert.warning(
+        'Lead Priority is required.'
+      );
 
+      return;
 
-    setTimeout(()=>{
+    }
 
 
+    // =======================================================
+    // Assignment Rule Validation
+    // =======================================================
 
+    if (!this.model.assignmentRule?.trim()) {
 
+      this.alert.warning(
+        'Assignment Rule is required.'
+      );
 
-      if(this.isEdit){
+      return;
 
+    }
 
 
-        const index=this.leadSettings.findIndex(
+    // =======================================================
+    // Follow-up Days Validation
+    // =======================================================
 
-          x=>x.id===this.editId
+    if (
+      this.model.followUpDays === null ||
+      this.model.followUpDays === undefined ||
+      Number(this.model.followUpDays) < 0
+    ) {
 
-        );
+      this.alert.warning(
+        'Follow-up Days cannot be negative.'
+      );
 
+      return;
 
+    }
 
 
+    // =======================================================
+    // Request Object
+    // =======================================================
 
-        if(index!==-1){
+    const request = {
 
+      leadSettingId:
+        this.isEdit
+          ? this.editId
+          : 0,
 
+      settingName:
+        this.model.settingName.trim(),
 
-          this.leadSettings[index]={
+      leadStatus:
+        this.model.leadStatus,
 
+      leadPriority:
+        this.model.leadPriority,
 
-            ...this.model,
+      assignmentRule:
+        this.model.assignmentRule,
 
+      followUpDays:
+        Number(this.model.followUpDays) || 0,
 
-            id:this.editId
+      status:
+        this.model.status || 'Active',
 
+      enableAutoAssignment:
+        this.model.enableAutoAssignment === true,
 
-          };
-
-
-
-        }
-
-
-
-
-        this.alert.success(
-
-          'Lead setting updated successfully.'
-
-        );
-
-
-
-
-
-      }
-
-      else{
-
-
-
-        this.model.id=new Date().getTime();
-
-
-
-
-        this.leadSettings.unshift({
-
-
-
-          ...this.model
-
-
-
-        });
-
-
-
-
-
-        this.alert.success(
-
-          'Lead setting created successfully.'
-
-        );
-
-
-
-      }
-
-
-
-
-
-
-      this.spinner.hide();
-
-
-
-
-
-      // Close modal
-
-      this.closeModal();
-
-
-
-
-
-      // Refresh UI
-
-      this.cd.detectChanges();
-
-
-
-
-
-    },500);
-
-
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-  // ==============================
-  // Edit
-  // ==============================
-
-
-  edit(item:any){
-
-
-
-    this.isEdit=true;
-
-
-    this.editId=item.id;
-
-
-
-
-    this.model={
-
-
-      ...item
-
+      emailNotification:
+        this.model.emailNotification === true
 
     };
 
 
+    // =======================================================
+    // Show Spinner
+    // =======================================================
+
+    this.spinner.show();
 
 
+    // =======================================================
+    // UPDATE
+    // =======================================================
 
-    this.showModal=true;
+    if (this.isEdit) {
+
+      this.controlSystemService
+        .updateLeadSetting(request)
+        .subscribe({
+
+          next: (response: any) => {
+
+            this.spinner.hide();
+
+            if (response?.success) {
+
+              this.alert.success(
+                response.message ||
+                'Lead setting updated successfully.'
+              );
+
+              this.closeModal();
+
+              this.getLeadSettings();
+
+            }
+            else {
+
+              this.alert.warning(
+                response?.message ||
+                'Unable to update lead setting.'
+              );
+
+            }
+
+            this.cd.detectChanges();
+
+          },
+
+          error: (error) => {
+
+            this.spinner.hide();
+
+            console.error(
+              'Update Lead Setting Error:',
+              error
+            );
+
+            this.alert.error(
+              error?.error?.message ||
+              'Failed to update lead setting.'
+            );
+
+            this.cd.detectChanges();
+
+          }
+
+        });
+
+    }
 
 
+    // =======================================================
+    // CREATE
+    // =======================================================
+
+    else {
+
+      this.controlSystemService
+        .createLeadSetting(request)
+        .subscribe({
+
+          next: (response: any) => {
+
+            this.spinner.hide();
+
+            if (response?.success) {
+
+              this.alert.success(
+                response.message ||
+                'Lead setting created successfully.'
+              );
+
+              this.closeModal();
+
+              this.getLeadSettings();
+
+            }
+            else {
+
+              this.alert.warning(
+                response?.message ||
+                'Unable to create lead setting.'
+              );
+
+            }
+
+            this.cd.detectChanges();
+
+          },
+
+          error: (error) => {
+
+            this.spinner.hide();
+
+            console.error(
+              'Create Lead Setting Error:',
+              error
+            );
+
+            this.alert.error(
+              error?.error?.message ||
+              'Failed to create lead setting.'
+            );
+
+            this.cd.detectChanges();
+
+          }
+
+        });
+
+    }
 
   }
 
 
+  // =========================================================
+  // Edit Lead Setting
+  // =========================================================
 
+  edit(item: any): void {
 
+    this.isEdit = true;
 
+    this.editId = item.leadSettingId;
 
+    this.model = {
 
+      leadSettingId:
+        item.leadSettingId,
 
+      settingName:
+        item.settingName || '',
 
-  // ==============================
-  // Delete
-  // ==============================
+      leadStatus:
+        item.leadStatus || 'New',
 
+      leadPriority:
+        item.leadPriority || 'Medium',
 
-  delete(id:number){
+      assignmentRule:
+        item.assignmentRule || 'Round Robin',
 
+      followUpDays:
+        item.followUpDays ?? 3,
 
+      enableAutoAssignment:
+        item.enableAutoAssignment === true,
 
-    this.alert.deleteConfirm()
+      emailNotification:
+        item.emailNotification === true,
 
-    .then(result=>{
+      status:
+        item.status || 'Active'
 
+    };
 
-
-      if(result.isConfirmed){
-
-
-
-        this.spinner.show();
-
-
-
-
-        setTimeout(()=>{
-
-
-
-
-
-          this.leadSettings = this.leadSettings.filter(
-
-            x=>x.id!==id
-
-          );
-
-
-
-
-
-
-          this.spinner.hide();
-
-
-
-
-
-
-          this.alert.success(
-
-            'Lead setting deleted successfully.'
-
-          );
-
-
-
-
-
-
-
-          this.cd.detectChanges();
-
-
-
-
-
-        },500);
-
-
-
-      }
-
-
-
-    });
-
-
+    this.showModal = true;
 
   }
 
 
+  // =========================================================
+  // Delete Lead Setting
+  // =========================================================
+
+  delete(id: number): void {
+
+    if (!id) {
+
+      this.alert.warning(
+        'Invalid Lead Setting ID.'
+      );
+
+      return;
+
+    }
 
 
+    this.alert
+      .deleteConfirm()
+      .then(result => {
+
+        if (result.isConfirmed) {
+
+          this.spinner.show();
+
+          this.controlSystemService
+            .deleteLeadSetting(id)
+            .subscribe({
+
+              next: (response: any) => {
+
+                this.spinner.hide();
+
+                if (response?.success) {
+
+                  this.alert.success(
+                    response.message ||
+                    'Lead setting deleted successfully.'
+                  );
+
+                  this.getLeadSettings();
+
+                }
+                else {
+
+                  this.alert.warning(
+                    response?.message ||
+                    'Unable to delete lead setting.'
+                  );
+
+                }
+
+                this.cd.detectChanges();
+
+              },
+
+              error: (error) => {
+
+                this.spinner.hide();
+
+                console.error(
+                  'Delete Lead Setting Error:',
+                  error
+                );
+
+                this.alert.error(
+                  error?.error?.message ||
+                  'Failed to delete lead setting.'
+                );
+
+                this.cd.detectChanges();
+
+              }
+
+            });
+
+        }
+
+      });
+
+  }
 
 
-
-
-
-  // ==============================
+  // =========================================================
   // Clear Filters
-  // ==============================
+  // =========================================================
 
+  clearFilters(): void {
 
-  clearFilters(){
+    this.searchText = '';
 
-
-    this.searchText='';
-
-
-    this.statusFilter='';
-
-
+    this.statusFilter = '';
 
   }
 }

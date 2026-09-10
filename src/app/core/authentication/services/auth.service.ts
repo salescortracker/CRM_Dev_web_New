@@ -1,10 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject, of, throwError } from 'rxjs';
 import { LoginRequest } from '../models/login-request.model';
 import { LoginResponse } from '../models/login-response.model';
 import { environment } from '../../../../environments/environment';
 
+export interface ApiResponse<T = any> {
+  data: T;
+  message: string;
+  success?: boolean;
+}
 
 
 @Injectable({
@@ -12,380 +16,216 @@ import { environment } from '../../../../environments/environment';
 })
 export class AuthService {
 
-   /*
-     * ============================================================
-     * STATIC LOGIN USERS
-     * ============================================================
-     */
-    private testUsers = [
-        {
-            email: 'superadmin@crm.com',
-            password: 'superadmin123',
-            firstName: 'Super',
-            lastName: 'Admin',
-            role: 'super-admin',
-            permissions: [
-                'manage-users',
-                'manage-settings',
-                'view-reports',
-                'manage-all'
-            ]
-        },
-        {
-            email: 'admin@crm.com',
-            password: 'admin123',
-            firstName: 'Admin',
-            lastName: 'User',
-            role: 'admin',
-            permissions: [
-                'manage-contacts',
-                'manage-deals',
-                'manage-leads',
-                'manage-companies'
-            ]
-        },
-        {
-            email: 'user@crm.com',
-            password: 'user123',
-            firstName: 'Normal',
-            lastName: 'User',
-            role: 'user',
-            permissions: [
-                'view-contacts',
-                'view-deals',
-                'manage-leads',
-                'add-leads'
-            ]
-        }
-    ];
+   private baseUrl = environment.apiUrl;
 
-    /*
-     * ============================================================
-     * CURRENT USER
-     * ============================================================
-     */
-    private currentUserSubject =
-        new BehaviorSubject<LoginResponse | null>(
-            this.getStoredUser()
-        );
-
-    currentUser$ =
-        this.currentUserSubject.asObservable();
-
-    /*
-     * ============================================================
-     * EXISTING API URLs
-     * ============================================================
-     */
-
-    private apiUrl = `${environment.apiUrl}/Auth`;
-
-    private menuApiUrl =
-        `${environment.apiUrl}/Menu`;
-
-    private companyApiUrl =
-        `${environment.apiUrl}/Master`;
+  constructor(private http: HttpClient) { }
 
 
-    constructor(
-        private http: HttpClient
-    ) { }
+  // ================= LOGIN =================
+
+  login(request: LoginRequest) {
+    return this.http.post<LoginResponse>(
+      `${this.baseUrl}/Auth/login`,
+      request
+    );
+  }
 
 
-    /*
-     * ============================================================
-     * STATIC LOGIN
-     * ============================================================
-     */
-    login(
-        request: LoginRequest
-    ): Observable<LoginResponse> {
+  // ================= LOGOUT =================
 
-        const email = request.userName?.trim().toLowerCase();
-        const password = request.password;
+  logout(): void {
 
-        const user = this.testUsers.find(
-            u =>
-                u.email.toLowerCase() === email &&
-                u.password === password
-        );
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
 
-        /*
-         * Invalid username/password
-         */
-        if (!user) {
+  }
 
-            return throwError(() => ({
-                error: {
-                    message: 'Invalid Username or Password'
-                }
-            }));
 
-        }
+  // ================= TOKEN =================
 
-        /*
-         * Convert static role names to the role names
-         * expected by your EXISTING SIDEBAR.
-         *
-         * Sidebar expects:
-         * Super Admin
-         * Admin
-         * User
-         */
-        let sidebarRole = '';
+  getToken(): string | null {
 
-        switch (user.role) {
+    return localStorage.getItem('token');
 
-            case 'super-admin':
-                sidebarRole = 'Super Admin';
-                break;
+  }
 
-            case 'admin':
-                sidebarRole = 'Admin';
-                break;
 
-            case 'user':
-                sidebarRole = 'User';
-                break;
-        }
+  // ================= CHECK LOGIN =================
 
-        /*
-         * Static login response
-         */
-        const response = {
-            token: `static-token-${user.role}`,
-            userName: user.email,
-            email: user.email,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            role: sidebarRole,
-            permissions: user.permissions
-        } as unknown as LoginResponse;
+  isLoggedIn(): boolean {
 
-        /*
-         * Store login information
-         */
-        if (typeof window !== 'undefined') {
+    return !!localStorage.getItem('token');
 
-            localStorage.setItem(
-                'token',
-                response.token
-            );
+  }
 
-            localStorage.setItem(
-                'user',
-                JSON.stringify(response)
-            );
-        }
 
-        this.currentUserSubject.next(response);
+  // ================= CURRENT USER =================
 
-        /*
-         * Return static response
-         */
-        return of(response);
+  getCurrentUser(): LoginResponse | null {
+
+    const user = localStorage.getItem('user');
+
+    if (!user) {
+      return null;
     }
 
+    return JSON.parse(user);
 
-    /*
-     * ============================================================
-     * LOGOUT
-     * ============================================================
-     */
-    logout(): void {
-
-        if (typeof window !== 'undefined') {
-
-            localStorage.removeItem('token');
-
-            localStorage.removeItem('user');
-        }
-
-        this.currentUserSubject.next(null);
-    }
+  }
 
 
-    /*
-     * ============================================================
-     * GET TOKEN
-     * ============================================================
-     */
-    getToken(): string | null {
+  // =====================================================
+  // MENU
+  // =====================================================
 
-        if (typeof window === 'undefined') {
-            return null;
-        }
+  createMenu(menu: any) {
 
-        return localStorage.getItem('token');
-    }
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/Menu/create`,
+      menu
+    );
 
-
-    /*
-     * ============================================================
-     * IS LOGGED IN
-     * ============================================================
-     */
-    isLoggedIn(): boolean {
-
-        return !!this.getToken();
-    }
+  }
 
 
-    /*
-     * ============================================================
-     * GET CURRENT USER
-     * ============================================================
-     */
-    getCurrentUser(): LoginResponse | null {
+  updateMenu(menu: any) {
 
-        return this.currentUserSubject.value;
-    }
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/Menu/update`,
+      menu
+    );
 
-
-    /*
-     * ============================================================
-     * GET STORED USER
-     * ============================================================
-     */
-    private getStoredUser(): LoginResponse | null {
-
-        if (typeof window === 'undefined') {
-            return null;
-        }
-
-        const user = localStorage.getItem('user');
-
-        return user
-            ? JSON.parse(user)
-            : null;
-    }
+  }
 
 
-    // ============================================================
-    // MENU APIs - KEEP YOUR EXISTING METHODS
-    // ============================================================
+  deleteMenu(id: number) {
 
-    createMenu(menu: any): Observable<any> {
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/Menu/delete/${id}`,
+      {}
+    );
 
-        return this.http.post(
-            `${this.menuApiUrl}/create`,
-            menu
-        );
-    }
-
-    updateMenu(menu: any): Observable<any> {
-
-        return this.http.post(
-            `${this.menuApiUrl}/update`,
-            menu
-        );
-    }
-
-    deleteMenu(id: number): Observable<any> {
-
-        return this.http.post(
-            `${this.menuApiUrl}/delete/${id}`,
-            {}
-        );
-    }
-
-    getMenus(): Observable<any> {
-
-        return this.http.get(
-            `${this.menuApiUrl}/get-all`
-        );
-    }
-
-    getMenuById(id: number): Observable<any> {
-
-        return this.http.get(
-            `${this.menuApiUrl}/get-by-id/${id}`
-        );
-    }
+  }
 
 
-    // ============================================================
-    // COMPANY APIs - KEEP YOUR EXISTING METHODS
-    // ============================================================
+  getMenus() {
 
-    createCompany(company: any): Observable<any> {
+    return this.http.get<ApiResponse<any[]>>(
+      `${this.baseUrl}/Menu/get-all`
+    );
 
-        return this.http.post(
-            `${this.companyApiUrl}/createcompany`,
-            company
-        );
-    }
-
-    updateCompany(company: any): Observable<any> {
-
-        return this.http.post(
-            `${this.companyApiUrl}/updatecompany`,
-            company
-        );
-    }
-
-    deleteCompany(id: number): Observable<any> {
-
-        return this.http.post(
-            `${this.companyApiUrl}/deletecompany/${id}`,
-            {}
-        );
-    }
-
-    getCompanies(): Observable<any> {
-
-        return this.http.get(
-            `${this.companyApiUrl}/getallcompany`
-        );
-    }
-
-    getCompanyById(id: number): Observable<any> {
-
-        return this.http.get(
-            `${this.companyApiUrl}/getbyidcompany/${id}`
-        );
-    }
+  }
 
 
-    // ============================================================
-    // REGION APIs - KEEP YOUR EXISTING METHODS
-    // ============================================================
+  getMenuById(id: number) {
 
-    createRegion(region: any): Observable<any> {
+    return this.http.get<ApiResponse<any>>(
+      `${this.baseUrl}/Menu/get-by-id/${id}`
+    );
 
-        return this.http.post(
-            `${this.companyApiUrl}/createregion`,
-            region
-        );
-    }
+  }
 
-    updateRegion(region: any): Observable<any> {
 
-        return this.http.post(
-            `${this.companyApiUrl}/updateregion`,
-            region
-        );
-    }
+  // =====================================================
+  // COMPANY
+  // =====================================================
 
-    deleteRegion(id: number): Observable<any> {
+  createCompany(company: any) {
 
-        return this.http.post(
-            `${this.companyApiUrl}/deleteregion/${id}`,
-            {}
-        );
-    }
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/Master/createcompany`,
+      company
+    );
 
-    getRegions(): Observable<any> {
+  }
 
-        return this.http.get(
-            `${this.companyApiUrl}/getallregion`
-        );
-    }
 
-    getRegionById(id: number): Observable<any> {
+  updateCompany(company: any) {
 
-        return this.http.get(
-            `${this.companyApiUrl}/getbyidregion/${id}`
-        );
-    }
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/Master/updatecompany`,
+      company
+    );
+
+  }
+
+
+  deleteCompany(id: number) {
+
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/Master/deletecompany/${id}`,
+      {}
+    );
+
+  }
+
+
+  getCompanies() {
+
+    return this.http.get<ApiResponse<any[]>>(
+      `${this.baseUrl}/Master/getallcompany`
+    );
+
+  }
+
+
+  getCompanyById(id: number) {
+
+    return this.http.get<ApiResponse<any>>(
+      `${this.baseUrl}/Master/getbyidcompany/${id}`
+    );
+
+  }
+
+
+  // =====================================================
+  // REGION
+  // =====================================================
+
+  createRegion(region: any) {
+
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/Master/createregion`,
+      region
+    );
+
+  }
+
+
+  updateRegion(region: any) {
+
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/Master/updateregion`,
+      region
+    );
+
+  }
+
+
+  deleteRegion(id: number) {
+
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/Master/deleteregion/${id}`,
+      {}
+    );
+
+  }
+
+
+  getRegions() {
+
+    return this.http.get<ApiResponse<any[]>>(
+      `${this.baseUrl}/Master/getallregion`
+    );
+
+  }
+
+
+  getRegionById(id: number) {
+
+    return this.http.get<ApiResponse<any>>(
+      `${this.baseUrl}/Master/getbyidregion/${id}`
+    );
+
+  }
 }

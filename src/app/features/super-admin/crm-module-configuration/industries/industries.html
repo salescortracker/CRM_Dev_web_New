@@ -186,37 +186,6 @@
         </div>
 
 
-
-
-
-
-
-
-        <div class="stat-card">
-
-
-            <span>
-
-                Default Industry
-
-            </span>
-
-
-
-            <h2 class="small-value">
-
-                {{defaultIndustry}}
-
-            </h2>
-
-
-
-        </div>
-
-
-
-
-
     </div>
 
 
@@ -471,17 +440,6 @@
                     </th>
 
 
-
-
-                    <th>
-
-                        Default
-
-                    </th>
-
-
-
-
                     <th width="170">
 
                         Actions
@@ -625,7 +583,7 @@
                         <span class="category-badge">
 
 
-                            {{item.category}}
+                            {{item.industryCategory}}
 
 
                         </span>
@@ -712,54 +670,6 @@
 
                     </td>
 
-
-
-
-
-
-
-
-
-                    <td>
-
-
-
-
-
-                        <span
-
-
-                            *ngIf="item.isDefault"
-
-
-                            class="default-badge">
-
-
-
-
-
-                            Default
-
-
-
-
-
-                        </span>
-
-
-
-
-
-                    </td>
-
-
-
-
-
-
-
-
-
                     <td>
 
 
@@ -799,7 +709,7 @@
                             class="icon-btn danger"
 
 
-                            (click)="delete(item.id)">
+                            (click)="delete(item.industryId)">
 
 
 
@@ -1064,7 +974,7 @@
                     <select
 
 
-                        [(ngModel)]="model.category">
+                        [(ngModel)]="model.industryCategory">
 
 
 
@@ -1416,63 +1326,6 @@
 
 
                 </div>
-
-
-
-
-
-
-
-
-
-                <!-- Default Industry -->
-
-
-                <div class="checkbox-group">
-
-
-
-
-
-                    <label>
-
-
-
-
-
-
-                        <input
-
-
-                            type="checkbox"
-
-
-                            [(ngModel)]="model.isDefault">
-
-
-
-
-
-                        Default Industry
-
-
-
-
-
-                    </label>
-
-
-
-
-
-                </div>
-
-
-
-
-
-
-
 
 
             </div>

@@ -141,25 +141,6 @@
 
 
 
-
-
-        <div class="stat-card">
-
-
-            <span>
-                Default Setting
-            </span>
-
-
-            <h2>
-                {{defaultSetting}}
-            </h2>
-
-
-        </div>
-
-
-
     </div>
 
 
@@ -324,11 +305,6 @@
 
 
 
-                    <th>
-                        Default
-                    </th>
-
-
 
                     <th width="170">
                         Actions
@@ -413,7 +389,7 @@
 
                     <td>
 
-                        {{item.defaultStatus}}
+                        {{item.leadStatus}}
 
                     </td>
 
@@ -427,7 +403,7 @@
 
                         <span class="priority-badge">
 
-                            {{item.priority}}
+                            {{item.leadPriority}}
 
                         </span>
 
@@ -445,11 +421,11 @@
 
 
 
-                        <span [ngClass]="item.autoAssignment ? 'active':'inactive'">
+                        <span [ngClass]="item.enableAutoAssignment ? 'active':'inactive'">
 
 
 
-                            {{item.autoAssignment ? 'Enabled':'Disabled'}}
+                            {{item.enableAutoAssignment ? 'Enabled':'Disabled'}}
 
 
 
@@ -499,34 +475,6 @@
 
 
 
-
-
-
-
-
-                    <td>
-
-
-                        <span *ngIf="item.isDefault" class="default-badge">
-
-
-
-                            Default
-
-
-
-                        </span>
-
-
-                    </td>
-
-
-
-
-
-
-
-
                     <td>
 
 
@@ -548,7 +496,7 @@
 
 
 
-                        <button class="icon-btn danger" (click)="delete(item.id)">
+                        <button class="icon-btn danger" (click)="delete(item.leadSettingId)">
 
 
 
@@ -706,7 +654,7 @@
 
 
 
-                    <select [(ngModel)]="model.defaultStatus">
+                    <select [(ngModel)]="model.leadStatus">
 
 
 
@@ -757,7 +705,7 @@
 
 
 
-                    <select [(ngModel)]="model.priority">
+                    <select [(ngModel)]="model.leadPriority">
 
 
 
@@ -919,7 +867,7 @@
 
 
 
-                        <input type="checkbox" [(ngModel)]="model.autoAssignment">
+                        <input type="checkbox" [(ngModel)]="model.enableAutoAssignment">
 
 
 
@@ -964,41 +912,6 @@
 
 
                 </div>
-
-
-
-
-
-
-
-
-
-                <!-- Default -->
-
-
-                <div class="checkbox-group">
-
-
-                    <label>
-
-
-
-                        <input type="checkbox" [(ngModel)]="model.isDefault">
-
-
-
-                        Default Setting
-
-
-
-                    </label>
-
-
-
-                </div>
-
-
-
 
 
             </div>

@@ -3,6 +3,7 @@ import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Alertservice } from '../../../../core/services/alertservice';
 import { Spinnerservice } from '../../../../core/services/spinnerservice';
+import { ControlsystemService } from '../../services/controlsystem-service';
 
 @Component({
   selector: 'app-pipeline-settings',
@@ -18,7 +19,8 @@ export class PipelineSettings {
 
     private spinner: Spinnerservice,
 
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+     private controlSystemService: ControlsystemService
 
   ) { }
 
@@ -67,81 +69,7 @@ export class PipelineSettings {
   // ==============================
 
 
-  pipelines:any[] = [
-
-
-
-    {
-
-      id:1,
-
-      pipelineName:'Enterprise Sales Pipeline',
-
-      pipelineCode:'ENT_SALES',
-
-      pipelineType:'Enterprise',
-
-      description:'Large enterprise customer sales workflow',
-
-      totalStages:7,
-
-      status:'Active',
-
-      isDefault:true
-
-    },
-
-
-
-
-
-    {
-
-      id:2,
-
-      pipelineName:'SMB Sales Pipeline',
-
-      pipelineCode:'SMB_SALES',
-
-      pipelineType:'Sales',
-
-      description:'Small and medium business sales process',
-
-      totalStages:5,
-
-      status:'Active',
-
-      isDefault:false
-
-    },
-
-
-
-
-
-    {
-
-      id:3,
-
-      pipelineName:'Partner Channel Pipeline',
-
-      pipelineCode:'PARTNER_PIPE',
-
-      pipelineType:'Partner',
-
-      description:'Partner and channel based opportunities',
-
-      totalStages:4,
-
-      status:'Inactive',
-
-      isDefault:false
-
-    }
-
-
-
-  ];
+  pipelines:any[] = [];
 
 
 
@@ -158,583 +86,518 @@ export class PipelineSettings {
 
   model:any = this.emptyModel();
 
-
-
-
-
-  emptyModel(){
-
-
+emptyModel() {
     return {
-
-
-      id:0,
-
-
-      pipelineName:'',
-
-
-      pipelineCode:'',
-
-
-      pipelineType:'Sales',
-
-
-      description:'',
-
-
-      totalStages:5,
-
-
-      status:'Active',
-
-
-      isDefault:false
-
-
-
+      pipelineSettingId: 0,
+      pipelineName: '',
+      pipelineCode: '',
+      pipelineType: 'Sales',
+      totalStages: 5,
+      description: '',
+      status: 'Active'
     };
-
-
   }
 
 
+  // ==============================
+  // On Init
+  // ==============================
+
+  ngOnInit(): void {
+    this.getPipelines();
+  }
 
 
+  // ==============================
+  // Get All Pipelines
+  // ==============================
 
+  getPipelines(): void {
 
+    this.spinner.show();
 
+    this.controlSystemService.getPipelineSettings().subscribe({
+
+      next: (response: any) => {
+
+        this.spinner.hide();
+
+        if (response?.success) {
+
+          this.pipelines = response.data || [];
+
+        } else {
+
+          this.pipelines = [];
+
+          this.alert.warning(
+            response?.message || 'Unable to load pipeline settings.'
+          );
+
+        }
+
+        this.cd.detectChanges();
+      },
+
+      error: (error: any) => {
+
+        this.spinner.hide();
+
+        this.pipelines = [];
+
+        this.alert.error(
+          error?.error?.message ||
+          'Failed to load pipeline settings.'
+        );
+
+        this.cd.detectChanges();
+      }
+
+    });
+
+  }
 
 
   // ==============================
   // Statistics
   // ==============================
 
-
-  get activeCount(){
-
+  get activeCount(): number {
 
     return this.pipelines.filter(
-
-      x=>x.status==='Active'
-
+      x => x.status === 'Active'
     ).length;
-
 
   }
 
 
-
-
-
-
-
-  get inactiveCount(){
-
+  get inactiveCount(): number {
 
     return this.pipelines.filter(
-
-      x=>x.status==='Inactive'
-
+      x => x.status === 'Inactive'
     ).length;
 
-
   }
-
-
-
-
-
-
-
-  get defaultPipeline(){
-
-
-    const item=this.pipelines.find(
-
-      x=>x.isDefault
-
-    );
-
-
-    return item ? item.pipelineName : '-';
-
-
-  }
-
-
-
-
-
-
-
 
 
   // ==============================
   // Filter Pipelines
   // ==============================
 
+  get filteredPipelines(): any[] {
 
-  get filteredPipelines(){
+    const search = this.searchText
+      .trim()
+      .toLowerCase();
 
+    return this.pipelines.filter(item => {
 
+      const pipelineName =
+        (item.pipelineName || '').toLowerCase();
 
-    return this.pipelines.filter(item=>{
+      const pipelineCode =
+        (item.pipelineCode || '').toLowerCase();
 
+      const pipelineType =
+        (item.pipelineType || '').toLowerCase();
 
-
-
-
-      const search =
-
-
-
-      item.pipelineName
-
-      .toLowerCase()
-
-      .includes(this.searchText.toLowerCase())
-
-
-
-      ||
-
-
-
-      item.pipelineType
-
-      .toLowerCase()
-
-      .includes(this.searchText.toLowerCase())
-
-
-
-      ||
-
-
-
-      item.pipelineCode
-
-      .toLowerCase()
-
-      .includes(this.searchText.toLowerCase());
-
-
-
-
-
-
+      const description =
+        (item.description || '').toLowerCase();
 
       const status =
+        (item.status || '').toLowerCase();
 
 
-
-      this.statusFilter === ''
-
-
-
-      ||
-
-
-
-      item.status === this.statusFilter;
+      const matchesSearch =
+        !search ||
+        pipelineName.includes(search) ||
+        pipelineCode.includes(search) ||
+        pipelineType.includes(search) ||
+        description.includes(search);
 
 
+      const matchesStatus =
+        !this.statusFilter ||
+        status === this.statusFilter.toLowerCase();
 
 
-
-
-
-      return search && status;
-
-
+      return matchesSearch && matchesStatus;
 
     });
 
-
-
   }
-
-
-
-
-
-
-
 
 
   // ==============================
   // Refresh
   // ==============================
 
+  refresh(): void {
 
-  refresh(){
-
-
-
-    this.spinner.show();
-
-
-
-    setTimeout(()=>{
-
-
-
-      this.spinner.hide();
-
-
-
-      this.alert.success(
-
-        'Pipeline settings refreshed successfully.'
-
-      );
-
-
-
-    },500);
-
-
+    this.getPipelines();
 
   }
-
-
-
-
-
-
-
 
 
   // ==============================
   // Add Modal
   // ==============================
 
+  openAddModal(): void {
 
-  openAddModal(){
+    this.isEdit = false;
 
+    this.editId = 0;
 
+    this.model = this.emptyModel();
 
-    this.isEdit=false;
+    this.showModal = true;
 
-
-    this.editId=0;
-
-
-    this.model=this.emptyModel();
-
-
-    this.showModal=true;
-
-
+    this.cd.detectChanges();
 
   }
-
-
-
-
-
-
-
 
 
   // ==============================
   // Close Modal
   // ==============================
 
+  closeModal(): void {
 
-  closeModal(){
-
-
-
-     this.showModal = false;
-
+    this.showModal = false;
 
     this.isEdit = false;
 
-
     this.editId = 0;
-
 
     this.model = this.emptyModel();
 
-
-
     this.cd.detectChanges();
 
-
-
   }
-
-
-
-
-
-
-
 
 
   // ==============================
   // Save / Update Pipeline
   // ==============================
 
+  savePipeline(): void {
 
-  savePipeline(){
+    // Pipeline Name validation
+    if (!this.model.pipelineName?.trim()) {
 
+      this.alert.warning(
+        'Pipeline Name is required.'
+      );
 
-    if(!this.model.pipelineName.trim()){
+      return;
 
-        this.alert.warning(
-            'Pipeline Name is required.'
-        );
-
-        return;
     }
 
 
+    // Pipeline Code validation
+    if (!this.model.pipelineCode?.trim()) {
 
-    if(!this.model.pipelineCode.trim()){
+      this.alert.warning(
+        'Pipeline Code is required.'
+      );
 
-        this.alert.warning(
-            'Pipeline Code is required.'
-        );
+      return;
 
-        return;
     }
 
+
+    // Pipeline Type validation
+    if (!this.model.pipelineType?.trim()) {
+
+      this.alert.warning(
+        'Pipeline Type is required.'
+      );
+
+      return;
+
+    }
+
+
+    // Total Stages validation
+    if (
+      this.model.totalStages === null ||
+      this.model.totalStages === undefined ||
+      this.model.totalStages < 0
+    ) {
+
+      this.alert.warning(
+        'Total Stages cannot be negative.'
+      );
+
+      return;
+
+    }
+
+
+    // Prepare request
+    const request = {
+
+      pipelineSettingId:
+        this.isEdit ? this.editId : 0,
+
+      pipelineName:
+        this.model.pipelineName.trim(),
+
+      pipelineCode:
+        this.model.pipelineCode.trim(),
+
+      pipelineType:
+        this.model.pipelineType.trim(),
+
+      totalStages:
+        Number(this.model.totalStages),
+
+      description:
+        this.model.description?.trim() || null,
+
+      status:
+        this.model.status || 'Active'
+
+    };
 
 
     this.spinner.show();
 
 
+    // ==============================
+    // UPDATE
+    // ==============================
 
-    setTimeout(()=>{
+    if (this.isEdit) {
 
+      this.controlSystemService
+        .updatePipelineSetting(request)
+        .subscribe({
 
-        if(this.isEdit){
+          next: (response: any) => {
 
+            this.spinner.hide();
 
-            const index = this.pipelines.findIndex(
-                x => x.id === this.editId
-            );
+            if (response?.success) {
 
+              this.alert.success(
+                response.message ||
+                'Pipeline Setting Updated Successfully.'
+              );
 
-            if(index !== -1){
+              this.closeModal();
 
+              this.getPipelines();
 
-                this.pipelines[index] = {
+            } else {
 
-                    ...this.model,
-
-                    id:this.editId
-
-                };
-
+              this.alert.warning(
+                response?.message ||
+                'Unable to update pipeline setting.'
+              );
 
             }
 
+            this.cd.detectChanges();
 
-            this.alert.success(
-                'Pipeline updated successfully.'
+          },
+
+          error: (error: any) => {
+
+            this.spinner.hide();
+
+            this.alert.error(
+              error?.error?.message ||
+              'Failed to update pipeline setting.'
             );
-
-
-        }
-        else{
-
-
-            const newPipeline = {
-
-                ...this.model,
-
-                id:new Date().getTime()
-
-            };
-
-
-            this.pipelines = [
-
-                newPipeline,
-
-                ...this.pipelines
-
-            ];
-
-
-
-            this.alert.success(
-                'Pipeline created successfully.'
-            );
-
-
-        }
-
-
-
-
-        this.spinner.hide();
-
-
-
-        // IMPORTANT FIX
-        setTimeout(()=>{
-
-
-            this.closeModal();
-
 
             this.cd.detectChanges();
 
+          }
 
-        },100);
+        });
 
+    }
 
+    // ==============================
+    // CREATE
+    // ==============================
 
-    },500);
+    else {
 
+      this.controlSystemService
+        .createPipelineSetting(request)
+        .subscribe({
 
+          next: (response: any) => {
 
-}
+            this.spinner.hide();
 
+            if (response?.success) {
 
+              this.alert.success(
+                response.message ||
+                'Pipeline Setting Created Successfully.'
+              );
 
+              this.closeModal();
 
+              this.getPipelines();
 
+            } else {
 
+              this.alert.warning(
+                response?.message ||
+                'Unable to create pipeline setting.'
+              );
 
+            }
+
+            this.cd.detectChanges();
+
+          },
+
+          error: (error: any) => {
+
+            this.spinner.hide();
+
+            this.alert.error(
+              error?.error?.message ||
+              'Failed to create pipeline setting.'
+            );
+
+            this.cd.detectChanges();
+
+          }
+
+        });
+
+    }
+
+  }
 
 
   // ==============================
   // Edit Pipeline
   // ==============================
 
+  edit(item: any): void {
 
-  edit(item:any){
+    this.isEdit = true;
 
-
-
-    this.isEdit=true;
-
-
-    this.editId=item.id;
+    this.editId = item.pipelineSettingId;
 
 
+    this.model = {
 
+      pipelineSettingId:
+        item.pipelineSettingId,
 
-    this.model={
+      pipelineName:
+        item.pipelineName || '',
 
+      pipelineCode:
+        item.pipelineCode || '',
 
+      pipelineType:
+        item.pipelineType || 'Sales',
 
-      ...item
+      totalStages:
+        item.totalStages ?? 0,
 
+      description:
+        item.description || '',
 
+      status:
+        item.status || 'Active'
 
     };
 
 
+    this.showModal = true;
 
-
-
-    this.showModal=true;
-
-
+    this.cd.detectChanges();
 
   }
-
-
-
-
-
-
-
 
 
   // ==============================
   // Delete Pipeline
   // ==============================
 
-
-  delete(id:number){
-
+  delete(id: number): void {
 
     this.alert.deleteConfirm()
+      .then((result: any) => {
 
-    .then(result=>{
-
-
-        if(result.isConfirmed){
-
-
-
-            this.spinner.show();
-
-
-
-            setTimeout(()=>{
-
-
-                this.pipelines = this.pipelines.filter(
-
-                    x => x.id !== id
-
-                );
-
-
-
-                this.spinner.hide();
-
-
-
-                this.alert.success(
-
-                    'Pipeline deleted successfully.'
-
-                );
-
-
-
-                // IMPORTANT FIX
-                this.cd.detectChanges();
-
-
-
-            },500);
-
-
-
+        if (!result.isConfirmed) {
+          return;
         }
 
 
-
-    });
-
+        this.spinner.show();
 
 
-}
+        this.controlSystemService
+          .deletePipelineSetting(id)
+          .subscribe({
 
+            next: (response: any) => {
 
+              this.spinner.hide();
 
+              if (response?.success) {
 
+                this.alert.success(
+                  response.message ||
+                  'Pipeline Setting Deleted Successfully.'
+                );
 
+                this.getPipelines();
 
+              } else {
 
+                this.alert.warning(
+                  response?.message ||
+                  'Unable to delete pipeline setting.'
+                );
+
+              }
+
+              this.cd.detectChanges();
+
+            },
+
+            error: (error: any) => {
+
+              this.spinner.hide();
+
+              this.alert.error(
+                error?.error?.message ||
+                'Failed to delete pipeline setting.'
+              );
+
+              this.cd.detectChanges();
+
+            }
+
+          });
+
+      });
+
+  }
 
 
   // ==============================
   // Clear Filters
   // ==============================
 
+  clearFilters(): void {
 
-  clearFilters(){
+    this.searchText = '';
 
-
-
-    this.searchText='';
-
-
-    this.statusFilter='';
-
-
+    this.statusFilter = '';
 
   }
 }

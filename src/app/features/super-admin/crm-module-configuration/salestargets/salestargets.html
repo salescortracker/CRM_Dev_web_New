@@ -178,36 +178,6 @@
 
         </div>
 
-
-
-
-
-
-
-
-        <div class="stat-card">
-
-
-            <span>
-
-                Default Target
-
-            </span>
-
-
-            <h2>
-
-                {{defaultTarget}}
-
-            </h2>
-
-
-        </div>
-
-
-
-
-
     </div>
 
 
@@ -493,19 +463,6 @@
                     </th>
 
 
-
-
-
-                    <th>
-
-                        Default
-
-                    </th>
-
-
-
-
-
                     <th width="170">
 
                         Actions
@@ -716,7 +673,7 @@
                         <span class="period-badge">
 
 
-                            {{item.period}}
+                            {{item.targetPeriod}}
 
 
                         </span>
@@ -760,49 +717,6 @@
 
                     </td>
 
-
-
-
-
-
-
-
-
-                    <!-- Default -->
-
-
-                    <td>
-
-
-
-                        <span
-
-
-                            *ngIf="item.isDefault"
-
-
-                            class="default-badge">
-
-
-
-                            Default
-
-
-
-                        </span>
-
-
-
-                    </td>
-
-
-
-
-
-
-
-
-
                     <!-- Actions -->
 
 
@@ -841,7 +755,7 @@
                             class="icon-btn danger"
 
 
-                            (click)="delete(item.id)">
+                            (click)="delete(item.salesTargetId)">
 
 
 
@@ -1299,7 +1213,7 @@
                     <select
 
 
-                        [(ngModel)]="model.period">
+                        [(ngModel)]="model.targetPeriod">
 
 
 
@@ -1470,64 +1384,6 @@
 
 
                 </div>
-
-
-
-
-
-
-
-
-
-                <!-- Default Target -->
-
-
-                <div class="checkbox-group">
-
-
-
-
-
-                    <label>
-
-
-
-
-
-
-                        <input
-
-
-                            type="checkbox"
-
-
-                            [(ngModel)]="model.isDefault">
-
-
-
-
-
-                        Default Sales Target
-
-
-
-
-
-                    </label>
-
-
-
-
-
-                </div>
-
-
-
-
-
-
-
-
 
             </div>
 

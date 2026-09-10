@@ -3,6 +3,7 @@ import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Alertservice } from '../../../../core/services/alertservice';
 import { Spinnerservice } from '../../../../core/services/spinnerservice';
+import { ControlsystemService } from '../../services/controlsystem-service';
 
 @Component({
   selector: 'app-number-series',
@@ -18,7 +19,8 @@ export class NumberSeries {
 
     private spinner: Spinnerservice,
 
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private controlSystemService: ControlsystemService
 
   ) {}
 
@@ -67,93 +69,7 @@ export class NumberSeries {
   // =====================================
 
 
-  numberSeries:any[] = [
-
-
-
-    {
-
-      id:1,
-
-      seriesName:'Lead Number Series',
-
-      moduleName:'Lead',
-
-      prefix:'LEAD',
-
-      startNumber:1000,
-
-      currentNumber:1056,
-
-      format:'LEAD-{YYYY}-{0000}',
-
-      description:'Automatic numbering for leads',
-
-      status:'Active',
-
-      isDefault:true
-
-    },
-
-
-
-
-
-    {
-
-      id:2,
-
-      seriesName:'Opportunity Series',
-
-      moduleName:'Opportunity',
-
-      prefix:'OPP',
-
-      startNumber:5000,
-
-      currentNumber:5032,
-
-      format:'OPP-{YYYY}-{0000}',
-
-      description:'Opportunity numbering sequence',
-
-      status:'Active',
-
-      isDefault:false
-
-    },
-
-
-
-
-
-    {
-
-      id:3,
-
-      seriesName:'Invoice Number Series',
-
-      moduleName:'Invoice',
-
-      prefix:'INV',
-
-      startNumber:2000,
-
-      currentNumber:2015,
-
-      format:'INV-{YYYY}-{0000}',
-
-      description:'Invoice generation series',
-
-      status:'Inactive',
-
-      isDefault:false
-
-    }
-
-
-
-  ];
+  numberSeries:any[] = [];
 
 
 
@@ -169,751 +85,555 @@ export class NumberSeries {
 
 
   model:any = this.emptyModel();
-
-
-
-
-
-
-  emptyModel(){
-
-
-
+emptyModel() {
     return {
-
-
-
-      id:0,
-
-
-      seriesName:'',
-
-
-      moduleName:'Lead',
-
-
-      prefix:'',
-
-
-      startNumber:1000,
-
-
-      currentNumber:1000,
-
-
-      format:'',
-
-
-      description:'',
-
-
-      status:'Active',
-
-
-      isDefault:false
-
-
-
+      numberSeriesId: 0,
+      seriesName: '',
+      moduleName: 'Lead',
+      prefix: '',
+      startingNumber: 1000,
+      currentNumber: 1000,
+      numberFormat: '',
+      description: '',
+      status: 'Active'
     };
-
-
-
   }
 
+  // =====================================
+  // Lifecycle
+  // =====================================
 
+  ngOnInit(): void {
+    this.getNumberSeries();
+  }
 
+  // =====================================
+  // Get Number Series
+  // =====================================
 
+  getNumberSeries(): void {
 
+    this.spinner.show();
 
+    this.controlSystemService.getNumberSeries().subscribe({
 
+      next: (response: any) => {
 
+        this.spinner.hide();
+
+        if (response?.success) {
+
+          this.numberSeries = response.data || [];
+
+        } else {
+
+          this.numberSeries = [];
+
+          this.alert.warning(
+            response?.message || 'Unable to load number series.'
+          );
+
+        }
+
+        this.cd.detectChanges();
+      },
+
+      error: (error) => {
+
+        this.spinner.hide();
+
+        console.error('Get Number Series Error:', error);
+
+        this.numberSeries = [];
+
+        this.alert.error(
+          error?.error?.message ||
+          'Failed to load number series.'
+        );
+
+        this.cd.detectChanges();
+      }
+
+    });
+  }
 
   // =====================================
   // Statistics
   // =====================================
 
-
-  get activeCount(){
-
-
+  get activeCount() {
 
     return this.numberSeries.filter(
-
       x => x.status === 'Active'
-
     ).length;
-
-
 
   }
 
-
-
-
-
-
-
-  get inactiveCount(){
-
-
+  get inactiveCount() {
 
     return this.numberSeries.filter(
-
       x => x.status === 'Inactive'
-
     ).length;
 
-
-
   }
-
-
-
-
-
-
-
-  get defaultSeries(){
-
-
-
-    const item = this.numberSeries.find(
-
-      x => x.isDefault
-
-    );
-
-
-
-    return item ? item.seriesName : '-';
-
-
-
-  }
-
-
-
-
-
-
-
-
 
   // =====================================
   // Filter Number Series
   // =====================================
 
+  get filteredSeries() {
 
-  get filteredSeries(){
+    const search = this.searchText
+      .toLowerCase()
+      .trim();
 
+    return this.numberSeries.filter(item => {
 
+      const seriesName =
+        (item.seriesName || '')
+          .toLowerCase();
 
-    return this.numberSeries.filter(item=>{
+      const moduleName =
+        (item.moduleName || '')
+          .toLowerCase();
 
+      const prefix =
+        (item.prefix || '')
+          .toLowerCase();
 
+      const numberFormat =
+        (item.numberFormat || '')
+          .toLowerCase();
 
+      const description =
+        (item.description || '')
+          .toLowerCase();
 
+      const searchMatch =
+        !search ||
+        seriesName.includes(search) ||
+        moduleName.includes(search) ||
+        prefix.includes(search) ||
+        numberFormat.includes(search) ||
+        description.includes(search);
 
-      const search =
-
-
-
-
-
-        item.seriesName
-
-        .toLowerCase()
-
-        .includes(
-
-          this.searchText.toLowerCase()
-
-        )
-
-
-
-
-
-        ||
-
-
-
-
-
-        item.moduleName
-
-        .toLowerCase()
-
-        .includes(
-
-          this.searchText.toLowerCase()
-
-        )
-
-
-
-
-
-        ||
-
-
-
-
-
-        item.prefix
-
-        .toLowerCase()
-
-        .includes(
-
-          this.searchText.toLowerCase()
-
-        );
-
-
-
-
-
-
-
-
-      const status =
-
-
-
-        this.statusFilter === ''
-
-        ||
-
+      const statusMatch =
+        this.statusFilter === '' ||
         item.status === this.statusFilter;
 
-
-
-
-
-
-
-      return search && status;
-
-
+      return searchMatch && statusMatch;
 
     });
 
-
-
   }
-
-
-
-
-
-
-
-
 
   // =====================================
   // Refresh
   // =====================================
 
+  refresh(): void {
 
-  refresh(){
-
-
-
-    this.spinner.show();
-
-
-
-    setTimeout(()=>{
-
-
-
-      this.spinner.hide();
-
-
-
-      this.alert.success(
-
-        'Number Series refreshed successfully.'
-
-      );
-
-
-
-    },500);
-
-
+    this.getNumberSeries();
 
   }
-
-
-
-
-
-
-
-
 
   // =====================================
   // Open Add Modal
   // =====================================
 
-
-  openAddModal(){
-
-
+  openAddModal(): void {
 
     this.isEdit = false;
 
-
     this.editId = 0;
-
 
     this.model = this.emptyModel();
 
-
     this.showModal = true;
 
-
-
   }
-
-
-
-
-
-
-
-
 
   // =====================================
   // Close Modal
   // =====================================
 
-
-  closeModal(){
-
-
+  closeModal(): void {
 
     this.showModal = false;
 
-
     this.model = this.emptyModel();
-
 
     this.isEdit = false;
 
-
     this.editId = 0;
 
-
-
   }
 
-
-
-
-
-
-
-
-
   // =====================================
-  // Save / Update Series
+  // Save / Update Number Series
   // =====================================
 
+  saveSeries(): void {
 
-  saveSeries(){
-
-
-
-
-
-    if(!this.model.seriesName.trim()){
-
-
+    // Series Name validation
+    if (!this.model.seriesName?.trim()) {
 
       this.alert.warning(
-
         'Series Name is required.'
-
       );
 
-
       return;
-
-
     }
 
-
-
-
-
-
-
-    if(!this.model.prefix.trim()){
-
-
+    // Module Name validation
+    if (!this.model.moduleName?.trim()) {
 
       this.alert.warning(
-
-        'Prefix is required.'
-
+        'Module Name is required.'
       );
 
-
       return;
-
-
     }
 
+    // Starting Number validation
+    if (
+      this.model.startingNumber === null ||
+      this.model.startingNumber === undefined ||
+      this.model.startingNumber < 0
+    ) {
 
+      this.alert.warning(
+        'Starting Number cannot be negative.'
+      );
 
+      return;
+    }
 
+    // Current Number validation
+    if (
+      this.model.currentNumber === null ||
+      this.model.currentNumber === undefined ||
+      this.model.currentNumber < 0
+    ) {
 
+      this.alert.warning(
+        'Current Number cannot be negative.'
+      );
 
+      return;
+    }
 
-    this.spinner.show();
+    // Current Number should not be less than Starting Number
+    if (
+      Number(this.model.currentNumber) <
+      Number(this.model.startingNumber)
+    ) {
 
+      this.alert.warning(
+        'Current Number cannot be less than Starting Number.'
+      );
 
+      return;
+    }
 
+    // =====================================
+    // API Request
+    // =====================================
 
+    const request = {
 
+      numberSeriesId:
+        this.isEdit
+          ? this.editId
+          : 0,
 
+      seriesName:
+        this.model.seriesName.trim(),
 
-    setTimeout(()=>{
+      moduleName:
+        this.model.moduleName,
 
+      prefix:
+        this.model.prefix?.trim() || null,
 
+      startingNumber:
+        Number(this.model.startingNumber) || 0,
 
+      currentNumber:
+        Number(this.model.currentNumber) || 0,
 
+      numberFormat:
+        this.model.numberFormat?.trim() || null,
 
-      if(this.isEdit){
+      status:
+        this.model.status || 'Active',
 
-
-
-
-
-        const index = this.numberSeries.findIndex(
-
-
-
-          x => x.id === this.editId
-
-
-
-        );
-
-
-
-
-
-
-
-        if(index !== -1){
-
-
-
-
-
-          this.numberSeries[index] = {
-
-
-
-            ...this.model,
-
-
-            id:this.editId
-
-
-
-          };
-
-
-
-
-
-        }
-
-
-
-
-
-
-
-        this.alert.success(
-
-          'Number Series updated successfully.'
-
-        );
-
-
-
-
-
-      }
-
-      else{
-
-
-
-
-
-        this.model.id = new Date().getTime();
-
-
-
-
-
-
-
-        this.numberSeries.unshift({
-
-
-
-          ...this.model
-
-
-
-        });
-
-
-
-
-
-
-
-        this.alert.success(
-
-          'Number Series created successfully.'
-
-        );
-
-
-
-
-
-      }
-
-
-
-
-
-
-
-
-
-      this.spinner.hide();
-
-
-
-
-
-
-
-      // Close modal after save/update
-
-      this.closeModal();
-
-
-
-
-
-
-
-      // Refresh UI
-
-      this.cd.detectChanges();
-
-
-
-
-
-
-
-    },500);
-
-
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-  // =====================================
-  // Edit Series
-  // =====================================
-
-
-  edit(item:any){
-
-
-
-    this.isEdit = true;
-
-
-    this.editId = item.id;
-
-
-
-
-
-    this.model = {
-
-
-
-      ...item
-
-
+      description:
+        this.model.description?.trim() || null
 
     };
 
+    // =====================================
+    // Show Spinner
+    // =====================================
 
+    this.spinner.show();
 
+    // =====================================
+    // Update
+    // =====================================
 
+    if (this.isEdit) {
 
+      this.controlSystemService
+        .updateNumberSeries(request)
+        .subscribe({
 
+          next: (response: any) => {
+
+            this.spinner.hide();
+
+            if (response?.success) {
+
+              this.alert.success(
+                response.message ||
+                'Number Series updated successfully.'
+              );
+
+              this.closeModal();
+
+              this.getNumberSeries();
+
+            } else {
+
+              this.alert.warning(
+                response?.message ||
+                'Unable to update number series.'
+              );
+
+            }
+
+            this.cd.detectChanges();
+
+          },
+
+          error: (error) => {
+
+            this.spinner.hide();
+
+            console.error(
+              'Update Number Series Error:',
+              error
+            );
+
+            this.alert.error(
+              error?.error?.message ||
+              'Failed to update number series.'
+            );
+
+            this.cd.detectChanges();
+
+          }
+
+        });
+
+    }
+
+    // =====================================
+    // Create
+    // =====================================
+
+    else {
+
+      this.controlSystemService
+        .createNumberSeries(request)
+        .subscribe({
+
+          next: (response: any) => {
+
+            this.spinner.hide();
+
+            if (response?.success) {
+
+              this.alert.success(
+                response.message ||
+                'Number Series created successfully.'
+              );
+
+              this.closeModal();
+
+              this.getNumberSeries();
+
+            } else {
+
+              this.alert.warning(
+                response?.message ||
+                'Unable to create number series.'
+              );
+
+            }
+
+            this.cd.detectChanges();
+
+          },
+
+          error: (error) => {
+
+            this.spinner.hide();
+
+            console.error(
+              'Create Number Series Error:',
+              error
+            );
+
+            this.alert.error(
+              error?.error?.message ||
+              'Failed to create number series.'
+            );
+
+            this.cd.detectChanges();
+
+          }
+
+        });
+
+    }
+
+  }
+
+  // =====================================
+  // Edit Number Series
+  // =====================================
+
+  edit(item: any): void {
+
+    this.isEdit = true;
+
+    this.editId = item.numberSeriesId;
+
+    this.model = {
+
+      numberSeriesId:
+        item.numberSeriesId,
+
+      seriesName:
+        item.seriesName || '',
+
+      moduleName:
+        item.moduleName || 'Lead',
+
+      prefix:
+        item.prefix || '',
+
+      startingNumber:
+        item.startingNumber ?? 0,
+
+      currentNumber:
+        item.currentNumber ?? 0,
+
+      numberFormat:
+        item.numberFormat || '',
+
+      description:
+        item.description || '',
+
+      status:
+        item.status || 'Active'
+
+    };
 
     this.showModal = true;
 
-
-
   }
 
-
-
-
-
-
-
-
-
   // =====================================
-  // Delete Series
+  // Delete Number Series
   // =====================================
 
+  delete(id: number): void {
 
-  delete(id:number){
+    if (!id) {
 
+      this.alert.warning(
+        'Invalid Number Series ID.'
+      );
 
+      return;
+    }
 
-    this.alert.deleteConfirm()
+    this.alert
+      .deleteConfirm()
+      .then(result => {
 
-    .then(result=>{
+        if (result.isConfirmed) {
 
+          this.spinner.show();
 
+          this.controlSystemService
+            .deleteNumberSeries(id)
+            .subscribe({
 
+              next: (response: any) => {
 
+                this.spinner.hide();
 
-      if(result.isConfirmed){
+                if (response?.success) {
 
+                  this.alert.success(
+                    response.message ||
+                    'Number Series deleted successfully.'
+                  );
 
+                  this.getNumberSeries();
 
+                } else {
 
+                  this.alert.warning(
+                    response?.message ||
+                    'Unable to delete number series.'
+                  );
 
-        this.spinner.show();
+                }
 
+                this.cd.detectChanges();
 
+              },
 
+              error: (error) => {
 
+                this.spinner.hide();
 
+                console.error(
+                  'Delete Number Series Error:',
+                  error
+                );
 
-        setTimeout(()=>{
+                this.alert.error(
+                  error?.error?.message ||
+                  'Failed to delete number series.'
+                );
 
+                this.cd.detectChanges();
 
+              }
 
+            });
 
+        }
 
-          this.numberSeries = this.numberSeries.filter(
-
-
-
-            x => x.id !== id
-
-
-
-          );
-
-
-
-
-
-
-
-          this.spinner.hide();
-
-
-
-
-
-
-
-          this.alert.success(
-
-            'Number Series deleted successfully.'
-
-          );
-
-
-
-
-
-
-
-          this.cd.detectChanges();
-
-
-
-
-
-
-
-        },500);
-
-
-
-
-
-      }
-
-
-
-
-
-    });
-
-
+      });
 
   }
-
-
-
-
-
-
-
-
 
   // =====================================
   // Clear Filters
   // =====================================
 
-
-  clearFilters(){
-
-
+  clearFilters(): void {
 
     this.searchText = '';
 
     this.statusFilter = '';
-
-
 
   }
 }

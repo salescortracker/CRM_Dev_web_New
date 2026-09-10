@@ -338,15 +338,6 @@
                     <th>
                         Status
                     </th>
-
-
-
-                    <th>
-                        Default
-                    </th>
-
-
-
                     <th width="170">
                         Actions
                     </th>
@@ -474,7 +465,7 @@
                     <td>
 
 
-                        {{item.duration}} Minutes
+                        {{item.durationMinutes}} Minutes
 
 
                     </td>
@@ -540,40 +531,6 @@
 
                     </td>
 
-
-
-
-
-
-
-
-
-                    <td>
-
-
-
-                        <span *ngIf="item.isDefault" class="default-badge">
-
-
-
-                            Default
-
-
-
-                        </span>
-
-
-
-                    </td>
-
-
-
-
-
-
-
-
-
                     <td>
 
 
@@ -595,7 +552,7 @@
 
 
 
-                        <button class="icon-btn danger" (click)="delete(item.id)">
+                        <button class="icon-btn danger" (click)="delete(item.activityTypeId)">
 
 
 
@@ -625,9 +582,6 @@
 
             </tbody>
 
-
-
-
         </table>
 
 
@@ -635,21 +589,7 @@
 
     </div>
 
-
-
-
-
-
 </div>
-
-
-
-
-
-
-
-
-
 <!-- ================================= -->
 <!-- Add / Edit Activity Type Modal -->
 <!-- ================================= -->
@@ -657,16 +597,7 @@
 
 <div class="modal-overlay" *ngIf="showModal">
 
-
-
-
-
     <div class="modal-box">
-
-
-
-
-
 
         <!-- Modal Header -->
 
@@ -683,12 +614,6 @@
 
 
             </h3>
-
-
-
-
-
-
             <button class="close-btn" (click)="closeModal()">
 
 
@@ -702,15 +627,6 @@
 
 
         </div>
-
-
-
-
-
-
-
-
-
         <!-- Modal Body -->
 
 
@@ -719,12 +635,6 @@
 
 
             <div class="form-grid">
-
-
-
-
-
-
 
                 <!-- Activity Name -->
 
@@ -743,15 +653,6 @@
 
 
                 </div>
-
-
-
-
-
-
-
-
-
                 <!-- Activity Code -->
 
 
@@ -769,14 +670,6 @@
 
 
                 </div>
-
-
-
-
-
-
-
-
 
                 <!-- Category -->
 
@@ -827,14 +720,6 @@
 
                 </div>
 
-
-
-
-
-
-
-
-
                 <!-- Duration -->
 
 
@@ -848,20 +733,11 @@
 
 
 
-                    <input type="number" [(ngModel)]="model.duration">
+                    <input type="number" [(ngModel)]="model.durationMinutes">
 
 
 
                 </div>
-
-
-
-
-
-
-
-
-
                 <!-- Description -->
 
 
@@ -882,14 +758,6 @@
 
                 </div>
 
-
-
-
-
-
-
-
-
                 <!-- Reminder Time -->
 
 
@@ -900,23 +768,11 @@
                         Reminder Before (Minutes)
                     </label>
 
-
-
-
-                    <input type="number" [(ngModel)]="model.reminderTime">
+                    <input type="number" [(ngModel)]="model.reminderBeforeMinutes">
 
 
 
                 </div>
-
-
-
-
-
-
-
-
-
                 <!-- Status -->
 
 
@@ -950,15 +806,6 @@
 
 
                 </div>
-
-
-
-
-
-
-
-
-
                 <!-- Reminder Required -->
 
 
@@ -983,108 +830,22 @@
 
 
                 </div>
-
-
-
-
-
-
-
-
-
-                <!-- Default Activity -->
-
-
-                <div class="checkbox-group">
-
-
-
-                    <label>
-
-
-
-                        <input type="checkbox" [(ngModel)]="model.isDefault">
-
-
-
-                        Default Activity
-
-
-
-                    </label>
-
-
-
-                </div>
-
-
-
-
-
-
             </div>
 
 
 
         </div>
-
-
-
-
-
-
-
-
-
         <!-- Modal Footer -->
 
 
         <div class="modal-footer">
-
-
-
-
-
             <button class="btn-secondary" (click)="closeModal()">
-
-
-
-                Cancel
-
-
-
-            </button>
-
-
-
-
-
-
+                Cancel </button>
 
             <button class="btn-primary" (click)="saveActivityType()">
-
-
-
                 {{isEdit ? 'Update Activity':'Save Activity'}}
-
-
-
             </button>
-
-
-
-
-
         </div>
-
-
-
-
-
-
     </div>
-
-
-
 
 </div>

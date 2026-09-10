@@ -176,32 +176,6 @@
 
 
 
-
-
-
-        <div class="stat-card">
-
-
-            <span>
-
-                Default Territory
-
-            </span>
-
-
-            <h2>
-
-                {{defaultTerritory}}
-
-            </h2>
-
-
-        </div>
-
-
-
-
-
     </div>
 
 
@@ -467,18 +441,6 @@
 
 
 
-
-
-                    <th>
-
-                        Default
-
-                    </th>
-
-
-
-
-
                     <th width="170">
 
                         Actions
@@ -653,7 +615,7 @@
                     <td>
 
 
-                        {{item.managerName}}
+                        {{item.territoryManager}}
 
 
                     </td>
@@ -712,49 +674,6 @@
 
                     </td>
 
-
-
-
-
-
-
-
-
-                    <!-- Default -->
-
-
-                    <td>
-
-
-
-                        <span
-
-
-                            *ngIf="item.isDefault"
-
-
-                            class="default-badge">
-
-
-
-                            Default
-
-
-
-                        </span>
-
-
-
-                    </td>
-
-
-
-
-
-
-
-
-
                     <!-- Actions -->
 
 
@@ -793,7 +712,7 @@
                             class="icon-btn danger"
 
 
-                            (click)="delete(item.id)">
+                            (click)="delete(item.territoryId)">
 
 
 
@@ -1171,7 +1090,7 @@
                         placeholder="Enter manager name"
 
 
-                        [(ngModel)]="model.managerName">
+                        [(ngModel)]="model.territoryManager">
 
 
 
@@ -1433,64 +1352,6 @@
 
 
                 </div>
-
-
-
-
-
-
-
-
-
-                <!-- Default Territory -->
-
-
-                <div class="checkbox-group">
-
-
-
-
-
-                    <label>
-
-
-
-
-
-
-                        <input
-
-
-                            type="checkbox"
-
-
-                            [(ngModel)]="model.isDefault">
-
-
-
-
-
-                        Default Territory
-
-
-
-
-
-                    </label>
-
-
-
-
-
-                </div>
-
-
-
-
-
-
-
-
 
             </div>
 

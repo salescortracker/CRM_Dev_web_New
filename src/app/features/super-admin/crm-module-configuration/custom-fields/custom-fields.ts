@@ -3,6 +3,7 @@ import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Alertservice } from '../../../../core/services/alertservice';
 import { Spinnerservice } from '../../../../core/services/spinnerservice';
+import { ControlsystemService } from '../../services/controlsystem-service';
 
 @Component({
   selector: 'app-custom-fields',
@@ -18,7 +19,8 @@ export class CustomFields {
 
     private spinner: Spinnerservice,
 
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private controlSystemService: ControlsystemService
 
   ) {}
 
@@ -61,103 +63,7 @@ export class CustomFields {
   // =====================================
 
 
-  customFields:any[] = [
-
-
-    {
-
-      id:1,
-
-      fieldName:'Customer Priority',
-
-      displayLabel:'Priority',
-
-      moduleName:'Lead',
-
-      fieldType:'Dropdown',
-
-      defaultValue:'High',
-
-      placeholder:'Select Priority',
-
-      fieldOrder:1,
-
-      description:'Lead priority level',
-
-      isRequired:true,
-
-      isUnique:false,
-
-      status:'Active'
-
-    },
-
-
-
-
-
-    {
-
-      id:2,
-
-      fieldName:'Customer Age',
-
-      displayLabel:'Age',
-
-      moduleName:'Contact',
-
-      fieldType:'Number',
-
-      defaultValue:'',
-
-      placeholder:'Enter age',
-
-      fieldOrder:2,
-
-      description:'Customer age information',
-
-      isRequired:false,
-
-      isUnique:false,
-
-      status:'Active'
-
-    },
-
-
-
-
-
-    {
-
-      id:3,
-
-      fieldName:'GST Number',
-
-      displayLabel:'GST',
-
-      moduleName:'Account',
-
-      fieldType:'Text',
-
-      defaultValue:'',
-
-      placeholder:'Enter GST number',
-
-      fieldOrder:3,
-
-      description:'Company GST identification',
-
-      isRequired:true,
-
-      isUnique:true,
-
-      status:'Inactive'
-
-    }
-
-
-  ];
+  customFields:any[] = [];
 
 
 
@@ -173,654 +79,608 @@ export class CustomFields {
 
 
   model:any = this.emptyModel();
-
-
-
-
-
-  emptyModel(){
-
-
+emptyModel() {
     return {
-
-
-      id:0,
-
-
-      fieldName:'',
-
-
-      displayLabel:'',
-
-
-      moduleName:'Lead',
-
-
-      fieldType:'Text',
-
-
-      defaultValue:'',
-
-
-      placeholder:'',
-
-
-      fieldOrder:1,
-
-
-      description:'',
-
-
-      isRequired:false,
-
-
-      isUnique:false,
-
-
-      status:'Active'
-
-
+      customFieldId: 0,
+      fieldName: '',
+      displayLabel: '',
+      moduleName: 'Lead',
+      fieldType: 'Text',
+      defaultValue: '',
+      placeholder: '',
+      status: 'Active',
+      fieldOrder: 1,
+      description: '',
+      requiredField: false,
+      uniqueField: false
     };
-
-
   }
 
+  // =====================================
+  // Lifecycle
+  // =====================================
 
+  ngOnInit(): void {
+    this.getCustomFields();
+  }
 
+  // =====================================
+  // Get All Custom Fields
+  // =====================================
 
+  getCustomFields(): void {
 
+    this.spinner.show();
 
+    this.controlSystemService.getCustomFields().subscribe({
 
+      next: (response: any) => {
 
+        this.spinner.hide();
+
+        if (response?.success) {
+
+          this.customFields = response.data || [];
+
+        } else {
+
+          this.customFields = [];
+
+          this.alert.warning(
+            response?.message || 'Unable to load custom fields.'
+          );
+
+        }
+
+        this.cd.detectChanges();
+      },
+
+      error: (error) => {
+
+        this.spinner.hide();
+
+        console.error(
+          'Get Custom Fields Error:',
+          error
+        );
+
+        this.customFields = [];
+
+        this.alert.error(
+          error?.error?.message ||
+          'Failed to load custom fields.'
+        );
+
+        this.cd.detectChanges();
+      }
+
+    });
+
+  }
 
   // =====================================
   // Statistics
   // =====================================
 
-
-  get activeCount(){
-
+  get activeCount() {
 
     return this.customFields.filter(
-
-      x=>x.status==='Active'
-
+      x => x.status === 'Active'
     ).length;
-
 
   }
 
-
-
-
-
-
-  get inactiveCount(){
-
+  get inactiveCount() {
 
     return this.customFields.filter(
-
-      x=>x.status==='Inactive'
-
+      x => x.status === 'Inactive'
     ).length;
-
 
   }
 
-
-
-
-
-
-  get mandatoryCount(){
-
+  get mandatoryCount() {
 
     return this.customFields.filter(
-
-      x=>x.isRequired
-
+      x => x.requiredField === true
     ).length;
 
-
   }
-
-
-
-
-
-
-
-
 
   // =====================================
-  // Filter
+  // Filter Custom Fields
   // =====================================
 
+  get filteredFields() {
 
-  get filteredFields(){
-
-
-
-    return this.customFields.filter(item=>{
-
-
-
-
-
-      const search =
-
-
-
-        item.fieldName
-
+    const search =
+      this.searchText
         .toLowerCase()
+        .trim();
 
-        .includes(
+    return this.customFields.filter(item => {
 
-          this.searchText.toLowerCase()
+      const fieldName =
+        (item.fieldName || '')
+          .toLowerCase();
 
-        )
+      const displayLabel =
+        (item.displayLabel || '')
+          .toLowerCase();
 
+      const moduleName =
+        (item.moduleName || '')
+          .toLowerCase();
 
+      const fieldType =
+        (item.fieldType || '')
+          .toLowerCase();
 
-        ||
+      const placeholder =
+        (item.placeholder || '')
+          .toLowerCase();
 
+      const description =
+        (item.description || '')
+          .toLowerCase();
 
+      const searchMatch =
+        !search ||
+        fieldName.includes(search) ||
+        displayLabel.includes(search) ||
+        moduleName.includes(search) ||
+        fieldType.includes(search) ||
+        placeholder.includes(search) ||
+        description.includes(search);
 
-        item.moduleName
-
-        .toLowerCase()
-
-        .includes(
-
-          this.searchText.toLowerCase()
-
-        )
-
-
-
-        ||
-
-
-
-        item.fieldType
-
-        .toLowerCase()
-
-        .includes(
-
-          this.searchText.toLowerCase()
-
-        );
-
-
-
-
-
-
-
-      const status =
-
-
-
-        this.statusFilter === ''
-
-        ||
-
+      const statusMatch =
+        this.statusFilter === '' ||
         item.status === this.statusFilter;
 
-
-
-
-
-      return search && status;
-
-
+      return searchMatch && statusMatch;
 
     });
 
-
-
   }
-
-
-
-
-
-
-
-
 
   // =====================================
   // Refresh
   // =====================================
 
+  refresh(): void {
 
-  refresh(){
-
-
-    this.spinner.show();
-
-
-
-    setTimeout(()=>{
-
-
-      this.spinner.hide();
-
-
-      this.alert.success(
-
-        'Custom fields refreshed successfully.'
-
-      );
-
-
-    },500);
-
-
+    this.getCustomFields();
 
   }
-
-
-
-
-
-
-
-
 
   // =====================================
   // Open Add Modal
   // =====================================
 
+  openAddModal(): void {
 
-  openAddModal(){
+    this.isEdit = false;
 
+    this.editId = 0;
 
-    this.isEdit=false;
+    this.model = this.emptyModel();
 
-
-    this.editId=0;
-
-
-    this.model=this.emptyModel();
-
-
-    this.showModal=true;
-
-
+    this.showModal = true;
 
   }
-
-
-
-
-
-
-
-
 
   // =====================================
   // Close Modal
   // =====================================
 
+  closeModal(): void {
 
-  closeModal(){
+    this.showModal = false;
 
+    this.model = this.emptyModel();
 
-    this.showModal=false;
+    this.isEdit = false;
 
-
-    this.model=this.emptyModel();
-
-
-    this.isEdit=false;
-
-
-    this.editId=0;
-
-
+    this.editId = 0;
 
   }
 
-
-
-
-
-
-
-
-
   // =====================================
-  // Save / Update
+  // Save / Update Custom Field
   // =====================================
 
+  saveField(): void {
 
-  saveField(){
+    // =====================================
+    // Field Name Validation
+    // =====================================
 
-
-
-    if(!this.model.fieldName.trim()){
-
+    if (!this.model.fieldName?.trim()) {
 
       this.alert.warning(
-
         'Field Name is required.'
-
       );
-
 
       return;
 
     }
 
+    // =====================================
+    // Display Label Validation
+    // =====================================
 
-
-
-
-    if(!this.model.displayLabel.trim()){
-
+    if (!this.model.displayLabel?.trim()) {
 
       this.alert.warning(
-
         'Display Label is required.'
-
       );
-
 
       return;
 
     }
 
+    // =====================================
+    // Module Name Validation
+    // =====================================
 
+    if (!this.model.moduleName?.trim()) {
 
+      this.alert.warning(
+        'Module Name is required.'
+      );
 
+      return;
 
+    }
 
+    // =====================================
+    // Field Type Validation
+    // =====================================
 
-    this.spinner.show();
+    if (!this.model.fieldType?.trim()) {
 
+      this.alert.warning(
+        'Field Type is required.'
+      );
 
+      return;
 
+    }
 
-    setTimeout(()=>{
+    // =====================================
+    // Field Order Validation
+    // =====================================
 
+    if (
+      this.model.fieldOrder === null ||
+      this.model.fieldOrder === undefined ||
+      this.model.fieldOrder < 0
+    ) {
 
+      this.alert.warning(
+        'Field Order cannot be negative.'
+      );
 
+      return;
 
+    }
 
-      if(this.isEdit){
+    // =====================================
+    // API Request
+    // =====================================
 
+    const request = {
 
+      customFieldId:
+        this.isEdit
+          ? this.editId
+          : 0,
 
+      fieldName:
+        this.model.fieldName.trim(),
 
+      displayLabel:
+        this.model.displayLabel.trim(),
 
-        const index = this.customFields.findIndex(
+      moduleName:
+        this.model.moduleName,
 
-          x=>x.id===this.editId
+      fieldType:
+        this.model.fieldType,
 
-        );
+      defaultValue:
+        this.model.defaultValue?.trim() || null,
 
+      placeholder:
+        this.model.placeholder?.trim() || null,
 
+      status:
+        this.model.status || 'Active',
 
+      fieldOrder:
+        Number(this.model.fieldOrder) || 0,
 
+      description:
+        this.model.description?.trim() || null,
 
-        if(index!==-1){
+      requiredField:
+        this.model.requiredField === true,
 
-
-          this.customFields[index]={
-
-
-            ...this.model,
-
-
-            id:this.editId
-
-
-          };
-
-
-        }
-
-
-
-
-
-        this.alert.success(
-
-          'Custom field updated successfully.'
-
-        );
-
-
-
-
-
-      }
-
-      else{
-
-
-
-
-
-        this.model.id=new Date().getTime();
-
-
-
-
-
-        this.customFields.unshift({
-
-
-          ...this.model
-
-
-        });
-
-
-
-
-
-        this.alert.success(
-
-          'Custom field created successfully.'
-
-        );
-
-
-
-
-
-      }
-
-
-
-
-
-
-
-      this.spinner.hide();
-
-
-
-
-
-      // Close Modal
-
-      this.closeModal();
-
-
-
-
-
-      // Refresh UI
-
-      this.cd.detectChanges();
-
-
-
-
-
-    },500);
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-  // =====================================
-  // Edit
-  // =====================================
-
-
-  edit(item:any){
-
-
-    this.isEdit=true;
-
-
-    this.editId=item.id;
-
-
-
-
-    this.model={
-
-      ...item
+      uniqueField:
+        this.model.uniqueField === true
 
     };
 
+    // =====================================
+    // Show Spinner
+    // =====================================
 
+    this.spinner.show();
 
-    this.showModal=true;
+    // =====================================
+    // UPDATE
+    // =====================================
 
+    if (this.isEdit) {
 
+      this.controlSystemService
+        .updateCustomField(request)
+        .subscribe({
+
+          next: (response: any) => {
+
+            this.spinner.hide();
+
+            if (response?.success) {
+
+              this.alert.success(
+                response.message ||
+                'Custom field updated successfully.'
+              );
+
+              this.closeModal();
+
+              this.getCustomFields();
+
+            } else {
+
+              this.alert.warning(
+                response?.message ||
+                'Unable to update custom field.'
+              );
+
+            }
+
+            this.cd.detectChanges();
+
+          },
+
+          error: (error) => {
+
+            this.spinner.hide();
+
+            console.error(
+              'Update Custom Field Error:',
+              error
+            );
+
+            this.alert.error(
+              error?.error?.message ||
+              'Failed to update custom field.'
+            );
+
+            this.cd.detectChanges();
+
+          }
+
+        });
+
+    }
+
+    // =====================================
+    // CREATE
+    // =====================================
+
+    else {
+
+      this.controlSystemService
+        .createCustomField(request)
+        .subscribe({
+
+          next: (response: any) => {
+
+            this.spinner.hide();
+
+            if (response?.success) {
+
+              this.alert.success(
+                response.message ||
+                'Custom field created successfully.'
+              );
+
+              this.closeModal();
+
+              this.getCustomFields();
+
+            } else {
+
+              this.alert.warning(
+                response?.message ||
+                'Unable to create custom field.'
+              );
+
+            }
+
+            this.cd.detectChanges();
+
+          },
+
+          error: (error) => {
+
+            this.spinner.hide();
+
+            console.error(
+              'Create Custom Field Error:',
+              error
+            );
+
+            this.alert.error(
+              error?.error?.message ||
+              'Failed to create custom field.'
+            );
+
+            this.cd.detectChanges();
+
+          }
+
+        });
+
+    }
 
   }
 
-
-
-
-
-
-
-
-
   // =====================================
-  // Delete
+  // Edit Custom Field
   // =====================================
 
+  edit(item: any): void {
 
-  delete(id:number){
+    this.isEdit = true;
 
+    this.editId = item.customFieldId;
 
+    this.model = {
 
-    this.alert.deleteConfirm()
+      customFieldId:
+        item.customFieldId,
 
-    .then(result=>{
+      fieldName:
+        item.fieldName || '',
 
+      displayLabel:
+        item.displayLabel || '',
 
+      moduleName:
+        item.moduleName || 'Lead',
 
+      fieldType:
+        item.fieldType || 'Text',
 
+      defaultValue:
+        item.defaultValue || '',
 
-      if(result.isConfirmed){
+      placeholder:
+        item.placeholder || '',
 
+      status:
+        item.status || 'Active',
 
+      fieldOrder:
+        item.fieldOrder ?? 1,
 
+      description:
+        item.description || '',
 
+      requiredField:
+        item.requiredField === true,
 
-        this.spinner.show();
+      uniqueField:
+        item.uniqueField === true
 
+    };
 
-
-
-
-        setTimeout(()=>{
-
-
-
-
-
-          this.customFields = this.customFields.filter(
-
-            x=>x.id!==id
-
-          );
-
-
-
-
-
-          this.spinner.hide();
-
-
-
-
-
-          this.alert.success(
-
-            'Custom field deleted successfully.'
-
-          );
-
-
-
-
-
-          this.cd.detectChanges();
-
-
-
-
-
-        },500);
-
-
-
-
-
-      }
-
-
-
-
-
-    });
-
-
+    this.showModal = true;
 
   }
 
-
-
-
-
-
-
-
-
   // =====================================
-  // Clear Filter
+  // Delete Custom Field
   // =====================================
 
+  delete(id: number): void {
 
-  clearFilters(){
+    if (!id) {
 
+      this.alert.warning(
+        'Invalid Custom Field ID.'
+      );
 
-    this.searchText='';
+      return;
 
+    }
 
-    this.statusFilter='';
+    this.alert
+      .deleteConfirm()
+      .then(result => {
 
+        if (result.isConfirmed) {
+
+          this.spinner.show();
+
+          this.controlSystemService
+            .deleteCustomField(id)
+            .subscribe({
+
+              next: (response: any) => {
+
+                this.spinner.hide();
+
+                if (response?.success) {
+
+                  this.alert.success(
+                    response.message ||
+                    'Custom field deleted successfully.'
+                  );
+
+                  this.getCustomFields();
+
+                } else {
+
+                  this.alert.warning(
+                    response?.message ||
+                    'Unable to delete custom field.'
+                  );
+
+                }
+
+                this.cd.detectChanges();
+
+              },
+
+              error: (error) => {
+
+                this.spinner.hide();
+
+                console.error(
+                  'Delete Custom Field Error:',
+                  error
+                );
+
+                this.alert.error(
+                  error?.error?.message ||
+                  'Failed to delete custom field.'
+                );
+
+                this.cd.detectChanges();
+
+              }
+
+            });
+
+        }
+
+      });
+
+  }
+
+  // =====================================
+  // Clear Filters
+  // =====================================
+
+  clearFilters(): void {
+
+    this.searchText = '';
+
+    this.statusFilter = '';
 
   }
 }

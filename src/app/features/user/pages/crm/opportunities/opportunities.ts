@@ -75,7 +75,7 @@ interface OpportunityForm {
 @Component({
   selector: 'app-opportunities',
   standalone: true,
-  imports: [CommonModule,FormsModule,Pagination],
+  imports: [CommonModule,FormsModule],
   templateUrl: './opportunities.html',
   styleUrl: './opportunities.css',
 })

@@ -3,6 +3,7 @@ import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Alertservice } from '../../../../core/services/alertservice';
 import { Spinnerservice } from '../../../../core/services/spinnerservice';
+import { ControlsystemService } from '../../services/controlsystem-service';
 
 @Component({
   selector: 'app-opportunity-stages',
@@ -18,7 +19,8 @@ export class OpportunityStages {
 
     private spinner: Spinnerservice,
 
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+     private controlSystemService: ControlsystemService
 
   ) { }
 
@@ -67,159 +69,7 @@ export class OpportunityStages {
   // ==============================
 
 
-  stages:any[] = [
-
-
-
-    {
-
-      id:1,
-
-      stageName:'Qualification',
-
-      stageCode:'QUALIFICATION',
-
-      probability:20,
-
-      stageOrder:1,
-
-      forecastCategory:'Pipeline',
-
-      stageType:'Open',
-
-      status:'Active',
-
-      isDefault:true,
-
-      isWonStage:false,
-
-      isLostStage:false
-
-    },
-
-
-
-
-
-    {
-
-      id:2,
-
-      stageName:'Proposal Sent',
-
-      stageCode:'PROPOSAL_SENT',
-
-      probability:50,
-
-      stageOrder:2,
-
-      forecastCategory:'Best Case',
-
-      stageType:'Open',
-
-      status:'Active',
-
-      isDefault:false,
-
-      isWonStage:false,
-
-      isLostStage:false
-
-    },
-
-
-
-
-
-    {
-
-      id:3,
-
-      stageName:'Negotiation',
-
-      stageCode:'NEGOTIATION',
-
-      probability:80,
-
-      stageOrder:3,
-
-      forecastCategory:'Commit',
-
-      stageType:'Open',
-
-      status:'Active',
-
-      isDefault:false,
-
-      isWonStage:false,
-
-      isLostStage:false
-
-    },
-
-
-
-
-
-    {
-
-      id:4,
-
-      stageName:'Closed Won',
-
-      stageCode:'CLOSED_WON',
-
-      probability:100,
-
-      stageOrder:4,
-
-      forecastCategory:'Closed',
-
-      stageType:'Won',
-
-      status:'Active',
-
-      isDefault:false,
-
-      isWonStage:true,
-
-      isLostStage:false
-
-    },
-
-
-
-
-
-    {
-
-      id:5,
-
-      stageName:'Closed Lost',
-
-      stageCode:'CLOSED_LOST',
-
-      probability:0,
-
-      stageOrder:5,
-
-      forecastCategory:'Omitted',
-
-      stageType:'Lost',
-
-      status:'Active',
-
-      isDefault:false,
-
-      isWonStage:false,
-
-      isLostStage:true
-
-    }
-
-
-
-  ];
+  stages:any[] = [];
 
 
 
@@ -236,700 +86,599 @@ export class OpportunityStages {
 
   model:any = this.emptyModel();
 
-
-
-
-
-  emptyModel(){
-
-
+ emptyModel() {
     return {
+      opportunityStageId: 0,
 
+      stageName: '',
 
-      id:0,
+      stageCode: '',
 
+      probability: 0,
 
-      stageName:'',
+      stageOrder: 1,
 
+      forecastCategory: 'Pipeline',
 
-      stageCode:'',
+      stageType: 'Open',
 
+      status: 'Active',
 
-      probability:0,
+      wonStage: false,
 
-
-      stageOrder:1,
-
-
-      forecastCategory:'Pipeline',
-
-
-      stageType:'Open',
-
-
-      status:'Active',
-
-
-      isDefault:false,
-
-
-      isWonStage:false,
-
-
-      isLostStage:false
-
-
-
+      lostStage: false
     };
-
-
   }
 
 
+  // ==============================
+  // Lifecycle
+  // ==============================
+
+  ngOnInit(): void {
+    this.getStages();
+  }
 
 
+  // ==============================
+  // GET ALL OPPORTUNITY STAGES
+  // ==============================
 
+  getStages(): void {
 
+    this.spinner.show();
 
+    this.controlSystemService.getOpportunityStages().subscribe({
+
+      next: (response: any) => {
+
+        this.spinner.hide();
+
+        if (response?.success) {
+
+          this.stages = response.data || [];
+
+        } else {
+
+          this.stages = [];
+
+          this.alert.error(
+            response?.message || 'Failed to load opportunity stages.'
+          );
+
+        }
+
+        this.cd.detectChanges();
+      },
+
+      error: (error: any) => {
+
+        this.spinner.hide();
+
+        this.stages = [];
+
+        this.alert.error(
+          error?.error?.message ||
+          'Failed to load opportunity stages.'
+        );
+
+        this.cd.detectChanges();
+      }
+
+    });
+  }
 
 
   // ==============================
   // Statistics
   // ==============================
 
-
-  get activeCount(){
-
+  get activeCount(): number {
 
     return this.stages.filter(
-
-      x=>x.status === 'Active'
-
+      x => x.status === 'Active'
     ).length;
-
 
   }
 
 
-
-
-
-
-
-  get inactiveCount(){
-
+  get inactiveCount(): number {
 
     return this.stages.filter(
-
-      x=>x.status === 'Inactive'
-
+      x => x.status === 'Inactive'
     ).length;
 
-
   }
-
-
-
-
-
-
-
-  get defaultStage(){
-
-
-    const item=this.stages.find(
-
-      x=>x.isDefault
-
-    );
-
-
-    return item ? item.stageName : '-';
-
-
-  }
-
-
-
-
-
-
-
 
 
   // ==============================
-  // Filter Stages
+  // Filtered Stages
   // ==============================
 
+  get filteredStages(): any[] {
 
-  get filteredStages(){
+    const searchValue =
+      this.searchText.trim().toLowerCase();
 
-
-
-    return this.stages.filter(item=>{
-
-
-
-
+    return this.stages.filter(item => {
 
       const search =
+        !searchValue ||
 
+        (item.stageName || '')
+          .toLowerCase()
+          .includes(searchValue)
 
+        ||
 
-      item.stageName
+        (item.stageCode || '')
+          .toLowerCase()
+          .includes(searchValue)
 
-      .toLowerCase()
+        ||
 
-      .includes(this.searchText.toLowerCase())
+        (item.forecastCategory || '')
+          .toLowerCase()
+          .includes(searchValue)
 
+        ||
 
-
-      ||
-
-
-
-      item.stageCode
-
-      .toLowerCase()
-
-      .includes(this.searchText.toLowerCase())
-
-
-
-      ||
-
-
-
-      item.forecastCategory
-
-      .toLowerCase()
-
-      .includes(this.searchText.toLowerCase());
-
-
-
-
-
+        (item.stageType || '')
+          .toLowerCase()
+          .includes(searchValue);
 
 
       const status =
+        this.statusFilter === '' ||
 
-
-
-      this.statusFilter === ''
-
-
-
-      ||
-
-
-
-      item.status === this.statusFilter;
-
-
-
-
-
+        item.status === this.statusFilter;
 
 
       return search && status;
 
-
-
     });
 
-
-
   }
-
-
-
-
-
-
-
 
 
   // ==============================
   // Refresh
   // ==============================
 
+  refresh(): void {
 
-  refresh(){
-
-
-
-    this.spinner.show();
-
-
-
-    setTimeout(()=>{
-
-
-
-      this.spinner.hide();
-
-
-
-      this.alert.success(
-
-        'Opportunity stages refreshed successfully.'
-
-      );
-
-
-
-    },500);
-
-
+    this.getStages();
 
   }
-
-
-
-
-
-
-
 
 
   // ==============================
   // Open Add Modal
   // ==============================
 
+  openAddModal(): void {
 
-  openAddModal(){
+    this.isEdit = false;
 
+    this.editId = 0;
 
+    this.model = this.emptyModel();
 
-    this.isEdit=false;
-
-
-    this.editId=0;
-
-
-    this.model=this.emptyModel();
-
-
-    this.showModal=true;
-
-
+    this.showModal = true;
 
   }
-
-
-
-
-
-
-
 
 
   // ==============================
   // Close Modal
   // ==============================
 
+  closeModal(): void {
 
-  closeModal(){
+    this.showModal = false;
 
+    this.model = this.emptyModel();
 
+    this.isEdit = false;
 
-    this.showModal=false;
-
-
-    this.model=this.emptyModel();
-
-
-    this.isEdit=false;
-
-
-    this.editId=0;
-
-
+    this.editId = 0;
 
   }
 
 
-
-
-
-
-
-
-
   // ==============================
-  // Save / Update Stage
+  // Save / Update Opportunity Stage
   // ==============================
 
+  saveStage(): void {
 
-  saveStage(){
+    // ==============================
+    // Validation
+    // ==============================
 
-
-
-
-
-    if(!this.model.stageName.trim()){
-
-
+    if (!this.model.stageName?.trim()) {
 
       this.alert.warning(
-
         'Stage Name is required.'
-
       );
 
-
       return;
-
 
     }
 
 
-
-
-
-
-    if(!this.model.stageCode.trim()){
-
-
+    if (!this.model.stageCode?.trim()) {
 
       this.alert.warning(
-
         'Stage Code is required.'
-
       );
 
-
       return;
-
 
     }
 
 
+    if (!this.model.forecastCategory?.trim()) {
 
+      this.alert.warning(
+        'Forecast Category is required.'
+      );
 
+      return;
 
+    }
 
 
-    this.spinner.show();
+    if (!this.model.stageType?.trim()) {
 
+      this.alert.warning(
+        'Stage Type is required.'
+      );
 
+      return;
 
+    }
 
 
+    if (
+      this.model.probability === null ||
+      this.model.probability === undefined ||
+      this.model.probability < 0 ||
+      this.model.probability > 100
+    ) {
 
-    setTimeout(()=>{
+      this.alert.warning(
+        'Probability must be between 0 and 100.'
+      );
 
+      return;
 
+    }
 
 
+    if (
+      this.model.stageOrder === null ||
+      this.model.stageOrder === undefined ||
+      this.model.stageOrder <= 0
+    ) {
 
-      if(this.isEdit){
+      this.alert.warning(
+        'Stage Order must be greater than 0.'
+      );
 
+      return;
 
+    }
 
 
+    // ==============================
+    // Won / Lost Validation
+    // ==============================
 
-        const index=this.stages.findIndex(
+    if (
+      this.model.wonStage &&
+      this.model.lostStage
+    ) {
 
-          x=>x.id === this.editId
+      this.alert.warning(
+        'A stage cannot be both Won and Lost.'
+      );
 
-        );
+      return;
 
+    }
 
 
+    // ==============================
+    // Prepare Request
+    // ==============================
 
+    const request = {
 
+      opportunityStageId:
+        this.isEdit
+          ? this.editId
+          : 0,
 
-        if(index !== -1){
+      stageName:
+        this.model.stageName.trim(),
 
+      stageCode:
+        this.model.stageCode.trim(),
 
+      probability:
+        Number(this.model.probability),
 
-          this.stages[index]={
+      stageOrder:
+        Number(this.model.stageOrder),
 
+      forecastCategory:
+        this.model.forecastCategory.trim(),
 
+      stageType:
+        this.model.stageType.trim(),
 
-            ...this.model,
+      status:
+        this.model.status,
 
+      wonStage:
+        !!this.model.wonStage,
 
-            id:this.editId
-
-
-
-          };
-
-
-
-        }
-
-
-
-
-
-
-        this.alert.success(
-
-          'Opportunity stage updated successfully.'
-
-        );
-
-
-
-
-
-      }
-
-      else{
-
-
-
-
-
-        this.model.id=new Date().getTime();
-
-
-
-
-
-
-        this.stages.unshift({
-
-
-
-          ...this.model
-
-
-
-        });
-
-
-
-
-
-
-        this.alert.success(
-
-          'Opportunity stage created successfully.'
-
-        );
-
-
-
-
-
-      }
-
-
-
-
-
-
-
-      this.spinner.hide();
-
-
-
-
-
-      // Close modal after save/update
-
-      this.closeModal();
-
-
-
-
-
-      // Refresh UI
-
-      this.cd.detectChanges();
-
-
-
-
-
-    },500);
-
-
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-  // ==============================
-  // Edit Stage
-  // ==============================
-
-
-  edit(item:any){
-
-
-
-    this.isEdit=true;
-
-
-    this.editId=item.id;
-
-
-
-
-    this.model={
-
-
-
-      ...item
-
-
+      lostStage:
+        !!this.model.lostStage
 
     };
 
 
+    // ==============================
+    // Show Spinner
+    // ==============================
+
+    this.spinner.show();
 
 
+    // ==============================
+    // UPDATE
+    // ==============================
 
-    this.showModal=true;
+    if (this.isEdit) {
 
+      this.controlSystemService
+        .updateOpportunityStage(request)
+        .subscribe({
 
+          next: (response: any) => {
+
+            this.spinner.hide();
+
+            if (response?.success) {
+
+              this.alert.success(
+                response.message ||
+                'Opportunity stage updated successfully.'
+              );
+
+              this.closeModal();
+
+              this.getStages();
+
+            } else {
+
+              this.alert.error(
+                response?.message ||
+                'Failed to update opportunity stage.'
+              );
+
+            }
+
+            this.cd.detectChanges();
+
+          },
+
+          error: (error: any) => {
+
+            this.spinner.hide();
+
+            this.alert.error(
+              error?.error?.message ||
+              'Failed to update opportunity stage.'
+            );
+
+            this.cd.detectChanges();
+
+          }
+
+        });
+
+    }
+
+    // ==============================
+    // CREATE
+    // ==============================
+
+    else {
+
+      this.controlSystemService
+        .createOpportunityStage(request)
+        .subscribe({
+
+          next: (response: any) => {
+
+            this.spinner.hide();
+
+            if (response?.success) {
+
+              this.alert.success(
+                response.message ||
+                'Opportunity stage created successfully.'
+              );
+
+              this.closeModal();
+
+              this.getStages();
+
+            } else {
+
+              this.alert.error(
+                response?.message ||
+                'Failed to create opportunity stage.'
+              );
+
+            }
+
+            this.cd.detectChanges();
+
+          },
+
+          error: (error: any) => {
+
+            this.spinner.hide();
+
+            this.alert.error(
+              error?.error?.message ||
+              'Failed to create opportunity stage.'
+            );
+
+            this.cd.detectChanges();
+
+          }
+
+        });
+
+    }
 
   }
 
 
+  // ==============================
+  // Edit Opportunity Stage
+  // ==============================
+
+  edit(item: any): void {
+
+    this.isEdit = true;
+
+    this.editId =
+      item.opportunityStageId;
 
 
+    this.model = {
+
+      opportunityStageId:
+        item.opportunityStageId,
+
+      stageName:
+        item.stageName || '',
+
+      stageCode:
+        item.stageCode || '',
+
+      probability:
+        item.probability ?? 0,
+
+      stageOrder:
+        item.stageOrder ?? 1,
+
+      forecastCategory:
+        item.forecastCategory || 'Pipeline',
+
+      stageType:
+        item.stageType || 'Open',
+
+      status:
+        item.status || 'Active',
+
+      wonStage:
+        item.wonStage ?? false,
+
+      lostStage:
+        item.lostStage ?? false
+
+    };
 
 
+    this.showModal = true;
 
+  }
 
 
   // ==============================
-  // Delete Stage
+  // Delete Opportunity Stage
   // ==============================
 
-
-  delete(id:number){
-
-
+  delete(id: number): void {
 
     this.alert.deleteConfirm()
 
-    .then(result=>{
+      .then(result => {
 
+        if (result.isConfirmed) {
 
+          this.spinner.show();
 
 
+          this.controlSystemService
+            .deleteOpportunityStage(id)
+            .subscribe({
 
-      if(result.isConfirmed){
+              next: (response: any) => {
 
+                this.spinner.hide();
 
+                if (response?.success) {
 
+                  this.alert.success(
+                    response.message ||
+                    'Opportunity stage deleted successfully.'
+                  );
 
+                  this.getStages();
 
-        this.spinner.show();
+                } else {
 
+                  this.alert.error(
+                    response?.message ||
+                    'Failed to delete opportunity stage.'
+                  );
 
+                }
 
+                this.cd.detectChanges();
 
+              },
 
+              error: (error: any) => {
 
-        setTimeout(()=>{
+                this.spinner.hide();
 
+                this.alert.error(
+                  error?.error?.message ||
+                  'Failed to delete opportunity stage.'
+                );
 
+                this.cd.detectChanges();
 
+              }
 
+            });
 
-          this.stages=this.stages.filter(
+        }
 
-
-
-            x=>x.id !== id
-
-
-
-          );
-
-
-
-
-
-
-          this.spinner.hide();
-
-
-
-
-
-
-          this.alert.success(
-
-
-
-            'Opportunity stage deleted successfully.'
-
-
-
-          );
-
-
-
-
-
-
-          this.cd.detectChanges();
-
-
-
-
-
-
-
-        },500);
-
-
-
-
-
-      }
-
-
-
-
-
-    });
-
-
+      });
 
   }
-
-
-
-
-
-
-
 
 
   // ==============================
   // Clear Filters
   // ==============================
 
+  clearFilters(): void {
 
-  clearFilters(){
+    this.searchText = '';
 
-
-
-    this.searchText='';
-
-
-    this.statusFilter='';
-
-
+    this.statusFilter = '';
 
   }
 }
+  
