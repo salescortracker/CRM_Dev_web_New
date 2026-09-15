@@ -18,7 +18,7 @@ import { Alertservice } from '../../../core/services/alertservice';
   styleUrl: './login.css',
 })
 export class Login {
- username: string = '';
+  username: string = '';
   password: string = '';
 
   loading: boolean = false;
@@ -99,6 +99,12 @@ export class Login {
             'loginResponse',
             JSON.stringify(response)
           );
+
+          if (response.token) {
+            localStorage.setItem('token', response.token);
+          }
+
+          localStorage.setItem('user', JSON.stringify(response));
         }
 
         // ==========================================
@@ -113,7 +119,7 @@ export class Login {
             // ROLE / USER REDIRECTION
             // ======================================
 
-            this.redirectUser(loggedInUsername);
+            this.redirectUser(response);
 
           });
 
@@ -143,15 +149,26 @@ export class Login {
   // USER REDIRECTION
   // ==========================================================
 
-  private redirectUser(username: string): void {
+  private redirectUser(response: any): void {
 
-    switch (username) {
+    const role = this.normalizeRole(
+      response?.role ||
+      response?.roleName ||
+      response?.userRole ||
+      response?.user?.role ||
+      response?.user?.roleName
+    );
+
+    switch (role) {
 
       // ==========================================
       // NORMAL CRM USER
       // ==========================================
 
-      case 'user@crm.com':
+      case 'user':
+      case 'sales executive':
+      case 'sales manager':
+      case 'manager':
 
         this.router.navigate(['/dashboard']);
 
@@ -162,7 +179,7 @@ export class Login {
       // CRM ADMIN
       // ==========================================
 
-      case 'admin@crm.com':
+      case 'admin':
 
         this.router.navigate(['/admindashboard']);
 
@@ -173,7 +190,7 @@ export class Login {
       // CRM SUPER ADMIN
       // ==========================================
 
-      case 'superadmin@crm.com':
+      case 'super admin':
 
         this.router.navigate(['/superadmindashboard']);
 
@@ -186,14 +203,14 @@ export class Login {
 
       default:
 
-        this.alertService.warning(
-          'User role is not configured. Please contact administrator.'
-        );
-
-        this.router.navigate(['/login']);
+        this.router.navigate(['/dashboard']);
 
         break;
     }
+  }
+
+  private normalizeRole(role: string): string {
+    return (role || '').replace(/[-_]/g, ' ').trim().toLowerCase();
   }
 
   // ==========================================================

@@ -42,23 +42,23 @@ export class Sidebar {
   }
   loadMenus() {
 
-    const role = this.authService.getCurrentUser()?.role;
+    const role = this.normalizeRole(this.authService.getCurrentUser()?.role);
 
     switch (role) {
 
-      case 'Super Admin':
+      case 'super admin':
 
         this.menus = this.superAdminMenus;
 
         break;
 
-      case 'Admin':
+      case 'admin':
 
         this.menus = this.companyAdminMenus;
 
         break;
 
-      case 'User':
+      case 'user':
 
         this.menus = this.userMenus;
 
@@ -70,6 +70,10 @@ export class Sidebar {
 
     }
 
+  }
+
+  private normalizeRole(role: string | undefined): string {
+    return (role || '').replace(/[-_]/g, ' ').trim().toLowerCase();
   }
   menus: SidebarMenu[] = [];
   superAdminMenus: SidebarMenu[] = [

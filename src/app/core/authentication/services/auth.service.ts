@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { LoginRequest } from '../models/login-request.model';
 import { LoginResponse } from '../models/login-response.model';
@@ -18,7 +19,14 @@ export class AuthService {
 
    private baseUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    @Inject(PLATFORM_ID) private platformId: object
+  ) { }
+
+  private get storage(): Storage | null {
+    return isPlatformBrowser(this.platformId) ? localStorage : null;
+  }
 
 
   // ================= LOGIN =================
@@ -35,8 +43,11 @@ export class AuthService {
 
   logout(): void {
 
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    this.storage?.removeItem('token');
+    this.storage?.removeItem('user');
+    this.storage?.removeItem('loginResponse');
+    this.storage?.removeItem('loggedInUser');
+    this.storage?.removeItem('isLoggedIn');
 
   }
 
@@ -45,7 +56,7 @@ export class AuthService {
 
   getToken(): string | null {
 
-    return localStorage.getItem('token');
+    return this.storage?.getItem('token') ?? null;
 
   }
 
@@ -54,7 +65,7 @@ export class AuthService {
 
   isLoggedIn(): boolean {
 
-    return !!localStorage.getItem('token');
+    return !!this.storage?.getItem('token');
 
   }
 
@@ -63,7 +74,7 @@ export class AuthService {
 
   getCurrentUser(): LoginResponse | null {
 
-    const user = localStorage.getItem('user');
+    const user = this.storage?.getItem('user');
 
     if (!user) {
       return null;

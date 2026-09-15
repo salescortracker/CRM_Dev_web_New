@@ -3,6 +3,7 @@ import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Alertservice } from '../../../../core/services/alertservice';
 import { Spinnerservice } from '../../../../core/services/spinnerservice';
+import { ControlsystemService } from '../../services/controlsystem-service';
 
 @Component({
   selector: 'app-departments',
@@ -13,6 +14,7 @@ import { Spinnerservice } from '../../../../core/services/spinnerservice';
 })
 export class Departments {
   constructor(
+     private controlSystemService: ControlsystemService,
     private alert: Alertservice,
     private spinner: Spinnerservice,
     private cd: ChangeDetectorRef
@@ -46,64 +48,7 @@ export class Departments {
   // Static Department Data
   // ==============================
 
-  departments:any[] = [
-
-    {
-      id:1,
-      departmentName:'Information Technology',
-      departmentCode:'IT001',
-      departmentHead:'John Smith',
-      parentDepartment:'Corporate',
-      employeeCount:25,
-      description:'Software development and technical operations department.',
-      status:'Active',
-      isDefault:true,
-      allowEmployeeAssignment:true
-    },
-
-
-    {
-      id:2,
-      departmentName:'Human Resources',
-      departmentCode:'HR001',
-      departmentHead:'Sarah Williams',
-      parentDepartment:'Administration',
-      employeeCount:12,
-      description:'Employee management and recruitment activities.',
-      status:'Active',
-      isDefault:false,
-      allowEmployeeAssignment:true
-    },
-
-
-    {
-      id:3,
-      departmentName:'Finance',
-      departmentCode:'FIN001',
-      departmentHead:'Michael Brown',
-      parentDepartment:'Corporate',
-      employeeCount:8,
-      description:'Finance and accounting operations.',
-      status:'Inactive',
-      isDefault:false,
-      allowEmployeeAssignment:false
-    },
-
-
-    {
-      id:4,
-      departmentName:'Marketing',
-      departmentCode:'MKT001',
-      departmentHead:'David Wilson',
-      parentDepartment:'Operations',
-      employeeCount:15,
-      description:'Marketing campaigns and business growth.',
-      status:'Active',
-      isDefault:false,
-      allowEmployeeAssignment:true
-    }
-
-  ];
+  departments:any[] = [];
 
 
 
@@ -112,475 +57,562 @@ export class Departments {
   // Form Model
   // ==============================
 
-  model:any = this.emptyModel();
+  model: any = this.emptyModel();
 
 
+  // =========================================================
+  // INITIAL LOAD
+  // =========================================================
 
-  emptyModel(){
+  ngOnInit(): void {
+
+    this.loadDepartments();
+
+  }
+
+
+  // =========================================================
+  // EMPTY MODEL
+  // =========================================================
+
+  emptyModel() {
 
     return {
 
-      id:0,
+      departmentId: 0,
 
-      departmentName:'',
+      departmentName: '',
 
-      departmentCode:'',
+      departmentCode: '',
 
-      departmentHead:'Select Head',
+      description: '',
 
-      parentDepartment:'None',
-
-      employeeCount:0,
-
-      description:'',
-
-      status:'Active',
-
-      isDefault:false,
-
-      allowEmployeeAssignment:true
+      status: true
 
     };
 
   }
 
 
+  // =========================================================
+  // GET ALL DEPARTMENTS
+  // =========================================================
 
+ loadDepartments(): void {
 
-  // ==============================
-  // Statistics
-  // ==============================
+  this.spinner.show();
 
+  this.controlSystemService.getDepartments().subscribe({
 
-  get activeCount(){
+    next: (res: any) => {
+
+      this.spinner.hide();
+
+      console.log('Department API Response:', res);
+      console.log('Department Data:', res?.data);
+
+      if (res && res.data) {
+
+        this.departments = res.data.map((item: any) => {
+
+          console.log('Department Item:', item);
+          console.log('Department ID:', item.departmentId);
+          console.log('DepartmentId:', item.DepartmentId);
+
+          return {
+            ...item,
+            status: item.status === true ? 'Active' : 'Inactive'
+          };
+
+        });
+
+      } else {
+
+        this.departments = [];
+
+      }
+
+      this.cd.detectChanges();
+
+    },
+
+    error: (err) => {
+
+      this.spinner.hide();
+
+      console.error('Get Departments Error:', err);
+
+      this.departments = [];
+
+      this.alert.error(
+        err?.error?.message ||
+        'Failed to load departments.'
+      );
+
+      this.cd.detectChanges();
+
+    }
+
+  });
+
+}
+
+  // =========================================================
+  // STATISTICS
+  // =========================================================
+
+  get activeCount(): number {
 
     return this.departments.filter(
-      x=>x.status==='Active'
+      x => x.status === 'Active'
     ).length;
 
   }
 
 
-
-  get inactiveCount(){
+  get inactiveCount(): number {
 
     return this.departments.filter(
-      x=>x.status==='Inactive'
+      x => x.status === 'Inactive'
     ).length;
 
   }
 
 
+  /*
+   * Department API currently does not return employeeCount.
+   * Therefore we are not calculating fake employee data.
+   *
+   * Later, if your backend returns employeeCount,
+   * this getter can be updated.
+   */
 
-  get employeeCount(){
+  get employeeCount(): number {
 
     return this.departments.reduce(
-      (total,item)=> total + item.employeeCount,
+      (total, item) =>
+        total + (Number(item.employeeCount) || 0),
       0
     );
 
   }
 
 
+  // =========================================================
+  // FILTERED DEPARTMENTS
+  // =========================================================
+
+  get filteredDepartments(): any[] {
+
+    const search = this.searchText
+      .trim()
+      .toLowerCase();
 
 
+    return this.departments.filter(item => {
 
-  // ==============================
-  // Search Filter
-  // ==============================
+      const departmentName =
+        (item.departmentName || '')
+          .toLowerCase();
 
+      const departmentCode =
+        (item.departmentCode || '')
+          .toLowerCase();
 
-  get filteredDepartments(){
-
-
-    return this.departments.filter(item=>{
-
-
-      const search =
-
-
-        item.departmentName
-        .toLowerCase()
-        .includes(
-          this.searchText.toLowerCase()
-        )
+      const description =
+        (item.description || '')
+          .toLowerCase();
 
 
-        ||
+      const matchesSearch =
 
-        item.departmentCode
-        .toLowerCase()
-        .includes(
-          this.searchText.toLowerCase()
-        )
+        departmentName.includes(search) ||
 
+        departmentCode.includes(search) ||
 
-        ||
-
-        item.departmentHead
-        .toLowerCase()
-        .includes(
-          this.searchText.toLowerCase()
-        );
+        description.includes(search);
 
 
+      const matchesStatus =
 
-
-      const status =
-
-        this.statusFilter === ''
-
-        ||
+        this.statusFilter === '' ||
 
         item.status === this.statusFilter;
 
 
-
-      return search && status;
-
+      return matchesSearch && matchesStatus;
 
     });
 
+  }
+
+
+  // =========================================================
+  // REFRESH
+  // =========================================================
+
+  refresh(): void {
+
+    this.loadDepartments();
 
   }
 
 
+  // =========================================================
+  // OPEN ADD MODAL
+  // =========================================================
 
+  openAddModal(): void {
 
+    this.isEdit = false;
 
+    this.editId = 0;
 
-  // ==============================
-  // Refresh
-  // ==============================
+    this.model = this.emptyModel();
 
-
-  refresh(){
-
-
-    this.spinner.show();
-
-
-    setTimeout(()=>{
-
-
-      this.spinner.hide();
-
-
-      this.alert.success(
-        'Departments refreshed successfully.'
-      );
-
-
-    },500);
-
+    this.showModal = true;
 
   }
 
 
+  // =========================================================
+  // CLOSE MODAL
+  // =========================================================
 
+  closeModal(): void {
 
+    this.showModal = false;
 
+    this.model = this.emptyModel();
 
-  // ==============================
-  // Open Add Modal
-  // ==============================
+    this.isEdit = false;
 
-
-  openAddModal(){
-
-
-    this.isEdit=false;
-
-    this.editId=0;
-
-    this.model=this.emptyModel();
-
-    this.showModal=true;
-
+    this.editId = 0;
 
   }
 
 
+  // =========================================================
+  // SAVE / UPDATE DEPARTMENT
+  // =========================================================
 
+  saveDepartment(): void {
 
+    // -----------------------------------------
+    // Department Name Validation
+    // -----------------------------------------
 
-  // ==============================
-  // Close Modal
-  // ==============================
-
-
-  closeModal(){
-
-
-    this.showModal=false;
-
-    this.model=this.emptyModel();
-
-    this.isEdit=false;
-
-    this.editId=0;
-
-
-  }
-
-
-
-
-
-
-  // ==============================
-  // Save / Update
-  // ==============================
-
-
-  saveDepartment(){
-
-
-
-    if(!this.model.departmentName.trim()){
-
+    if (
+      !this.model.departmentName ||
+      !this.model.departmentName.trim()
+    ) {
 
       this.alert.warning(
         'Department Name is required.'
       );
 
-
       return;
 
     }
 
 
+    // -----------------------------------------
+    // Department Code Validation
+    // -----------------------------------------
 
-
-    if(!this.model.departmentCode.trim()){
-
+    if (
+      !this.model.departmentCode ||
+      !this.model.departmentCode.trim()
+    ) {
 
       this.alert.warning(
         'Department Code is required.'
       );
 
+      return;
+
+    }
+
+
+    // -----------------------------------------
+    // Prepare API Model
+    // -----------------------------------------
+
+    const data = {
+
+      departmentId: this.isEdit
+        ? this.editId
+        : 0,
+
+      departmentName:
+        this.model.departmentName.trim(),
+
+      departmentCode:
+        this.model.departmentCode.trim().toUpperCase(),
+
+      description:
+        this.model.description
+          ? this.model.description.trim()
+          : '',
+
+      // Frontend Active/Inactive -> Backend bool
+      status:
+        this.model.status === 'Active' ||
+        this.model.status === true
+
+    };
+
+
+    this.spinner.show();
+
+
+    // =====================================================
+    // UPDATE
+    // =====================================================
+
+    if (this.isEdit) {
+
+      this.controlSystemService
+        .updateDepartment(data)
+        .subscribe({
+
+          next: (res: any) => {
+
+            this.spinner.hide();
+
+            if (res) {
+
+              this.alert.success(
+                res.message ||
+                'Department updated successfully.'
+              );
+
+              this.closeModal();
+
+              this.loadDepartments();
+
+            }
+            else {
+
+              this.alert.error(
+                'Unable to update department.'
+              );
+
+            }
+
+          },
+
+          error: (err) => {
+
+            this.spinner.hide();
+
+            console.error(
+              'Update Department Error:',
+              err
+            );
+
+            this.alert.error(
+              err?.error?.message ||
+              'Failed to update department.'
+            );
+
+          }
+
+        });
+
+    }
+
+
+    // =====================================================
+    // CREATE
+    // =====================================================
+
+    else {
+
+      this.controlSystemService
+        .createDepartment(data)
+        .subscribe({
+
+          next: (res: any) => {
+
+            this.spinner.hide();
+
+            if (res) {
+
+              this.alert.success(
+                res.message ||
+                'Department created successfully.'
+              );
+
+              this.closeModal();
+
+              this.loadDepartments();
+
+            }
+            else {
+
+              this.alert.error(
+                'Unable to create department.'
+              );
+
+            }
+
+          },
+
+          error: (err) => {
+
+            this.spinner.hide();
+
+            console.error(
+              'Create Department Error:',
+              err
+            );
+
+            this.alert.error(
+              err?.error?.message ||
+              'Failed to create department.'
+            );
+
+          }
+
+        });
+
+    }
+
+  }
+
+
+  // =========================================================
+  // EDIT DEPARTMENT
+  // =========================================================
+
+  edit(item: any): void {
+
+    this.isEdit = true;
+
+    this.editId =
+      item.departmentId ||
+      item.DepartmentId ||
+      0;
+
+
+    this.model = {
+
+      departmentId: this.editId,
+
+      departmentName:
+        item.departmentName || '',
+
+      departmentCode:
+        item.departmentCode || '',
+
+      description:
+        item.description || '',
+
+      status:
+        item.status === true ||
+        item.status === 'Active'
+          ? 'Active'
+          : 'Inactive'
+
+    };
+
+
+    this.showModal = true;
+
+  }
+
+
+  // =========================================================
+  // DELETE DEPARTMENT
+  // =========================================================
+
+  delete(id: number): void {
+
+    if (!id) {
+
+      this.alert.error(
+        'Invalid department ID.'
+      );
 
       return;
 
     }
 
 
+    this.alert.deleteConfirm()
+      .then((result: any) => {
 
+        if (!result.isConfirmed) {
 
-
-    this.spinner.show();
-
-
-
-    setTimeout(()=>{
-
-
-
-
-
-      if(this.isEdit){
-
-
-
-        const index=this.departments.findIndex(
-
-          x=>x.id===this.editId
-
-        );
-
-
-
-        if(index!==-1){
-
-
-          this.departments[index]={
-
-            ...this.model,
-
-            id:this.editId
-
-          };
-
+          return;
 
         }
-
-
-
-
-        this.alert.success(
-          'Department updated successfully.'
-        );
-
-
-
-      }
-
-      else{
-
-
-
-        this.model.id=new Date().getTime();
-
-
-
-        this.departments.unshift({
-
-          ...this.model
-
-        });
-
-
-
-        this.alert.success(
-          'Department created successfully.'
-        );
-
-
-      }
-
-
-
-
-
-
-      this.spinner.hide();
-
-
-
-      // Close Modal
-
-      this.closeModal();
-
-
-
-      // Refresh UI
-
-      this.cd.detectChanges();
-
-
-
-
-    },500);
-
-
-
-  }
-
-
-
-
-
-
-
-  // ==============================
-  // Edit
-  // ==============================
-
-
-  edit(item:any){
-
-
-    this.isEdit=true;
-
-    this.editId=item.id;
-
-
-    this.model={
-
-      ...item
-
-    };
-
-
-    this.showModal=true;
-
-
-  }
-
-
-
-
-
-
-  // ==============================
-  // Delete
-  // ==============================
-
-
-  delete(id:number){
-
-
-
-    this.alert.deleteConfirm()
-
-    .then(result=>{
-
-
-      if(result.isConfirmed){
-
 
 
         this.spinner.show();
 
 
+        this.controlSystemService
+          .deleteDepartment(id)
+          .subscribe({
 
-        setTimeout(()=>{
+            next: (res: any) => {
 
+              this.spinner.hide();
 
+              if (res) {
 
-          this.departments=this.departments.filter(
+                this.alert.success(
+                  res.message ||
+                  'Department deleted successfully.'
+                );
 
-            x=>x.id!==id
+                this.loadDepartments();
 
-          );
+              }
+              else {
 
+                this.alert.error(
+                  'Unable to delete department.'
+                );
 
+              }
 
-          this.spinner.hide();
+            },
 
+            error: (err) => {
 
+              this.spinner.hide();
 
-          this.alert.success(
-            'Department deleted successfully.'
-          );
+              console.error(
+                'Delete Department Error:',
+                err
+              );
 
+              this.alert.error(
+                err?.error?.message ||
+                'Failed to delete department.'
+              );
 
+            }
 
-          this.cd.detectChanges();
+          });
 
-
-
-        },500);
-
-
-
-      }
-
-
-    });
-
-
+      });
 
   }
 
 
+  // =========================================================
+  // CLEAR FILTERS
+  // =========================================================
 
+  clearFilters(): void {
 
+    this.searchText = '';
 
-
-
-  // ==============================
-  // Clear Filters
-  // ==============================
-
-
-  clearFilters(){
-
-
-    this.searchText='';
-
-    this.statusFilter='';
-
+    this.statusFilter = '';
 
   }
 }

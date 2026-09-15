@@ -134,6 +134,7 @@ getLeadSettings(): Observable<ApiResponse<any[]>> {
   );
 }
 
+
 getLeadSettingById(id: number): Observable<ApiResponse<any>> {
   return this.http.get<ApiResponse<any>>(
     `${this.baseUrl}/SuperAdmin/getbyleadsetting/${id}`
@@ -457,6 +458,85 @@ getCustomFields(): Observable<ApiResponse<any[]>> {
 getCustomFieldById(id: number): Observable<ApiResponse<any>> {
   return this.http.get<ApiResponse<any>>(
     `${this.baseUrl}/SuperAdmin/getbycustomfield/${id}`
+  );
+}
+
+// ================= DEPARTMENT =================
+
+// CREATE DEPARTMENT
+createDepartment(data: any): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/Master/createdepartment`,
+    data
+  );
+}
+
+// UPDATE DEPARTMENT
+updateDepartment(data: any): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/Master/updatedepartment`,
+    data
+  );
+}
+
+// DELETE DEPARTMENT
+deleteDepartment(id: number): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/Master/deletedepartment/${id}`,
+    {}
+  );
+}
+
+// GET ALL DEPARTMENTS
+getDepartments(): Observable<ApiResponse<any[]>> {
+  return this.http.get<ApiResponse<any[]>>(
+    `${this.baseUrl}/Master/getalldepartment`
+  );
+}
+
+// GET DEPARTMENT BY ID
+getDepartmentById(id: number): Observable<ApiResponse<any>> {
+  return this.http.get<ApiResponse<any>>(
+    `${this.baseUrl}/Master/getbydepartment/${id}`
+  );
+}
+// ================= DESIGNATION =================
+
+// CREATE DESIGNATION
+createDesignation(data: any): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/Master/createdesignation`,
+    data
+  );
+}
+
+// UPDATE DESIGNATION
+updateDesignation(data: any): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/Master/updatedesignation`,
+    data
+  );
+}
+
+// DELETE DESIGNATION
+deleteDesignation(id: number): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/Master/deletedesignation/${id}`,
+    {}
+  );
+}
+
+// GET ALL DESIGNATIONS
+getDesignations(): Observable<ApiResponse<any[]>> {
+  return this.http.get<ApiResponse<any[]>>(
+    `${this.baseUrl}/Master/getalldesignation`
+  );
+}
+
+// GET DESIGNATION BY ID
+getDesignationById(id: number): Observable<ApiResponse<any>> {
+  return this.http.get<ApiResponse<any>>(
+    `${this.baseUrl}/Master/getbydesignation/${id}`
   );
 }
 }

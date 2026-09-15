@@ -23,7 +23,9 @@
 
         <div class="header-buttons">
 
-            <button class="btn btn-light" (click)="refresh()">
+            <button
+                class="btn btn-light"
+                (click)="refresh()">
 
                 <i class="fa-solid fa-rotate"></i>
 
@@ -32,7 +34,9 @@
             </button>
 
 
-            <button class="btn btn-danger" (click)="openAddModal()">
+            <button
+                class="btn btn-danger"
+                (click)="openAddModal()">
 
                 <i class="fa-solid fa-plus"></i>
 
@@ -45,12 +49,9 @@
     </div>
 
 
-
-
     <!-- Statistics -->
 
     <div class="stats-grid">
-
 
         <div class="stat-card">
 
@@ -59,11 +60,10 @@
             </span>
 
             <h2>
-                {{designations.length}}
+                {{ designations.length }}
             </h2>
 
         </div>
-
 
 
         <div class="stat-card">
@@ -73,11 +73,10 @@
             </span>
 
             <h2>
-                {{activeCount}}
+                {{ activeCount }}
             </h2>
 
         </div>
-
 
 
         <div class="stat-card">
@@ -87,119 +86,78 @@
             </span>
 
             <h2>
-                {{inactiveCount}}
+                {{ inactiveCount }}
             </h2>
 
         </div>
-
-
-
-        <div class="stat-card">
-
-            <span>
-                Total Employees
-            </span>
-
-            <h2>
-                {{employeeCount}}
-            </h2>
-
-        </div>
-
 
     </div>
-
-
-
-
 
 
     <!-- Search Filter -->
 
     <div class="search-panel">
 
-
         <div class="search-box">
 
             <i class="fa-solid fa-magnifying-glass"></i>
 
-
-            <input type="text" placeholder="Search designation..." [(ngModel)]="searchText">
-
+            <input
+                type="text"
+                placeholder="Search designation..."
+                [(ngModel)]="searchText">
 
         </div>
 
 
-
-
-        <select class="form-control" [(ngModel)]="statusFilter">
-
+        <select
+            class="form-control"
+            [(ngModel)]="statusFilter">
 
             <option value="">
                 All Status
             </option>
 
-
             <option value="Active">
                 Active
             </option>
-
 
             <option value="Inactive">
                 Inactive
             </option>
 
-
         </select>
 
 
-
-
-        <button class="btn btn-secondary" (click)="clearFilters()">
-
+        <button
+            class="btn btn-secondary"
+            (click)="clearFilters()">
 
             Clear
 
-
         </button>
-
-
 
     </div>
 
 
-
-
-
-
     <!-- Designations Table -->
-
 
     <div class="table-card">
 
-
-
         <div class="table-header">
-
 
             <h3>
                 Designations List
             </h3>
 
-
             <span>
-                {{filteredDesignations.length}} Records
+                {{ filteredDesignations.length }} Records
             </span>
-
 
         </div>
 
 
-
-
-
         <table>
-
 
             <thead>
 
@@ -209,31 +167,17 @@
                         Designation Name
                     </th>
 
+                    <th>
+                        Code
+                    </th>
 
                     <th>
                         Department
                     </th>
 
-
-                    <th>
-                        Job Level
-                    </th>
-
-
-                    <th>
-                        Reporting To
-                    </th>
-
-
-                    <th>
-                        Employees
-                    </th>
-
-
                     <th>
                         Status
                     </th>
-
 
                     <th width="170">
                         Actions
@@ -244,616 +188,307 @@
             </thead>
 
 
-
-
-
             <tbody>
 
-
-                <tr *ngFor="let item of filteredDesignations">
-
-
+                <tr
+                    *ngFor="let item of filteredDesignations">
 
                     <!-- Designation Name -->
 
                     <td>
 
-
                         <div class="provider-info">
-
 
                             <div class="provider-icon">
 
-
                                 <i class="fa-solid fa-user-tie"></i>
 
-
                             </div>
-
 
 
                             <div>
 
-
                                 <strong>
-                                    {{item.designationName}}
+                                    {{ item.designationName }}
                                 </strong>
 
-
                                 <small>
-                                    {{item.description}}
+                                    {{ item.description || 'No description' }}
                                 </small>
-
 
                             </div>
 
-
                         </div>
-
 
                     </td>
 
 
+                    <!-- Designation Code -->
 
+                    <td>
+
+                        <span class="department-badge">
+                            {{ item.designationCode }}
+                        </span>
+
+                    </td>
 
 
                     <!-- Department -->
 
-
                     <td>
-
 
                         <span class="department-badge">
 
-                            {{item.department}}
+                            {{ item.departmentName || 'N/A' }}
 
                         </span>
 
-
                     </td>
-
-
-
-
-
-                    <!-- Job Level -->
-
-
-                    <td>
-
-
-                        <span class="level-badge">
-
-                            {{item.jobLevel}}
-
-                        </span>
-
-
-                    </td>
-
-
-
-
-
-                    <!-- Reporting -->
-
-
-                    <td>
-
-                        {{item.reportingTo}}
-
-                    </td>
-
-
-
-
-
-                    <!-- Employee Count -->
-
-
-                    <td>
-
-
-                        <span class="count-badge">
-
-                            {{item.employeeCount}}
-
-                        </span>
-
-
-                    </td>
-
-
-
 
 
                     <!-- Status -->
 
-
                     <td>
 
+                        <span
+                            class="status"
+                            [ngClass]="item.status.toLowerCase()">
 
-                        <span class="status" [ngClass]="item.status.toLowerCase()">
-
-
-                            {{item.status}}
-
+                            {{ item.status }}
 
                         </span>
 
-
                     </td>
-
-
-
 
 
                     <!-- Actions -->
 
-
                     <td>
 
-
-                        <button class="icon-btn" (click)="edit(item)">
-
+                        <button
+                            class="icon-btn"
+                            (click)="edit(item)">
 
                             <i class="fa-solid fa-pen"></i>
 
-
                         </button>
 
 
-
-
-                        <button class="icon-btn danger" (click)="delete(item.id)">
-
+                        <button
+                            class="icon-btn danger"
+                            (click)="delete(item)">
 
                             <i class="fa-solid fa-trash"></i>
 
-
                         </button>
 
-
                     </td>
-
-
 
                 </tr>
 
 
+                <!-- No Records -->
+
+                <tr
+                    *ngIf="filteredDesignations.length === 0">
+
+                    <td
+                        colspan="5"
+                        style="text-align: center; padding: 30px;">
+
+                        No designations found.
+
+                    </td>
+
+                </tr>
 
             </tbody>
 
-
-
         </table>
-
-
 
     </div>
 
-
-
 </div>
+
+
 <!-- ======================================= -->
 <!-- Add / Edit Designation Modal -->
 <!-- ======================================= -->
 
-
-<div class="modal-overlay" *ngIf="showModal">
-
+<div
+    class="modal-overlay"
+    *ngIf="showModal">
 
     <div class="modal-box">
 
 
         <!-- Modal Header -->
 
-
         <div class="modal-header">
-
 
             <h3>
 
-                {{isEdit ? 'Edit Designation' : 'Add Designation'}}
+                {{ isEdit
+                    ? 'Edit Designation'
+                    : 'Add Designation'
+                }}
 
             </h3>
 
 
-
-            <button class="close-btn" (click)="closeModal()">
-
+            <button
+                class="close-btn"
+                (click)="closeModal()">
 
                 ×
 
-
             </button>
 
-
         </div>
-
-
-
-
 
 
         <!-- Modal Body -->
 
-
         <div class="modal-body">
-
 
             <div class="form-grid">
 
 
-
-
-
                 <!-- Designation Name -->
-
 
                 <div>
 
-
                     <label>
-
                         Designation Name
-
                     </label>
 
-
-
-                    <input type="text" placeholder="Enter designation name" [(ngModel)]="model.designationName">
-
+                    <input
+                        type="text"
+                        placeholder="Enter designation name"
+                        [(ngModel)]="model.designationName">
 
                 </div>
 
 
+                <!-- Designation Code -->
 
+                <div>
 
+                    <label>
+                        Designation Code
+                    </label>
 
+                    <input
+                        type="text"
+                        placeholder="Enter designation code"
+                        [(ngModel)]="model.designationCode">
+
+                </div>
 
 
                 <!-- Department -->
 
-
                 <div>
 
-
                     <label>
-
                         Department
-
                     </label>
 
+                    <select
+                        [(ngModel)]="model.departmentId">
 
+                        <option
+                            [ngValue]="null">
 
-                    <select [(ngModel)]="model.department">
+                            Select Department
 
-
-                        <option>
-                            IT
                         </option>
 
 
-                        <option>
-                            HR
+                        <option
+                            *ngFor="let department of departments"
+                            [ngValue]="department.departmentId">
+
+                            {{ department.departmentName }}
+
                         </option>
-
-
-                        <option>
-                            Finance
-                        </option>
-
-
-                        <option>
-                            Sales
-                        </option>
-
-
-                        <option>
-                            Marketing
-                        </option>
-
-
-                        <option>
-                            Operations
-                        </option>
-
 
                     </select>
 
-
                 </div>
-
-
-
-
-
-
-
-                <!-- Job Level -->
-
-
-                <div>
-
-
-                    <label>
-
-                        Job Level
-
-                    </label>
-
-
-
-                    <select [(ngModel)]="model.jobLevel">
-
-
-                        <option>
-                            Entry Level
-                        </option>
-
-
-                        <option>
-                            Junior
-                        </option>
-
-
-                        <option>
-                            Mid Level
-                        </option>
-
-
-                        <option>
-                            Senior
-                        </option>
-
-
-                        <option>
-                            Lead
-                        </option>
-
-
-                        <option>
-                            Manager
-                        </option>
-
-
-                        <option>
-                            Director
-                        </option>
-
-
-                    </select>
-
-
-                </div>
-
-
-
-
-
-
-
-
-                <!-- Reporting To -->
-
-
-                <div>
-
-
-                    <label>
-
-                        Reporting To
-
-                    </label>
-
-
-
-                    <select [(ngModel)]="model.reportingTo">
-
-
-                        <option>
-                            CEO
-                        </option>
-
-
-                        <option>
-                            Department Head
-                        </option>
-
-
-                        <option>
-                            Manager
-                        </option>
-
-
-                        <option>
-                            Team Lead
-                        </option>
-
-
-                    </select>
-
-
-                </div>
-
-
-
-
-
-
-
-                <!-- Employee Count -->
-
-
-                <div>
-
-
-                    <label>
-
-                        Employee Count
-
-                    </label>
-
-
-
-                    <input type="number" placeholder="Enter employee count" [(ngModel)]="model.employeeCount">
-
-
-                </div>
-
-
-
-
-
-
 
 
                 <!-- Status -->
 
-
                 <div>
 
-
                     <label>
-
                         Status
-
                     </label>
 
+                    <select
+                        [(ngModel)]="model.status">
 
-
-                    <select [(ngModel)]="model.status">
-
-
-                        <option>
+                        <option [ngValue]="true">
                             Active
                         </option>
 
-
-                        <option>
+                        <option [ngValue]="false">
                             Inactive
                         </option>
 
-
                     </select>
 
-
                 </div>
-
-
-
-
-
-
 
 
                 <!-- Description -->
 
-
                 <div class="full-width">
 
-
                     <label>
-
                         Description
-
                     </label>
 
-
-
-                    <textarea rows="4" placeholder="Enter designation description" [(ngModel)]="model.description">
-
-                    </textarea>
-
+                    <textarea
+                        rows="4"
+                        placeholder="Enter designation description"
+                        [(ngModel)]="model.description"></textarea>
 
                 </div>
-
-
-
-
-
-
-
-                <!-- Default Designation -->
-
-
-                <div class="checkbox-group">
-
-
-                    <label>
-
-
-                        <input type="checkbox" [(ngModel)]="model.isDefault">
-
-
-
-                        Default Designation
-
-
-
-                    </label>
-
-
-                </div>
-
-
-
-
 
             </div>
 
-
         </div>
-
-
-
-
-
 
 
         <!-- Modal Footer -->
 
-
         <div class="modal-footer">
 
-
-
-            <button class="btn-secondary" (click)="closeModal()">
-
-
+            <button
+                class="btn-secondary"
+                (click)="closeModal()">
 
                 Cancel
 
-
-
             </button>
 
 
+            <button
+                class="btn-primary"
+                (click)="saveDesignation()">
 
-
-
-
-            <button class="btn-primary" (click)="saveDesignation()">
-
-
-
-                {{isEdit ? 'Update Designation' : 'Save Designation'}}
-
-
+                {{ isEdit
+                    ? 'Update Designation'
+                    : 'Save Designation'
+                }}
 
             </button>
-
-
 
         </div>
 
-
-
-
-
     </div>
-
-
 
 </div>
