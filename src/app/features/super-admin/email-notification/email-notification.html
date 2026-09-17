@@ -1,10 +1,99 @@
-<div class="container mt-4">
+<div class="container-fluid mt-4">
 
-    <div class="card">
+    <!-- ========================================= -->
+    <!-- Page Header -->
+    <!-- ========================================= -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h3 class="fw-bold text-danger mb-1">
+
+                <i class="fa-solid fa-envelope me-2"></i>
+
+                Email Templates
+
+            </h3>
+
+            <p class="text-muted mb-0">
+
+                Create and manage email templates used for system notifications.
+
+            </p>
+
+        </div>
+
+        <div>
+
+            <button class="btn btn-outline-secondary me-2" (click)="clear()">
+
+                <i class="fa-solid fa-rotate"></i>
+
+                Clear
+
+            </button>
+
+            <button class="btn btn-danger" (click)="saveTemplate()">
+
+                <i class="fa-solid" [ngClass]="isEdit ? 'fa-pen' : 'fa-plus'"></i>
+
+                {{isEdit ? ' Update Template' : ' Add Template'}}
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Statistics -->
+    <!-- ========================================= -->
+
+    <div class="row mb-4">
+
+        <div class="col-md-4 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Total Templates</div>
+                <div class="fw-bold fs-4 text-danger">{{totalTemplates}}</div>
+            </div>
+
+        </div>
+
+        <div class="col-md-4 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Active</div>
+                <div class="fw-bold fs-4 text-success">{{activeTemplates}}</div>
+            </div>
+
+        </div>
+
+        <div class="col-md-4 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Inactive</div>
+                <div class="fw-bold fs-4 text-secondary">{{inactiveTemplates}}</div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Email Template Form -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm border-0 mb-4">
 
         <div class="card-header bg-danger text-white">
 
-            <h4>Email Templates</h4>
+            <h5 class="mb-0">
+
+                Email Template Information
+
+            </h5>
 
         </div>
 
@@ -12,240 +101,474 @@
 
             <div class="row">
 
-                <div class="col-md-4 mb-3">
-                    <label>Module</label>
-                    <select class="form-select">
-                        <option>All Modules</option>
-                        <option>Leads</option>
-                        <option>Contacts</option>
-                        <option>Accounts</option>
-                        <option>Opportunities</option>
-                        <option>Quotation</option>
-                        <option>Invoices</option>
-                        <option>Support</option>
-                        <option>Projects</option>
-                        <option>HR</option>
-                    </select>
-                </div>
+                <!-- Template Code -->
 
                 <div class="col-md-4 mb-3">
-                    <label>Category</label>
-                    <select class="form-select">
-                        <option>Registration</option>
-                        <option>Authentication</option>
-                        <option>Sales</option>
-                        <option>Billing</option>
-                        <option>Marketing</option>
-                        <option>Reminder</option>
-                        <option>Support</option>
-                    </select>
+
+                    <label class="form-label">
+
+                        Template Code
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input class="form-control" placeholder="Example: LEAD_WELCOME_EMAIL"
+                        [(ngModel)]="template.templateCode">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !template.templateCode">
+
+                        Template Code is required.
+
+                    </div>
+
                 </div>
+
+                <!-- Template Name -->
 
                 <div class="col-md-4 mb-3">
-                    <label>Priority</label>
-                    <select class="form-select">
-                        <option>Low</option>
-                        <option>Medium</option>
-                        <option>High</option>
-                        <option>Critical</option>
+
+                    <label class="form-label">
+
+                        Template Name
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input class="form-control" placeholder="Example: Lead Welcome Email"
+                        [(ngModel)]="template.templateName">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !template.templateName">
+
+                        Template Name is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Category -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Category
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="template.category">
+
+                        <option value="">Select Category</option>
+
+                        <option *ngFor="let c of categoryOptions" [value]="c">{{c}}</option>
+
                     </select>
+
                 </div>
 
-                <div class="col-md-4">
-                    <label>
-                        <input type="checkbox" checked>
-                        Enable Email Templates
+                <!-- Subject -->
+
+                <div class="col-md-8 mb-3">
+
+                    <label class="form-label">
+
+                        Subject
+
                     </label>
+
+                    <input class="form-control" placeholder="Enter email subject" [(ngModel)]="template.subject">
+
                 </div>
 
-                <div class="col-md-4">
-                    <label>
-                        <input type="checkbox" checked>
-                        Allow HTML Templates
+                <!-- Version -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Version
+
                     </label>
+
+                    <input type="number" min="1" class="form-control" [(ngModel)]="template.version">
+
                 </div>
 
-                <div class="col-md-4">
-                    <label>
-                        <input type="checkbox" checked>
-                        Active
+                <!-- Language -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Language
+
                     </label>
+
+                    <select class="form-select" [(ngModel)]="template.languageCode">
+
+                        <option *ngFor="let l of languageOptions" [value]="l.value">{{l.label}}</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Provider -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Provider
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="template.providerName">
+
+                        <option value="">Select Provider</option>
+
+                        <option *ngFor="let p of providerOptions" [value]="p">{{p}}</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Status -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Status
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="template.status">
+
+                        <option *ngFor="let s of statusOptions" [value]="s">{{s}}</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Body -->
+
+                <div class="col-md-12 mb-3">
+
+                    <label class="form-label">
+
+                        Body
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <textarea rows="6" class="form-control" placeholder="Enter the email body (HTML supported)"
+                        [(ngModel)]="template.body"></textarea>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !template.body">
+
+                        Template Body is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Active -->
+
+                <div class="col-md-4 mb-3">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="template.isActive">
+
+                        <label class="form-check-label">
+
+                            Active
+
+                        </label>
+
+                    </div>
+
                 </div>
 
             </div>
 
-            <button class="btn btn-danger me-2">
-                Save
-            </button>
+        </div>
 
-            <button class="btn btn-secondary me-2">
-                Clear
-            </button>
+    </div>
 
-            <button class="btn btn-success">
-                Add Template
-            </button>
+</div>
+
+<!-- ========================================= -->
+<!-- Search Section -->
+<!-- ========================================= -->
+
+<div class="card shadow-sm border-0 mb-3">
+
+    <div class="card-body">
+
+        <div class="row">
+
+            <div class="col-md-4">
+
+                <input class="form-control" placeholder="Search Template..." [(ngModel)]="searchText">
+
+            </div>
+
+            <div class="col-md-3">
+
+                <select class="form-select" [(ngModel)]="categoryFilter">
+
+                    <option value="">All Categories</option>
+
+                    <option *ngFor="let c of categoryOptions" [value]="c">{{c}}</option>
+
+                </select>
+
+            </div>
+
+            <div class="col-md-3">
+
+                <select class="form-select" [(ngModel)]="statusFilter">
+
+                    <option value="">All Status</option>
+
+                    <option *ngFor="let s of statusOptions" [value]="s">{{s}}</option>
+
+                </select>
+
+            </div>
+
+            <div class="col-md-2">
+
+                <button class="btn btn-secondary w-100" (click)="clearFilters()">
+
+                    Clear
+
+                </button>
+
+            </div>
 
         </div>
 
     </div>
 
-    <br>
+</div>
 
-    <div class="row mb-3">
+<!-- ========================================= -->
+<!-- Email Template List -->
+<!-- ========================================= -->
 
-        <div class="col-md-3">
-            <input class="form-control"
-                   placeholder="Search Template...">
-        </div>
+<div class="card shadow-sm border-0">
 
-        <div class="col-md-3">
-            <select class="form-select">
-                <option>All Modules</option>
-                <option>Leads</option>
-                <option>Sales</option>
-                <option>Billing</option>
-                <option>Support</option>
-            </select>
-        </div>
+    <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
 
-        <div class="col-md-3">
-            <select class="form-select">
-                <option>All Status</option>
-                <option>Active</option>
-                <option>Inactive</option>
-            </select>
-        </div>
+        <h5 class="mb-0">
 
-        <div class="col-md-3">
-            <button class="btn btn-danger w-100">
-                Search
-            </button>
+            Email Templates
+
+        </h5>
+
+        <span class="badge bg-light text-dark">
+
+            Total Records : {{filteredTemplates.length}}
+
+        </span>
+
+    </div>
+
+    <div class="card-body p-0">
+
+        <div class="table-responsive">
+
+            <table class="table table-hover table-bordered align-middle mb-0">
+
+                <thead class="table-danger">
+
+                    <tr>
+
+                        <th width="70">#</th>
+                        <th>Template Name</th>
+                        <th>Category</th>
+                        <th>Subject</th>
+                        <th>Version</th>
+                        <th>Status</th>
+                        <th>Active</th>
+                        <th width="210">Action</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr *ngFor="let item of filteredTemplates; let i=index">
+
+                        <td>
+
+                            {{i+1}}
+
+                        </td>
+
+                        <td>
+
+                            <div class="fw-bold">
+
+                                {{item.templateName}}
+
+                            </div>
+
+                            <small class="text-muted">
+
+                                {{item.templateCode}}
+
+                            </small>
+
+                        </td>
+
+                        <td>
+
+                            {{item.category || '—'}}
+
+                        </td>
+
+                        <td>
+
+                            {{item.subject || '—'}}
+
+                        </td>
+
+                        <td>
+
+                            v{{item.version}}
+
+                        </td>
+
+                        <td>
+
+                            <span class="badge" [ngClass]="{
+                                'bg-secondary': item.status === 'Draft',
+                                'bg-success': item.status === 'Active',
+                                'bg-dark': item.status === 'Inactive',
+                                'bg-warning text-dark': item.status === 'Archived'
+                                }">
+
+                                {{item.status}}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <span class="badge" [ngClass]="item.isActive ? 'bg-success' : 'bg-secondary'">
+
+                                {{item.isActive ? 'Active' : 'Inactive'}}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <button class="btn btn-info btn-sm me-1" (click)="preview(item)">
+
+                                <i class="fa-solid fa-eye"></i>
+                                Preview
+
+                            </button>
+
+                            <button class="btn btn-warning btn-sm me-1" (click)="edit(item.emailTemplateId)">
+
+                                <i class="fa-solid fa-pen"></i>
+                                Edit
+
+                            </button>
+
+                            <button class="btn btn-danger btn-sm" (click)="delete(item.emailTemplateId)">
+
+                                <i class="fa-solid fa-trash"></i>
+                                Delete
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                    <tr *ngIf="filteredTemplates.length==0">
+
+                        <td colspan="8" class="text-center text-muted py-5">
+
+                            <i class="fa-solid fa-envelope fa-3x mb-3"></i>
+
+                            <br>
+
+                            No Email Templates Found.
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
         </div>
 
     </div>
 
-    <table class="table table-bordered table-hover">
+</div>
 
-        <thead class="table-danger">
+<!-- ========================================= -->
+<!-- Preview Modal -->
+<!-- ========================================= -->
 
-            <tr>
+<div class="modal d-block" tabindex="-1" style="background: rgba(0,0,0,.5);" *ngIf="showPreview">
 
-                <th>#</th>
-                <th>Template Name</th>
-                <th>Module</th>
-                <th>Category</th>
-                <th>Subject</th>
-                <th>Priority</th>
-                <th>Status</th>
-                <th width="170">Action</th>
+    <div class="modal-dialog modal-lg modal-dialog-centered">
 
-            </tr>
+        <div class="modal-content">
 
-        </thead>
+            <div class="modal-header bg-danger text-white">
 
-        <tbody>
+                <h5 class="modal-title">
 
-            <tr>
+                    Template Preview
 
-                <td>1</td>
-                <td>Lead Welcome Email</td>
-                <td>Leads</td>
-                <td>Registration</td>
-                <td>Welcome to CRM</td>
-                <td>High</td>
-                <td>
-                    <span class="badge bg-success">Active</span>
-                </td>
+                </h5>
 
-                <td>
+                <button type="button" class="btn-close btn-close-white" (click)="closePreview()"></button>
 
-                    <button class="btn btn-info btn-sm me-1">Preview</button>
+            </div>
 
-                    <button class="btn btn-warning btn-sm me-1">Edit</button>
+            <div class="modal-body">
 
-                    <button class="btn btn-danger btn-sm">Delete</button>
+                <p class="mb-2">
 
-                </td>
+                    <strong>Subject:</strong> {{previewTemplate?.subject || '—'}}
 
-            </tr>
+                </p>
 
-            <tr>
+                <hr>
 
-                <td>2</td>
-                <td>Password Reset</td>
-                <td>Security</td>
-                <td>Authentication</td>
-                <td>Reset Password</td>
-                <td>Critical</td>
-                <td>
-                    <span class="badge bg-success">Active</span>
-                </td>
+                <div [innerHTML]="previewTemplate?.body"></div>
 
-                <td>
+            </div>
 
-                    <button class="btn btn-info btn-sm me-1">Preview</button>
+            <div class="modal-footer">
 
-                    <button class="btn btn-warning btn-sm me-1">Edit</button>
+                <button class="btn btn-secondary" (click)="closePreview()">
 
-                    <button class="btn btn-danger btn-sm">Delete</button>
+                    Close
 
-                </td>
+                </button>
 
-            </tr>
+            </div>
 
-            <tr>
+        </div>
 
-                <td>3</td>
-                <td>Invoice Generated</td>
-                <td>Billing</td>
-                <td>Finance</td>
-                <td>Your Invoice is Ready</td>
-                <td>Medium</td>
-                <td>
-                    <span class="badge bg-success">Active</span>
-                </td>
-
-                <td>
-
-                    <button class="btn btn-info btn-sm me-1">Preview</button>
-
-                    <button class="btn btn-warning btn-sm me-1">Edit</button>
-
-                    <button class="btn btn-danger btn-sm">Delete</button>
-
-                </td>
-
-            </tr>
-
-            <tr>
-
-                <td>4</td>
-                <td>Subscription Renewal</td>
-                <td>Subscription</td>
-                <td>Reminder</td>
-                <td>Your Subscription Expires Soon</td>
-                <td>High</td>
-                <td>
-                    <span class="badge bg-secondary">Inactive</span>
-                </td>
-
-                <td>
-
-                    <button class="btn btn-info btn-sm me-1">Preview</button>
-
-                    <button class="btn btn-warning btn-sm me-1">Edit</button>
-
-                    <button class="btn btn-danger btn-sm">Delete</button>
-
-                </td>
-
-            </tr>
-
-        </tbody>
-
-    </table>
-
-
+    </div>
 
 </div>

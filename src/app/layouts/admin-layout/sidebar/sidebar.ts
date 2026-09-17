@@ -376,10 +376,19 @@ export class Sidebar {
           route: '/workflow-rules',
           group: 'Administration'
         },
+          { label: 'Workflow Rule Conditions', icon: 'fa-filter', route: '/workflowrulecondition', group: 'Administration' },
+          { label: 'Workflow Rule Actions', icon: 'fa-filter', route: '/workflowruleactions', group: 'Administration' },
+          { label: 'autoassignmentconditions', icon: 'fa-filter', route: '/autoassignmentconditions', group: 'Administration' },
         {
           label: 'Approval Workflow',
           icon: 'fa-building',
           route: '/approval-workflow',
+          group: 'Administration'
+        },
+        {
+          label: 'Approval Workflow Levels',
+          icon: 'fa-check-double',
+          route: '/approvalworkflowlevels',
           group: 'Administration'
         },
         {
@@ -404,6 +413,12 @@ export class Sidebar {
           label: 'Email Automation',
           icon: 'fa-building',
           route: '/email-automation',
+          group: 'Administration'
+        },
+        {
+          label: 'Email Automation Recipients',
+          icon: 'fa-building',
+          route: '/emailautomationrecipients',
           group: 'Administration'
         },
         {
@@ -468,6 +483,10 @@ export class Sidebar {
       expanded: false,
 
       children: [
+          { label: 'Email', icon: 'fa-envelope', route: '/communication-emails', group: 'Administration' },
+        { label: 'SMS', icon: 'fa-comment', route: '/communication-sms', group: 'Administration' },
+        { label: 'WhatsApp', icon: 'fa-comments', route: '/communication-whatsapp', group: 'Administration' },
+        { label: 'Invoice', icon: 'fa-file-invoice', route: '/communication-invoice', group: 'Administration' },
         {
           label: 'Email Templates',
           icon: 'fa-building',
@@ -850,11 +869,17 @@ export class Sidebar {
       expanded: false,
       children: [
         { label: 'Workflow Rules', icon: 'fa-gears', route: '/workflow-rules', group: 'CRM' },
+        { label: 'Workflow Rule Conditions', icon: 'fa-filter', route: '/workflowrulecondition', group: 'CRM' },
+        { label: 'Workflow Rule Actions', icon: 'fa-filter', route: '/workflowruleactions', group: 'CRM' },
         { label: 'Approval Workflow', icon: 'fa-check-double', route: '/approval-workflow', group: 'CRM' },
+        { label: 'Approval Workflow Levels', icon: 'fa-check-double', route: '/approvalworkflowlevels', group: 'CRM' },
         { label: 'Auto Assignment', icon: 'fa-user-check', route: '/auto-assignment', group: 'CRM' },
+         { label: 'autoassignmentconditions', icon: 'fa-filter', route: '/autoassignmentconditions', group: 'CRM' },
         { label: 'Escalation Rules', icon: 'fa-arrow-up-right-dots', route: '/escalation-rules', group: 'CRM' },
         { label: 'SLA Rules', icon: 'fa-stopwatch', route: '/sla-rules', group: 'CRM' },
-        { label: 'Email Automation', icon: 'fa-envelope-open-text', route: '/email-automation', group: 'CRM' }
+        { label: 'Email Automation', icon: 'fa-envelope-open-text', route: '/email-automation', group: 'CRM' },
+        { label: 'emailautomationrecipients', icon: 'fa-envelope-open-text', route: '/emailautomationrecipients', group: 'CRM' },
+        { label: 'Scheduled Jobs', icon: 'fa-calendar-check', route: '/scheduled-jobs', group: 'CRM' }
       ]
     },
     {
@@ -863,6 +888,10 @@ export class Sidebar {
       group: 'CRM',
       expanded: false,
       children: [
+        { label: 'Email', icon: 'fa-envelope', route: '/communication-emails', group: 'CRM' },
+        { label: 'SMS', icon: 'fa-comment', route: '/communication-sms', group: 'CRM' },
+        { label: 'WhatsApp', icon: 'fa-comments', route: '/communication-whatsapp', group: 'CRM' },
+        { label: 'Invoice', icon: 'fa-file-invoice', route: '/communication-invoice', group: 'CRM' },
         { label: 'Email Templates', icon: 'fa-envelope', route: '/email-notification', group: 'CRM' },
         { label: 'SMS Templates', icon: 'fa-comment', route: '/sms-notification', group: 'CRM' },
         { label: 'WhatsApp Templates', icon: 'fa-comments', route: '/whatsapp-notification', group: 'CRM' },

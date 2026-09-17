@@ -1,0 +1,531 @@
+<div class="page-container">
+
+
+    <!-- ========================= -->
+    <!-- Page Header -->
+    <!-- ========================= -->
+
+
+    <div class="page-header">
+
+
+        <div>
+
+
+            <p class="page-subtitle">
+                WORKFLOW &amp; AUTOMATION
+            </p>
+
+
+            <h1>
+                Approval Workflow Levels
+            </h1>
+
+
+            <p class="page-description">
+                Configure the approval levels and approvers for each approval workflow.
+            </p>
+
+
+        </div>
+
+
+        <div class="header-buttons">
+
+
+            <button class="btn btn-light" (click)="refresh()">
+
+                <i class="fa-solid fa-rotate"></i>
+                Refresh
+
+            </button>
+
+
+            <button class="btn btn-danger" (click)="openAddModal()">
+
+                <i class="fa-solid fa-plus"></i>
+                Add Level
+
+            </button>
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+    <!-- ========================= -->
+    <!-- Statistics -->
+    <!-- ========================= -->
+
+
+    <div class="stats-grid">
+
+
+        <div class="stat-card">
+
+            <span>
+                Total Levels
+            </span>
+
+            <h2>
+                {{totalCount}}
+            </h2>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>
+                Active Levels
+            </span>
+
+            <h2>
+                {{activeCount}}
+            </h2>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>
+                Inactive Levels
+            </span>
+
+            <h2>
+                {{inactiveCount}}
+            </h2>
+
+        </div>
+
+    </div>
+
+
+
+
+    <!-- ========================= -->
+    <!-- Search Filter -->
+    <!-- ========================= -->
+
+
+    <div class="search-panel">
+
+
+        <div class="search-box">
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input type="text" placeholder="Search approval workflow or approver type..." [(ngModel)]="searchText">
+
+        </div>
+
+
+        <select class="form-control" [(ngModel)]="workflowFilter">
+
+            <option [ngValue]="''">
+                All Approval Workflows
+            </option>
+
+            <option *ngFor="let wf of approvalWorkflows" [ngValue]="wf.approvalWorkflowId">
+                {{wf.workflowName}}
+            </option>
+
+        </select>
+
+
+        <select class="form-control" [(ngModel)]="statusFilter">
+
+            <option value="">
+                All Status
+            </option>
+
+            <option value="Active">
+                Active
+            </option>
+
+            <option value="Inactive">
+                Inactive
+            </option>
+
+        </select>
+
+
+        <button class="btn btn-secondary" (click)="clearFilters()">
+            Clear
+        </button>
+
+
+    </div>
+
+
+
+
+    <!-- ========================= -->
+    <!-- Levels Table -->
+    <!-- ========================= -->
+
+
+    <div class="table-card">
+
+
+        <div class="table-header">
+
+            <h3>
+                Approval Workflow Levels
+            </h3>
+
+            <span>
+                {{filteredLevels.length}} Records
+            </span>
+
+        </div>
+
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Approval Workflow
+                    </th>
+
+                    <th>
+                        Level
+                    </th>
+
+                    <th>
+                        Approver Type
+                    </th>
+
+                    <th>
+                        Approver
+                    </th>
+
+                    <th>
+                        Condition
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                    <th width="170">
+                        Actions
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                <tr *ngFor="let item of filteredLevels">
+
+                    <td>
+
+                        <div class="provider-info">
+
+                            <div class="provider-icon">
+                                <i class="fa-solid fa-layer-group"></i>
+                            </div>
+
+                            <div>
+                                <strong>
+                                    {{item.workflowName || '—'}}
+                                </strong>
+                            </div>
+
+                        </div>
+
+                    </td>
+
+
+                    <td>
+                        <span class="type-badge">
+                            Level {{item.levelNumber}}
+                        </span>
+                    </td>
+
+
+                    <td>
+                        {{item.approverType}}
+                    </td>
+
+
+                    <td>
+                        <ng-container *ngIf="item.approverType === 'User'; else roleBlock">
+                            User #{{item.approverUserId}}
+                        </ng-container>
+                        <ng-template #roleBlock>
+                            Role #{{item.approverRoleId}}
+                        </ng-template>
+                    </td>
+
+
+                    <td>
+                        <span class="config-text" [title]="item.approvalCondition">
+                            {{item.approvalCondition || '—'}}
+                        </span>
+                    </td>
+
+
+                    <td>
+
+                        <span class="status" [ngClass]="item.isActive ? 'active' : 'inactive'">
+                            {{item.isActive ? 'Active' : 'Inactive'}}
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <button class="icon-btn" (click)="edit(item)">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+
+                        <button class="icon-btn danger" (click)="delete(item.approvalWorkflowLevelId)">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+
+                    </td>
+
+                </tr>
+
+
+                <tr *ngIf="!filteredLevels.length">
+
+                    <td colspan="7" style="text-align:center; padding: 24px; color:#667085;">
+                        No approval workflow levels found.
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+
+    </div>
+
+
+</div>
+
+
+
+
+<!-- ================================= -->
+<!-- Add / Edit Level Modal -->
+<!-- ================================= -->
+
+
+<div class="modal-overlay" *ngIf="showModal">
+
+
+    <div class="modal-box">
+
+
+        <!-- Modal Header -->
+
+        <div class="modal-header">
+
+            <h3>
+                {{isEdit ? 'Edit Approval Workflow Level' : 'Add Approval Workflow Level'}}
+            </h3>
+
+            <button class="close-btn" (click)="closeModal()">
+                ×
+            </button>
+
+        </div>
+
+
+
+
+        <!-- Modal Body -->
+
+        <div class="modal-body">
+
+            <div class="form-grid">
+
+
+                <!-- Approval Workflow -->
+
+                <div class="full-width">
+
+                    <label>
+                        Approval Workflow
+                    </label>
+
+                    <select [(ngModel)]="model.approvalWorkflowId" (ngModelChange)="onWorkflowChange()">
+
+                        <option [ngValue]="0">
+                            Select Approval Workflow
+                        </option>
+
+                        <option *ngFor="let wf of approvalWorkflows" [ngValue]="wf.approvalWorkflowId">
+                            {{wf.workflowName}}
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Level Number -->
+
+                <div>
+
+                    <label>
+                        Level Number
+                    </label>
+
+                    <input type="number" min="1" [(ngModel)]="model.levelNumber">
+
+                </div>
+
+
+                <!-- Approver Type -->
+
+                <div>
+
+                    <label>
+                        Approver Type
+                    </label>
+
+                    <select [(ngModel)]="model.approverType" (ngModelChange)="onApproverTypeChange()">
+
+                        <option value="">
+                            Select Approver Type
+                        </option>
+
+                        <option *ngFor="let type of approverTypeOptions" [value]="type">
+                            {{type}}
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Approver User -->
+
+                <div *ngIf="model.approverType === 'User'">
+
+                    <label>
+                        Approver User Id
+                    </label>
+
+                    <input type="number" min="1" placeholder="Enter Approver User Id" [(ngModel)]="model.approverUserId">
+
+                </div>
+
+
+                <!-- Approver Role -->
+
+                <div *ngIf="model.approverType === 'Role'">
+
+                    <label>
+                        Approver Role Id
+                    </label>
+
+                    <input type="number" min="1" placeholder="Enter Approver Role Id" [(ngModel)]="model.approverRoleId">
+
+                </div>
+
+
+                <!-- Status -->
+
+                <div>
+
+                    <label>
+                        Status
+                    </label>
+
+                    <select [(ngModel)]="model.isActive">
+
+                        <option [ngValue]="true">
+                            Active
+                        </option>
+
+                        <option [ngValue]="false">
+                            Inactive
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Approval Condition -->
+
+                <div class="full-width">
+
+                    <label>
+                        Approval Condition
+                    </label>
+
+                    <textarea rows="2" placeholder="Enter condition for this approval level (optional)" [(ngModel)]="model.approvalCondition"></textarea>
+
+                </div>
+
+
+                <!-- On Approval Action -->
+
+                <div>
+
+                    <label>
+                        On Approval Action
+                    </label>
+
+                    <input type="text" placeholder="Action to run when approved" [(ngModel)]="model.onApprovalAction">
+
+                </div>
+
+
+                <!-- On Rejection Action -->
+
+                <div>
+
+                    <label>
+                        On Rejection Action
+                    </label>
+
+                    <input type="text" placeholder="Action to run when rejected" [(ngModel)]="model.onRejectionAction">
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+
+
+        <!-- Modal Footer -->
+
+        <div class="modal-footer">
+
+            <button class="btn-secondary" (click)="closeModal()">
+                Cancel
+            </button>
+
+            <button class="btn-primary" (click)="saveLevel()">
+                {{isEdit ? 'Update Level' : 'Save Level'}}
+            </button>
+
+        </div>
+
+
+    </div>
+
+
+</div>

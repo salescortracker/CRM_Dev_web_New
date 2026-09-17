@@ -138,6 +138,58 @@ export class AuthService {
 
 
   // =====================================================
+  // ROLE
+  // =====================================================
+
+  createRole(role: any) {
+
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/Role/create`,
+      role
+    );
+
+  }
+
+
+  updateRole(role: any) {
+
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/Role/update`,
+      role
+    );
+
+  }
+
+
+  deleteRole(id: number) {
+
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/Role/delete/${id}`,
+      {}
+    );
+
+  }
+
+
+  getRoles() {
+
+    return this.http.get<ApiResponse<any[]>>(
+      `${this.baseUrl}/Role/get-all`
+    );
+
+  }
+
+
+  getRoleById(id: number) {
+
+    return this.http.get<ApiResponse<any>>(
+      `${this.baseUrl}/Role/get-by-id/${id}`
+    );
+
+  }
+
+
+  // =====================================================
   // COMPANY
   // =====================================================
 

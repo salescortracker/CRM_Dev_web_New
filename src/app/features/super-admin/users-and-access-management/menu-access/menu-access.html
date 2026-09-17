@@ -59,115 +59,9 @@
 
       <div class="card details-card">
 
-        <!-- TITLE SECTION -->
+  
 
-        <div class="top-section">
-
-          <div>
-            <div class="module-type">
-              {{selectedMenu?.menuType | uppercase}}
-            </div>
-
-            <h2>
-              {{selectedMenu?.menuName}}
-            </h2>
-
-            <div class="route-info">
-              {{selectedMenu?.url}}
-              |
-              Order {{selectedMenu?.orderNo}}
-            </div>
-          </div>
-
-          <button class="enable-btn" (click)="toggleStatus()">
-            <i class="fas fa-power-off"></i>
-            {{selectedMenu?.isActive ? 'Disable' : 'Enable'}}
-          </button>
-
-        </div>
-
-        <!-- INFO BOXES -->
-
-        <div class="info-grid">
-
-          <div class="info-box">
-            <label>Icon</label>
-            <span>
-              <i class="fas {{selectedMenu?.icon}}"></i>
-              {{selectedMenu?.icon}}
-            </span>
-          </div>
-
-          <!-- <div class="info-box">
-            <label>Tenant Specific</label>
-            <span>
-              {{selectedMenu?.tenantSpecific ? 'Yes' : 'No'}}
-            </span>
-          </div> -->
-
-          <div class="info-box">
-            <label>Visible Roles</label>
-            <span>
-              {{selectedRole}}
-            </span>
-          </div>
-
-          <div class="info-box">
-            <label>Status</label>
-
-            <span class="status-badge" [class.active-badge]="selectedMenu?.isActive"
-              [class.inactive-badge]="!selectedMenu?.isActive">
-              {{selectedMenu?.isActive ? 'Active' : 'Inactive'}}
-            </span>
-
-          </div>
-
-        </div>
-
-        <!-- ROLE MAPPING -->
-
-        <div class="section">
-
-          <h3>Role Menu Mapping</h3>
-
-          <div class="roles">
-
-            <button *ngFor="let role of roles" [class.role-active]="selectedRole===role" (click)="selectRole(role)">
-              {{role}}
-            </button>
-
-          </div>
-
-          <div class="permissions">
-
-            <label>
-              <input type="checkbox" [(ngModel)]="selectedMenu.canView" />
-              View
-            </label>
-
-            <label>
-              <input type="checkbox" [(ngModel)]="selectedMenu.canAdd" />
-              Add
-            </label>
-
-            <label>
-              <input type="checkbox" [(ngModel)]="selectedMenu.canEdit" />
-              Edit
-            </label>
-
-            <label>
-              <input type="checkbox" [(ngModel)]="selectedMenu.canDelete" />
-              Delete
-            </label>
-
-            <label>
-              <input type="checkbox" [(ngModel)]="selectedMenu.canApprove" />
-              Approve
-            </label>
-
-          </div>
-
-        </div>
+        
 
         <!-- MENU DETAILS -->
 
@@ -216,31 +110,7 @@
               <input type="number" [(ngModel)]="selectedMenu.orderNo" />
             </div>
 
-            <div class="form-group">
-              <label>Menu Type</label>
-
-              <select [(ngModel)]="selectedMenu.menuType" (ngModelChange)="menuTypeChanged()">
-
-                <option value="">Select</option>
-
-                <option value="Common">
-                  Common
-                </option>
-
-                <option value="SuperAdmin">
-                  Super Admin
-                </option>
-
-                <option value="Admin">
-                  Admin
-                </option>
-
-                <option value="User">
-                  User
-                </option>
-
-              </select>
-            </div>
+            
 
           </div>
 
@@ -252,6 +122,52 @@
             </label>
 
           </div>
+          <div class="section">
+
+          <h3>Permissions</h3>
+
+        
+
+          <div class="permissions">
+
+            <label>
+              <input type="checkbox" [(ngModel)]="selectedMenu.canView" />
+              View
+            </label>
+
+            <label>
+              <input type="checkbox" [(ngModel)]="selectedMenu.canAdd" />
+              Create
+            </label>
+
+            <label>
+              <input type="checkbox" [(ngModel)]="selectedMenu.canEdit" />
+              Edit
+            </label>
+
+            <label>
+              <input type="checkbox" [(ngModel)]="selectedMenu.canDelete" />
+              Delete
+            </label>
+
+            <label>
+              <input type="checkbox" [(ngModel)]="selectedMenu.canApprove" />
+              Approve
+            </label>
+
+            <label>
+              <input type="checkbox" [(ngModel)]="selectedMenu.canReject" />
+              Reject
+            </label>
+
+            <label>
+              <input type="checkbox" [(ngModel)]="selectedMenu.canDownload" />
+              Download
+            </label>
+
+          </div>
+
+        </div>
 
           <!-- <div class="form-group full-width">
 
@@ -268,25 +184,7 @@
 
         <!-- MENU ORDER -->
 
-        <div class="section">
-
-          <h3>Menu Order</h3>
-
-          <div class="order-buttons">
-
-            <button class="order-btn" (click)="moveUp()">
-              <i class="fas fa-arrow-up"></i>
-              Move Up
-            </button>
-
-            <button class="order-btn" (click)="moveDown()">
-              <i class="fas fa-arrow-down"></i>
-              Move Down
-            </button>
-
-          </div>
-
-        </div>
+        
 
         <!-- ACTIONS -->
 

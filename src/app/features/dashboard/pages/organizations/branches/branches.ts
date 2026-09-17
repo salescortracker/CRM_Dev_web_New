@@ -1,21 +1,26 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Pagination } from '../../../../../shared/pagination/pagination';
 import { Alertservice } from '../../../../../core/services/alertservice';
 import { Spinnerservice } from '../../../../../core/services/spinnerservice';
+import { AuthService } from '../../../../../core/authentication/services/auth.service';
+import { ControlsystemService } from '../../../../super-admin/services/controlsystem-service';
 
 @Component({
   selector: 'app-branches',
   standalone: true,
-  imports: [CommonModule,FormsModule,Pagination],
+  imports: [CommonModule, FormsModule, Pagination],
   templateUrl: './branches.html',
   styleUrl: './branches.css',
 })
-export class Branches {
+export class Branches implements OnInit {
   constructor(
     private alert: Alertservice,
-    private spinner: Spinnerservice
+    private spinner: Spinnerservice,
+    private cd: ChangeDetectorRef,
+    private authService: AuthService,
+    private controlsystemService: ControlsystemService
   ) { }
 
   //====================================================
@@ -34,6 +39,20 @@ export class Branches {
   pageSize = 10;
 
   //====================================================
+  // Dropdown Data (from backend)
+  //====================================================
+
+  organizations: any[] = [];
+  companies: any[] = [];
+  regions: any[] = [];
+
+  //====================================================
+  // Branch List
+  //====================================================
+
+  branches: any[] = [];
+
+  //====================================================
   // Branch Model
   //====================================================
 
@@ -45,23 +64,21 @@ export class Branches {
 
       branchId: 0,
 
-      organization: '',
+      organizationId: null,
 
-      company: '',
+      companyId: null,
 
-      region: '',
-
-      businessUnit: '',
+      regionId: null,
 
       branchName: '',
 
       branchCode: '',
 
-      manager: '',
+      branchManager: '',
 
       email: '',
 
-      phone: '',
+      phoneNumber: '',
 
       address: '',
 
@@ -73,17 +90,13 @@ export class Branches {
 
       zipCode: '',
 
-      openTime: '09:00',
+      openingTime: '09:00',
 
-      closeTime: '18:00',
+      closingTime: '18:00',
 
-      timeZone: 'Asia/Kolkata',
+      status: true,
 
-      status: 'Active',
-
-      isActive: true,
-
-      isHeadOffice: false,
+      headOffice: false,
 
       remarks: ''
 
@@ -92,156 +105,222 @@ export class Branches {
   }
 
   //====================================================
-  // Static Branch Data
+  // Lifecycle
   //====================================================
 
-  branches: any[] = [
+  ngOnInit(): void {
 
-    {
+    this.loadOrganizations();
 
-      branchId: 1,
+    this.loadCompanies();
 
-      organization: 'OpenVision Technologies',
+    this.loadRegions();
 
-      company: 'ABC Technologies',
+    this.loadBranches();
 
-      region: 'South Region',
+  }
 
-      businessUnit: 'Corporate',
+  //====================================================
+  // Load Dropdown Data
+  //====================================================
 
-      branchName: 'Hyderabad Branch',
+  loadOrganizations(): void {
 
-      branchCode: 'HYD001',
+    this.controlsystemService.getOrganizations().subscribe({
 
-      manager: 'Ramesh Kumar',
+      next: (res: any) => {
 
-      email: 'hyd@abc.com',
+        this.organizations = res?.data || [];
 
-      phone: '9876543210',
+        this.cd.detectChanges();
 
-      address: 'Madhapur',
+      },
 
-      city: 'Hyderabad',
+      error: (err) => {
 
-      state: 'Telangana',
+        console.error('Error loading organizations:', err);
 
-      country: 'India',
+        this.organizations = [];
 
-      zipCode: '500081',
+      }
 
-      openTime: '09:00',
+    });
 
-      closeTime: '18:00',
+  }
 
-      timeZone: 'Asia/Kolkata',
+  loadCompanies(): void {
 
-      status: 'Active',
+    this.authService.getCompanies().subscribe({
 
-      isActive: true,
+      next: (res: any) => {
 
-      isHeadOffice: true,
+        this.companies = (res?.data || []).filter(
+          (x: any) => x.isActive !== false
+        );
 
-      remarks: ''
+        this.cd.detectChanges();
 
-    },
+      },
 
-    {
+      error: (err) => {
 
-      branchId: 2,
+        console.error('Error loading companies:', err);
 
-      organization: 'OpenVision Technologies',
+        this.companies = [];
 
-      company: 'XYZ Solutions',
+      }
 
-      region: 'North Region',
+    });
 
-      businessUnit: 'Sales',
+  }
 
-      branchName: 'Delhi Branch',
+  loadRegions(): void {
 
-      branchCode: 'DEL001',
+    this.authService.getRegions().subscribe({
 
-      manager: 'Amit Sharma',
+      next: (res: any) => {
 
-      email: 'delhi@xyz.com',
+        this.regions = (res?.data || []).filter(
+          (x: any) => x.isActive !== false
+        );
 
-      phone: '9988776655',
+        this.cd.detectChanges();
 
-      address: 'Connaught Place',
+      },
 
-      city: 'Delhi',
+      error: (err) => {
 
-      state: 'Delhi',
+        console.error('Error loading regions:', err);
 
-      country: 'India',
+        this.regions = [];
 
-      zipCode: '110001',
+      }
 
-      openTime: '09:30',
+    });
 
-      closeTime: '18:30',
+  }
 
-      timeZone: 'Asia/Kolkata',
+  //====================================================
+  // Load Branches
+  //====================================================
 
-      status: 'Active',
+  loadBranches(): void {
 
-      isActive: true,
+    this.spinner.show();
 
-      isHeadOffice: false,
+    this.controlsystemService.getBranches().subscribe({
 
-      remarks: ''
+      next: (res: any) => {
 
-    },
+        this.spinner.hide();
 
-    {
+        if (res?.success) {
 
-      branchId: 3,
+          this.branches = res.data || [];
 
-      organization: 'OpenVision Technologies',
+        } else {
 
-      company: 'Open CRM',
+          this.branches = [];
 
-      region: 'South Region',
+          this.alert.warning(
+            res?.message || 'No branch records found.'
+          );
 
-      businessUnit: 'IT',
+        }
 
-      branchName: 'Bangalore Branch',
+        this.cd.detectChanges();
 
-      branchCode: 'BLR001',
+      },
 
-      manager: 'Suresh Reddy',
+      error: (err) => {
 
-      email: 'blr@opencrm.com',
+        this.spinner.hide();
 
-      phone: '9012345678',
+        console.error('Error loading branches:', err);
 
-      address: 'Whitefield',
+        this.branches = [];
 
-      city: 'Bangalore',
+        this.alert.error(
+          err?.error?.message || 'Failed to load branches.'
+        );
 
-      state: 'Karnataka',
+        this.cd.detectChanges();
 
-      country: 'India',
+      }
 
-      zipCode: '560066',
+    });
 
-      openTime: '09:00',
+  }
 
-      closeTime: '18:00',
+  //====================================================
+  // Lookup Helpers (Display Names)
+  //====================================================
 
-      timeZone: 'Asia/Kolkata',
+  getOrganizationName(id: any): string {
 
-      status: 'Inactive',
+    const item = this.organizations.find(
+      x => x.organizationId === Number(id)
+    );
 
-      isActive: false,
+    return item ? item.organizationName : '-';
 
-      isHeadOffice: false,
+  }
 
-      remarks: ''
+  getCompanyName(id: any): string {
 
-    }
+    const item = this.companies.find(x => x.companyId === Number(id));
 
-  ];
+    return item ? item.companyName : '-';
+
+  }
+
+  getRegionName(id: any): string {
+
+    const item = this.regions.find(x => x.regionId === Number(id));
+
+    return item ? item.regionName : '-';
+
+  }
+
+  //====================================================
+  // Cascading Dropdown
+  //====================================================
+
+  get formRegions(): any[] {
+
+    if (!this.branch.companyId) return this.regions;
+
+    return this.regions.filter(
+      x => x.companyId === Number(this.branch.companyId)
+    );
+
+  }
+
+  onCompanyChange(): void {
+
+    this.branch.regionId = null;
+
+  }
+
+  //====================================================
+  // Time Helpers
+  //====================================================
+
+  private toTimeOnly(value: string | null | undefined): string | null {
+
+    if (!value) return null;
+
+    return value.length === 5 ? `${value}:00` : value;
+
+  }
+
+  private fromTimeOnly(value: string | null | undefined): string {
+
+    if (!value) return '';
+
+    return value.length >= 5 ? value.substring(0, 5) : value;
+
+  }
 
   //====================================================
   // Filtered Branches
@@ -251,37 +330,29 @@ export class Branches {
 
     return this.branches.filter(x => {
 
-      const search =
+      const search = this.searchText.trim().toLowerCase();
 
-        x.branchName.toLowerCase().includes(this.searchText.toLowerCase()) ||
+      const matchSearch =
+        !search ||
+        (x.branchName || '').toLowerCase().includes(search) ||
+        (x.branchCode || '').toLowerCase().includes(search) ||
+        (x.branchManager || '').toLowerCase().includes(search) ||
+        (x.city || '').toLowerCase().includes(search);
 
-        x.branchCode.toLowerCase().includes(this.searchText.toLowerCase()) ||
-
-        x.company.toLowerCase().includes(this.searchText.toLowerCase()) ||
-
-        x.manager.toLowerCase().includes(this.searchText.toLowerCase()) ||
-
-        x.city.toLowerCase().includes(this.searchText.toLowerCase());
-
-      const company =
-
+      const matchCompany =
         !this.companyFilter ||
+        Number(x.companyId) === Number(this.companyFilter);
 
-        x.company === this.companyFilter;
-
-      const region =
-
+      const matchRegion =
         !this.regionFilter ||
+        Number(x.regionId) === Number(this.regionFilter);
 
-        x.region === this.regionFilter;
+      const matchStatus =
+        this.statusFilter === '' ||
+        (this.statusFilter === 'Active' && x.status === true) ||
+        (this.statusFilter === 'Inactive' && x.status === false);
 
-      const status =
-
-        !this.statusFilter ||
-
-        x.status === this.statusFilter;
-
-      return search && company && region && status;
+      return matchSearch && matchCompany && matchRegion && matchStatus;
 
     });
 
@@ -298,7 +369,8 @@ export class Branches {
     return this.filteredBranches.slice(start, start + this.pageSize);
 
   }
-    //====================================================
+
+  //====================================================
   // Save Branch
   //====================================================
 
@@ -307,47 +379,160 @@ export class Branches {
     this.submitted = true;
 
     if (
-      !this.branch.organization ||
-      !this.branch.company ||
-      !this.branch.region ||
+      !this.branch.organizationId ||
+      !this.branch.companyId ||
+      !this.branch.regionId ||
       !this.branch.branchName ||
-      !this.branch.branchCode
+      !this.branch.branchName.trim() ||
+      !this.branch.branchCode ||
+      !this.branch.branchCode.trim()
     ) {
       this.alert.warning('Please fill all required fields.');
       return;
     }
 
+    if (
+      this.branch.openingTime &&
+      this.branch.closingTime &&
+      this.branch.openingTime >= this.branch.closingTime
+    ) {
+      this.alert.warning('Opening Time must be earlier than Closing Time.');
+      return;
+    }
+
+    const payload = {
+
+      branchId: this.isEdit ? this.branch.branchId : 0,
+
+      organizationId: Number(this.branch.organizationId),
+
+      companyId: Number(this.branch.companyId),
+
+      regionId: Number(this.branch.regionId),
+
+      branchName: this.branch.branchName.trim(),
+
+      branchCode: this.branch.branchCode.trim(),
+
+      branchManager: this.branch.branchManager
+        ? this.branch.branchManager.trim()
+        : null,
+
+      email: this.branch.email ? this.branch.email.trim() : null,
+
+      phoneNumber: this.branch.phoneNumber
+        ? this.branch.phoneNumber.trim()
+        : null,
+
+      address: this.branch.address ? this.branch.address.trim() : null,
+
+      city: this.branch.city ? this.branch.city.trim() : null,
+
+      state: this.branch.state ? this.branch.state.trim() : null,
+
+      country: this.branch.country ? this.branch.country.trim() : null,
+
+      zipCode: this.branch.zipCode ? this.branch.zipCode.trim() : null,
+
+      openingTime: this.toTimeOnly(this.branch.openingTime),
+
+      closingTime: this.toTimeOnly(this.branch.closingTime),
+
+      status: !!this.branch.status,
+
+      headOffice: !!this.branch.headOffice,
+
+      remarks: this.branch.remarks ? this.branch.remarks.trim() : null
+
+    };
+
     this.spinner.show();
 
-    setTimeout(() => {
+    if (this.isEdit) {
 
-      if (this.isEdit) {
+      this.controlsystemService.updateBranch(payload).subscribe({
 
-        const index = this.branches.findIndex(
-          x => x.branchId === this.branch.branchId
-        );
+        next: (res: any) => {
 
-        if (index > -1) {
-          this.branches[index] = { ...this.branch };
+          this.spinner.hide();
+
+          if (res?.success) {
+
+            this.alert.success(
+              res.message || 'Branch updated successfully.'
+            );
+
+            this.clear();
+
+            this.loadBranches();
+
+          } else {
+
+            this.alert.warning(
+              res?.message || 'Failed to update branch.'
+            );
+
+          }
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Update branch error:', err);
+
+          this.alert.error(
+            err?.error?.message || 'Failed to update branch.'
+          );
+
         }
 
-        this.alert.success('Branch updated successfully.');
+      });
 
-      } else {
+    } else {
 
-        this.branch.branchId = new Date().getTime();
+      this.controlsystemService.createBranch(payload).subscribe({
 
-        this.branches.unshift({ ...this.branch });
+        next: (res: any) => {
 
-        this.alert.success('Branch created successfully.');
+          this.spinner.hide();
 
-      }
+          if (res?.success) {
 
-      this.spinner.hide();
+            this.alert.success(
+              res.message || 'Branch created successfully.'
+            );
 
-      this.clear();
+            this.clear();
 
-    }, 500);
+            this.loadBranches();
+
+          } else {
+
+            this.alert.warning(
+              res?.message || 'Failed to create branch.'
+            );
+
+          }
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Create branch error:', err);
+
+          this.alert.error(
+            err?.error?.message || 'Failed to create branch.'
+          );
+
+        }
+
+      });
+
+    }
 
   }
 
@@ -357,17 +542,87 @@ export class Branches {
 
   edit(id: number): void {
 
-    const data = this.branches.find(x => x.branchId === id);
+    this.spinner.show();
 
-    if (!data) {
-      return;
-    }
+    this.controlsystemService.getBranchById(id).subscribe({
 
-    this.branch = { ...data };
+      next: (res: any) => {
 
-    this.isEdit = true;
+        this.spinner.hide();
 
-    this.submitted = false;
+        if (res?.success && res.data) {
+
+          const data = res.data;
+
+          this.branch = {
+
+            branchId: data.branchId,
+
+            organizationId: data.organizationId,
+
+            companyId: data.companyId,
+
+            regionId: data.regionId,
+
+            branchName: data.branchName || '',
+
+            branchCode: data.branchCode || '',
+
+            branchManager: data.branchManager || '',
+
+            email: data.email || '',
+
+            phoneNumber: data.phoneNumber || '',
+
+            address: data.address || '',
+
+            city: data.city || '',
+
+            state: data.state || '',
+
+            country: data.country || '',
+
+            zipCode: data.zipCode || '',
+
+            openingTime: this.fromTimeOnly(data.openingTime),
+
+            closingTime: this.fromTimeOnly(data.closingTime),
+
+            status: data.status === true,
+
+            headOffice: data.headOffice === true,
+
+            remarks: data.remarks || ''
+
+          };
+
+          this.isEdit = true;
+
+          this.submitted = false;
+
+          this.cd.detectChanges();
+
+        } else {
+
+          this.alert.warning(res?.message || 'Branch not found.');
+
+        }
+
+      },
+
+      error: (err) => {
+
+        this.spinner.hide();
+
+        console.error('Get branch error:', err);
+
+        this.alert.error(
+          err?.error?.message || 'Failed to load branch.'
+        );
+
+      }
+
+    });
 
   }
 
@@ -385,17 +640,47 @@ export class Branches {
 
       this.spinner.show();
 
-      setTimeout(() => {
+      this.controlsystemService.deleteBranch(id).subscribe({
 
-        this.branches = this.branches.filter(
-          x => x.branchId !== id
-        );
+        next: (res: any) => {
 
-        this.spinner.hide();
+          this.spinner.hide();
 
-        this.alert.success('Branch deleted successfully.');
+          if (res?.success) {
 
-      }, 500);
+            this.alert.success(
+              res.message || 'Branch deleted successfully.'
+            );
+
+            if (this.page > 1 && this.pagedBranches.length === 1) {
+              this.page = this.page - 1;
+            }
+
+            this.loadBranches();
+
+          } else {
+
+            this.alert.warning(
+              res?.message || 'Failed to delete branch.'
+            );
+
+          }
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Delete branch error:', err);
+
+          this.alert.error(
+            err?.error?.message || 'Failed to delete branch.'
+          );
+
+        }
+
+      });
 
     });
 
@@ -432,7 +717,8 @@ export class Branches {
     this.page = 1;
 
   }
-    //====================================================
+
+  //====================================================
   // Pagination
   //====================================================
 
@@ -456,15 +742,9 @@ export class Branches {
 
   refresh(): void {
 
-    this.spinner.show();
+    this.page = 1;
 
-    setTimeout(() => {
-
-      this.spinner.hide();
-
-      this.alert.success('Branches refreshed successfully.');
-
-    }, 500);
+    this.loadBranches();
 
   }
 
@@ -480,21 +760,20 @@ export class Branches {
 
   get activeBranches(): number {
 
-    return this.branches.filter(x => x.status === 'Active').length;
+    return this.branches.filter(x => x.status === true).length;
 
   }
 
   get inactiveBranches(): number {
 
-    return this.branches.filter(x => x.status === 'Inactive').length;
+    return this.branches.filter(x => x.status === false).length;
 
   }
 
   get headOfficeBranches(): number {
 
-    return this.branches.filter(x => x.isHeadOffice).length;
+    return this.branches.filter(x => x.headOffice === true).length;
 
   }
-
 
 }

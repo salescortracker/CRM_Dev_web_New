@@ -1,7 +1,7 @@
 <div class="container-fluid mt-4">
 
     <!-- ========================================= -->
-    <!-- Header -->
+    <!-- Page Header -->
     <!-- ========================================= -->
 
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -10,15 +10,15 @@
 
             <h3 class="fw-bold text-danger mb-1">
 
-                <i class="fa-solid fa-building-user me-2"></i>
+                <i class="fa-solid fa-sitemap me-2"></i>
 
-                Business Unit Management
+                Business Units
 
             </h3>
 
             <p class="text-muted mb-0">
 
-                Create and manage Business Units for each company.
+                Manage Business Units, Cost Centers and Reporting Structure.
 
             </p>
 
@@ -26,7 +26,7 @@
 
         <div>
 
-            <button class="btn btn-secondary me-2" (click)="clear()">
+            <button class="btn btn-outline-secondary me-2" (click)="clear()">
 
                 <i class="fa-solid fa-rotate"></i>
 
@@ -47,10 +47,54 @@
     </div>
 
     <!-- ========================================= -->
+    <!-- Statistics -->
+    <!-- ========================================= -->
+
+    <div class="row mb-4">
+
+        <div class="col-md-3 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Total Business Units</div>
+                <div class="fw-bold fs-4 text-danger">{{totalBusinessUnits}}</div>
+            </div>
+
+        </div>
+
+        <div class="col-md-3 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Active</div>
+                <div class="fw-bold fs-4 text-success">{{activeBusinessUnits}}</div>
+            </div>
+
+        </div>
+
+        <div class="col-md-3 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Inactive</div>
+                <div class="fw-bold fs-4 text-secondary">{{inactiveBusinessUnits}}</div>
+            </div>
+
+        </div>
+
+        <div class="col-md-3 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Total Employees</div>
+                <div class="fw-bold fs-4 text-primary">{{totalEmployees}}</div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
     <!-- Business Unit Form -->
     <!-- ========================================= -->
 
-    <div class="card shadow-sm border-0">
+    <div class="card shadow-sm border-0 mb-4">
 
         <div class="card-header bg-danger text-white">
 
@@ -78,17 +122,15 @@
 
                     </label>
 
-                    <select class="form-select" [(ngModel)]="businessUnit.organization">
+                    <select class="form-select" [(ngModel)]="businessUnit.organizationId">
 
-                        <option value="">Select Organization</option>
+                        <option [ngValue]="null">Select Organization</option>
 
-                        <option>OpenVision Technologies</option>
-
-                        <option>ABC Group</option>
+                        <option *ngFor="let o of organizations" [ngValue]="o.organizationId">{{o.organizationName}}</option>
 
                     </select>
 
-                    <div class="text-danger mt-1" *ngIf="submitted && !businessUnit.organization">
+                    <div class="text-danger mt-1" *ngIf="submitted && !businessUnit.organizationId">
 
                         Organization is required.
 
@@ -108,23 +150,59 @@
 
                     </label>
 
-                    <select class="form-select" [(ngModel)]="businessUnit.company">
+                    <select class="form-select" [(ngModel)]="businessUnit.companyId" (ngModelChange)="onCompanyChange()">
 
-                        <option value="">Select Company</option>
+                        <option [ngValue]="null">Select Company</option>
 
-                        <option>ABC Technologies</option>
-
-                        <option>XYZ Solutions</option>
-
-                        <option>Open CRM</option>
+                        <option *ngFor="let c of companies" [ngValue]="c.companyId">{{c.companyName}}</option>
 
                     </select>
 
-                    <div class="text-danger mt-1" *ngIf="submitted && !businessUnit.company">
+                    <div class="text-danger mt-1" *ngIf="submitted && !businessUnit.companyId">
 
                         Company is required.
 
                     </div>
+
+                </div>
+
+                <!-- Region -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Region
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="businessUnit.regionId" (ngModelChange)="onRegionChange()">
+
+                        <option [ngValue]="null">Select Region</option>
+
+                        <option *ngFor="let r of formRegions" [ngValue]="r.regionId">{{r.regionName}}</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Branch -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Branch
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="businessUnit.branchId">
+
+                        <option [ngValue]="null">Select Branch</option>
+
+                        <option *ngFor="let b of formBranches" [ngValue]="b.branchId">{{b.branchName}}</option>
+
+                    </select>
 
                 </div>
 
@@ -182,19 +260,7 @@
 
                     </label>
 
-                    <select class="form-select" [(ngModel)]="businessUnit.parentBusinessUnit">
-
-                        <option value="">None</option>
-
-                        <option>Corporate</option>
-
-                        <option>Sales</option>
-
-                        <option>Finance</option>
-
-                        <option>IT Services</option>
-
-                    </select>
+                    <input class="form-control" [(ngModel)]="businessUnit.parentBusinessUnit">
 
                 </div>
 
@@ -212,181 +278,17 @@
 
                 </div>
 
-                <!-- Email -->
+                <!-- Unit Head -->
 
                 <div class="col-md-4 mb-3">
 
                     <label class="form-label">
 
-                        Email
+                        Unit Head
 
                     </label>
 
-                    <input type="email" class="form-control" [(ngModel)]="businessUnit.email">
-
-                </div>
-
-                <!-- Mobile -->
-
-                <div class="col-md-4 mb-3">
-
-                    <label class="form-label">
-
-                        Mobile Number
-
-                    </label>
-
-                    <input class="form-control" [(ngModel)]="businessUnit.mobile">
-
-                </div>
-
-                <!-- Region -->
-
-                <div class="col-md-4 mb-3">
-
-                    <label class="form-label">
-
-                        Region
-
-                    </label>
-
-                    <select class="form-select" [(ngModel)]="businessUnit.region">
-
-                        <option>South Region</option>
-
-                        <option>North Region</option>
-
-                        <option>East Region</option>
-
-                        <option>West Region</option>
-
-                    </select>
-
-                </div>
-
-                <!-- Branch -->
-
-                <div class="col-md-4 mb-3">
-
-                    <label class="form-label">
-
-                        Branch
-
-                    </label>
-
-                    <select class="form-select" [(ngModel)]="businessUnit.branch">
-
-                        <option>Hyderabad</option>
-
-                        <option>Bangalore</option>
-
-                        <option>Chennai</option>
-
-                        <option>Delhi</option>
-
-                    </select>
-
-                </div>
-
-                <!-- Description -->
-
-                <div class="col-md-6 mb-3">
-
-                    <label class="form-label">
-
-                        Description
-
-                    </label>
-
-                    <textarea rows="3" class="form-control" [(ngModel)]="businessUnit.description"></textarea>
-
-                </div>
-
-                <!-- Remarks -->
-
-                <div class="col-md-6 mb-3">
-
-                    <label class="form-label">
-
-                        Remarks
-
-                    </label>
-
-                    <textarea rows="3" class="form-control" [(ngModel)]="businessUnit.remarks"></textarea>
-
-                </div>
-
-                <!-- Status -->
-
-                <div class="col-md-3 mb-3">
-
-                    <label class="form-label">
-
-                        Status
-
-                    </label>
-
-                    <select class="form-select" [(ngModel)]="businessUnit.status">
-
-                        <option>Active</option>
-
-                        <option>Inactive</option>
-
-                    </select>
-
-                </div>
-
-                <!-- Active -->
-
-                <div class="col-md-3">
-
-                    <div class="form-check mt-4">
-
-                        <input class="form-check-input" type="checkbox" [(ngModel)]="businessUnit.isActive">
-
-                        <label class="form-check-label">
-
-                            Active
-
-                        </label>
-
-                    </div>
-
-                </div>
-
-                <!-- Default Business Unit -->
-
-                <div class="col-md-3">
-
-                    <div class="form-check mt-4">
-
-                        <input class="form-check-input" type="checkbox" [(ngModel)]="businessUnit.isDefault">
-
-                        <label class="form-check-label">
-
-                            Default Business Unit
-
-                        </label>
-
-                    </div>
-
-                </div>
-
-                <!-- Billable -->
-
-                <div class="col-md-3">
-
-                    <div class="form-check mt-4">
-
-                        <input class="form-check-input" type="checkbox" [(ngModel)]="businessUnit.isBillable">
-
-                        <label class="form-check-label">
-
-                            Billable Unit
-
-                        </label>
-
-                    </div>
+                    <input class="form-control" [(ngModel)]="businessUnit.unitHead">
 
                 </div>
 
@@ -396,212 +298,193 @@
 
     </div>
 
-</div>
-<!-- Unit Head -->
-<div class="col-md-4 mb-3">
-    <label class="form-label">
-        Unit Head
-    </label>
+    <div class="row">
 
-    <select class="form-select" [(ngModel)]="businessUnit.unitHead">
+        <!-- Email -->
 
-        <option value="">Select Unit Head</option>
-        <option>John Smith</option>
-        <option>David Wilson</option>
-        <option>Robert King</option>
-        <option>Maria Joseph</option>
-        <option>Sophia Williams</option>
+        <div class="col-md-4 mb-3">
 
-    </select>
-</div>
+            <label class="form-label">
 
-<!-- Parent Business Unit -->
+                Email
 
-<div class="col-md-4 mb-3">
+            </label>
 
-    <label class="form-label">
+            <input type="email" class="form-control" [(ngModel)]="businessUnit.email">
 
-        Parent Business Unit
+        </div>
 
-    </label>
+        <!-- Mobile Number -->
 
-    <select class="form-select" [(ngModel)]="businessUnit.parentBusinessUnit">
+        <div class="col-md-4 mb-3">
 
-        <option value="">None</option>
-        <option>Corporate</option>
-        <option>Sales Division</option>
-        <option>Operations Division</option>
-        <option>Support Division</option>
+            <label class="form-label">
 
-    </select>
+                Mobile Number
 
-</div>
+            </label>
 
-<!-- Employee Strength -->
+            <input class="form-control" [(ngModel)]="businessUnit.mobileNumber">
 
-<div class="col-md-4 mb-3">
+        </div>
 
-    <label class="form-label">
+        <!-- Contact Number -->
 
-        Employee Strength
+        <div class="col-md-4 mb-3">
 
-    </label>
+            <label class="form-label">
 
-    <input type="number" class="form-control" [(ngModel)]="businessUnit.employeeStrength">
+                Contact Number
 
-</div>
+            </label>
 
-<!-- Cost Center -->
+            <input class="form-control" [(ngModel)]="businessUnit.contactNumber">
 
-<div class="col-md-4 mb-3">
+        </div>
 
-    <label class="form-label">
+        <!-- Extension Number -->
 
-        Cost Center Code
+        <div class="col-md-3 mb-3">
 
-    </label>
+            <label class="form-label">
 
-    <input class="form-control" [(ngModel)]="businessUnit.costCenterCode">
+                Extension Number
 
-</div>
+            </label>
 
-<!-- Budget -->
+            <input class="form-control" [(ngModel)]="businessUnit.extensionNumber">
 
-<div class="col-md-4 mb-3">
+        </div>
 
-    <label class="form-label">
+        <!-- Employee Strength -->
 
-        Annual Budget
+        <div class="col-md-3 mb-3">
 
-    </label>
+            <label class="form-label">
 
-    <input type="number" class="form-control" [(ngModel)]="businessUnit.annualBudget">
+                Employee Strength
 
-</div>
+            </label>
 
-<!-- Phone -->
+            <input type="number" min="0" class="form-control" [(ngModel)]="businessUnit.employeeStrength">
 
-<div class="col-md-4 mb-3">
+        </div>
 
-    <label class="form-label">
+        <!-- Cost Center Code -->
 
-        Contact Number
+        <div class="col-md-3 mb-3">
 
-    </label>
+            <label class="form-label">
 
-    <input class="form-control" [(ngModel)]="businessUnit.phone">
+                Cost Center Code
 
-</div>
+            </label>
 
-<!-- Email -->
+            <input class="form-control" [(ngModel)]="businessUnit.costCenterCode">
 
-<div class="col-md-4 mb-3">
+        </div>
 
-    <label class="form-label">
+        <!-- Annual Budget -->
 
-        Email
+        <div class="col-md-3 mb-3">
 
-    </label>
+            <label class="form-label">
 
-    <input type="email" class="form-control" [(ngModel)]="businessUnit.email">
+                Annual Budget
 
-</div>
+            </label>
 
-<!-- Extension -->
+            <input type="number" min="0" class="form-control" [(ngModel)]="businessUnit.annualBudget">
 
-<div class="col-md-4 mb-3">
+        </div>
 
-    <label class="form-label">
+        <!-- Checkboxes -->
 
-        Extension Number
+        <div class="col-md-4 mb-3">
 
-    </label>
+            <div class="form-check mt-4">
 
-    <input class="form-control" [(ngModel)]="businessUnit.extension">
+                <input class="form-check-input" type="checkbox" [(ngModel)]="businessUnit.status">
 
-</div>
+                <label class="form-check-label">
 
-<!-- Working Hours -->
+                    Active
 
-<div class="col-md-4 mb-3">
+                </label>
 
-    <label class="form-label">
+            </div>
 
-        Working Hours
+        </div>
 
-    </label>
+        <div class="col-md-4 mb-3">
 
-    <select class="form-select" [(ngModel)]="businessUnit.workingHours">
+            <div class="form-check mt-4">
 
-        <option>General Shift</option>
-        <option>Morning Shift</option>
-        <option>Evening Shift</option>
-        <option>Night Shift</option>
+                <input class="form-check-input" type="checkbox" [(ngModel)]="businessUnit.defaultBusinessUnit">
 
-    </select>
+                <label class="form-check-label">
 
-</div>
+                    Default Business Unit
 
-<!-- Description -->
+                </label>
 
-<div class="col-md-12 mb-3">
+            </div>
 
-    <label class="form-label">
+        </div>
 
-        Description
+        <div class="col-md-4 mb-3">
 
-    </label>
+            <div class="form-check mt-4">
 
-    <textarea rows="3" class="form-control" [(ngModel)]="businessUnit.description">
-                </textarea>
+                <input class="form-check-input" type="checkbox" [(ngModel)]="businessUnit.billableUnit">
 
-</div>
+                <label class="form-check-label">
 
-<!-- Status -->
+                    Billable Unit
 
-<div class="col-md-3 mb-3">
+                </label>
 
-    <div class="form-check mt-4">
+            </div>
 
-        <input class="form-check-input" type="checkbox" [(ngModel)]="businessUnit.isActive">
+        </div>
 
-        <label class="form-check-label">
+        <!-- Description -->
 
-            Active
+        <div class="col-md-12 mb-3">
 
-        </label>
+            <label class="form-label">
+
+                Description
+
+            </label>
+
+            <textarea rows="2" class="form-control" [(ngModel)]="businessUnit.description"></textarea>
+
+        </div>
+
+        <!-- Remarks -->
+
+        <div class="col-md-12 mb-3">
+
+            <label class="form-label">
+
+                Remarks
+
+            </label>
+
+            <textarea rows="2" class="form-control" [(ngModel)]="businessUnit.remarks"></textarea>
+
+        </div>
 
     </div>
 
 </div>
 
+<!-- ========================================= -->
+<!-- Search Section -->
+<!-- ========================================= -->
 
-
-<!-- ================================================= -->
-<!-- Buttons -->
-<!-- ================================================= -->
-
-<div class="mb-4">
-
-    <button class="btn btn-danger me-2" (click)="saveBusinessUnit()">
-
-        {{isEdit ? 'Update Business Unit' : 'Save Business Unit'}}
-
-    </button>
-
-    <button class="btn btn-secondary" (click)="clear()">
-
-        Clear
-
-    </button>
-
-</div>
-
-<!-- ================================================= -->
-<!-- Search -->
-<!-- ================================================= -->
-
-<div class="card shadow-sm mb-3">
+<div class="card shadow-sm border-0 mb-3">
 
     <div class="card-body">
 
@@ -619,9 +502,7 @@
 
                     <option value="">All Companies</option>
 
-                    <option>ABC Technologies</option>
-                    <option>XYZ Solutions</option>
-                    <option>Open CRM</option>
+                    <option *ngFor="let c of companies" [value]="c.companyId">{{c.companyName}}</option>
 
                 </select>
 
@@ -633,8 +514,8 @@
 
                     <option value="">All Status</option>
 
-                    <option>Active</option>
-                    <option>Inactive</option>
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
 
                 </select>
 
@@ -642,7 +523,7 @@
 
             <div class="col-md-2">
 
-                <button class="btn btn-outline-secondary w-100" (click)="clearFilters()">
+                <button class="btn btn-secondary w-100" (click)="clearFilters()">
 
                     Clear
 
@@ -655,9 +536,10 @@
     </div>
 
 </div>
-<!-- ========================================================= -->
+
+<!-- ========================================= -->
 <!-- Business Units List -->
-<!-- ========================================================= -->
+<!-- ========================================= -->
 
 <div class="card shadow-sm border-0">
 
@@ -665,9 +547,7 @@
 
         <h5 class="mb-0">
 
-            <i class="fa-solid fa-sitemap me-2"></i>
-
-            Business Units List
+            Business Units
 
         </h5>
 
@@ -683,31 +563,77 @@
 
         <div class="table-responsive">
 
-            <table class="table table-bordered table-hover align-middle mb-0">
+            <table class="table table-hover table-bordered align-middle mb-0">
 
                 <thead class="table-danger">
 
                     <tr>
 
-                        <th width="70">#</th>
+                        <th width="70">
 
-                        <th>Business Unit</th>
+                            #
 
-                        <th>Unit Code</th>
+                        </th>
 
-                        <th>Company</th>
+                        <th>
 
-                        <th>Branch</th>
+                            Business Unit
 
-                        <th>Head</th>
+                        </th>
 
-                        <th>Employees</th>
+                        <th>
 
-                        <th>Budget</th>
+                            Company
 
-                        <th>Status</th>
+                        </th>
 
-                        <th width="170">Action</th>
+                        <th>
+
+                            Region / Branch
+
+                        </th>
+
+                        <th>
+
+                            Unit Head
+
+                        </th>
+
+                        <th>
+
+                            Email
+
+                        </th>
+
+                        <th>
+
+                            Employees
+
+                        </th>
+
+                        <th>
+
+                            Annual Budget
+
+                        </th>
+
+                        <th>
+
+                            Default
+
+                        </th>
+
+                        <th>
+
+                            Status
+
+                        </th>
+
+                        <th width="170">
+
+                            Action
+
+                        </th>
 
                     </tr>
 
@@ -733,7 +659,7 @@
 
                             <small class="text-muted">
 
-                                {{item.department}}
+                                {{item.businessUnitCode}}
 
                             </small>
 
@@ -741,45 +667,55 @@
 
                         <td>
 
-                            {{item.businessUnitCode}}
+                            {{getCompanyName(item.companyId)}}
 
                         </td>
 
                         <td>
 
-                            {{item.company}}
+                            {{getRegionName(item.regionId)}} / {{getBranchName(item.branchId)}}
 
                         </td>
 
                         <td>
 
-                            {{item.branch}}
+                            {{item.unitHead || item.businessUnitHead || '-'}}
 
                         </td>
 
                         <td>
 
-                            {{item.unitHead}}
+                            {{item.email || '-'}}
 
                         </td>
 
                         <td>
 
-                            {{item.employeeStrength}}
+                            {{item.employeeStrength ?? '-'}}
 
                         </td>
 
                         <td>
 
-                            {{item.annualBudget | number}}
+                            {{item.annualBudget ?? '-'}}
 
                         </td>
 
                         <td>
 
-                            <span class="badge" [ngClass]="item.isActive ? 'bg-success' : 'bg-danger'">
+                            <span class="badge" [ngClass]="item.defaultBusinessUnit ? 'bg-primary' : 'bg-light text-dark'">
 
-                                {{item.isActive ? 'Active' : 'Inactive'}}
+                                {{item.defaultBusinessUnit ? 'Yes' : 'No'}}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <span class="badge" [ngClass]="item.status ? 'bg-success' : 'bg-secondary'">
+
+                                {{item.status ? 'Active' : 'Inactive'}}
 
                             </span>
 
@@ -809,17 +745,13 @@
 
                     <tr *ngIf="pagedBusinessUnits.length==0">
 
-                        <td colspan="10" class="text-center py-5">
+                        <td colspan="10" class="text-center text-muted py-5">
 
-                            <i class="fa-solid fa-folder-open fa-3x text-secondary mb-3"></i>
+                            <i class="fa-solid fa-sitemap fa-3x mb-3"></i>
 
                             <br>
 
-                            <span class="text-muted">
-
-                                No Business Units Available
-
-                            </span>
+                            No Business Units Found.
 
                         </td>
 
@@ -835,9 +767,9 @@
 
 </div>
 
-<!-- ========================================================= -->
+<!-- ========================================= -->
 <!-- Pagination -->
-<!-- ========================================================= -->
+<!-- ========================================= -->
 
 <div class="mt-3">
 

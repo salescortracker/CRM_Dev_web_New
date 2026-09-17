@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Alertservice } from '../../../core/services/alertservice';
 import { Spinnerservice } from '../../../core/services/spinnerservice';
+import { AuthService } from '../../../core/authentication/services/auth.service';
 
 @Component({
   selector: 'app-users',
@@ -11,16 +12,84 @@ import { Spinnerservice } from '../../../core/services/spinnerservice';
   templateUrl: './users.html',
   styleUrl: './users.css',
 })
-export class Users {
+export class Users implements OnInit {
   constructor(
 
 private alert:Alertservice,
 
 private spinner:Spinnerservice,
 
-private cd:ChangeDetectorRef
+private cd:ChangeDetectorRef,
+
+private authService:AuthService
 
 ){}
+
+
+
+ngOnInit(): void {
+
+  this.loadCompanies();
+
+  this.loadRegions();
+
+}
+
+
+
+
+// COMPANY / REGION DROPDOWNS
+
+
+companies:any[]=[];
+
+regions:any[]=[];
+
+
+loadCompanies(): void {
+
+  this.authService
+    .getCompanies()
+    .subscribe({
+
+      next: (response) => {
+
+        this.companies = (response.data || [])
+          .filter((x: any) => x.isActive);
+
+      },
+
+      error: (err) => {
+
+        console.error(err);
+
+      }
+    });
+
+}
+
+
+loadRegions(): void {
+
+  this.authService
+    .getRegions()
+    .subscribe({
+
+      next: (response) => {
+
+        this.regions = (response.data || [])
+          .filter((x: any) => x.isActive);
+
+      },
+
+      error: (err) => {
+
+        console.error(err);
+
+      }
+    });
+
+}
 
 
 
@@ -195,6 +264,10 @@ email:'',
 mobile:'',
 
 employeeCode:'',
+
+companyId:'',
+
+regionId:'',
 
 department:'Sales',
 

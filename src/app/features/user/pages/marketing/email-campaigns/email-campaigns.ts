@@ -1,311 +1,151 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Pagination } from '../../../../../shared/pagination/pagination';
 import { Alertservice } from '../../../../../core/services/alertservice';
 import { Spinnerservice } from '../../../../../core/services/spinnerservice';
+import { AuthService } from '../../../../../core/authentication/services/auth.service';
+import { ControlsystemService } from '../../../../super-admin/services/controlsystem-service';
 
 @Component({
   selector: 'app-email-campaigns',
   standalone: true,
-  imports: [CommonModule,FormsModule,Pagination],
+  imports: [CommonModule, FormsModule, Pagination],
   templateUrl: './email-campaigns.html',
   styleUrl: './email-campaigns.css',
 })
-export class EmailCampaigns {
-   submitted = false;
+export class EmailCampaigns implements OnInit {
+
+  constructor(
+    private alert: Alertservice,
+    private spinner: Spinnerservice,
+    private cd: ChangeDetectorRef,
+    private authService: AuthService,
+    private controlsystemService: ControlsystemService
+  ) { }
+
+  //====================================================
+  // Screen Variables
+  //====================================================
+
+  submitted = false;
   isEdit = false;
 
   page = 1;
-  pageSize = 5;
-  totalRecords = 0;
+  pageSize = 10;
+
   searchText = '';
+  companyFilter = '';
+  statusFilter = '';
+
+  //====================================================
+  // Dropdown Data (from backend)
+  //====================================================
+
+  companies: any[] = [];
+  regions: any[] = [];
+  marketingLists: any[] = [];
+  emailTemplates: any[] = [];
+
+  //====================================================
+  // Email Campaign List
+  //====================================================
 
   campaigns: any[] = [];
 
-  campaign: any = {
+  //====================================================
+  // Form Model
+  //====================================================
 
-    campaignId: 0,
-    campaignName: '',
-    emailSubject: '',
-    senderEmail: '',
-    template: '',
-    targetAudience: '',
-    scheduledDate: '',
-    totalRecipients: '',
-    deliveredCount: '',
-    openRate: '',
-    status: '',
-    message: '',
-    isActive: true
+  campaign: any = this.getEmptyModel();
 
-  };
+  getEmptyModel() {
 
-  constructor(
+    return {
 
-    private alert: Alertservice,
-    private spinner: Spinnerservice,
-    private cd: ChangeDetectorRef
+      emailCampaignId: 0,
 
-  ) { }
+      companyId: null,
+
+      regionId: null,
+
+      campaignName: '',
+
+      marketingListId: null,
+
+      emailTemplateId: null,
+
+      subject: '',
+
+      fromName: '',
+
+      fromEmail: '',
+
+      replyToEmail: '',
+
+      totalRecipients: 0,
+
+      sentCount: 0,
+
+      deliveredCount: 0,
+
+      openedCount: 0,
+
+      clickedCount: 0,
+
+      bouncedCount: 0,
+
+      unsubscribedCount: 0,
+
+      scheduledDate: '',
+
+      status: 'Draft'
+
+    };
+
+  }
+
+  //====================================================
+  // Lifecycle
+  //====================================================
 
   ngOnInit(): void {
+
+    this.loadCompanies();
+
+    this.loadRegions();
+
+    this.loadMarketingLists();
+
+    this.loadEmailTemplates();
 
     this.loadCampaigns();
 
   }
 
-  loadCampaigns() {
+  //====================================================
+  // Load Dropdown Data
+  //====================================================
 
-    this.spinner.show();
+  loadCompanies(): void {
 
-    setTimeout(() => {
+    this.authService.getCompanies().subscribe({
 
-      this.campaigns = [
+      next: (res: any) => {
 
-        {
-          campaignId: 1,
-          campaignName: 'Summer Sale',
-          emailSubject: 'Flat 30% Discount on CRM Plans',
-          senderEmail: 'marketing@crm.com',
-          template: 'Promotional Offer',
-          targetAudience: 'Existing Customers',
-          scheduledDate: '2026-08-01',
-          totalRecipients: 500,
-          deliveredCount: 495,
-          openRate: 82,
-          status: 'Sent',
-          message: 'Enjoy our exclusive summer offer.',
-          isActive: true
-        },
-
-        {
-          campaignId: 2,
-          campaignName: 'CRM Launch',
-          emailSubject: 'Welcome to Our CRM',
-          senderEmail: 'sales@crm.com',
-          template: 'Product Launch',
-          targetAudience: 'New Leads',
-          scheduledDate: '2026-08-05',
-          totalRecipients: 300,
-          deliveredCount: 0,
-          openRate: 0,
-          status: 'Scheduled',
-          message: 'Introducing our new CRM platform.',
-          isActive: true
-        },
-
-        {
-          campaignId: 3,
-          campaignName: 'August Newsletter',
-          emailSubject: 'Monthly Product Updates',
-          senderEmail: 'newsletter@crm.com',
-          template: 'Newsletter',
-          targetAudience: 'All Customers',
-          scheduledDate: '2026-08-10',
-          totalRecipients: 850,
-          deliveredCount: 845,
-          openRate: 76,
-          status: 'Completed',
-          message: 'Latest updates and feature releases.',
-          isActive: true
-        },
-
-        {
-          campaignId: 4,
-          campaignName: 'Subscription Renewal',
-          emailSubject: 'Renew Your Subscription',
-          senderEmail: 'support@crm.com',
-          template: 'Renewal Reminder',
-          targetAudience: 'Inactive Customers',
-          scheduledDate: '2026-08-12',
-          totalRecipients: 150,
-          deliveredCount: 120,
-          openRate: 63,
-          status: 'Sending',
-          message: 'Renew today to continue enjoying CRM services.',
-          isActive: true
-        },
-
-        {
-          campaignId: 5,
-          campaignName: 'Welcome Campaign',
-          emailSubject: 'Welcome to Our Family',
-          senderEmail: 'welcome@crm.com',
-          template: 'Welcome Email',
-          targetAudience: 'Prospects',
-          scheduledDate: '2026-08-15',
-          totalRecipients: 250,
-          deliveredCount: 0,
-          openRate: 0,
-          status: 'Draft',
-          message: 'Warm welcome email for new prospects.',
-          isActive: true
-        }
-
-      ];
-
-      this.campaigns.sort((a, b) => b.campaignId - a.campaignId);
-
-      this.totalRecords = this.campaigns.length;
-
-      this.spinner.hide();
-
-      this.cd.detectChanges();
-
-    }, 500);
-
-  }
-
-  saveCampaign() {
-
-    this.submitted = true;
-
-    if (
-
-      !this.campaign.campaignName ||
-      !this.campaign.emailSubject ||
-      !this.campaign.senderEmail ||
-      !this.campaign.scheduledDate ||
-      !this.campaign.status
-
-    ) {
-
-      return;
-
-    }
-
-    this.spinner.show();
-
-    setTimeout(() => {
-
-      if (!this.isEdit) {
-
-        const newCampaign = {
-
-          ...this.campaign,
-
-          campaignId: this.campaigns.length
-            ? Math.max(...this.campaigns.map(x => x.campaignId)) + 1
-            : 1
-
-        };
-
-        this.campaigns.unshift(newCampaign);
-
-      }
-
-      else {
-
-        const index = this.campaigns.findIndex(
-
-          x => x.campaignId === this.campaign.campaignId
-
+        this.companies = (res?.data || []).filter(
+          (x: any) => x.isActive !== false
         );
-
-        if (index !== -1) {
-
-          this.campaigns[index] = {
-
-            ...this.campaign
-
-          };
-
-        }
-
-      }
-
-      // Refresh table immediately
-
-      this.campaigns = [...this.campaigns];
-
-      this.totalRecords = this.campaigns.length;
-
-      this.page = 1;
-
-      const message = this.isEdit
-        ? 'Email Campaign updated successfully.'
-        : 'Email Campaign created successfully.';
-
-      this.clear();
-
-      this.spinner.hide();
-
-      this.cd.detectChanges();
-
-      this.alert.success(message);
-
-    }, 500);
-
-  }
-    edit(id: number) {
-
-    this.spinner.show();
-
-    setTimeout(() => {
-
-      const selected = this.campaigns.find(
-        x => x.campaignId === id
-      );
-
-      if (selected) {
-
-        this.campaign = {
-          ...selected
-        };
-
-        this.isEdit = true;
-
-        this.submitted = false;
 
         this.cd.detectChanges();
 
-      }
+      },
 
-      this.spinner.hide();
+      error: (err) => {
 
-    }, 300);
+        console.error('Error loading companies:', err);
 
-  }
-
-  delete(id: number) {
-
-    this.alert.deleteConfirm().then(result => {
-
-      if (result.isConfirmed) {
-
-        this.spinner.show();
-
-        setTimeout(() => {
-
-          this.campaigns = this.campaigns.filter(
-            x => x.campaignId !== id
-          );
-
-          this.totalRecords = this.campaigns.length;
-
-          if (
-            this.page > 1 &&
-            this.pagedCampaigns.length === 0
-          ) {
-
-            this.page--;
-
-          }
-
-          // Refresh table immediately
-
-          this.campaigns = [...this.campaigns];
-
-          this.spinner.hide();
-
-          this.cd.detectChanges();
-
-          this.alert.success(
-            'Email Campaign deleted successfully.'
-          );
-
-        }, 500);
+        this.companies = [];
 
       }
 
@@ -313,97 +153,636 @@ export class EmailCampaigns {
 
   }
 
-  clear() {
+  loadRegions(): void {
 
-    this.campaign = {
+    this.authService.getRegions().subscribe({
 
-      campaignId: 0,
-      campaignName: '',
-      emailSubject: '',
-      senderEmail: '',
-      template: '',
-      targetAudience: '',
-      scheduledDate: '',
-      totalRecipients: '',
-      deliveredCount: '',
-      openRate: '',
-      status: '',
-      message: '',
-      isActive: true
+      next: (res: any) => {
 
-    };
+        this.regions = (res?.data || []).filter(
+          (x: any) => x.isActive !== false
+        );
 
-    this.isEdit = false;
+        this.cd.detectChanges();
 
-    this.submitted = false;
+      },
 
-    this.cd.detectChanges();
+      error: (err) => {
+
+        console.error('Error loading regions:', err);
+
+        this.regions = [];
+
+      }
+
+    });
 
   }
 
-  get filteredCampaigns() {
+  loadMarketingLists(): void {
 
-    return this.campaigns.filter(x =>
+    this.controlsystemService.getMarketingLists().subscribe({
 
-      x.campaignName
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
+      next: (res: any) => {
 
-      ||
+        this.marketingLists = res?.data || [];
 
-      x.emailSubject
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
+        this.cd.detectChanges();
 
-      ||
+      },
 
-      x.senderEmail
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
+      error: (err) => {
 
-      ||
+        console.error('Error loading marketing lists:', err);
 
-      x.template
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
+        this.marketingLists = [];
 
-      ||
+      }
 
-      x.targetAudience
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
+    });
 
-      ||
+  }
 
-      x.status
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
+  loadEmailTemplates(): void {
 
+    this.controlsystemService.getEmailTemplates().subscribe({
+
+      next: (res: any) => {
+
+        this.emailTemplates = res?.data || [];
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error loading email templates:', err);
+
+        this.emailTemplates = [];
+
+      }
+
+    });
+
+  }
+
+  //====================================================
+  // Load Email Campaigns
+  //====================================================
+
+  loadCampaigns(): void {
+
+    this.spinner.show();
+
+    this.controlsystemService.getEmailCampaigns().subscribe({
+
+      next: (res: any) => {
+
+        this.spinner.hide();
+
+        if (res?.success) {
+
+          this.campaigns = res.data || [];
+
+        } else {
+
+          this.campaigns = [];
+
+          this.alert.warning(
+            res?.message || 'No email campaign records found.'
+          );
+
+        }
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        this.spinner.hide();
+
+        console.error('Error loading email campaigns:', err);
+
+        this.campaigns = [];
+
+        this.alert.error(
+          err?.error?.message || 'Failed to load email campaigns.'
+        );
+
+        this.cd.detectChanges();
+
+      }
+
+    });
+
+  }
+
+  //====================================================
+  // Lookup Helpers (Display Names)
+  //====================================================
+
+  getCompanyName(id: any): string {
+
+    if (!id) return '-';
+
+    const item = this.companies.find(x => x.companyId === Number(id));
+
+    return item ? item.companyName : '-';
+
+  }
+
+  getRegionName(id: any): string {
+
+    if (!id) return '-';
+
+    const item = this.regions.find(x => x.regionId === Number(id));
+
+    return item ? item.regionName : '-';
+
+  }
+
+  getMarketingListName(id: any): string {
+
+    if (!id) return '-';
+
+    const item = this.marketingLists.find(
+      x => x.marketingListId === Number(id)
+    );
+
+    return item ? item.listName : '-';
+
+  }
+
+  getEmailTemplateName(id: any): string {
+
+    if (!id) return '-';
+
+    const item = this.emailTemplates.find(
+      x => x.emailTemplateId === Number(id)
+    );
+
+    return item ? item.templateName : '-';
+
+  }
+
+  //====================================================
+  // Cascading Dropdown
+  //====================================================
+
+  get formRegions(): any[] {
+
+    if (!this.campaign.companyId) return this.regions;
+
+    return this.regions.filter(
+      x => x.companyId === Number(this.campaign.companyId)
     );
 
   }
+
+  onCompanyChange(): void {
+
+    this.campaign.regionId = null;
+
+  }
+
+  //====================================================
+  // Open Rate Helper
+  //====================================================
+
+  getOpenRate(item: any): number {
+
+    const delivered = Number(item.deliveredCount || 0);
+
+    if (!delivered) return 0;
+
+    return Math.round((Number(item.openedCount || 0) / delivered) * 100);
+
+  }
+
+  //====================================================
+  // Filtered Campaigns
+  //====================================================
+
+  get filteredCampaigns() {
+
+    return this.campaigns.filter(x => {
+
+      const search = this.searchText.trim().toLowerCase();
+
+      const matchSearch =
+        !search ||
+        (x.campaignName || '').toLowerCase().includes(search) ||
+        (x.subject || '').toLowerCase().includes(search) ||
+        (x.fromEmail || '').toLowerCase().includes(search) ||
+        (x.status || '').toLowerCase().includes(search);
+
+      const matchCompany =
+        !this.companyFilter ||
+        Number(x.companyId) === Number(this.companyFilter);
+
+      const matchStatus =
+        !this.statusFilter ||
+        x.status === this.statusFilter;
+
+      return matchSearch && matchCompany && matchStatus;
+
+    });
+
+  }
+
+  //====================================================
+  // Pagination
+  //====================================================
 
   get pagedCampaigns() {
 
     const start = (this.page - 1) * this.pageSize;
 
-    return this.filteredCampaigns.slice(
+    return this.filteredCampaigns.slice(start, start + this.pageSize);
 
-      start,
+  }
 
-      start + this.pageSize
+  //====================================================
+  // Statistics
+  //====================================================
 
+  get totalCampaigns(): number {
+
+    return this.campaigns.length;
+
+  }
+
+  get sentCampaigns(): number {
+
+    return this.campaigns.filter(x => x.status === 'Sent' || x.status === 'Completed').length;
+
+  }
+
+  get scheduledCampaigns(): number {
+
+    return this.campaigns.filter(x => x.status === 'Scheduled').length;
+
+  }
+
+  get totalRecipientsCount(): number {
+
+    return this.campaigns.reduce(
+      (total, item) => total + Number(item.totalRecipients || 0),
+      0
     );
 
   }
 
-  changePage(page: number) {
+  //====================================================
+  // Save / Update
+  //====================================================
+
+  saveCampaign(): void {
+
+    this.submitted = true;
+
+    if (
+      !this.campaign.campaignName ||
+      !this.campaign.campaignName.trim()
+    ) {
+
+      this.alert.warning('Please fill all required fields.');
+
+      return;
+
+    }
+
+    const payload = {
+
+      emailCampaignId: this.isEdit ? this.campaign.emailCampaignId : 0,
+
+      companyId: this.campaign.companyId ? Number(this.campaign.companyId) : null,
+
+      regionId: this.campaign.regionId ? Number(this.campaign.regionId) : null,
+
+      campaignName: this.campaign.campaignName.trim(),
+
+      marketingListId: this.campaign.marketingListId
+        ? Number(this.campaign.marketingListId)
+        : null,
+
+      emailTemplateId: this.campaign.emailTemplateId
+        ? Number(this.campaign.emailTemplateId)
+        : null,
+
+      subject: this.campaign.subject ? this.campaign.subject.trim() : null,
+
+      fromName: this.campaign.fromName ? this.campaign.fromName.trim() : null,
+
+      fromEmail: this.campaign.fromEmail ? this.campaign.fromEmail.trim() : null,
+
+      replyToEmail: this.campaign.replyToEmail
+        ? this.campaign.replyToEmail.trim()
+        : null,
+
+      totalRecipients: Number(this.campaign.totalRecipients) || 0,
+
+      sentCount: Number(this.campaign.sentCount) || 0,
+
+      deliveredCount: Number(this.campaign.deliveredCount) || 0,
+
+      openedCount: Number(this.campaign.openedCount) || 0,
+
+      clickedCount: Number(this.campaign.clickedCount) || 0,
+
+      bouncedCount: Number(this.campaign.bouncedCount) || 0,
+
+      unsubscribedCount: Number(this.campaign.unsubscribedCount) || 0,
+
+      scheduledDate: this.campaign.scheduledDate || null,
+
+      status: this.campaign.status ? this.campaign.status.trim() : ''
+
+    };
+
+    this.spinner.show();
+
+    if (this.isEdit) {
+
+      this.controlsystemService.updateEmailCampaign(payload).subscribe({
+
+        next: (res: any) => {
+
+          this.spinner.hide();
+
+          if (res?.success) {
+
+            this.alert.success(
+              res.message || 'Email Campaign updated successfully.'
+            );
+
+            this.clear();
+
+            this.loadCampaigns();
+
+          } else {
+
+            this.alert.warning(
+              res?.message || 'Failed to update email campaign.'
+            );
+
+          }
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Update email campaign error:', err);
+
+          this.alert.error(
+            err?.error?.message || 'Failed to update email campaign.'
+          );
+
+        }
+
+      });
+
+    } else {
+
+      this.controlsystemService.createEmailCampaign(payload).subscribe({
+
+        next: (res: any) => {
+
+          this.spinner.hide();
+
+          if (res?.success) {
+
+            this.alert.success(
+              res.message || 'Email Campaign created successfully.'
+            );
+
+            this.clear();
+
+            this.loadCampaigns();
+
+          } else {
+
+            this.alert.warning(
+              res?.message || 'Failed to create email campaign.'
+            );
+
+          }
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Create email campaign error:', err);
+
+          this.alert.error(
+            err?.error?.message || 'Failed to create email campaign.'
+          );
+
+        }
+
+      });
+
+    }
+
+  }
+
+  //====================================================
+  // Edit
+  //====================================================
+
+  edit(id: number): void {
+
+    this.spinner.show();
+
+    this.controlsystemService.getEmailCampaignById(id).subscribe({
+
+      next: (res: any) => {
+
+        this.spinner.hide();
+
+        if (res?.success && res.data) {
+
+          const data = res.data;
+
+          this.campaign = {
+
+            emailCampaignId: data.emailCampaignId,
+
+            companyId: data.companyId,
+
+            regionId: data.regionId,
+
+            campaignName: data.campaignName || '',
+
+            marketingListId: data.marketingListId,
+
+            emailTemplateId: data.emailTemplateId,
+
+            subject: data.subject || '',
+
+            fromName: data.fromName || '',
+
+            fromEmail: data.fromEmail || '',
+
+            replyToEmail: data.replyToEmail || '',
+
+            totalRecipients: data.totalRecipients ?? 0,
+
+            sentCount: data.sentCount ?? 0,
+
+            deliveredCount: data.deliveredCount ?? 0,
+
+            openedCount: data.openedCount ?? 0,
+
+            clickedCount: data.clickedCount ?? 0,
+
+            bouncedCount: data.bouncedCount ?? 0,
+
+            unsubscribedCount: data.unsubscribedCount ?? 0,
+
+            scheduledDate: data.scheduledDate
+              ? data.scheduledDate.substring(0, 10)
+              : '',
+
+            status: data.status || 'Draft'
+
+          };
+
+          this.isEdit = true;
+
+          this.submitted = false;
+
+          this.cd.detectChanges();
+
+        } else {
+
+          this.alert.warning(res?.message || 'Email Campaign not found.');
+
+        }
+
+      },
+
+      error: (err) => {
+
+        this.spinner.hide();
+
+        console.error('Get email campaign error:', err);
+
+        this.alert.error(
+          err?.error?.message || 'Failed to load email campaign.'
+        );
+
+      }
+
+    });
+
+  }
+
+  //====================================================
+  // Delete
+  //====================================================
+
+  delete(id: number): void {
+
+    this.alert.deleteConfirm().then(result => {
+
+      if (!result.isConfirmed) return;
+
+      this.spinner.show();
+
+      this.controlsystemService.deleteEmailCampaign(id).subscribe({
+
+        next: (res: any) => {
+
+          this.spinner.hide();
+
+          if (res?.success) {
+
+            this.alert.success(
+              res.message || 'Email Campaign deleted successfully.'
+            );
+
+            if (this.page > 1 && this.pagedCampaigns.length === 1) {
+              this.page = this.page - 1;
+            }
+
+            this.loadCampaigns();
+
+          } else {
+
+            this.alert.warning(
+              res?.message || 'Failed to delete email campaign.'
+            );
+
+          }
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Delete email campaign error:', err);
+
+          this.alert.error(
+            err?.error?.message || 'Failed to delete email campaign.'
+          );
+
+        }
+
+      });
+
+    });
+
+  }
+
+  //====================================================
+  // Clear Form
+  //====================================================
+
+  clear(): void {
+
+    this.campaign = this.getEmptyModel();
+
+    this.submitted = false;
+
+    this.isEdit = false;
+
+  }
+
+  //====================================================
+  // Clear Filters
+  //====================================================
+
+  clearFilters(): void {
+
+    this.searchText = '';
+
+    this.companyFilter = '';
+
+    this.statusFilter = '';
+
+    this.page = 1;
+
+  }
+
+  //====================================================
+  // Pagination
+  //====================================================
+
+  changePage(page: number): void {
 
     this.page = page;
 
   }
 
-  changePageSize(size: number) {
+  changePageSize(size: number): void {
 
     this.pageSize = size;
 
@@ -411,5 +790,16 @@ export class EmailCampaigns {
 
   }
 
+  //====================================================
+  // Refresh
+  //====================================================
+
+  refresh(): void {
+
+    this.page = 1;
+
+    this.loadCampaigns();
+
+  }
 
 }

@@ -1,23 +1,209 @@
-<div class="container mt-4">
+<div class="container-fluid mt-4">
 
-    <div class="card">
+    <!-- ========================================= -->
+    <!-- Page Header -->
+    <!-- ========================================= -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h3 class="fw-bold text-danger mb-1">
+
+                <i class="fa-solid fa-envelope-circle-check me-2"></i>
+
+                Email Automation
+
+            </h3>
+
+            <p class="text-muted mb-0">
+
+                Manage Automated Email Triggers Across Modules.
+
+            </p>
+
+        </div>
+
+        <div>
+
+            <button class="btn btn-outline-secondary me-2" (click)="clear()">
+
+                <i class="fa-solid fa-rotate"></i>
+
+                Clear
+
+            </button>
+
+            <button class="btn btn-danger" (click)="saveEmailAutomation()">
+
+                <i class="fa-solid" [ngClass]="isEdit ? 'fa-pen' : 'fa-plus'"></i>
+
+                {{isEdit ? ' Update Automation' : ' Add Automation'}}
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Statistics -->
+    <!-- ========================================= -->
+
+    <div class="row mb-4">
+
+        <div class="col-md-3 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Total Automations</div>
+                <div class="fw-bold fs-4 text-danger">{{totalAutomations}}</div>
+            </div>
+
+        </div>
+
+        <div class="col-md-3 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Active</div>
+                <div class="fw-bold fs-4 text-success">{{activeAutomations}}</div>
+            </div>
+
+        </div>
+
+        <div class="col-md-3 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Inactive</div>
+                <div class="fw-bold fs-4 text-secondary">{{inactiveAutomations}}</div>
+            </div>
+
+        </div>
+
+        <div class="col-md-3 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Scheduled</div>
+                <div class="fw-bold fs-4 text-primary">{{scheduledAutomations}}</div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Email Automation Form -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm border-0 mb-4">
 
         <div class="card-header bg-danger text-white">
-            <h4>Email Automation</h4>
+
+            <h5 class="mb-0">
+
+                Email Automation Information
+
+            </h5>
+
         </div>
 
         <div class="card-body">
 
             <div class="row">
 
-                <div class="col-md-4 mb-3">
-                    <label>Automation Name <span class="text-danger">*</span></label>
-                    <input class="form-control" placeholder="Lead Welcome Email">
-                </div>
+                <!-- Company -->
 
                 <div class="col-md-4 mb-3">
-                    <label>Module <span class="text-danger">*</span></label>
-                    <select class="form-select">
+
+                    <label class="form-label">
+
+                        Company
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="emailAutomation.companyId" (ngModelChange)="onCompanyChange()">
+
+                        <option [ngValue]="null">Select Company</option>
+
+                        <option *ngFor="let c of companies" [ngValue]="c.companyId">{{c.companyName}}</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !emailAutomation.companyId">
+
+                        Company is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Region -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Region
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="emailAutomation.regionId">
+
+                        <option [ngValue]="null">Select Region</option>
+
+                        <option *ngFor="let r of formRegions" [ngValue]="r.regionId">{{r.regionName}}</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !emailAutomation.regionId">
+
+                        Region is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Automation Name -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Automation Name
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input class="form-control" placeholder="Lead Welcome Email"
+                        [(ngModel)]="emailAutomation.automationName">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !emailAutomation.automationName">
+
+                        Automation Name is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Module -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Module
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="emailAutomation.moduleName">
+
+                        <option value="">Select Module</option>
                         <option>Leads</option>
                         <option>Contacts</option>
                         <option>Accounts</option>
@@ -27,201 +213,497 @@
                         <option>Invoices</option>
                         <option>Support Tickets</option>
                         <option>Subscriptions</option>
+
                     </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !emailAutomation.moduleName">
+
+                        Module is required.
+
+                    </div>
+
                 </div>
 
+                <!-- Trigger Event -->
+
                 <div class="col-md-4 mb-3">
-                    <label>Trigger Event</label>
-                    <select class="form-select">
+
+                    <label class="form-label">
+
+                        Trigger Event
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="emailAutomation.triggerEvent">
+
+                        <option value="">Select Trigger Event</option>
                         <option>On Create</option>
                         <option>On Update</option>
                         <option>On Delete</option>
                         <option>Status Changed</option>
                         <option>Scheduled</option>
+
                     </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !emailAutomation.triggerEvent">
+
+                        Trigger Event is required.
+
+                    </div>
+
                 </div>
 
-                <div class="col-md-4 mb-3">
-                    <label>Email Template</label>
-                    <select class="form-select">
-                        <option>Lead Welcome</option>
-                        <option>Quotation Sent</option>
-                        <option>Invoice Generated</option>
-                        <option>Payment Reminder</option>
-                        <option>Subscription Renewal</option>
-                    </select>
-                </div>
+                <!-- Email Template -->
 
                 <div class="col-md-4 mb-3">
-                    <label>Recipient Type</label>
-                    <select class="form-select">
+
+                    <label class="form-label">
+
+                        Email Template
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="emailAutomation.emailTemplateId">
+
+                        <option [ngValue]="null">Select Email Template</option>
+
+                        <option *ngFor="let t of emailTemplates" [ngValue]="t.emailTemplateId">{{t.templateName}}</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Recipient Type -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Recipient Type
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="emailAutomation.recipientType">
+
+                        <option value="">Select Recipient Type</option>
                         <option>Customer</option>
                         <option>Lead</option>
                         <option>Assigned User</option>
                         <option>Manager</option>
                         <option>Team</option>
+
                     </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !emailAutomation.recipientType">
+
+                        Recipient Type is required.
+
+                    </div>
+
                 </div>
+
+                <!-- Schedule Type -->
 
                 <div class="col-md-4 mb-3">
-                    <label>Send Delay</label>
-                    <input type="number"
-                           class="form-control"
-                           placeholder="0">
+
+                    <label class="form-label">
+
+                        Schedule Type
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="emailAutomation.scheduleType">
+
+                        <option value="">Select Schedule Type</option>
+                        <option>Immediate</option>
+                        <option>Delayed</option>
+                        <option>Scheduled</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !emailAutomation.scheduleType">
+
+                        Schedule Type is required.
+
+                    </div>
+
                 </div>
+
+                <!-- Send Delay -->
+
+                <div class="col-md-2 mb-3">
+
+                    <label class="form-label">
+
+                        Send Delay
+
+                    </label>
+
+                    <input type="number" min="0" class="form-control" placeholder="0"
+                        [disabled]="emailAutomation.delayUnit === 'Immediately'"
+                        [(ngModel)]="emailAutomation.delayValue">
+
+                </div>
+
+                <!-- Delay Unit -->
+
+                <div class="col-md-2 mb-3">
+
+                    <label class="form-label">
+
+                        Delay Unit
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="emailAutomation.delayUnit">
+
+                        <option *ngFor="let u of delayUnits" [value]="u.label">{{u.label}}</option>
+
+                    </select>
+
+                </div>
+
+                <!-- From Email -->
 
                 <div class="col-md-4 mb-3">
-                    <label>Delay Unit</label>
-                    <select class="form-select">
-                        <option>Immediately</option>
-                        <option>Minutes</option>
-                        <option>Hours</option>
-                        <option>Days</option>
-                    </select>
+
+                    <label class="form-label">
+
+                        From Email
+
+                    </label>
+
+                    <input type="email" class="form-control" placeholder="noreply@company.com"
+                        [(ngModel)]="emailAutomation.fromEmail">
+
                 </div>
+
+                <!-- Description -->
 
                 <div class="col-md-8 mb-3">
-                    <label>Automation Condition</label>
-                    <input class="form-control"
-                           placeholder="Lead Source = Website">
-                </div>
 
-                <div class="col-md-8 mb-3">
-                    <label>Description</label>
-                    <textarea class="form-control"
-                              rows="2"
-                              placeholder="Enter automation description"></textarea>
-                </div>
+                    <label class="form-label">
 
-                <div class="col-md-2 mt-4">
-                    <label>
-                        <input type="checkbox" checked>
-                        Active
+                        Description
+
                     </label>
+
+                    <textarea rows="2" class="form-control" [(ngModel)]="emailAutomation.description"></textarea>
+
                 </div>
 
-                <div class="col-md-2 mt-4">
-                    <label>
-                        <input type="checkbox">
-                        Default
-                    </label>
+                <!-- Active -->
+
+                <div class="col-md-4 mb-3">
+
+                    <div class="form-check mt-4">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="emailAutomation.isActive">
+
+                        <label class="form-check-label">
+
+                            Active
+
+                        </label>
+
+                    </div>
+
                 </div>
 
             </div>
 
-            <button class="btn btn-danger me-2">
-                Save
-            </button>
+        </div>
 
-            <button class="btn btn-secondary me-2">
-                Clear
-            </button>
+    </div>
 
-            <button class="btn btn-success">
-                Send Test Email
-            </button>
+</div>
+
+<!-- ========================================= -->
+<!-- Search Section -->
+<!-- ========================================= -->
+
+<div class="card shadow-sm border-0 mb-3">
+
+    <div class="card-body">
+
+        <div class="row">
+
+            <div class="col-md-4">
+
+                <input class="form-control" placeholder="Search Email Automation..." [(ngModel)]="searchText">
+
+            </div>
+
+            <div class="col-md-3">
+
+                <select class="form-select" [(ngModel)]="companyFilter">
+
+                    <option value="">All Companies</option>
+
+                    <option *ngFor="let c of companies" [value]="c.companyId">{{c.companyName}}</option>
+
+                </select>
+
+            </div>
+
+            <div class="col-md-3">
+
+                <select class="form-select" [(ngModel)]="statusFilter">
+
+                    <option value="">All Status</option>
+
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+
+                </select>
+
+            </div>
+
+            <div class="col-md-2">
+
+                <button class="btn btn-secondary w-100" (click)="clearFilters()">
+
+                    Clear
+
+                </button>
+
+            </div>
 
         </div>
 
     </div>
 
-    <br>
+</div>
 
-    <div class="row mb-3">
+<!-- ========================================= -->
+<!-- Email Automation List -->
+<!-- ========================================= -->
 
-        <div class="col-md-4">
-            <input class="form-control"
-                   placeholder="Search Email Automation...">
+<div class="card shadow-sm border-0">
+
+    <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+
+        <h5 class="mb-0">
+
+            Email Automations
+
+        </h5>
+
+        <span class="badge bg-light text-dark">
+
+            Total Records : {{filteredEmailAutomations.length}}
+
+        </span>
+
+    </div>
+
+    <div class="card-body p-0">
+
+        <div class="table-responsive">
+
+            <table class="table table-hover table-bordered align-middle mb-0">
+
+                <thead class="table-danger">
+
+                    <tr>
+
+                        <th width="70">
+
+                            #
+
+                        </th>
+
+                        <th>
+
+                            Automation
+
+                        </th>
+
+                        <th>
+
+                            Company
+
+                        </th>
+
+                        <th>
+
+                            Module
+
+                        </th>
+
+                        <th>
+
+                            Trigger
+
+                        </th>
+
+                        <th>
+
+                            Email Template
+
+                        </th>
+
+                        <th>
+
+                            Recipient
+
+                        </th>
+
+                        <th>
+
+                            Delay
+
+                        </th>
+
+                        <th>
+
+                            Status
+
+                        </th>
+
+                        <th width="170">
+
+                            Action
+
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr *ngFor="let item of pagedEmailAutomations; let i=index">
+
+                        <td>
+
+                            {{((page-1)*pageSize)+i+1}}
+
+                        </td>
+
+                        <td>
+
+                            <div class="fw-bold">
+
+                                {{item.automationName}}
+
+                            </div>
+
+                            <small class="text-muted">
+
+                                {{item.description}}
+
+                            </small>
+
+                        </td>
+
+                        <td>
+
+                            {{getCompanyName(item.companyId)}}
+
+                        </td>
+
+                        <td>
+
+                            {{item.moduleName}}
+
+                        </td>
+
+                        <td>
+
+                            {{item.triggerEvent}}
+
+                        </td>
+
+                        <td>
+
+                            {{getEmailTemplateName(item.emailTemplateId)}}
+
+                        </td>
+
+                        <td>
+
+                            {{item.recipientType}}
+
+                        </td>
+
+                        <td>
+
+                            {{getDelayLabel(item)}}
+
+                        </td>
+
+                        <td>
+
+                            <span class="badge" [ngClass]="item.isActive ? 'bg-success' : 'bg-secondary'">
+
+                                {{item.isActive ? 'Active' : 'Inactive'}}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <button class="btn btn-warning btn-sm me-2" (click)="edit(item.emailAutomationId)">
+
+                                <i class="fa-solid fa-pen"></i>
+
+                                Edit
+
+                            </button>
+
+                            <button class="btn btn-danger btn-sm" (click)="delete(item.emailAutomationId)">
+
+                                <i class="fa-solid fa-trash"></i>
+
+                                Delete
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                    <tr *ngIf="pagedEmailAutomations.length==0">
+
+                        <td colspan="10" class="text-center text-muted py-5">
+
+                            <i class="fa-solid fa-envelope-circle-check fa-3x mb-3"></i>
+
+                            <br>
+
+                            No Email Automations Found.
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
         </div>
 
     </div>
 
-    <table class="table table-bordered table-hover">
+</div>
 
-        <thead class="table-danger">
+<!-- ========================================= -->
+<!-- Pagination -->
+<!-- ========================================= -->
 
-            <tr>
+<div class="mt-3">
 
-                <th>#</th>
-                <th>Automation Name</th>
-                <th>Module</th>
-                <th>Trigger</th>
-                <th>Email Template</th>
-                <th>Recipient</th>
-                <th>Delay</th>
-                <th>Status</th>
-                <th width="150">Action</th>
+    <app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredEmailAutomations.length"
+        (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
 
-            </tr>
-
-        </thead>
-
-        <tbody>
-
-            <tr>
-                <td>1</td>
-                <td>Lead Welcome Email</td>
-                <td>Leads</td>
-                <td>On Create</td>
-                <td>Lead Welcome</td>
-                <td>Customer</td>
-                <td>Immediately</td>
-                <td>Active</td>
-                <td>
-                    <button class="btn btn-warning btn-sm me-2">Edit</button>
-                    <button class="btn btn-danger btn-sm">Delete</button>
-                </td>
-            </tr>
-
-            <tr>
-                <td>2</td>
-                <td>Quotation Email</td>
-                <td>Quotations</td>
-                <td>Status Changed</td>
-                <td>Quotation Sent</td>
-                <td>Customer</td>
-                <td>Immediately</td>
-                <td>Active</td>
-                <td>
-                    <button class="btn btn-warning btn-sm me-2">Edit</button>
-                    <button class="btn btn-danger btn-sm">Delete</button>
-                </td>
-            </tr>
-
-            <tr>
-                <td>3</td>
-                <td>Payment Reminder</td>
-                <td>Invoices</td>
-                <td>Scheduled</td>
-                <td>Payment Reminder</td>
-                <td>Customer</td>
-                <td>3 Days</td>
-                <td>Active</td>
-                <td>
-                    <button class="btn btn-warning btn-sm me-2">Edit</button>
-                    <button class="btn btn-danger btn-sm">Delete</button>
-                </td>
-            </tr>
-
-            <tr>
-                <td>4</td>
-                <td>Subscription Renewal Reminder</td>
-                <td>Subscriptions</td>
-                <td>Scheduled</td>
-                <td>Subscription Renewal</td>
-                <td>Customer</td>
-                <td>7 Days</td>
-                <td>Inactive</td>
-                <td>
-                    <button class="btn btn-warning btn-sm me-2">Edit</button>
-                    <button class="btn btn-danger btn-sm">Delete</button>
-                </td>
-            </tr>
-
-        </tbody>
-
-    </table>
-
-   
+    </app-pagination>
 
 </div>

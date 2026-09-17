@@ -1,20 +1,108 @@
-<div class="container mt-4">
+<div class="container-fluid mt-4">
 
     <!-- ========================================= -->
-    <!-- Holiday Calendar Form -->
+    <!-- Page Header -->
     <!-- ========================================= -->
 
-    <div class="card shadow-sm">
+    <div class="d-flex justify-content-between align-items-center mb-4">
 
-        <div class="card-header bg-danger text-white">
+        <div>
 
-            <h4 class="mb-0">
+            <h3 class="fw-bold text-danger mb-1">
 
-                <i class="fa fa-calendar-days me-2"></i>
+                <i class="fa-solid fa-calendar-days me-2"></i>
 
                 Holiday Calendar
 
-            </h4>
+            </h3>
+
+            <p class="text-muted mb-0">
+
+                Manage Company Holidays, Festivals and Leave Calendar.
+
+            </p>
+
+        </div>
+
+        <div>
+
+            <button class="btn btn-outline-secondary me-2" (click)="clear()">
+
+                <i class="fa-solid fa-rotate"></i>
+
+                Clear
+
+            </button>
+
+            <button class="btn btn-danger" (click)="saveHoliday()">
+
+                <i class="fa-solid" [ngClass]="isEdit ? 'fa-pen' : 'fa-plus'"></i>
+
+                {{isEdit ? ' Update Holiday' : ' Add Holiday'}}
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Statistics -->
+    <!-- ========================================= -->
+
+    <div class="row mb-4">
+
+        <div class="col-md-3 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Total Holidays</div>
+                <div class="fw-bold fs-4 text-danger">{{totalHolidays}}</div>
+            </div>
+
+        </div>
+
+        <div class="col-md-3 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Upcoming</div>
+                <div class="fw-bold fs-4 text-success">{{upcomingHolidays}}</div>
+            </div>
+
+        </div>
+
+        <div class="col-md-3 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Recurring</div>
+                <div class="fw-bold fs-4 text-primary">{{recurringHolidays}}</div>
+            </div>
+
+        </div>
+
+        <div class="col-md-3 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Years Covered</div>
+                <div class="fw-bold fs-4 text-secondary">{{totalYears}}</div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Holiday Form -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm border-0 mb-4">
+
+        <div class="card-header bg-danger text-white">
+
+            <h5 class="mb-0">
+
+                Holiday Information
+
+            </h5>
 
         </div>
 
@@ -23,6 +111,7 @@
             <div class="row">
 
                 <!-- Holiday Name -->
+
                 <div class="col-md-4 mb-3">
 
                     <label class="form-label">
@@ -45,6 +134,7 @@
                 </div>
 
                 <!-- Holiday Date -->
+
                 <div class="col-md-4 mb-3">
 
                     <label class="form-label">
@@ -66,69 +156,42 @@
                 </div>
 
                 <!-- Holiday Type -->
+
                 <div class="col-md-4 mb-3">
 
                     <label class="form-label">
 
                         Holiday Type
 
-                        <span class="text-danger">*</span>
-
                     </label>
 
-                    <select class="form-select" [(ngModel)]="holiday.holidayType">
-
-                        <option value="">Select Holiday Type</option>
-
-                        <option>Public Holiday</option>
-                        <option>National Holiday</option>
-                        <option>Festival Holiday</option>
-                        <option>Company Holiday</option>
-                        <option>Optional Holiday</option>
-                        <option>Regional Holiday</option>
-
-                    </select>
-
-                    <div class="text-danger mt-1" *ngIf="submitted && !holiday.holidayType">
-
-                        Holiday Type is required.
-
-                    </div>
+                    <input type="text" class="form-control" placeholder="e.g. National Holiday"
+                        [(ngModel)]="holiday.holidayType">
 
                 </div>
 
                 <!-- Branch -->
+
                 <div class="col-md-4 mb-3">
 
                     <label class="form-label">
 
                         Branch
 
-                        <span class="text-danger">*</span>
-
                     </label>
 
-                    <select class="form-select" [(ngModel)]="holiday.branch">
+                    <select class="form-select" [(ngModel)]="holiday.branchId">
 
-                        <option value="">Select Branch</option>
+                        <option [ngValue]="null">All Branches</option>
 
-                        <option>Hyderabad Head Office</option>
-                        <option>Bengaluru Branch</option>
-                        <option>Chennai Branch</option>
-                        <option>Mumbai Branch</option>
-                        <option>Vijayawada Branch</option>
+                        <option *ngFor="let b of branches" [ngValue]="b.branchId">{{b.branchName}}</option>
 
                     </select>
-
-                    <div class="text-danger mt-1" *ngIf="submitted && !holiday.branch">
-
-                        Branch is required.
-
-                    </div>
 
                 </div>
 
                 <!-- Business Unit -->
+
                 <div class="col-md-4 mb-3">
 
                     <label class="form-label">
@@ -137,21 +200,18 @@
 
                     </label>
 
-                    <select class="form-select" [(ngModel)]="holiday.businessUnit">
+                    <select class="form-select" [(ngModel)]="holiday.businessUnitId">
 
-                        <option value="">Select Business Unit</option>
+                        <option [ngValue]="null">All Business Units</option>
 
-                        <option>Corporate</option>
-                        <option>Sales</option>
-                        <option>Marketing</option>
-                        <option>Support</option>
-                        <option>Finance</option>
+                        <option *ngFor="let bu of businessUnits" [ngValue]="bu.businessUnitId">{{bu.businessUnitName}}</option>
 
                     </select>
 
                 </div>
 
                 <!-- Department -->
+
                 <div class="col-md-4 mb-3">
 
                     <label class="form-label">
@@ -160,21 +220,18 @@
 
                     </label>
 
-                    <select class="form-select" [(ngModel)]="holiday.department">
+                    <select class="form-select" [(ngModel)]="holiday.departmentId">
 
-                        <option value="">Select Department</option>
+                        <option [ngValue]="null">All Departments</option>
 
-                        <option>Human Resources</option>
-                        <option>IT</option>
-                        <option>Accounts</option>
-                        <option>Operations</option>
-                        <option>Sales</option>
+                        <option *ngFor="let d of departments" [ngValue]="d.departmentId">{{d.departmentName}}</option>
 
                     </select>
 
                 </div>
 
                 <!-- Holiday Category -->
+
                 <div class="col-md-4 mb-3">
 
                     <label class="form-label">
@@ -183,21 +240,13 @@
 
                     </label>
 
-                    <select class="form-select" [(ngModel)]="holiday.category">
-
-                        <option value="">Select Category</option>
-
-                        <option>Government</option>
-                        <option>Company</option>
-                        <option>Religious</option>
-                        <option>Festival</option>
-                        <option>Weekend Replacement</option>
-
-                    </select>
+                    <input type="text" class="form-control" placeholder="e.g. Government, Festival"
+                        [(ngModel)]="holiday.holidayCategory">
 
                 </div>
 
                 <!-- Applicable For -->
+
                 <div class="col-md-4 mb-3">
 
                     <label class="form-label">
@@ -206,49 +255,33 @@
 
                     </label>
 
-                    <select class="form-select" [(ngModel)]="holiday.applicableFor">
-
-                        <option>All Employees</option>
-                        <option>Permanent Employees</option>
-                        <option>Contract Employees</option>
-                        <option>Interns</option>
-                        <option>Selected Departments</option>
-
-                    </select>
+                    <input type="text" class="form-control" placeholder="e.g. All Employees"
+                        [(ngModel)]="holiday.applicableFor">
 
                 </div>
 
                 <!-- Country -->
+
                 <div class="col-md-4 mb-3">
 
                     <label class="form-label">
 
                         Country
 
-                        <span class="text-danger">*</span>
-
                     </label>
 
-                    <select class="form-select" [(ngModel)]="holiday.country">
+                    <select class="form-select" [(ngModel)]="holiday.countryId" (ngModelChange)="onCountryChange()">
 
-                        <option value="">Select Country</option>
+                        <option [ngValue]="null">Select Country</option>
 
-                        <option>India</option>
-                        <option>USA</option>
-                        <option>United Kingdom</option>
-                        <option>Australia</option>
+                        <option *ngFor="let c of countries" [ngValue]="c.countryId">{{c.countryName}}</option>
 
                     </select>
-
-                    <div class="text-danger mt-1" *ngIf="submitted && !holiday.country">
-
-                        Country is required.
-
-                    </div>
 
                 </div>
 
                 <!-- State -->
+
                 <div class="col-md-4 mb-3">
 
                     <label class="form-label">
@@ -257,85 +290,27 @@
 
                     </label>
 
-                    <select class="form-select" [(ngModel)]="holiday.state">
+                    <select class="form-select" [(ngModel)]="holiday.stateId">
 
-                        <option value="">Select State</option>
+                        <option [ngValue]="null">Select State</option>
 
-                        <option>Andhra Pradesh</option>
-                        <option>Telangana</option>
-                        <option>Karnataka</option>
-                        <option>Tamil Nadu</option>
-                        <option>Maharashtra</option>
+                        <option *ngFor="let s of formStates" [ngValue]="s.stateId">{{s.stateName}}</option>
 
                     </select>
 
                 </div>
 
                 <!-- Recurring Holiday -->
+
                 <div class="col-md-4 mb-3">
 
-                    <label class="form-label">
+                    <div class="form-check mt-4">
 
-                        Recurring Holiday
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="holiday.recurringHoliday">
 
-                    </label>
+                        <label class="form-check-label">
 
-                    <select class="form-select" [(ngModel)]="holiday.recurring">
-
-                        <option>No</option>
-                        <option>Yes</option>
-
-                    </select>
-
-                </div>
-
-                <!-- Year -->
-                <div class="col-md-4 mb-3">
-
-                    <label class="form-label">
-
-                        Year
-
-                    </label>
-
-                    <select class="form-select" [(ngModel)]="holiday.year">
-
-                        <option>2026</option>
-                        <option>2027</option>
-                        <option>2028</option>
-                        <option>2029</option>
-
-                    </select>
-
-                </div>
-
-                <!-- Description -->
-                <div class="col-md-8 mb-3">
-
-                    <label class="form-label">
-
-                        Description
-
-                    </label>
-
-                    <textarea rows="4" class="form-control" placeholder="Enter Description"
-                        [(ngModel)]="holiday.description">
-
-                    </textarea>
-
-                </div>
-
-                <!-- Active -->
-                <div class="col-md-4 mb-3 d-flex align-items-end">
-
-                    <div class="form-check">
-
-                        <input type="checkbox" class="form-check-input" id="holidayActive"
-                            [(ngModel)]="holiday.isActive">
-
-                        <label class="form-check-label ms-2" for="holidayActive">
-
-                            Active
+                            Recurring Holiday (repeats every year)
 
                         </label>
 
@@ -343,162 +318,292 @@
 
                 </div>
 
+                <!-- Description -->
+
+                <div class="col-md-12 mb-3">
+
+                    <label class="form-label">
+
+                        Description
+
+                    </label>
+
+                    <textarea rows="3" class="form-control" [(ngModel)]="holiday.description"></textarea>
+
+                </div>
+
             </div>
 
-            <hr>
-
-            <button class="btn btn-danger me-2" (click)="saveHoliday()">
-
-                <i class="fa fa-save me-1"></i>
-
-                {{ isEdit ? 'Update' : 'Save' }}
-
-            </button>
-
-            <button class="btn btn-secondary" (click)="clear()">
-
-                <i class="fa fa-eraser me-1"></i>
-
-                Clear
-
-            </button>
-
-        </div>
-
-    </div>
-    <!-- ========================================= -->
-    <!-- Search -->
-    <!-- ========================================= -->
-
-    <div class="row mt-4 mb-3">
-
-        <div class="col-md-4">
-
-            <input type="text" class="form-control" placeholder="Search Holiday..." [(ngModel)]="searchText">
-
         </div>
 
     </div>
 
-    <!-- ========================================= -->
-    <!-- Holiday Calendar Listing -->
-    <!-- ========================================= -->
+</div>
 
-    <div class="table-responsive">
+<!-- ========================================= -->
+<!-- Search Section -->
+<!-- ========================================= -->
 
-        <table class="table table-bordered table-hover">
+<div class="card shadow-sm border-0 mb-3">
 
-            <thead class="table-danger">
+    <div class="card-body">
 
-                <tr>
+        <div class="row">
 
-                    <th width="60">#</th>
-                    <th>Holiday Name</th>
-                    <th>Date</th>
-                    <th>Holiday Type</th>
-                    <th>Branch</th>
-                    <th>Country</th>
-                    <th>State</th>
-                    <th>Status</th>
-                    <th width="140">Action</th>
+            <div class="col-md-4">
 
-                </tr>
+                <input class="form-control" placeholder="Search Holiday..." [(ngModel)]="searchText">
 
-            </thead>
+            </div>
 
-            <tbody>
+            <div class="col-md-3">
 
-                <tr *ngIf="pagedHolidays.length == 0">
+                <select class="form-select" [(ngModel)]="countryFilter">
 
-                    <td colspan="9" class="text-center text-muted">
+                    <option value="">All Countries</option>
 
-                        No Holiday Records Found
+                    <option *ngFor="let c of countries" [value]="c.countryId">{{c.countryName}}</option>
 
-                    </td>
+                </select>
 
-                </tr>
+            </div>
 
-                <tr *ngFor="let item of pagedHolidays; let i = index">
+            <div class="col-md-3">
 
-                    <td>
+                <select class="form-select" [(ngModel)]="statusFilter">
 
-                        {{ ((page - 1) * pageSize) + i + 1 }}
+                    <option value="">All Types</option>
 
-                    </td>
+                    <option value="Recurring">Recurring</option>
+                    <option value="One-time">One-time</option>
 
-                    <td>
+                </select>
 
-                        {{ item.holidayName }}
+            </div>
 
-                    </td>
+            <div class="col-md-2">
 
-                    <td>
+                <button class="btn btn-secondary w-100" (click)="clearFilters()">
 
-                        {{ item.holidayDate }}
+                    Clear
 
-                    </td>
+                </button>
 
-                    <td>
+            </div>
 
-                        {{ item.holidayType }}
-
-                    </td>
-
-                    <td>
-
-                        {{ item.branch }}
-
-                    </td>
-
-                    <td>
-
-                        {{ item.country }}
-
-                    </td>
-
-                    <td>
-
-                        {{ item.state }}
-
-                    </td>
-
-                    <td>
-
-                        <span class="badge" [ngClass]="item.isActive ? 'bg-success' : 'bg-danger'">
-
-                            {{ item.isActive ? 'Active' : 'Inactive' }}
-
-                        </span>
-
-                    </td>
-
-                    <td>
-
-                        <button class="btn btn-warning btn-sm me-2" (click)="edit(item.holidayId)">
-
-                            <i class="fa fa-edit"></i>
-
-                        </button>
-
-                        <button class="btn btn-danger btn-sm" (click)="delete(item.holidayId)">
-
-                            <i class="fa fa-trash"></i>
-
-                        </button>
-
-                    </td>
-
-                </tr>
-
-            </tbody>
-
-        </table>
+        </div>
 
     </div>
 
-    <!-- ========================================= -->
-    <!-- Pagination -->
-    <!-- ========================================= -->
+</div>
+
+<!-- ========================================= -->
+<!-- Holiday List -->
+<!-- ========================================= -->
+
+<div class="card shadow-sm border-0">
+
+    <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+
+        <h5 class="mb-0">
+
+            Holidays
+
+        </h5>
+
+        <span class="badge bg-light text-dark">
+
+            Total Records : {{filteredHolidays.length}}
+
+        </span>
+
+    </div>
+
+    <div class="card-body p-0">
+
+        <div class="table-responsive">
+
+            <table class="table table-hover table-bordered align-middle mb-0">
+
+                <thead class="table-danger">
+
+                    <tr>
+
+                        <th width="70">
+
+                            #
+
+                        </th>
+
+                        <th>
+
+                            Holiday
+
+                        </th>
+
+                        <th>
+
+                            Date
+
+                        </th>
+
+                        <th>
+
+                            Type
+
+                        </th>
+
+                        <th>
+
+                            Branch
+
+                        </th>
+
+                        <th>
+
+                            Country / State
+
+                        </th>
+
+                        <th>
+
+                            Applicable For
+
+                        </th>
+
+                        <th>
+
+                            Recurring
+
+                        </th>
+
+                        <th width="170">
+
+                            Action
+
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr *ngFor="let item of pagedHolidays; let i=index">
+
+                        <td>
+
+                            {{((page-1)*pageSize)+i+1}}
+
+                        </td>
+
+                        <td>
+
+                            <div class="fw-bold">
+
+                                {{item.holidayName}}
+
+                            </div>
+
+                            <small class="text-muted">
+
+                                {{item.holidayCategory}}
+
+                            </small>
+
+                        </td>
+
+                        <td>
+
+                            {{item.holidayDate | date:'dd-MMM-yyyy'}}
+
+                        </td>
+
+                        <td>
+
+                            {{item.holidayType || '-'}}
+
+                        </td>
+
+                        <td>
+
+                            {{getBranchName(item.branchId)}}
+
+                        </td>
+
+                        <td>
+
+                            {{getCountryName(item.countryId)}} / {{getStateName(item.stateId)}}
+
+                        </td>
+
+                        <td>
+
+                            {{item.applicableFor || '-'}}
+
+                        </td>
+
+                        <td>
+
+                            <span class="badge" [ngClass]="item.recurringHoliday ? 'bg-primary' : 'bg-light text-dark'">
+
+                                {{item.recurringHoliday ? 'Yes' : 'No'}}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <button class="btn btn-warning btn-sm me-2" (click)="edit(item.holidayCalendarId)">
+
+                                <i class="fa-solid fa-pen"></i>
+
+                                Edit
+
+                            </button>
+
+                            <button class="btn btn-danger btn-sm" (click)="delete(item.holidayCalendarId)">
+
+                                <i class="fa-solid fa-trash"></i>
+
+                                Delete
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                    <tr *ngIf="pagedHolidays.length==0">
+
+                        <td colspan="9" class="text-center text-muted py-5">
+
+                            <i class="fa-solid fa-calendar-days fa-3x mb-3"></i>
+
+                            <br>
+
+                            No Holidays Found.
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ========================================= -->
+<!-- Pagination -->
+<!-- ========================================= -->
+
+<div class="mt-3">
 
     <app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredHolidays.length"
         (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">

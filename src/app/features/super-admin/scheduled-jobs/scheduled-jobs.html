@@ -1,10 +1,99 @@
-<div class="container mt-4">
+<div class="container-fluid mt-4">
 
-    <div class="card">
+    <!-- ========================================= -->
+    <!-- Page Header -->
+    <!-- ========================================= -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h3 class="fw-bold text-danger mb-1">
+
+                <i class="fa-solid fa-clock me-2"></i>
+
+                Scheduled Jobs
+
+            </h3>
+
+            <p class="text-muted mb-0">
+
+                Configure and manage system scheduled jobs and background tasks.
+
+            </p>
+
+        </div>
+
+        <div>
+
+            <button class="btn btn-outline-secondary me-2" (click)="clear()">
+
+                <i class="fa-solid fa-rotate"></i>
+
+                Clear
+
+            </button>
+
+            <button class="btn btn-danger" (click)="saveScheduledJob()">
+
+                <i class="fa-solid" [ngClass]="isEdit ? 'fa-pen' : 'fa-plus'"></i>
+
+                {{isEdit ? ' Update Job' : ' Add Job'}}
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Statistics -->
+    <!-- ========================================= -->
+
+    <div class="row mb-4">
+
+        <div class="col-md-4 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Total Jobs</div>
+                <div class="fw-bold fs-4 text-danger">{{totalScheduledJobs}}</div>
+            </div>
+
+        </div>
+
+        <div class="col-md-4 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Active</div>
+                <div class="fw-bold fs-4 text-success">{{activeScheduledJobs}}</div>
+            </div>
+
+        </div>
+
+        <div class="col-md-4 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Inactive</div>
+                <div class="fw-bold fs-4 text-secondary">{{inactiveScheduledJobs}}</div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Scheduled Job Form -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm border-0 mb-4">
 
         <div class="card-header bg-danger text-white">
 
-            <h4>Scheduled Jobs</h4>
+            <h5 class="mb-0">
+
+                Scheduled Job Information
+
+            </h5>
 
         </div>
 
@@ -12,192 +101,610 @@
 
             <div class="row">
 
-                <div class="col-md-4 mb-3">
-                    <label>Job Name <span class="text-danger">*</span></label>
-                    <input class="form-control" placeholder="Daily Database Backup">
-                </div>
+                <!-- Company -->
 
                 <div class="col-md-4 mb-3">
-                    <label>Job Category <span class="text-danger">*</span></label>
-                    <select class="form-select">
-                        <option>Backup</option>
-                        <option>Email</option>
-                        <option>Notifications</option>
-                        <option>Reports</option>
-                        <option>Data Synchronization</option>
-                        <option>Cleanup</option>
-                        <option>Subscription</option>
-                    </select>
-                </div>
 
-                <div class="col-md-4 mb-3">
-                    <label>Execution Type</label>
-                    <select class="form-select">
-                        <option>Daily</option>
-                        <option>Weekly</option>
-                        <option>Monthly</option>
-                        <option>Hourly</option>
-                        <option>Custom Cron</option>
-                    </select>
-                </div>
+                    <label class="form-label">
 
-                <div class="col-md-4 mb-3">
-                    <label>Execution Time</label>
-                    <input type="time" class="form-control">
-                </div>
+                        Company
 
-                <div class="col-md-4 mb-3">
-                    <label>Time Zone</label>
-                    <select class="form-select">
-                        <option>UTC</option>
-                        <option>Asia/Kolkata</option>
-                        <option>America/New_York</option>
-                        <option>Europe/London</option>
-                    </select>
-                </div>
+                        <span class="text-danger">*</span>
 
-                <div class="col-md-4 mb-3">
-                    <label>Retry Count</label>
-                    <input type="number"
-                           class="form-control"
-                           value="3">
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label>Job Description</label>
-                    <textarea class="form-control"
-                              rows="2"
-                              placeholder="Enter job description"></textarea>
-                </div>
-
-                <div class="col-md-3 mt-4">
-                    <label>
-                        <input type="checkbox" checked>
-                        Run on Startup
                     </label>
+
+                    <select class="form-select" [(ngModel)]="job.companyId" (ngModelChange)="onCompanyChange()">
+
+                        <option [ngValue]="null">Select Company</option>
+
+                        <option *ngFor="let c of companies" [ngValue]="c.companyId">{{c.companyName}}</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !job.companyId">
+
+                        Company is required.
+
+                    </div>
+
                 </div>
 
-                <div class="col-md-3 mt-4">
-                    <label>
-                        <input type="checkbox" checked>
-                        Active
+                <!-- Region -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Region
+
+                        <span class="text-danger">*</span>
+
                     </label>
+
+                    <select class="form-select" [(ngModel)]="job.regionId">
+
+                        <option [ngValue]="null">Select Region</option>
+
+                        <option *ngFor="let r of formRegions" [ngValue]="r.regionId">{{r.regionName}}</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !job.regionId">
+
+                        Region is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Job Name -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Job Name
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input class="form-control" placeholder="Example: Daily Database Backup" [(ngModel)]="job.jobName">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !job.jobName">
+
+                        Job Name is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Job Type -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Job Type
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="job.jobType">
+
+                        <option value="">Select Job Type</option>
+
+                        <option *ngFor="let jt of jobTypeOptions" [value]="jt">{{jt}}</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !job.jobType">
+
+                        Job Type is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Frequency -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Frequency
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="job.frequency">
+
+                        <option value="">Select Frequency</option>
+
+                        <option *ngFor="let f of frequencyOptions" [value]="f">{{f}}</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !job.frequency">
+
+                        Frequency is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Action Type -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Action Type
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input class="form-control" placeholder="Example: RunBackupJob" [(ngModel)]="job.actionType">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !job.actionType">
+
+                        Action Type is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Start Date -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Start Date
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="date" class="form-control" [(ngModel)]="job.startDate">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !job.startDate">
+
+                        Start Date is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Start Time -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Start Time
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="time" class="form-control" [(ngModel)]="job.startTime">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !job.startTime">
+
+                        Start Time is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Repeat Every -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Repeat Every
+
+                    </label>
+
+                    <input type="number" min="1" class="form-control" placeholder="e.g. every N hours/days" [(ngModel)]="job.repeatEvery">
+
+                </div>
+
+                <!-- Day Of Week (Weekly only) -->
+
+                <div class="col-md-4 mb-3" *ngIf="job.frequency === 'Weekly'">
+
+                    <label class="form-label">
+
+                        Day Of Week
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="job.dayOfWeek">
+
+                        <option [ngValue]="null">Select Day</option>
+
+                        <option *ngFor="let d of dayOfWeekOptions" [ngValue]="d.value">{{d.label}}</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Day Of Month (Monthly only) -->
+
+                <div class="col-md-4 mb-3" *ngIf="job.frequency === 'Monthly'">
+
+                    <label class="form-label">
+
+                        Day Of Month
+
+                    </label>
+
+                    <input type="number" min="1" max="31" class="form-control" [(ngModel)]="job.dayOfMonth">
+
+                </div>
+
+                <!-- Retry Count -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Retry Count
+
+                    </label>
+
+                    <input type="number" min="0" class="form-control" [(ngModel)]="job.retryCount">
+
+                </div>
+
+                <!-- Timeout Minutes -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Timeout (Minutes)
+
+                    </label>
+
+                    <input type="number" min="1" class="form-control" [(ngModel)]="job.timeoutMinutes">
+
+                </div>
+
+                <!-- Parameters -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Parameters
+
+                    </label>
+
+                    <input class="form-control" placeholder="Optional job parameters" [(ngModel)]="job.parameters">
+
+                </div>
+
+                <!-- Description -->
+
+                <div class="col-md-12 mb-3">
+
+                    <label class="form-label">
+
+                        Job Description
+
+                    </label>
+
+                    <textarea rows="2" class="form-control" placeholder="Enter job description" [(ngModel)]="job.description"></textarea>
+
+                </div>
+
+                <!-- Active -->
+
+                <div class="col-md-4 mb-3">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="job.isActive">
+
+                        <label class="form-check-label">
+
+                            Active
+
+                        </label>
+
+                    </div>
+
                 </div>
 
             </div>
 
-            <button class="btn btn-danger me-2">
-                Save
-            </button>
+        </div>
 
-            <button class="btn btn-secondary me-2">
-                Clear
-            </button>
+    </div>
 
-            <button class="btn btn-success">
-                Run Now
-            </button>
+</div>
+
+<!-- ========================================= -->
+<!-- Search Section -->
+<!-- ========================================= -->
+
+<div class="card shadow-sm border-0 mb-3">
+
+    <div class="card-body">
+
+        <div class="row">
+
+            <div class="col-md-4">
+
+                <input class="form-control" placeholder="Search Scheduled Job..." [(ngModel)]="searchText">
+
+            </div>
+
+            <div class="col-md-3">
+
+                <select class="form-select" [(ngModel)]="companyFilter">
+
+                    <option value="">All Companies</option>
+
+                    <option *ngFor="let c of companies" [value]="c.companyId">{{c.companyName}}</option>
+
+                </select>
+
+            </div>
+
+            <div class="col-md-3">
+
+                <select class="form-select" [(ngModel)]="statusFilter">
+
+                    <option value="">All Status</option>
+
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+
+                </select>
+
+            </div>
+
+            <div class="col-md-2">
+
+                <button class="btn btn-secondary w-100" (click)="clearFilters()">
+
+                    Clear
+
+                </button>
+
+            </div>
 
         </div>
 
     </div>
 
-    <br>
+</div>
 
-    <div class="row mb-3">
+<!-- ========================================= -->
+<!-- Scheduled Job List -->
+<!-- ========================================= -->
 
-        <div class="col-md-4">
-            <input class="form-control"
-                   placeholder="Search Scheduled Job...">
+<div class="card shadow-sm border-0">
+
+    <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+
+        <h5 class="mb-0">
+
+            Scheduled Jobs
+
+        </h5>
+
+        <span class="badge bg-light text-dark">
+
+            Total Records : {{filteredScheduledJobs.length}}
+
+        </span>
+
+    </div>
+
+    <div class="card-body p-0">
+
+        <div class="table-responsive">
+
+            <table class="table table-hover table-bordered align-middle mb-0">
+
+                <thead class="table-danger">
+
+                    <tr>
+
+                        <th width="70">
+
+                            #
+
+                        </th>
+
+                        <th>
+
+                            Job Name
+
+                        </th>
+
+                        <th>
+
+                            Company
+
+                        </th>
+
+                        <th>
+
+                            Type
+
+                        </th>
+
+                        <th>
+
+                            Frequency
+
+                        </th>
+
+                        <th>
+
+                            Next Run
+
+                        </th>
+
+                        <th>
+
+                            Last Run
+
+                        </th>
+
+                        <th>
+
+                            Status
+
+                        </th>
+
+                        <th width="170">
+
+                            Action
+
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr *ngFor="let item of pagedScheduledJobs; let i=index">
+
+                        <td>
+
+                            {{((page-1)*pageSize)+i+1}}
+
+                        </td>
+
+                        <td>
+
+                            <div class="fw-bold">
+
+                                {{item.jobName}}
+
+                            </div>
+
+                            <small class="text-muted">
+
+                                {{item.actionType}}
+
+                            </small>
+
+                        </td>
+
+                        <td>
+
+                            {{getCompanyName(item.companyId)}}
+
+                        </td>
+
+                        <td>
+
+                            {{item.jobType}}
+
+                        </td>
+
+                        <td>
+
+                            {{item.frequency}}
+
+                        </td>
+
+                        <td>
+
+                            {{item.nextRunAt ? (item.nextRunAt | date:'dd-MMM-yyyy HH:mm') : '—'}}
+
+                        </td>
+
+                        <td>
+
+                            {{item.lastRunAt ? (item.lastRunAt | date:'dd-MMM-yyyy HH:mm') : '—'}}
+
+                            <div *ngIf="item.lastRunStatus" class="small text-muted">
+
+                                {{item.lastRunStatus}}
+
+                            </div>
+
+                        </td>
+
+                        <td>
+
+                            <span class="badge" [ngClass]="item.isActive ? 'bg-success' : 'bg-secondary'">
+
+                                {{item.isActive ? 'Active' : 'Inactive'}}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <button class="btn btn-warning btn-sm me-2" (click)="edit(item.scheduledJobId)">
+
+                                <i class="fa-solid fa-pen"></i>
+
+                                Edit
+
+                            </button>
+
+                            <button class="btn btn-danger btn-sm" (click)="delete(item.scheduledJobId)">
+
+                                <i class="fa-solid fa-trash"></i>
+
+                                Delete
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                    <tr *ngIf="pagedScheduledJobs.length==0">
+
+                        <td colspan="9" class="text-center text-muted py-5">
+
+                            <i class="fa-solid fa-clock fa-3x mb-3"></i>
+
+                            <br>
+
+                            No Scheduled Jobs Found.
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
         </div>
 
     </div>
 
-    <table class="table table-bordered table-hover">
+</div>
 
-        <thead class="table-danger">
+<!-- ========================================= -->
+<!-- Pagination -->
+<!-- ========================================= -->
 
-            <tr>
+<div class="mt-3">
 
-                <th>#</th>
-                <th>Job Name</th>
-                <th>Category</th>
-                <th>Execution</th>
-                <th>Next Run</th>
-                <th>Last Run</th>
-                <th>Status</th>
-                <th width="170">Action</th>
+    <app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredScheduledJobs.length"
+        (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
 
-            </tr>
-
-        </thead>
-
-        <tbody>
-
-            <tr>
-                <td>1</td>
-                <td>Daily Database Backup</td>
-                <td>Backup</td>
-                <td>Daily - 11:00 PM</td>
-                <td>28-Jul-2026 11:00 PM</td>
-                <td>27-Jul-2026 11:00 PM</td>
-                <td><span class="badge bg-success">Active</span></td>
-                <td>
-                    <button class="btn btn-warning btn-sm me-2">Edit</button>
-                    <button class="btn btn-success btn-sm me-2">Run</button>
-                    <button class="btn btn-danger btn-sm">Delete</button>
-                </td>
-            </tr>
-
-            <tr>
-                <td>2</td>
-                <td>Subscription Renewal Reminder</td>
-                <td>Email</td>
-                <td>Daily - 08:00 AM</td>
-                <td>28-Jul-2026 08:00 AM</td>
-                <td>27-Jul-2026 08:00 AM</td>
-                <td><span class="badge bg-success">Active</span></td>
-                <td>
-                    <button class="btn btn-warning btn-sm me-2">Edit</button>
-                    <button class="btn btn-success btn-sm me-2">Run</button>
-                    <button class="btn btn-danger btn-sm">Delete</button>
-                </td>
-            </tr>
-
-            <tr>
-                <td>3</td>
-                <td>Weekly Sales Report</td>
-                <td>Reports</td>
-                <td>Monday - 09:00 AM</td>
-                <td>03-Aug-2026 09:00 AM</td>
-                <td>27-Jul-2026 09:00 AM</td>
-                <td><span class="badge bg-success">Active</span></td>
-                <td>
-                    <button class="btn btn-warning btn-sm me-2">Edit</button>
-                    <button class="btn btn-success btn-sm me-2">Run</button>
-                    <button class="btn btn-danger btn-sm">Delete</button>
-                </td>
-            </tr>
-
-            <tr>
-                <td>4</td>
-                <td>Log Cleanup</td>
-                <td>Cleanup</td>
-                <td>Monthly - 01:00 AM</td>
-                <td>01-Aug-2026 01:00 AM</td>
-                <td>01-Jul-2026 01:00 AM</td>
-                <td><span class="badge bg-danger">Inactive</span></td>
-                <td>
-                    <button class="btn btn-warning btn-sm me-2">Edit</button>
-                    <button class="btn btn-success btn-sm me-2">Run</button>
-                    <button class="btn btn-danger btn-sm">Delete</button>
-                </td>
-            </tr>
-
-        </tbody>
-
-    </table>
-
- 
+    </app-pagination>
 
 </div>

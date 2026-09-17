@@ -1,21 +1,26 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Alertservice } from '../../../../core/services/alertservice';
 import { Spinnerservice } from '../../../../core/services/spinnerservice';
 import { Pagination } from '../../../../shared/pagination/pagination';
+import { AuthService } from '../../../../core/authentication/services/auth.service';
+import { ControlsystemService } from '../../services/controlsystem-service';
 
 @Component({
   selector: 'app-business-units',
   standalone: true,
-  imports: [CommonModule,FormsModule,Pagination],
+  imports: [CommonModule, FormsModule, Pagination],
   templateUrl: './business-units.html',
   styleUrl: './business-units.css',
 })
-export class BusinessUnits {
-   constructor(
+export class BusinessUnits implements OnInit {
+  constructor(
     private alert: Alertservice,
-    private spinner: Spinnerservice
+    private spinner: Spinnerservice,
+    private cd: ChangeDetectorRef,
+    private authService: AuthService,
+    private controlsystemService: ControlsystemService
   ) { }
 
   //====================================================
@@ -32,11 +37,26 @@ export class BusinessUnits {
   companyFilter = '';
   statusFilter = '';
 
-  businessUnit: any = this.getEmptyModel();
+  //====================================================
+  // Dropdown Data (from backend)
+  //====================================================
+
+  organizations: any[] = [];
+  companies: any[] = [];
+  regions: any[] = [];
+  branches: any[] = [];
 
   //====================================================
-  // Empty Model
+  // Business Unit List
   //====================================================
+
+  businessUnits: any[] = [];
+
+  //====================================================
+  // Form Model
+  //====================================================
+
+  businessUnit: any = this.getEmptyModel();
 
   getEmptyModel() {
 
@@ -44,9 +64,13 @@ export class BusinessUnits {
 
       businessUnitId: 0,
 
-      organization: '',
+      organizationId: null,
 
-      company: '',
+      companyId: null,
+
+      regionId: null,
+
+      branchId: null,
 
       businessUnitName: '',
 
@@ -54,202 +78,302 @@ export class BusinessUnits {
 
       parentBusinessUnit: '',
 
+      businessUnitHead: '',
+
       unitHead: '',
-
-      department: '',
-
-      region: '',
-
-      branch: '',
-
-      employeeStrength: 0,
-
-      costCenterCode: '',
-
-      annualBudget: 0,
-
-      phone: '',
 
       email: '',
 
-      extension: '',
+      mobileNumber: '',
 
-      workingHours: 'General Shift',
+      contactNumber: '',
+
+      extensionNumber: '',
+
+      employeeStrength: null,
+
+      costCenterCode: '',
+
+      annualBudget: null,
 
       description: '',
 
       remarks: '',
 
-      status: 'Active',
+      status: true,
 
-      isActive: true,
+      defaultBusinessUnit: false,
 
-      isDefault: false,
-
-      isBillable: false
+      billableUnit: false
 
     };
 
   }
 
   //====================================================
-  // Static Data
+  // Lifecycle
   //====================================================
 
-  businessUnits: any[] = [
+  ngOnInit(): void {
 
-    {
+    this.loadOrganizations();
 
-      businessUnitId: 1,
+    this.loadCompanies();
 
-      organization: 'OpenVision Technologies',
+    this.loadRegions();
 
-      company: 'ABC Technologies',
+    this.loadBranches();
 
-      businessUnitName: 'Sales',
+    this.loadBusinessUnits();
 
-      businessUnitCode: 'BU001',
+  }
 
-      parentBusinessUnit: 'Corporate',
+  //====================================================
+  // Load Dropdown Data
+  //====================================================
 
-      unitHead: 'John Smith',
+  loadOrganizations(): void {
 
-      department: 'Sales',
+    this.controlsystemService.getOrganizations().subscribe({
 
-      region: 'South Region',
+      next: (res: any) => {
 
-      branch: 'Hyderabad',
+        this.organizations = res?.data || [];
 
-      employeeStrength: 45,
+        this.cd.detectChanges();
 
-      costCenterCode: 'CC100',
+      },
 
-      annualBudget: 250000,
+      error: (err) => {
 
-      phone: '9876543210',
+        console.error('Error loading organizations:', err);
 
-      email: 'sales@abc.com',
+        this.organizations = [];
 
-      extension: '101',
+      }
 
-      workingHours: 'General Shift',
+    });
 
-      description: 'Sales Division',
+  }
 
-      remarks: '',
+  loadCompanies(): void {
 
-      status: 'Active',
+    this.authService.getCompanies().subscribe({
 
-      isActive: true,
+      next: (res: any) => {
 
-      isDefault: true,
+        this.companies = (res?.data || []).filter(
+          (x: any) => x.isActive !== false
+        );
 
-      isBillable: true
+        this.cd.detectChanges();
 
-    },
+      },
 
-    {
+      error: (err) => {
 
-      businessUnitId: 2,
+        console.error('Error loading companies:', err);
 
-      organization: 'OpenVision Technologies',
+        this.companies = [];
 
-      company: 'XYZ Solutions',
+      }
 
-      businessUnitName: 'Human Resources',
+    });
 
-      businessUnitCode: 'BU002',
+  }
 
-      parentBusinessUnit: 'Corporate',
+  loadRegions(): void {
 
-      unitHead: 'Maria Joseph',
+    this.authService.getRegions().subscribe({
 
-      department: 'HR',
+      next: (res: any) => {
 
-      region: 'North Region',
+        this.regions = (res?.data || []).filter(
+          (x: any) => x.isActive !== false
+        );
 
-      branch: 'Delhi',
+        this.cd.detectChanges();
 
-      employeeStrength: 20,
+      },
 
-      costCenterCode: 'CC200',
+      error: (err) => {
 
-      annualBudget: 120000,
+        console.error('Error loading regions:', err);
 
-      phone: '9988776655',
+        this.regions = [];
 
-      email: 'hr@xyz.com',
+      }
 
-      extension: '102',
+    });
 
-      workingHours: 'General Shift',
+  }
 
-      description: 'HR Department',
+  loadBranches(): void {
 
-      remarks: '',
+    this.controlsystemService.getBranches().subscribe({
 
-      status: 'Active',
+      next: (res: any) => {
 
-      isActive: true,
+        this.branches = (res?.data || []).filter(
+          (x: any) => x.status === true
+        );
 
-      isDefault: false,
+        this.cd.detectChanges();
 
-      isBillable: false
+      },
 
-    },
+      error: (err) => {
 
-    {
+        console.error('Error loading branches:', err);
 
-      businessUnitId: 3,
+        this.branches = [];
 
-      organization: 'OpenVision Technologies',
+      }
 
-      company: 'Open CRM',
+    });
 
-      businessUnitName: 'Finance',
+  }
 
-      businessUnitCode: 'BU003',
+  //====================================================
+  // Load Business Units
+  //====================================================
 
-      parentBusinessUnit: 'Corporate',
+  loadBusinessUnits(): void {
 
-      unitHead: 'David Wilson',
+    this.spinner.show();
 
-      department: 'Finance',
+    this.controlsystemService.getBusinessUnits().subscribe({
 
-      region: 'West Region',
+      next: (res: any) => {
 
-      branch: 'Mumbai',
+        this.spinner.hide();
 
-      employeeStrength: 15,
+        if (res?.success) {
 
-      costCenterCode: 'CC300',
+          this.businessUnits = res.data || [];
 
-      annualBudget: 175000,
+        } else {
 
-      phone: '9876501234',
+          this.businessUnits = [];
 
-      email: 'finance@opencrm.com',
+          this.alert.warning(
+            res?.message || 'No business unit records found.'
+          );
 
-      extension: '103',
+        }
 
-      workingHours: 'General Shift',
+        this.cd.detectChanges();
 
-      description: 'Finance Department',
+      },
 
-      remarks: '',
+      error: (err) => {
 
-      status: 'Inactive',
+        this.spinner.hide();
 
-      isActive: false,
+        console.error('Error loading business units:', err);
 
-      isDefault: false,
+        this.businessUnits = [];
 
-      isBillable: true
+        this.alert.error(
+          err?.error?.message || 'Failed to load business units.'
+        );
 
-    }
+        this.cd.detectChanges();
 
-  ];
-    //====================================================
+      }
+
+    });
+
+  }
+
+  //====================================================
+  // Lookup Helpers (Display Names)
+  //====================================================
+
+  getOrganizationName(id: any): string {
+
+    const item = this.organizations.find(
+      x => x.organizationId === Number(id)
+    );
+
+    return item ? item.organizationName : '-';
+
+  }
+
+  getCompanyName(id: any): string {
+
+    const item = this.companies.find(x => x.companyId === Number(id));
+
+    return item ? item.companyName : '-';
+
+  }
+
+  getRegionName(id: any): string {
+
+    if (!id) return '-';
+
+    const item = this.regions.find(x => x.regionId === Number(id));
+
+    return item ? item.regionName : '-';
+
+  }
+
+  getBranchName(id: any): string {
+
+    if (!id) return '-';
+
+    const item = this.branches.find(x => x.branchId === Number(id));
+
+    return item ? item.branchName : '-';
+
+  }
+
+  //====================================================
+  // Cascading Dropdowns
+  //====================================================
+
+  get formRegions(): any[] {
+
+    if (!this.businessUnit.companyId) return this.regions;
+
+    return this.regions.filter(
+      x => x.companyId === Number(this.businessUnit.companyId)
+    );
+
+  }
+
+  get formBranches(): any[] {
+
+    return this.branches.filter(x => {
+
+      const matchesCompany =
+        !this.businessUnit.companyId ||
+        x.companyId === Number(this.businessUnit.companyId);
+
+      const matchesRegion =
+        !this.businessUnit.regionId ||
+        x.regionId === Number(this.businessUnit.regionId);
+
+      return matchesCompany && matchesRegion;
+
+    });
+
+  }
+
+  onCompanyChange(): void {
+
+    this.businessUnit.regionId = null;
+    this.businessUnit.branchId = null;
+
+  }
+
+  onRegionChange(): void {
+
+    this.businessUnit.branchId = null;
+
+  }
+
+  //====================================================
   // Filtered Business Units
   //====================================================
 
@@ -257,30 +381,24 @@ export class BusinessUnits {
 
     return this.businessUnits.filter(x => {
 
-      const search = this.searchText.toLowerCase();
+      const search = this.searchText.trim().toLowerCase();
 
       const matchSearch =
         !search ||
-
-        x.businessUnitName.toLowerCase().includes(search) ||
-
-        x.businessUnitCode.toLowerCase().includes(search) ||
-
-        x.company.toLowerCase().includes(search) ||
-
-        x.department.toLowerCase().includes(search) ||
-
-        x.unitHead.toLowerCase().includes(search) ||
-
-        x.email.toLowerCase().includes(search);
+        (x.businessUnitName || '').toLowerCase().includes(search) ||
+        (x.businessUnitCode || '').toLowerCase().includes(search) ||
+        (x.unitHead || '').toLowerCase().includes(search) ||
+        (x.businessUnitHead || '').toLowerCase().includes(search) ||
+        (x.email || '').toLowerCase().includes(search);
 
       const matchCompany =
         !this.companyFilter ||
-        x.company === this.companyFilter;
+        Number(x.companyId) === Number(this.companyFilter);
 
       const matchStatus =
-        !this.statusFilter ||
-        x.status === this.statusFilter;
+        this.statusFilter === '' ||
+        (this.statusFilter === 'Active' && x.status === true) ||
+        (this.statusFilter === 'Inactive' && x.status === false);
 
       return matchSearch && matchCompany && matchStatus;
 
@@ -296,10 +414,7 @@ export class BusinessUnits {
 
     const start = (this.page - 1) * this.pageSize;
 
-    return this.filteredBusinessUnits.slice(
-      start,
-      start + this.pageSize
-    );
+    return this.filteredBusinessUnits.slice(start, start + this.pageSize);
 
   }
 
@@ -307,54 +422,49 @@ export class BusinessUnits {
   // Dashboard Statistics
   //====================================================
 
-  get totalBusinessUnits() {
+  get totalBusinessUnits(): number {
 
     return this.businessUnits.length;
 
   }
 
-  get activeBusinessUnits() {
+  get activeBusinessUnits(): number {
 
-    return this.businessUnits.filter(x => x.isActive).length;
-
-  }
-
-  get inactiveBusinessUnits() {
-
-    return this.businessUnits.filter(x => !x.isActive).length;
+    return this.businessUnits.filter(x => x.status === true).length;
 
   }
 
-  get totalCompanies() {
+  get inactiveBusinessUnits(): number {
 
-    return [...new Set(this.businessUnits.map(x => x.company))].length;
+    return this.businessUnits.filter(x => x.status === false).length;
 
   }
 
-  get totalEmployees() {
+  get totalCompanies(): number {
+
+    return [...new Set(this.businessUnits.map(x => x.companyId))].length;
+
+  }
+
+  get totalEmployees(): number {
 
     return this.businessUnits.reduce(
-
       (total, item) => total + Number(item.employeeStrength || 0),
-
       0
-
     );
 
   }
 
-  get totalBudget() {
+  get totalBudget(): number {
 
     return this.businessUnits.reduce(
-
       (total, item) => total + Number(item.annualBudget || 0),
-
       0
-
     );
 
   }
-    //====================================================
+
+  //====================================================
   // Save / Update
   //====================================================
 
@@ -363,50 +473,205 @@ export class BusinessUnits {
     this.submitted = true;
 
     if (
-      !this.businessUnit.company ||
+      !this.businessUnit.organizationId ||
+      !this.businessUnit.companyId ||
       !this.businessUnit.businessUnitName ||
+      !this.businessUnit.businessUnitName.trim() ||
       !this.businessUnit.businessUnitCode ||
-      !this.businessUnit.unitHead
+      !this.businessUnit.businessUnitCode.trim()
     ) {
+
+      this.alert.warning('Please fill all required fields.');
+
       return;
+
     }
+
+    if (
+      this.businessUnit.employeeStrength !== null &&
+      this.businessUnit.employeeStrength !== '' &&
+      Number(this.businessUnit.employeeStrength) < 0
+    ) {
+
+      this.alert.warning('Employee Strength cannot be negative.');
+
+      return;
+
+    }
+
+    if (
+      this.businessUnit.annualBudget !== null &&
+      this.businessUnit.annualBudget !== '' &&
+      Number(this.businessUnit.annualBudget) < 0
+    ) {
+
+      this.alert.warning('Annual Budget cannot be negative.');
+
+      return;
+
+    }
+
+    const payload = {
+
+      businessUnitId: this.isEdit ? this.businessUnit.businessUnitId : 0,
+
+      organizationId: Number(this.businessUnit.organizationId),
+
+      companyId: Number(this.businessUnit.companyId),
+
+      regionId: this.businessUnit.regionId ? Number(this.businessUnit.regionId) : null,
+
+      branchId: this.businessUnit.branchId ? Number(this.businessUnit.branchId) : null,
+
+      businessUnitName: this.businessUnit.businessUnitName.trim(),
+
+      businessUnitCode: this.businessUnit.businessUnitCode.trim(),
+
+      parentBusinessUnit: this.businessUnit.parentBusinessUnit
+        ? this.businessUnit.parentBusinessUnit.trim()
+        : null,
+
+      businessUnitHead: this.businessUnit.businessUnitHead
+        ? this.businessUnit.businessUnitHead.trim()
+        : null,
+
+      unitHead: this.businessUnit.unitHead
+        ? this.businessUnit.unitHead.trim()
+        : null,
+
+      email: this.businessUnit.email ? this.businessUnit.email.trim() : null,
+
+      mobileNumber: this.businessUnit.mobileNumber
+        ? this.businessUnit.mobileNumber.trim()
+        : null,
+
+      contactNumber: this.businessUnit.contactNumber
+        ? this.businessUnit.contactNumber.trim()
+        : null,
+
+      extensionNumber: this.businessUnit.extensionNumber
+        ? this.businessUnit.extensionNumber.trim()
+        : null,
+
+      description: this.businessUnit.description
+        ? this.businessUnit.description.trim()
+        : null,
+
+      remarks: this.businessUnit.remarks
+        ? this.businessUnit.remarks.trim()
+        : null,
+
+      status: !!this.businessUnit.status,
+
+      defaultBusinessUnit: !!this.businessUnit.defaultBusinessUnit,
+
+      billableUnit: !!this.businessUnit.billableUnit,
+
+      employeeStrength:
+        this.businessUnit.employeeStrength !== null &&
+          this.businessUnit.employeeStrength !== ''
+          ? Number(this.businessUnit.employeeStrength)
+          : null,
+
+      costCenterCode: this.businessUnit.costCenterCode
+        ? this.businessUnit.costCenterCode.trim()
+        : null,
+
+      annualBudget:
+        this.businessUnit.annualBudget !== null &&
+          this.businessUnit.annualBudget !== ''
+          ? Number(this.businessUnit.annualBudget)
+          : null
+
+    };
 
     this.spinner.show();
 
-    setTimeout(() => {
+    if (this.isEdit) {
 
-      if (this.isEdit) {
+      this.controlsystemService.updateBusinessUnit(payload).subscribe({
 
-        const index = this.businessUnits.findIndex(
-          x => x.businessUnitId === this.businessUnit.businessUnitId
-        );
+        next: (res: any) => {
 
-        if (index > -1) {
-          this.businessUnits[index] = {
-            ...this.businessUnit
-          };
+          this.spinner.hide();
+
+          if (res?.success) {
+
+            this.alert.success(
+              res.message || 'Business Unit updated successfully.'
+            );
+
+            this.clear();
+
+            this.loadBusinessUnits();
+
+          } else {
+
+            this.alert.warning(
+              res?.message || 'Failed to update business unit.'
+            );
+
+          }
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Update business unit error:', err);
+
+          this.alert.error(
+            err?.error?.message || 'Failed to update business unit.'
+          );
+
         }
 
-        this.alert.success('Business Unit updated successfully.');
+      });
 
-      }
-      else {
+    } else {
 
-        this.businessUnit.businessUnitId = new Date().getTime();
+      this.controlsystemService.createBusinessUnit(payload).subscribe({
 
-        this.businessUnits.unshift({
-          ...this.businessUnit
-        });
+        next: (res: any) => {
 
-        this.alert.success('Business Unit created successfully.');
+          this.spinner.hide();
 
-      }
+          if (res?.success) {
 
-      this.spinner.hide();
+            this.alert.success(
+              res.message || 'Business Unit created successfully.'
+            );
 
-      this.clear();
+            this.clear();
 
-    }, 500);
+            this.loadBusinessUnits();
+
+          } else {
+
+            this.alert.warning(
+              res?.message || 'Failed to create business unit.'
+            );
+
+          }
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Create business unit error:', err);
+
+          this.alert.error(
+            err?.error?.message || 'Failed to create business unit.'
+          );
+
+        }
+
+      });
+
+    }
 
   }
 
@@ -416,19 +681,93 @@ export class BusinessUnits {
 
   edit(id: number): void {
 
-    const data = this.businessUnits.find(
-      x => x.businessUnitId === id
-    );
+    this.spinner.show();
 
-    if (!data) return;
+    this.controlsystemService.getBusinessUnitById(id).subscribe({
 
-    this.businessUnit = {
-      ...data
-    };
+      next: (res: any) => {
 
-    this.isEdit = true;
+        this.spinner.hide();
 
-    this.submitted = false;
+        if (res?.success && res.data) {
+
+          const data = res.data;
+
+          this.businessUnit = {
+
+            businessUnitId: data.businessUnitId,
+
+            organizationId: data.organizationId,
+
+            companyId: data.companyId,
+
+            regionId: data.regionId,
+
+            branchId: data.branchId,
+
+            businessUnitName: data.businessUnitName || '',
+
+            businessUnitCode: data.businessUnitCode || '',
+
+            parentBusinessUnit: data.parentBusinessUnit || '',
+
+            businessUnitHead: data.businessUnitHead || '',
+
+            unitHead: data.unitHead || '',
+
+            email: data.email || '',
+
+            mobileNumber: data.mobileNumber || '',
+
+            contactNumber: data.contactNumber || '',
+
+            extensionNumber: data.extensionNumber || '',
+
+            employeeStrength: data.employeeStrength ?? null,
+
+            costCenterCode: data.costCenterCode || '',
+
+            annualBudget: data.annualBudget ?? null,
+
+            description: data.description || '',
+
+            remarks: data.remarks || '',
+
+            status: data.status === true,
+
+            defaultBusinessUnit: data.defaultBusinessUnit === true,
+
+            billableUnit: data.billableUnit === true
+
+          };
+
+          this.isEdit = true;
+
+          this.submitted = false;
+
+          this.cd.detectChanges();
+
+        } else {
+
+          this.alert.warning(res?.message || 'Business Unit not found.');
+
+        }
+
+      },
+
+      error: (err) => {
+
+        this.spinner.hide();
+
+        console.error('Get business unit error:', err);
+
+        this.alert.error(
+          err?.error?.message || 'Failed to load business unit.'
+        );
+
+      }
+
+    });
 
   }
 
@@ -444,20 +783,47 @@ export class BusinessUnits {
 
       this.spinner.show();
 
-      setTimeout(() => {
+      this.controlsystemService.deleteBusinessUnit(id).subscribe({
 
-        this.businessUnits =
-          this.businessUnits.filter(
-            x => x.businessUnitId !== id
+        next: (res: any) => {
+
+          this.spinner.hide();
+
+          if (res?.success) {
+
+            this.alert.success(
+              res.message || 'Business Unit deleted successfully.'
+            );
+
+            if (this.page > 1 && this.pagedBusinessUnits.length === 1) {
+              this.page = this.page - 1;
+            }
+
+            this.loadBusinessUnits();
+
+          } else {
+
+            this.alert.warning(
+              res?.message || 'Failed to delete business unit.'
+            );
+
+          }
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Delete business unit error:', err);
+
+          this.alert.error(
+            err?.error?.message || 'Failed to delete business unit.'
           );
 
-        this.spinner.hide();
+        }
 
-        this.alert.success(
-          'Business Unit deleted successfully.'
-        );
-
-      }, 400);
+      });
 
     });
 
@@ -517,19 +883,10 @@ export class BusinessUnits {
 
   refresh(): void {
 
-    this.spinner.show();
+    this.page = 1;
 
-    setTimeout(() => {
-
-      this.page = 1;
-
-      this.spinner.hide();
-
-      this.alert.success(
-        'Business Units refreshed successfully.'
-      );
-
-    }, 500);
+    this.loadBusinessUnits();
 
   }
+
 }

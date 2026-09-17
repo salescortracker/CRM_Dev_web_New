@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../../core/authentication/services/auth.service';
+import { Alertservice } from '../../../../core/services/alertservice';
 
 interface Permission {
   view: boolean;
@@ -40,6 +41,8 @@ export interface Menu {
   canEdit: boolean;
   canDelete: boolean;
   canApprove: boolean;
+  canReject: boolean;
+  canDownload: boolean;
 }
 
 @Component({
@@ -64,7 +67,8 @@ export class MenuAccess {
 
   isNew = false;
 constructor(
-  private authService: AuthService
+  private authService: AuthService,
+  private alert: Alertservice
 ) {}
   ngOnInit(): void {
 
@@ -149,7 +153,11 @@ loadMenus(): void {
 
     canDelete: false,
 
-    canApprove: false
+    canApprove: false,
+
+    canReject: false,
+
+    canDownload: false
   };
 
   this.applyRoleToMenu(this.selectedRole);
@@ -168,9 +176,15 @@ loadMenus(): void {
 
         next: (res) => {
 
-          alert(res.message);
+          this.alert.success(res.message);
 
           this.loadMenus();
+
+        },
+
+        error: (err) => {
+
+          this.alert.error(err?.error?.message || 'Failed to create menu.');
 
         }
       });
@@ -184,9 +198,15 @@ loadMenus(): void {
 
         next: (res) => {
 
-          alert(res.message);
+          this.alert.success(res.message);
 
           this.loadMenus();
+
+        },
+
+        error: (err) => {
+
+          this.alert.error(err?.error?.message || 'Failed to update menu.');
 
         }
       });
@@ -197,24 +217,34 @@ loadMenus(): void {
 
  deleteMenu(): void {
 
-  if (!confirm('Delete Menu ?')) {
+  this.alert.deleteConfirm().then((result) => {
 
-    return;
+    if (!result.isConfirmed) {
 
-  }
+      return;
 
-  this.authService
-    .deleteMenu(this.selectedMenu.menuId)
-    .subscribe({
+    }
 
-      next: (res) => {
+    this.authService
+      .deleteMenu(this.selectedMenu.menuId)
+      .subscribe({
 
-        alert(res.message);
+        next: (res) => {
 
-        this.loadMenus();
+          this.alert.success(res.message);
 
-      }
-    });
+          this.loadMenus();
+
+        },
+
+        error: (err) => {
+
+          this.alert.error(err?.error?.message || 'Failed to delete menu.');
+
+        }
+      });
+
+  });
 
 }
 

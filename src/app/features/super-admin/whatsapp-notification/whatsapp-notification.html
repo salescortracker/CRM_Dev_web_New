@@ -1,10 +1,108 @@
-<div class="container mt-4">
+<div class="container-fluid mt-4">
 
-    <div class="card">
+    <!-- ========================================= -->
+    <!-- Page Header -->
+    <!-- ========================================= -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h3 class="fw-bold text-danger mb-1">
+
+                <i class="fa-brands fa-whatsapp me-2"></i>
+
+                WhatsApp Templates
+
+            </h3>
+
+            <p class="text-muted mb-0">
+
+                Create and manage WhatsApp message templates and their approval status.
+
+            </p>
+
+        </div>
+
+        <div>
+
+            <button class="btn btn-outline-secondary me-2" (click)="clear()">
+
+                <i class="fa-solid fa-rotate"></i>
+
+                Clear
+
+            </button>
+
+            <button class="btn btn-danger" (click)="saveTemplate()">
+
+                <i class="fa-solid" [ngClass]="isEdit ? 'fa-pen' : 'fa-plus'"></i>
+
+                {{isEdit ? ' Update Template' : ' Add Template'}}
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Statistics -->
+    <!-- ========================================= -->
+
+    <div class="row mb-4">
+
+        <div class="col-md-3 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Total Templates</div>
+                <div class="fw-bold fs-4 text-danger">{{totalTemplates}}</div>
+            </div>
+
+        </div>
+
+        <div class="col-md-3 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Approved</div>
+                <div class="fw-bold fs-4 text-success">{{approvedTemplates}}</div>
+            </div>
+
+        </div>
+
+        <div class="col-md-3 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Pending</div>
+                <div class="fw-bold fs-4 text-warning">{{pendingTemplates}}</div>
+            </div>
+
+        </div>
+
+        <div class="col-md-3 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Rejected</div>
+                <div class="fw-bold fs-4 text-danger">{{rejectedTemplates}}</div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- WhatsApp Template Form -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm border-0 mb-4">
 
         <div class="card-header bg-danger text-white">
 
-            <h4>WhatsApp Templates</h4>
+            <h5 class="mb-0">
+
+                WhatsApp Template Information
+
+            </h5>
 
         </div>
 
@@ -12,198 +110,540 @@
 
             <div class="row">
 
-                <div class="col-md-4 mb-3">
-                    <label>Module</label>
-                    <select class="form-select">
-                        <option>All Modules</option>
-                        <option>Authentication</option>
-                        <option>Leads</option>
-                        <option>Sales</option>
-                        <option>Support</option>
-                        <option>Billing</option>
-                        <option>Subscription</option>
-                        <option>Marketing</option>
-                    </select>
-                </div>
+                <!-- Template Code -->
 
                 <div class="col-md-4 mb-3">
-                    <label>Template Category</label>
-                    <select class="form-select">
-                        <option>Authentication</option>
-                        <option>Utility</option>
-                        <option>Marketing</option>
-                    </select>
+
+                    <label class="form-label">
+
+                        Template Code
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input class="form-control" placeholder="Example: LOGIN_OTP"
+                        [(ngModel)]="template.templateCode">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !template.templateCode">
+
+                        Template Code is required.
+
+                    </div>
+
                 </div>
+
+                <!-- Template Name -->
 
                 <div class="col-md-4 mb-3">
-                    <label>Language</label>
-                    <select class="form-select">
-                        <option>English</option>
-                        <option>Hindi</option>
-                        <option>Telugu</option>
-                        <option>Tamil</option>
+
+                    <label class="form-label">
+
+                        Template Name
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input class="form-control" placeholder="Example: Login OTP"
+                        [(ngModel)]="template.templateName">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !template.templateName">
+
+                        Template Name is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Category -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Template Category
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="template.category">
+
+                        <option value="">Select Category</option>
+
+                        <option *ngFor="let c of categoryOptions" [value]="c">{{c}}</option>
+
                     </select>
+
                 </div>
 
-                <div class="col-md-4">
-                    <label>
-                        <input type="checkbox" checked>
-                        Enable WhatsApp Templates
+                <!-- Language -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Language
+
                     </label>
+
+                    <select class="form-select" [(ngModel)]="template.languageCode">
+
+                        <option *ngFor="let l of languageOptions" [value]="l.value">{{l.label}}</option>
+
+                    </select>
+
                 </div>
 
-                <div class="col-md-4">
-                    <label>
-                        <input type="checkbox" checked>
-                        Media Attachment Allowed
+                <!-- Provider -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Provider
+
                     </label>
+
+                    <select class="form-select" [(ngModel)]="template.providerName">
+
+                        <option *ngFor="let p of providerOptions" [value]="p">{{p}}</option>
+
+                    </select>
+
                 </div>
 
-                <div class="col-md-4">
-                    <label>
-                        <input type="checkbox" checked>
-                        Active
+                <!-- Template SID -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Template SID
+
                     </label>
+
+                    <input class="form-control" placeholder="Provider-issued template SID"
+                        [(ngModel)]="template.templateSid">
+
+                </div>
+
+                <!-- Header Text -->
+
+                <div class="col-md-12 mb-3">
+
+                    <label class="form-label">
+
+                        Header Text
+
+                    </label>
+
+                    <input class="form-control" placeholder="Optional header text" [(ngModel)]="template.headerText">
+
+                </div>
+
+                <!-- Body Text -->
+
+                <div class="col-md-12 mb-3">
+
+                    <label class="form-label">
+
+                        Body Text
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <textarea rows="4" class="form-control" placeholder="Enter the WhatsApp message body"
+                        [(ngModel)]="template.bodyText"></textarea>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !template.bodyText">
+
+                        Body Text is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Footer Text -->
+
+                <div class="col-md-12 mb-3">
+
+                    <label class="form-label">
+
+                        Footer Text
+
+                    </label>
+
+                    <input class="form-control" placeholder="Optional footer text" [(ngModel)]="template.footerText">
+
+                </div>
+
+                <!-- Version -->
+
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Version
+
+                    </label>
+
+                    <input type="number" min="1" class="form-control" [(ngModel)]="template.version">
+
+                </div>
+
+                <!-- Status -->
+
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Status
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="template.status">
+
+                        <option *ngFor="let s of statusOptions" [value]="s">{{s}}</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Approval Status -->
+
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Approval Status
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="template.approvalStatus" (ngModelChange)="onApprovalStatusChange()">
+
+                        <option *ngFor="let a of approvalStatusOptions" [value]="a">{{a}}</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Active -->
+
+                <div class="col-md-3 mb-3 d-flex align-items-end">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="template.isActive">
+
+                        <label class="form-check-label">
+
+                            Active
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <!-- Rejection Reason (only when Rejected) -->
+
+                <div class="col-md-12 mb-3" *ngIf="template.approvalStatus === 'Rejected'">
+
+                    <label class="form-label">
+
+                        Rejection Reason
+
+                    </label>
+
+                    <textarea rows="2" class="form-control" placeholder="Reason for rejection"
+                        [(ngModel)]="template.rejectionReason"></textarea>
+
                 </div>
 
             </div>
 
-            <button class="btn btn-danger me-2">
-                Save
-            </button>
+        </div>
 
-            <button class="btn btn-secondary me-2">
-                Clear
-            </button>
+    </div>
 
-            <button class="btn btn-success">
-                Add Template
-            </button>
+</div>
+
+<!-- ========================================= -->
+<!-- Search Section -->
+<!-- ========================================= -->
+
+<div class="card shadow-sm border-0 mb-3">
+
+    <div class="card-body">
+
+        <div class="row">
+
+            <div class="col-md-4">
+
+                <input class="form-control" placeholder="Search WhatsApp Template..." [(ngModel)]="searchText">
+
+            </div>
+
+            <div class="col-md-3">
+
+                <select class="form-select" [(ngModel)]="categoryFilter">
+
+                    <option value="">All Categories</option>
+
+                    <option *ngFor="let c of categoryOptions" [value]="c">{{c}}</option>
+
+                </select>
+
+            </div>
+
+            <div class="col-md-3">
+
+                <select class="form-select" [(ngModel)]="approvalStatusFilter">
+
+                    <option value="">All Approval Status</option>
+
+                    <option *ngFor="let a of approvalStatusOptions" [value]="a">{{a}}</option>
+
+                </select>
+
+            </div>
+
+            <div class="col-md-2">
+
+                <button class="btn btn-secondary w-100" (click)="clearFilters()">
+
+                    Clear
+
+                </button>
+
+            </div>
 
         </div>
 
     </div>
 
-    <br>
+</div>
 
-    <div class="row mb-3">
+<!-- ========================================= -->
+<!-- WhatsApp Template List -->
+<!-- ========================================= -->
 
-        <div class="col-md-3">
-            <input class="form-control"
-                   placeholder="Search WhatsApp Template...">
-        </div>
+<div class="card shadow-sm border-0">
 
-        <div class="col-md-3">
-            <select class="form-select">
-                <option>All Modules</option>
-                <option>Authentication</option>
-                <option>Sales</option>
-                <option>Support</option>
-                <option>Billing</option>
-            </select>
-        </div>
+    <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
 
-        <div class="col-md-3">
-            <select class="form-select">
-                <option>All Status</option>
-                <option>Approved</option>
-                <option>Pending</option>
-                <option>Rejected</option>
-            </select>
-        </div>
+        <h5 class="mb-0">
 
-        <div class="col-md-3">
-            <button class="btn btn-danger w-100">
-                Search
-            </button>
+            WhatsApp Templates
+
+        </h5>
+
+        <span class="badge bg-light text-dark">
+
+            Total Records : {{filteredTemplates.length}}
+
+        </span>
+
+    </div>
+
+    <div class="card-body p-0">
+
+        <div class="table-responsive">
+
+            <table class="table table-hover table-bordered align-middle mb-0">
+
+                <thead class="table-danger">
+
+                    <tr>
+
+                        <th width="70">#</th>
+                        <th>Template Name</th>
+                        <th>Category</th>
+                        <th>Language</th>
+                        <th>Approval Status</th>
+                        <th>Active</th>
+                        <th width="210">Action</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr *ngFor="let item of filteredTemplates; let i=index">
+
+                        <td>
+
+                            {{i+1}}
+
+                        </td>
+
+                        <td>
+
+                            <div class="fw-bold">
+
+                                {{item.templateName}}
+
+                            </div>
+
+                            <small class="text-muted">
+
+                                {{item.templateCode}}
+
+                            </small>
+
+                        </td>
+
+                        <td>
+
+                            {{item.category || '—'}}
+
+                        </td>
+
+                        <td>
+
+                            {{item.languageCode || '—'}}
+
+                        </td>
+
+                        <td>
+
+                            <span class="badge" [ngClass]="{
+                                'bg-success': item.approvalStatus === 'Approved',
+                                'bg-warning text-dark': item.approvalStatus === 'Pending',
+                                'bg-danger': item.approvalStatus === 'Rejected'
+                                }">
+
+                                {{item.approvalStatus}}
+
+                            </span>
+
+                            <div *ngIf="item.approvalStatus === 'Rejected' && item.rejectionReason" class="small text-muted">
+
+                                {{item.rejectionReason}}
+
+                            </div>
+
+                        </td>
+
+                        <td>
+
+                            <span class="badge" [ngClass]="item.isActive ? 'bg-success' : 'bg-secondary'">
+
+                                {{item.isActive ? 'Active' : 'Inactive'}}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <button class="btn btn-info btn-sm me-1" (click)="preview(item)">
+
+                                <i class="fa-solid fa-eye"></i>
+                                Preview
+
+                            </button>
+
+                            <button class="btn btn-warning btn-sm me-1" (click)="edit(item.whatsAppTemplateId)">
+
+                                <i class="fa-solid fa-pen"></i>
+                                Edit
+
+                            </button>
+
+                            <button class="btn btn-danger btn-sm" (click)="delete(item.whatsAppTemplateId)">
+
+                                <i class="fa-solid fa-trash"></i>
+                                Delete
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                    <tr *ngIf="filteredTemplates.length==0">
+
+                        <td colspan="7" class="text-center text-muted py-5">
+
+                            <i class="fa-brands fa-whatsapp fa-3x mb-3"></i>
+
+                            <br>
+
+                            No WhatsApp Templates Found.
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
         </div>
 
     </div>
 
-    <table class="table table-bordered table-hover">
+</div>
 
-        <thead class="table-danger">
+<!-- ========================================= -->
+<!-- Preview Modal -->
+<!-- ========================================= -->
 
-            <tr>
+<div class="modal d-block" tabindex="-1" style="background: rgba(0,0,0,.5);" *ngIf="showPreview">
 
-                <th>#</th>
-                <th>Template Name</th>
-                <th>Module</th>
-                <th>Category</th>
-                <th>Language</th>
-                <th>Approval Status</th>
-                <th>Active</th>
-                <th width="200">Action</th>
+    <div class="modal-dialog modal-dialog-centered">
 
-            </tr>
+        <div class="modal-content">
 
-        </thead>
+            <div class="modal-header bg-danger text-white">
 
-        <tbody>
+                <h5 class="modal-title">
 
-            <tr>
-                <td>1</td>
-                <td>Login OTP</td>
-                <td>Authentication</td>
-                <td>Authentication</td>
-                <td>English</td>
-                <td><span class="badge bg-success">Approved</span></td>
-                <td><span class="badge bg-success">Active</span></td>
-                <td>
-                    <button class="btn btn-info btn-sm me-1">Preview</button>
-                    <button class="btn btn-warning btn-sm me-1">Edit</button>
-                    <button class="btn btn-danger btn-sm">Delete</button>
-                </td>
-            </tr>
+                    Template Preview
 
-            <tr>
-                <td>2</td>
-                <td>Lead Follow-up</td>
-                <td>Leads</td>
-                <td>Utility</td>
-                <td>English</td>
-                <td><span class="badge bg-success">Approved</span></td>
-                <td><span class="badge bg-success">Active</span></td>
-                <td>
-                    <button class="btn btn-info btn-sm me-1">Preview</button>
-                    <button class="btn btn-warning btn-sm me-1">Edit</button>
-                    <button class="btn btn-danger btn-sm">Delete</button>
-                </td>
-            </tr>
+                </h5>
 
-            <tr>
-                <td>3</td>
-                <td>Payment Reminder</td>
-                <td>Billing</td>
-                <td>Utility</td>
-                <td>English</td>
-                <td><span class="badge bg-warning">Pending</span></td>
-                <td><span class="badge bg-success">Active</span></td>
-                <td>
-                    <button class="btn btn-info btn-sm me-1">Preview</button>
-                    <button class="btn btn-warning btn-sm me-1">Edit</button>
-                    <button class="btn btn-danger btn-sm">Delete</button>
-                </td>
-            </tr>
+                <button type="button" class="btn-close btn-close-white" (click)="closePreview()"></button>
 
-            <tr>
-                <td>4</td>
-                <td>Festival Offer</td>
-                <td>Marketing</td>
-                <td>Marketing</td>
-                <td>English</td>
-                <td><span class="badge bg-danger">Rejected</span></td>
-                <td><span class="badge bg-secondary">Inactive</span></td>
-                <td>
-                    <button class="btn btn-info btn-sm me-1">Preview</button>
-                    <button class="btn btn-warning btn-sm me-1">Edit</button>
-                    <button class="btn btn-danger btn-sm">Delete</button>
-                </td>
-            </tr>
+            </div>
 
-        </tbody>
+            <div class="modal-body">
 
-    </table>
+                <p class="fw-bold mb-1" *ngIf="previewTemplate?.headerText">
 
+                    {{previewTemplate?.headerText}}
+
+                </p>
+
+                <p class="mb-2" style="white-space: pre-wrap;">
+
+                    {{previewTemplate?.bodyText}}
+
+                </p>
+
+                <p class="text-muted small mb-0" *ngIf="previewTemplate?.footerText">
+
+                    {{previewTemplate?.footerText}}
+
+                </p>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button class="btn btn-secondary" (click)="closePreview()">
+
+                    Close
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>

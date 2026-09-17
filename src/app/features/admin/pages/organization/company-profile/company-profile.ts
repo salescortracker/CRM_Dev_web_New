@@ -1,6 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../../../environments/environment';
+import { ApiResponse, AuthService } from '../../../../../core/authentication/services/auth.service';
 import { Pagination } from '../../../../../shared/pagination/pagination';
 import { Alertservice } from '../../../../../core/services/alertservice';
 import { Spinnerservice } from '../../../../../core/services/spinnerservice';
@@ -12,56 +15,90 @@ import { Spinnerservice } from '../../../../../core/services/spinnerservice';
   templateUrl: './company-profile.html',
   styleUrl: './company-profile.css',
 })
-export class CompanyProfile {
+export class CompanyProfile implements OnInit {
+
+  private baseUrl = environment.apiUrl;
+
   submitted = false;
   isEdit = false;
 
   page = 1;
   pageSize = 5;
-  totalRecords = 0;
   searchText = '';
 
+  //====================================================
+  // Dropdown Data (from backend)
+  //====================================================
+
   companies: any[] = [];
+  regions: any[] = [];
+  industries: any[] = [];
+  companyTypes: any[] = [];
+  countries: any[] = [];
+  states: any[] = [];
+  currencies: any[] = [];
 
-  company: any = {
+  //====================================================
+  // Company Profile List
+  //====================================================
 
-    companyId: 0,
+  companyProfiles: any[] = [];
 
-    companyName: '',
-    companyCode: '',
-    legalName: '',
-    registrationNumber: '',
-    gstNumber: '',
-    panNumber: '',
+  //====================================================
+  // Form Model
+  //====================================================
 
-    industry: '',
-    companyType: '',
-    establishedDate: '',
+  company: any = this.getEmptyModel();
 
-    email: '',
-    phone: '',
-    mobile: '',
-    website: '',
+  getEmptyModel() {
 
-    address1: '',
-    address2: '',
+    return {
 
-    country: '',
-    state: '',
-    city: '',
-    pincode: '',
+      companyProfileId: 0,
 
-    timeZone: 'Asia/Kolkata',
-    currency: 'INR',
-    financialYear: '2026-2027',
+      companyId: null,
+      regionId: null,
 
-    description: '',
+      companyName: '',
+      companyCode: '',
+      legalName: '',
+      registrationNumber: '',
+      gstnumber: '',
+      pannumber: '',
 
-    isActive: true
+      industryId: null,
+      companyTypeId: null,
+      establishedDate: '',
 
-  };
+      email: '',
+      phone: '',
+      mobile: '',
+      website: '',
+
+      addressLine1: '',
+      addressLine2: '',
+
+      countryId: null,
+      stateId: null,
+      city: '',
+      pincode: '',
+
+      currencyId: null,
+      financialYear: '',
+
+      companyLogoPath: '',
+
+      description: '',
+
+      active: true
+
+    };
+
+  }
 
   constructor(
+    private http: HttpClient,
+    private authService: AuthService,
     private alert: Alertservice,
     private spinner: Spinnerservice,
     private cd: ChangeDetectorRef
@@ -70,367 +107,39 @@ export class CompanyProfile {
   ngOnInit(): void {
 
     this.loadCompanies();
+    this.loadRegions();
+    this.loadIndustries();
+    this.loadCompanyTypes();
+    this.loadCountries();
+    this.loadStates();
+    this.loadCurrencies();
+    this.loadCompanyProfiles();
 
   }
 
-  loadCompanies() {
+  //====================================================
+  // Load Dropdown Data
+  //====================================================
 
-    this.spinner.show();
+  loadCompanies(): void {
 
-    setTimeout(() => {
+    this.authService.getCompanies().subscribe({
 
-      this.companies = [
+      next: (res: any) => {
 
-        {
-          companyId: 1,
-
-          companyName: 'ABC Technologies Pvt Ltd',
-          companyCode: 'ABC001',
-          legalName: 'ABC Technologies Private Limited',
-
-          registrationNumber: 'REG100001',
-          gstNumber: '36ABCDE1234F1Z5',
-          panNumber: 'ABCDE1234F',
-
-          industry: 'Information Technology',
-          companyType: 'Private Limited',
-          establishedDate: '2017-05-15',
-
-          email: 'info@abctech.com',
-          phone: '04012345678',
-          mobile: '9876543210',
-          website: 'www.abctech.com',
-
-          address1: 'Madhapur',
-          address2: 'Hitech City',
-
-          country: 'India',
-          state: 'Telangana',
-          city: 'Hyderabad',
-          pincode: '500081',
-
-          timeZone: 'Asia/Kolkata',
-          currency: 'INR',
-          financialYear: '2026-2027',
-
-          description: 'Software Development Company',
-
-          isActive: true
-
-        },
-
-        {
-          companyId: 2,
-
-          companyName: 'Global InfoTech',
-          companyCode: 'GIT002',
-          legalName: 'Global InfoTech Solutions LLP',
-
-          registrationNumber: 'REG100002',
-          gstNumber: '29ABCDE5678G1Z8',
-          panNumber: 'BCDEA5678G',
-
-          industry: 'Information Technology',
-          companyType: 'LLP',
-          establishedDate: '2019-08-12',
-
-          email: 'contact@globalinfotech.com',
-          phone: '08045678912',
-          mobile: '9123456789',
-          website: 'www.globalinfotech.com',
-
-          address1: 'Whitefield',
-          address2: 'IT Park',
-
-          country: 'India',
-          state: 'Karnataka',
-          city: 'Bengaluru',
-          pincode: '560066',
-
-          timeZone: 'Asia/Kolkata',
-          currency: 'INR',
-          financialYear: '2026-2027',
-
-          description: 'Cloud & ERP Solutions',
-
-          isActive: true
-
-        },
-
-        {
-          companyId: 3,
-
-          companyName: 'Future Vision Pvt Ltd',
-          companyCode: 'FV003',
-          legalName: 'Future Vision Private Limited',
-
-          registrationNumber: 'REG100003',
-          gstNumber: '37ABCDE9988A1Z2',
-          panNumber: 'ABCDE9988A',
-
-          industry: 'Finance',
-          companyType: 'Private Limited',
-          establishedDate: '2015-03-20',
-
-          email: 'info@futurevision.com',
-          phone: '08661234567',
-          mobile: '9988776655',
-          website: 'www.futurevision.com',
-
-          address1: 'Benz Circle',
-          address2: 'MG Road',
-
-          country: 'India',
-          state: 'Andhra Pradesh',
-          city: 'Vijayawada',
-          pincode: '520010',
-
-          timeZone: 'Asia/Kolkata',
-          currency: 'INR',
-          financialYear: '2026-2027',
-
-          description: 'Financial Consulting Services',
-
-          isActive: true
-
-        },
-
-        {
-          companyId: 4,
-
-          companyName: 'NextGen Pvt Ltd',
-          companyCode: 'NG004',
-          legalName: 'NextGen Technologies Pvt Ltd',
-
-          registrationNumber: 'REG100004',
-          gstNumber: '27ABCDE1234L1Z4',
-          panNumber: 'ABCDE1234L',
-
-          industry: 'Telecommunications',
-          companyType: 'Private Limited',
-          establishedDate: '2016-11-10',
-
-          email: 'support@nextgen.com',
-          phone: '02244556677',
-          mobile: '9000011111',
-          website: 'www.nextgen.com',
-
-          address1: 'Andheri East',
-          address2: 'MIDC',
-
-          country: 'India',
-          state: 'Maharashtra',
-          city: 'Mumbai',
-          pincode: '400093',
-
-          timeZone: 'Asia/Kolkata',
-          currency: 'INR',
-          financialYear: '2026-2027',
-
-          description: 'Telecommunication Solutions',
-
-          isActive: false
-
-        },
-
-        {
-          companyId: 5,
-
-          companyName: 'Bright Solutions',
-          companyCode: 'BS005',
-          legalName: 'Bright Solutions India Pvt Ltd',
-
-          registrationNumber: 'REG100005',
-          gstNumber: '33ABCDE8888P1Z6',
-          panNumber: 'ABCDE8888P',
-
-          industry: 'Healthcare',
-          companyType: 'Private Limited',
-          establishedDate: '2020-01-05',
-
-          email: 'admin@brightsolutions.com',
-          phone: '04422334455',
-          mobile: '9555555555',
-          website: 'www.brightsolutions.com',
-
-          address1: 'T Nagar',
-          address2: 'Anna Salai',
-
-          country: 'India',
-          state: 'Tamil Nadu',
-          city: 'Chennai',
-          pincode: '600017',
-
-          timeZone: 'Asia/Kolkata',
-          currency: 'INR',
-          financialYear: '2026-2027',
-
-          description: 'Healthcare Software Provider',
-
-          isActive: true
-
-        }
-
-      ];
-
-      this.companies.sort(
-        (a, b) => b.companyId - a.companyId
-      );
-
-      this.totalRecords = this.companies.length;
-
-      this.spinner.hide();
-
-      this.cd.detectChanges();
-
-    }, 500);
-
-  }
-    saveCompany() {
-
-    this.submitted = true;
-
-    if (
-      !this.company.companyName ||
-      !this.company.companyCode ||
-      !this.company.industry ||
-      !this.company.companyType ||
-      !this.company.email ||
-      !this.company.phone ||
-      !this.company.address1 ||
-      !this.company.country ||
-      !this.company.state ||
-      !this.company.city
-    ) {
-      return;
-    }
-
-    this.spinner.show();
-
-    setTimeout(() => {
-
-      if (!this.isEdit) {
-
-        const newCompany = {
-
-          ...this.company,
-
-          companyId: this.companies.length
-            ? Math.max(...this.companies.map(x => x.companyId)) + 1
-            : 1
-
-        };
-
-        this.companies.unshift(newCompany);
-
-      } else {
-
-        const index = this.companies.findIndex(
-          x => x.companyId === this.company.companyId
+        this.companies = (res?.data || []).filter(
+          (x: any) => x.isActive !== false
         );
-
-        if (index !== -1) {
-
-          this.companies[index] = {
-            ...this.company
-          };
-
-        }
-
-      }
-
-      this.companies = [...this.companies];
-
-      this.totalRecords = this.companies.length;
-
-      this.page = 1;
-
-      const isUpdate = this.isEdit;
-
-      this.clear();
-
-      this.spinner.hide();
-
-      this.cd.detectChanges();
-
-      this.alert.success(
-        isUpdate
-          ? 'Company updated successfully.'
-          : 'Company created successfully.'
-      );
-
-    }, 500);
-
-  }
-
-  edit(id: number) {
-
-    this.spinner.show();
-
-    setTimeout(() => {
-
-      const selected = this.companies.find(
-        x => x.companyId === id
-      );
-
-      if (selected) {
-
-        this.company = {
-
-          ...selected
-
-        };
-
-        this.isEdit = true;
-
-        this.submitted = false;
 
         this.cd.detectChanges();
 
-      }
+      },
 
-      this.spinner.hide();
+      error: (err) => {
 
-    }, 300);
+        console.error('Error loading companies:', err);
 
-  }
-
-  delete(id: number) {
-
-    this.alert.deleteConfirm().then(result => {
-
-      if (result.isConfirmed) {
-
-        this.spinner.show();
-
-        setTimeout(() => {
-
-          this.companies = this.companies.filter(
-            x => x.companyId !== id
-          );
-
-          this.totalRecords = this.companies.length;
-
-          if (
-            this.page > 1 &&
-            this.pagedCompanies.length === 0
-          ) {
-
-            this.page--;
-
-          }
-
-          this.companies = [...this.companies];
-
-          this.spinner.hide();
-
-          this.cd.detectChanges();
-
-          this.alert.success(
-            'Company deleted successfully.'
-          );
-
-        }, 500);
+        this.companies = [];
 
       }
 
@@ -438,97 +147,357 @@ export class CompanyProfile {
 
   }
 
-  clear() {
+  loadRegions(): void {
 
-    this.company = {
+    this.authService.getRegions().subscribe({
 
-      companyId: 0,
+      next: (res: any) => {
 
-      companyName: '',
-      companyCode: '',
-      legalName: '',
-      registrationNumber: '',
-      gstNumber: '',
-      panNumber: '',
+        this.regions = (res?.data || []).filter(
+          (x: any) => x.isActive !== false
+        );
 
-      industry: '',
-      companyType: '',
-      establishedDate: '',
+        this.cd.detectChanges();
 
-      email: '',
-      phone: '',
-      mobile: '',
-      website: '',
+      },
 
-      address1: '',
-      address2: '',
+      error: (err) => {
 
-      country: '',
-      state: '',
-      city: '',
-      pincode: '',
+        console.error('Error loading regions:', err);
 
-      timeZone: 'Asia/Kolkata',
-      currency: 'INR',
-      financialYear: '2026-2027',
+        this.regions = [];
 
-      description: '',
+      }
 
-      isActive: true
-
-    };
-
-    this.isEdit = false;
-
-    this.submitted = false;
-
-    this.cd.detectChanges();
+    });
 
   }
 
+  loadIndustries(): void {
+
+    this.http
+      .get<ApiResponse<any[]>>(`${this.baseUrl}/Master/getallindustry`)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.industries = (res?.data || []).filter(
+            (x: any) => x.isActive !== false
+          );
+
+          this.cd.detectChanges();
+
+        },
+
+        error: (err) => {
+
+          console.error('Error loading industries:', err);
+
+          this.industries = [];
+
+        }
+
+      });
+
+  }
+
+  loadCompanyTypes(): void {
+
+    this.http
+      .get<ApiResponse<any[]>>(`${this.baseUrl}/Master/getallcompanytype`)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.companyTypes = (res?.data || []).filter(
+            (x: any) => x.isActive !== false
+          );
+
+          this.cd.detectChanges();
+
+        },
+
+        error: (err) => {
+
+          console.error('Error loading company types:', err);
+
+          this.companyTypes = [];
+
+        }
+
+      });
+
+  }
+
+  loadCountries(): void {
+
+    this.http
+      .get<ApiResponse<any[]>>(`${this.baseUrl}/Master/getallcountry`)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.countries = (res?.data || []).filter(
+            (x: any) => x.isActive !== false
+          );
+
+          this.cd.detectChanges();
+
+        },
+
+        error: (err) => {
+
+          console.error('Error loading countries:', err);
+
+          this.countries = [];
+
+        }
+
+      });
+
+  }
+
+  loadStates(): void {
+
+    this.http
+      .get<ApiResponse<any[]>>(`${this.baseUrl}/Master/getallstate`)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.states = (res?.data || []).filter(
+            (x: any) => x.isActive !== false
+          );
+
+          this.cd.detectChanges();
+
+        },
+
+        error: (err) => {
+
+          console.error('Error loading states:', err);
+
+          this.states = [];
+
+        }
+
+      });
+
+  }
+
+  loadCurrencies(): void {
+
+    this.http
+      .get<ApiResponse<any[]>>(`${this.baseUrl}/Master/getallcurrency`)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.currencies = (res?.data || []).filter(
+            (x: any) => x.isActive !== false
+          );
+
+          this.cd.detectChanges();
+
+        },
+
+        error: (err) => {
+
+          console.error('Error loading currencies:', err);
+
+          this.currencies = [];
+
+        }
+
+      });
+
+  }
+
+  //====================================================
+  // Load Company Profiles
+  //====================================================
+
+  loadCompanyProfiles(): void {
+
+    this.spinner.show();
+
+    this.http
+      .get<ApiResponse<any[]>>(`${this.baseUrl}/Admin/getallcompanyprofile`)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.spinner.hide();
+
+          if (res?.success) {
+
+            this.companyProfiles = res.data || [];
+
+          } else {
+
+            this.companyProfiles = [];
+
+            this.alert.warning(
+              res?.message || 'No company profile records found.'
+            );
+
+          }
+
+          this.cd.detectChanges();
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Error loading company profiles:', err);
+
+          this.companyProfiles = [];
+
+          this.alert.error(
+            err?.error?.message || 'Failed to load company profiles.'
+          );
+
+          this.cd.detectChanges();
+
+        }
+
+      });
+
+  }
+
+  //====================================================
+  // Lookup Helpers (Display Names)
+  //====================================================
+
+  getCompanyName(id: any): string {
+
+    if (!id) return '-';
+
+    const item = this.companies.find(x => x.companyId === Number(id));
+
+    return item ? item.companyName : '-';
+
+  }
+
+  getRegionName(id: any): string {
+
+    if (!id) return '-';
+
+    const item = this.regions.find(x => x.regionId === Number(id));
+
+    return item ? item.regionName : '-';
+
+  }
+
+  getIndustryName(id: any): string {
+
+    if (!id) return '-';
+
+    const item = this.industries.find(x => x.industryId === Number(id));
+
+    return item ? item.industryName : '-';
+
+  }
+
+  getCompanyTypeName(id: any): string {
+
+    if (!id) return '-';
+
+    const item = this.companyTypes.find(x => x.companyTypeId === Number(id));
+
+    return item ? item.companyTypeName : '-';
+
+  }
+
+  getCountryName(id: any): string {
+
+    if (!id) return '-';
+
+    const item = this.countries.find(x => x.countryId === Number(id));
+
+    return item ? item.countryName : '-';
+
+  }
+
+  getStateName(id: any): string {
+
+    if (!id) return '-';
+
+    const item = this.states.find(x => x.stateId === Number(id));
+
+    return item ? item.stateName : '-';
+
+  }
+
+  getCurrencyName(id: any): string {
+
+    if (!id) return '-';
+
+    const item = this.currencies.find(x => x.currencyId === Number(id));
+
+    return item ? item.currencyName : '-';
+
+  }
+
+  //====================================================
+  // Cascading Dropdowns
+  //====================================================
+
+  get formRegions(): any[] {
+
+    if (!this.company.companyId) return this.regions;
+
+    return this.regions.filter(
+      x => x.companyId === Number(this.company.companyId)
+    );
+
+  }
+
+  onCompanyChange(): void {
+
+    this.company.regionId = null;
+
+  }
+
+  get formStates(): any[] {
+
+    if (!this.company.countryId) return this.states;
+
+    return this.states.filter(
+      x => x.countryId === Number(this.company.countryId)
+    );
+
+  }
+
+  onCountryChange(): void {
+
+    this.company.stateId = null;
+
+  }
+
+  //====================================================
+  // Filtered Company Profiles
+  //====================================================
+
   get filteredCompanies() {
 
-    return this.companies.filter(x =>
+    const search = this.searchText.trim().toLowerCase();
 
-      x.companyName.toLowerCase().includes(this.searchText.toLowerCase())
+    return this.companyProfiles.filter(x => {
 
-      ||
+      return (
+        !search ||
+        (x.companyName || '').toLowerCase().includes(search) ||
+        (x.companyCode || '').toLowerCase().includes(search) ||
+        (x.legalName || '').toLowerCase().includes(search) ||
+        (x.email || '').toLowerCase().includes(search) ||
+        (x.phone || '').toLowerCase().includes(search) ||
+        (x.city || '').toLowerCase().includes(search)
+      );
 
-      x.companyCode.toLowerCase().includes(this.searchText.toLowerCase())
-
-      ||
-
-      x.legalName.toLowerCase().includes(this.searchText.toLowerCase())
-
-      ||
-
-      x.industry.toLowerCase().includes(this.searchText.toLowerCase())
-
-      ||
-
-      x.companyType.toLowerCase().includes(this.searchText.toLowerCase())
-
-      ||
-
-      x.email.toLowerCase().includes(this.searchText.toLowerCase())
-
-      ||
-
-      x.phone.toLowerCase().includes(this.searchText.toLowerCase())
-
-      ||
-
-      x.country.toLowerCase().includes(this.searchText.toLowerCase())
-
-      ||
-
-      x.state.toLowerCase().includes(this.searchText.toLowerCase())
-
-      ||
-
-      x.city.toLowerCase().includes(this.searchText.toLowerCase())
-
-    );
+    });
 
   }
 
@@ -536,20 +505,17 @@ export class CompanyProfile {
 
     const start = (this.page - 1) * this.pageSize;
 
-    return this.filteredCompanies.slice(
-      start,
-      start + this.pageSize
-    );
+    return this.filteredCompanies.slice(start, start + this.pageSize);
 
   }
 
-  changePage(page: number) {
+  changePage(page: number): void {
 
     this.page = page;
 
   }
 
-  changePageSize(size: number) {
+  changePageSize(size: number): void {
 
     this.pageSize = size;
 
@@ -557,5 +523,392 @@ export class CompanyProfile {
 
   }
 
+  //====================================================
+  // Save / Update
+  //====================================================
+
+  saveCompany(): void {
+
+    this.submitted = true;
+
+    if (
+      !this.company.companyId ||
+      !this.company.regionId ||
+      !this.company.companyName ||
+      !this.company.companyName.trim() ||
+      !this.company.companyCode ||
+      !this.company.companyCode.trim()
+    ) {
+
+      this.alert.warning('Please fill all required fields.');
+
+      return;
+
+    }
+
+    const payload = {
+
+      companyProfileId: this.isEdit ? this.company.companyProfileId : 0,
+
+      companyId: Number(this.company.companyId),
+      regionId: Number(this.company.regionId),
+
+      companyName: this.company.companyName.trim(),
+      companyCode: this.company.companyCode.trim(),
+
+      legalName: this.company.legalName
+        ? this.company.legalName.trim()
+        : null,
+
+      registrationNumber: this.company.registrationNumber
+        ? this.company.registrationNumber.trim()
+        : null,
+
+      gstnumber: this.company.gstnumber
+        ? this.company.gstnumber.trim()
+        : null,
+
+      pannumber: this.company.pannumber
+        ? this.company.pannumber.trim()
+        : null,
+
+      industryId: this.company.industryId
+        ? Number(this.company.industryId)
+        : null,
+
+      companyTypeId: this.company.companyTypeId
+        ? Number(this.company.companyTypeId)
+        : null,
+
+      establishedDate: this.company.establishedDate || null,
+
+      email: this.company.email ? this.company.email.trim() : null,
+
+      phone: this.company.phone ? this.company.phone.trim() : null,
+
+      mobile: this.company.mobile ? this.company.mobile.trim() : null,
+
+      website: this.company.website ? this.company.website.trim() : null,
+
+      addressLine1: this.company.addressLine1
+        ? this.company.addressLine1.trim()
+        : null,
+
+      addressLine2: this.company.addressLine2
+        ? this.company.addressLine2.trim()
+        : null,
+
+      countryId: this.company.countryId
+        ? Number(this.company.countryId)
+        : null,
+
+      stateId: this.company.stateId
+        ? Number(this.company.stateId)
+        : null,
+
+      city: this.company.city ? this.company.city.trim() : null,
+
+      pincode: this.company.pincode ? this.company.pincode.trim() : null,
+
+      currencyId: this.company.currencyId
+        ? Number(this.company.currencyId)
+        : null,
+
+      financialYear: this.company.financialYear
+        ? this.company.financialYear.trim()
+        : null,
+
+      companyLogoPath: this.company.companyLogoPath
+        ? this.company.companyLogoPath.trim()
+        : null,
+
+      description: this.company.description
+        ? this.company.description.trim()
+        : null,
+
+      active: !!this.company.active
+
+    };
+
+    this.spinner.show();
+
+    if (this.isEdit) {
+
+      this.http
+        .post<ApiResponse>(
+          `${this.baseUrl}/Admin/updatecompanyprofile`,
+          payload
+        )
+        .subscribe({
+
+          next: (res: any) => {
+
+            this.spinner.hide();
+
+            if (res?.success) {
+
+              this.alert.success(
+                res.message || 'Company Profile updated successfully.'
+              );
+
+              this.clear();
+
+              this.loadCompanyProfiles();
+
+            } else {
+
+              this.alert.warning(
+                res?.message || 'Failed to update company profile.'
+              );
+
+            }
+
+            this.cd.detectChanges();
+
+          },
+
+          error: (err) => {
+
+            this.spinner.hide();
+
+            console.error('Update company profile error:', err);
+
+            this.alert.error(
+              err?.error?.message || 'Failed to update company profile.'
+            );
+
+            this.cd.detectChanges();
+
+          }
+
+        });
+
+    } else {
+
+      this.http
+        .post<ApiResponse>(
+          `${this.baseUrl}/Admin/createcompanyprofile`,
+          payload
+        )
+        .subscribe({
+
+          next: (res: any) => {
+
+            this.spinner.hide();
+
+            if (res?.success) {
+
+              this.alert.success(
+                res.message || 'Company Profile created successfully.'
+              );
+
+              this.clear();
+
+              this.loadCompanyProfiles();
+
+            } else {
+
+              this.alert.warning(
+                res?.message || 'Failed to create company profile.'
+              );
+
+            }
+
+            this.cd.detectChanges();
+
+          },
+
+          error: (err) => {
+
+            this.spinner.hide();
+
+            console.error('Create company profile error:', err);
+
+            this.alert.error(
+              err?.error?.message || 'Failed to create company profile.'
+            );
+
+            this.cd.detectChanges();
+
+          }
+
+        });
+
+    }
+
+  }
+
+  //====================================================
+  // Edit
+  //====================================================
+
+  edit(id: number): void {
+
+    this.spinner.show();
+
+    this.http
+      .get<ApiResponse<any>>(`${this.baseUrl}/Admin/getbycompanyprofile/${id}`)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.spinner.hide();
+
+          if (res?.success && res.data) {
+
+            const data = res.data;
+
+            this.company = {
+
+              companyProfileId: data.companyProfileId,
+
+              companyId: data.companyId,
+              regionId: data.regionId,
+
+              companyName: data.companyName || '',
+              companyCode: data.companyCode || '',
+              legalName: data.legalName || '',
+              registrationNumber: data.registrationNumber || '',
+              gstnumber: data.gstnumber || '',
+              pannumber: data.pannumber || '',
+
+              industryId: data.industryId ?? null,
+              companyTypeId: data.companyTypeId ?? null,
+              establishedDate: data.establishedDate || '',
+
+              email: data.email || '',
+              phone: data.phone || '',
+              mobile: data.mobile || '',
+              website: data.website || '',
+
+              addressLine1: data.addressLine1 || '',
+              addressLine2: data.addressLine2 || '',
+
+              countryId: data.countryId ?? null,
+              stateId: data.stateId ?? null,
+              city: data.city || '',
+              pincode: data.pincode || '',
+
+              currencyId: data.currencyId ?? null,
+              financialYear: data.financialYear || '',
+
+              companyLogoPath: data.companyLogoPath || '',
+
+              description: data.description || '',
+
+              active: data.active === true
+
+            };
+
+            this.isEdit = true;
+            this.submitted = false;
+
+            this.cd.detectChanges();
+
+          } else {
+
+            this.alert.warning(res?.message || 'Company Profile not found.');
+
+          }
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Get company profile error:', err);
+
+          this.alert.error(
+            err?.error?.message || 'Failed to load company profile.'
+          );
+
+        }
+
+      });
+
+  }
+
+  //====================================================
+  // Delete
+  //====================================================
+
+  delete(id: number): void {
+
+    this.alert.deleteConfirm().then(result => {
+
+      if (!result.isConfirmed) return;
+
+      this.spinner.show();
+
+      this.http
+        .post<ApiResponse>(
+          `${this.baseUrl}/Admin/deletecompanyprofile/${id}`,
+          {}
+        )
+        .subscribe({
+
+          next: (res: any) => {
+
+            this.spinner.hide();
+
+            if (res?.success) {
+
+              this.alert.success(
+                res.message || 'Company Profile deleted successfully.'
+              );
+
+              if (this.page > 1 && this.pagedCompanies.length === 1) {
+                this.page = this.page - 1;
+              }
+
+              this.loadCompanyProfiles();
+
+            } else {
+
+              this.alert.warning(
+                res?.message || 'Failed to delete company profile.'
+              );
+
+            }
+
+            this.cd.detectChanges();
+
+          },
+
+          error: (err) => {
+
+            this.spinner.hide();
+
+            console.error('Delete company profile error:', err);
+
+            this.alert.error(
+              err?.error?.message || 'Failed to delete company profile.'
+            );
+
+            this.cd.detectChanges();
+
+          }
+
+        });
+
+    });
+
+  }
+
+  //====================================================
+  // Clear Form
+  //====================================================
+
+  clear(): void {
+
+    this.company = this.getEmptyModel();
+
+    this.isEdit = false;
+    this.submitted = false;
+
+    this.cd.detectChanges();
+
+  }
 
 }

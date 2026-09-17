@@ -152,9 +152,29 @@ export const routes: Routes = [
           .then(m => m.WorkflowRules)
       },
       {
+        path: 'workflowrulecondition',
+        loadComponent: () => import('./features/super-admin/workflowrulecondition/workflowrulecondition')
+          .then(m => m.Workflowrulecondition)
+      },
+      {
+        path: 'workflowruleactions',
+        loadComponent: () => import('./features/super-admin/workflowruleactions/workflowruleactions')
+          .then(m => m.Workflowruleactions)
+      },
+      {
         path: 'approval-workflow',
         loadComponent: () => import('./features/super-admin/approval-workflow/approval-workflow')
           .then(m => m.ApprovalWorkflow)
+      },
+      {
+        path: 'approvalworkflowlevels',
+        loadComponent: () => import('./features/super-admin/approvalworkflowlevels/approvalworkflowlevels')
+          .then(m => m.Approvalworkflowlevels)
+      },
+      {
+        path: 'autoassignmentconditions',
+        loadComponent: () => import('./features/super-admin/autoassignmentconditions/autoassignmentconditions')
+          .then(m => m.Autoassignmentconditions)
       },
       {
         path: 'auto-assignment',
@@ -175,6 +195,11 @@ export const routes: Routes = [
         path: 'email-automation',
         loadComponent: () => import('./features/super-admin/email-automation/email-automation')
           .then(m => m.EmailAutomation)
+      },
+      {
+        path: 'emailautomationrecipients',
+        loadComponent: () => import('./features/super-admin/emailautomationrecipients/emailautomationrecipients')
+          .then(m => m.Emailautomationrecipients)
       },
       {
         path: 'scheduled-jobs',
@@ -205,6 +230,26 @@ export const routes: Routes = [
         path: 'security-logs',
         loadComponent: () => import('./features/super-admin/security-logs/security-logs')
           .then(m => m.SecurityLogs)
+      },
+      {
+        path: 'communication-emails',
+        loadComponent: () => import('./features/super-admin/communication-emails/communication-emails')
+          .then(m => m.CommunicationEmails)
+      },
+      {
+        path: 'communication-sms',
+        loadComponent: () => import('./features/super-admin/communication-sms/communication-sms')
+          .then(m => m.CommunicationSms)
+      },
+      {
+        path: 'communication-whatsapp',
+        loadComponent: () => import('./features/super-admin/communication-whatsapp/communication-whatsapp')
+          .then(m => m.CommunicationWhatsapp)
+      },
+      {
+        path: 'communication-invoice',
+        loadComponent: () => import('./features/super-admin/communication-invoice/communication-invoice')
+          .then(m => m.CommunicationInvoice)
       },
       {
         path: 'email-notification',

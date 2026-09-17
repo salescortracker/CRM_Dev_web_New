@@ -489,7 +489,7 @@
                         <span class="permission-badge">
 
 
-                            {{item.permissions.length}}
+                            {{permissionCount(item)}}
 
 
                             Permissions
@@ -805,6 +805,92 @@
 
 
 
+                <!-- Company -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Company
+
+                    </label>
+
+
+
+                    <select [(ngModel)]="model.companyId">
+
+
+
+                        <option value="">
+
+                            -- Select Company --
+
+                        </option>
+
+
+
+                        <option *ngFor="let item of companies" [value]="item.companyId">
+
+                            {{item.companyName}}
+
+                        </option>
+
+
+
+                    </select>
+
+
+
+                </div>
+
+
+
+
+                <!-- Region -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Region
+
+                    </label>
+
+
+
+                    <select [(ngModel)]="model.regionId">
+
+
+
+                        <option value="">
+
+                            -- Select Region --
+
+                        </option>
+
+
+
+                        <option *ngFor="let item of regions" [value]="item.regionId">
+
+                            {{item.regionName}}
+
+                        </option>
+
+
+
+                    </select>
+
+
+
+                </div>
+
+
+
+
 
 
 
@@ -910,158 +996,67 @@
 
 
 
+                <label class="permission-all">
+
+
+                    <input type="checkbox" [(ngModel)]="allPermissionsSelected" (change)="toggleAllPermissions()">
+
+
+                    All
+
+
+                </label>
+
+
 
 
                 <div class="permission-grid">
 
 
 
-                    <label>
+                    <div class="permission-group" *ngFor="let group of menuTree">
 
 
-                        <input type="checkbox" [(ngModel)]="model.permissions.dashboard">
+                        <label class="permission-parent">
 
 
-                        Dashboard
+                            <input type="checkbox" [(ngModel)]="model.permissions[group.parent.menuId]">
 
 
-                    </label>
+                            {{group.parent.menuName}}
 
 
+                        </label>
 
 
 
+                        <div class="permission-children" *ngIf="group.children.length">
 
 
-                    <label>
+                            <label class="permission-child" *ngFor="let child of group.children">
 
 
-                        <input type="checkbox" [(ngModel)]="model.permissions.leads">
+                                <input type="checkbox" [(ngModel)]="model.permissions[child.menuId]">
 
 
-                        Leads
+                                {{child.menuName}}
 
 
-                    </label>
+                            </label>
 
 
+                        </div>
 
 
+                    </div>
 
 
 
-                    <label>
 
 
-                        <input type="checkbox" [(ngModel)]="model.permissions.contacts">
 
 
-                        Contacts
 
-
-                    </label>
-
-
-
-
-
-
-
-                    <label>
-
-
-                        <input type="checkbox" [(ngModel)]="model.permissions.accounts">
-
-
-                        Accounts
-
-
-                    </label>
-
-
-
-
-
-
-
-                    <label>
-
-
-                        <input type="checkbox" [(ngModel)]="model.permissions.opportunities">
-
-
-                        Opportunities
-
-
-                    </label>
-
-
-
-
-
-
-
-                    <label>
-
-
-                        <input type="checkbox" [(ngModel)]="model.permissions.activities">
-
-
-                        Activities
-
-
-                    </label>
-
-
-
-
-
-
-
-                    <label>
-
-
-                        <input type="checkbox" [(ngModel)]="model.permissions.reports">
-
-
-                        Reports
-
-
-                    </label>
-
-
-
-
-
-
-
-                    <label>
-
-
-                        <input type="checkbox" [(ngModel)]="model.permissions.settings">
-
-
-                        Settings
-
-
-                    </label>
-
-
-
-
-
-
-
-                    <label>
-
-
-                        <input type="checkbox" [(ngModel)]="model.permissions.userManagement">
-
-
-                        User Management
-
-
-                    </label>
 
 
 
@@ -1070,41 +1065,6 @@
 
 
             </div>
-
-
-
-
-
-
-
-
-
-            <!-- Default Role -->
-
-
-            <div class="checkbox-group">
-
-
-                <label>
-
-
-
-                    <input type="checkbox" [(ngModel)]="model.isDefault">
-
-
-
-                    Default Role
-
-
-
-                </label>
-
-
-
-            </div>
-
-
-
 
 
         </div>

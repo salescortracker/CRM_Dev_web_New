@@ -1,0 +1,441 @@
+<div class="page-container">
+
+
+    <!-- ========================= -->
+    <!-- Page Header -->
+    <!-- ========================= -->
+
+
+    <div class="page-header">
+
+
+        <div>
+
+
+            <p class="page-subtitle">
+                WORKFLOW &amp; AUTOMATION
+            </p>
+
+
+            <h1>
+                Email Automation Recipients
+            </h1>
+
+
+            <p class="page-description">
+                Manage the recipients who receive emails for each email automation.
+            </p>
+
+
+        </div>
+
+
+        <div class="header-buttons">
+
+
+            <button class="btn btn-light" (click)="refresh()">
+
+                <i class="fa-solid fa-rotate"></i>
+                Refresh
+
+            </button>
+
+
+            <button class="btn btn-danger" (click)="openAddModal()">
+
+                <i class="fa-solid fa-plus"></i>
+                Add Recipient
+
+            </button>
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+    <!-- ========================= -->
+    <!-- Statistics -->
+    <!-- ========================= -->
+
+
+    <div class="stats-grid">
+
+
+        <div class="stat-card">
+
+            <span>
+                Total Recipients
+            </span>
+
+            <h2>
+                {{totalCount}}
+            </h2>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>
+                Active Recipients
+            </span>
+
+            <h2>
+                {{activeCount}}
+            </h2>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>
+                Inactive Recipients
+            </span>
+
+            <h2>
+                {{inactiveCount}}
+            </h2>
+
+        </div>
+
+    </div>
+
+
+
+
+    <!-- ========================= -->
+    <!-- Search Filter -->
+    <!-- ========================= -->
+
+
+    <div class="search-panel">
+
+
+        <div class="search-box">
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input type="text" placeholder="Search recipient type, value or automation..." [(ngModel)]="searchText">
+
+        </div>
+
+
+        <select class="form-control" [(ngModel)]="automationFilter">
+
+            <option [ngValue]="''">
+                All Email Automations
+            </option>
+
+            <option *ngFor="let automation of emailAutomations" [ngValue]="automation.emailAutomationId">
+                {{automation.automationName}}
+            </option>
+
+        </select>
+
+
+        <select class="form-control" [(ngModel)]="statusFilter">
+
+            <option value="">
+                All Status
+            </option>
+
+            <option value="Active">
+                Active
+            </option>
+
+            <option value="Inactive">
+                Inactive
+            </option>
+
+        </select>
+
+
+        <button class="btn btn-secondary" (click)="clearFilters()">
+            Clear
+        </button>
+
+
+    </div>
+
+
+
+
+    <!-- ========================= -->
+    <!-- Recipients Table -->
+    <!-- ========================= -->
+
+
+    <div class="table-card">
+
+
+        <div class="table-header">
+
+            <h3>
+                Email Automation Recipients
+            </h3>
+
+            <span>
+                {{filteredRecipients.length}} Records
+            </span>
+
+        </div>
+
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Email Automation
+                    </th>
+
+                    <th>
+                        Recipient Type
+                    </th>
+
+                    <th>
+                        Recipient Value
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                    <th width="170">
+                        Actions
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                <tr *ngFor="let item of filteredRecipients">
+
+                    <td>
+
+                        <div class="provider-info">
+
+                            <div class="provider-icon">
+                                <i class="fa-solid fa-envelope"></i>
+                            </div>
+
+                            <div>
+                                <strong>
+                                    {{getAutomationName(item.emailAutomationId)}}
+                                </strong>
+                            </div>
+
+                        </div>
+
+                    </td>
+
+
+                    <td>
+                        <span class="type-badge">
+                            {{item.recipientType}}
+                        </span>
+                    </td>
+
+
+                    <td>
+                        {{item.recipientValue}}
+                    </td>
+
+
+                    <td>
+
+                        <span class="status" [ngClass]="item.isActive ? 'active' : 'inactive'">
+                            {{item.isActive ? 'Active' : 'Inactive'}}
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <button class="icon-btn" (click)="edit(item)">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+
+                        <button class="icon-btn danger" (click)="delete(item.emailAutomationRecipientId)">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+
+                    </td>
+
+                </tr>
+
+
+                <tr *ngIf="!filteredRecipients.length">
+
+                    <td colspan="5" style="text-align:center; padding: 24px; color:#667085;">
+                        No email automation recipients found.
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+
+    </div>
+
+
+</div>
+
+
+
+
+<!-- ================================= -->
+<!-- Add / Edit Recipient Modal -->
+<!-- ================================= -->
+
+
+<div class="modal-overlay" *ngIf="showModal">
+
+
+    <div class="modal-box">
+
+
+        <!-- Modal Header -->
+
+        <div class="modal-header">
+
+            <h3>
+                {{isEdit ? 'Edit Email Automation Recipient' : 'Add Email Automation Recipient'}}
+            </h3>
+
+            <button class="close-btn" (click)="closeModal()">
+                ×
+            </button>
+
+        </div>
+
+
+
+
+        <!-- Modal Body -->
+
+        <div class="modal-body">
+
+            <div class="form-grid">
+
+
+                <!-- Email Automation -->
+
+                <div class="full-width">
+
+                    <label>
+                        Email Automation
+                    </label>
+
+                    <select [(ngModel)]="model.emailAutomationId" (ngModelChange)="onAutomationChange()">
+
+                        <option [ngValue]="0">
+                            Select Email Automation
+                        </option>
+
+                        <option *ngFor="let automation of emailAutomations" [ngValue]="automation.emailAutomationId">
+                            {{automation.automationName}}
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Recipient Type -->
+
+                <div>
+
+                    <label>
+                        Recipient Type
+                    </label>
+
+                    <select [(ngModel)]="model.recipientType">
+
+                        <option value="">
+                            Select Recipient Type
+                        </option>
+
+                        <option *ngFor="let type of recipientTypeOptions" [value]="type">
+                            {{type}}
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Recipient Value -->
+
+                <div>
+
+                    <label>
+                        Recipient Value
+                    </label>
+
+                    <input type="text" placeholder="Example: email address, user id or role name" [(ngModel)]="model.recipientValue">
+
+                </div>
+
+
+                <!-- Status -->
+
+                <div>
+
+                    <label>
+                        Status
+                    </label>
+
+                    <select [(ngModel)]="model.isActive">
+
+                        <option [ngValue]="true">
+                            Active
+                        </option>
+
+                        <option [ngValue]="false">
+                            Inactive
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+
+
+        <!-- Modal Footer -->
+
+        <div class="modal-footer">
+
+            <button class="btn-secondary" (click)="closeModal()">
+                Cancel
+            </button>
+
+            <button class="btn-primary" (click)="saveRecipient()">
+                {{isEdit ? 'Update Recipient' : 'Save Recipient'}}
+            </button>
+
+        </div>
+
+
+    </div>
+
+
+</div>

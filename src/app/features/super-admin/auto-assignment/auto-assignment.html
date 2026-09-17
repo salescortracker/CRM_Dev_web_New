@@ -1,10 +1,108 @@
-<div class="container mt-4">
+<div class="container-fluid mt-4">
 
-    <div class="card">
+    <!-- ========================================= -->
+    <!-- Page Header -->
+    <!-- ========================================= -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h3 class="fw-bold text-danger mb-1">
+
+                <i class="fa-solid fa-people-arrows me-2"></i>
+
+                Auto Assignment Rules
+
+            </h3>
+
+            <p class="text-muted mb-0">
+
+                Manage Automatic Record Assignment Rules Across Modules.
+
+            </p>
+
+        </div>
+
+        <div>
+
+            <button class="btn btn-outline-secondary me-2" (click)="clear()">
+
+                <i class="fa-solid fa-rotate"></i>
+
+                Clear
+
+            </button>
+
+            <button class="btn btn-danger" (click)="saveAutoAssignmentRule()">
+
+                <i class="fa-solid" [ngClass]="isEdit ? 'fa-pen' : 'fa-plus'"></i>
+
+                {{isEdit ? ' Update Rule' : ' Add Rule'}}
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Statistics -->
+    <!-- ========================================= -->
+
+    <div class="row mb-4">
+
+        <div class="col-md-3 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Total Rules</div>
+                <div class="fw-bold fs-4 text-danger">{{totalRules}}</div>
+            </div>
+
+        </div>
+
+        <div class="col-md-3 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Active</div>
+                <div class="fw-bold fs-4 text-success">{{activeRules}}</div>
+            </div>
+
+        </div>
+
+        <div class="col-md-3 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Inactive</div>
+                <div class="fw-bold fs-4 text-secondary">{{inactiveRules}}</div>
+            </div>
+
+        </div>
+
+        <div class="col-md-3 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Team Based</div>
+                <div class="fw-bold fs-4 text-primary">{{teamBasedRules}}</div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Auto Assignment Rule Form -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm border-0 mb-4">
 
         <div class="card-header bg-danger text-white">
 
-            <h4>Auto Assignment Rules</h4>
+            <h5 class="mb-0">
+
+                Auto Assignment Rule Information
+
+            </h5>
 
         </div>
 
@@ -12,233 +110,507 @@
 
             <div class="row">
 
-                <div class="col-md-4 mb-3">
-                    <label>Rule Name <span class="text-danger">*</span></label>
-                    <input class="form-control"
-                           placeholder="Lead Assignment Rule">
-                </div>
+                <!-- Company -->
 
                 <div class="col-md-4 mb-3">
-                    <label>Module <span class="text-danger">*</span></label>
-                    <select class="form-select">
+
+                    <label class="form-label">
+
+                        Company
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="autoAssignmentRule.companyId" (ngModelChange)="onCompanyChange()">
+
+                        <option [ngValue]="null">Select Company</option>
+
+                        <option *ngFor="let c of companies" [ngValue]="c.companyId">{{c.companyName}}</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !autoAssignmentRule.companyId">
+
+                        Company is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Region -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Region
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="autoAssignmentRule.regionId">
+
+                        <option [ngValue]="null">Select Region</option>
+
+                        <option *ngFor="let r of formRegions" [ngValue]="r.regionId">{{r.regionName}}</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !autoAssignmentRule.regionId">
+
+                        Region is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Rule Name -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Rule Name
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input class="form-control" placeholder="Lead Assignment Rule"
+                        [(ngModel)]="autoAssignmentRule.ruleName">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !autoAssignmentRule.ruleName">
+
+                        Rule Name is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Module -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Module
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="autoAssignmentRule.moduleName">
+
+                        <option value="">Select Module</option>
                         <option>Leads</option>
                         <option>Contacts</option>
                         <option>Accounts</option>
                         <option>Opportunities</option>
                         <option>Tickets</option>
                         <option>Tasks</option>
+
                     </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !autoAssignmentRule.moduleName">
+
+                        Module is required.
+
+                    </div>
+
                 </div>
 
+                <!-- Assignment Method -->
+
                 <div class="col-md-4 mb-3">
-                    <label>Assignment Method</label>
-                    <select class="form-select">
+
+                    <label class="form-label">
+
+                        Assignment Method
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="autoAssignmentRule.assignmentMethod">
+
+                        <option value="">Select Assignment Method</option>
                         <option>Round Robin</option>
                         <option>Least Workload</option>
                         <option>Fixed User</option>
                         <option>Team Based</option>
                         <option>Territory Based</option>
+
                     </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !autoAssignmentRule.assignmentMethod">
+
+                        Assignment Method is required.
+
+                    </div>
+
                 </div>
+
+                <!-- Execution Order -->
 
                 <div class="col-md-4 mb-3">
-                    <label>Assign To</label>
-                    <select class="form-select">
-                        <option>Sales Team</option>
-                        <option>Support Team</option>
-                        <option>Marketing Team</option>
-                        <option>Sales Executive</option>
-                    </select>
-                </div>
 
-                <div class="col-md-4 mb-3">
-                    <label>Condition</label>
-                    <input class="form-control"
-                           placeholder="Lead Source = Website">
-                </div>
+                    <label class="form-label">
 
-                <div class="col-md-4 mb-3">
-                    <label>Priority</label>
-                    <select class="form-select">
-                        <option>High</option>
-                        <option>Medium</option>
-                        <option>Low</option>
-                    </select>
-                </div>
+                        Execution Order
 
-                <div class="col-md-6 mb-3">
-                    <label>Description</label>
-                    <textarea class="form-control"
-                              rows="2"
-                              placeholder="Enter assignment description"></textarea>
-                </div>
-
-                <div class="col-md-3 mt-4">
-                    <label>
-                        <input type="checkbox" checked>
-                        Default Rule
                     </label>
+
+                    <input type="number" min="1" class="form-control"
+                        [(ngModel)]="autoAssignmentRule.executionOrder">
+
                 </div>
 
-                <div class="col-md-3 mt-4">
-                    <label>
-                        <input type="checkbox" checked>
-                        Active
+                <!-- Team Id -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Team ID
+
                     </label>
+
+                    <input type="number" min="1" class="form-control" placeholder="Enter Team ID"
+                        [(ngModel)]="autoAssignmentRule.teamId">
+
+                </div>
+
+                <!-- User Id -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        User ID
+
+                    </label>
+
+                    <input type="number" min="1" class="form-control" placeholder="Enter User ID"
+                        [(ngModel)]="autoAssignmentRule.userId">
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <div class="text-danger mt-4"
+                        *ngIf="submitted && !autoAssignmentRule.teamId && !autoAssignmentRule.userId">
+
+                        Either Team ID or User ID must be provided.
+
+                    </div>
+
+                </div>
+
+                <!-- Description -->
+
+                <div class="col-md-12 mb-3">
+
+                    <label class="form-label">
+
+                        Description
+
+                    </label>
+
+                    <textarea rows="3" class="form-control" [(ngModel)]="autoAssignmentRule.description"></textarea>
+
+                </div>
+
+                <!-- Active -->
+
+                <div class="col-md-4 mb-3">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="autoAssignmentRule.isActive">
+
+                        <label class="form-check-label">
+
+                            Active
+
+                        </label>
+
+                    </div>
+
                 </div>
 
             </div>
 
-            <button class="btn btn-danger me-2">
-                Save
-            </button>
+        </div>
 
-            <button class="btn btn-secondary">
-                Clear
-            </button>
+    </div>
+
+</div>
+
+<!-- ========================================= -->
+<!-- Search Section -->
+<!-- ========================================= -->
+
+<div class="card shadow-sm border-0 mb-3">
+
+    <div class="card-body">
+
+        <div class="row">
+
+            <div class="col-md-4">
+
+                <input class="form-control" placeholder="Search Assignment Rule..." [(ngModel)]="searchText">
+
+            </div>
+
+            <div class="col-md-3">
+
+                <select class="form-select" [(ngModel)]="companyFilter">
+
+                    <option value="">All Companies</option>
+
+                    <option *ngFor="let c of companies" [value]="c.companyId">{{c.companyName}}</option>
+
+                </select>
+
+            </div>
+
+            <div class="col-md-3">
+
+                <select class="form-select" [(ngModel)]="statusFilter">
+
+                    <option value="">All Status</option>
+
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+
+                </select>
+
+            </div>
+
+            <div class="col-md-2">
+
+                <button class="btn btn-secondary w-100" (click)="clearFilters()">
+
+                    Clear
+
+                </button>
+
+            </div>
 
         </div>
 
     </div>
 
-    <br>
+</div>
 
-    <div class="row mb-3">
+<!-- ========================================= -->
+<!-- Auto Assignment Rule List -->
+<!-- ========================================= -->
 
-        <div class="col-md-4">
+<div class="card shadow-sm border-0">
 
-            <input class="form-control"
-                   placeholder="Search Assignment Rule...">
+    <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+
+        <h5 class="mb-0">
+
+            Auto Assignment Rules
+
+        </h5>
+
+        <span class="badge bg-light text-dark">
+
+            Total Records : {{filteredAutoAssignmentRules.length}}
+
+        </span>
+
+    </div>
+
+    <div class="card-body p-0">
+
+        <div class="table-responsive">
+
+            <table class="table table-hover table-bordered align-middle mb-0">
+
+                <thead class="table-danger">
+
+                    <tr>
+
+                        <th width="70">
+
+                            #
+
+                        </th>
+
+                        <th>
+
+                            Rule
+
+                        </th>
+
+                        <th>
+
+                            Company
+
+                        </th>
+
+                        <th>
+
+                            Module
+
+                        </th>
+
+                        <th>
+
+                            Assignment Method
+
+                        </th>
+
+                        <th>
+
+                            Assign To
+
+                        </th>
+
+                        <th>
+
+                            Status
+
+                        </th>
+
+                        <th width="170">
+
+                            Action
+
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr *ngFor="let item of pagedAutoAssignmentRules; let i=index">
+
+                        <td>
+
+                            {{((page-1)*pageSize)+i+1}}
+
+                        </td>
+
+                        <td>
+
+                            <div class="fw-bold">
+
+                                {{item.ruleName}}
+
+                            </div>
+
+                            <small class="text-muted">
+
+                                {{item.description}}
+
+                            </small>
+
+                        </td>
+
+                        <td>
+
+                            {{getCompanyName(item.companyId)}}
+
+                        </td>
+
+                        <td>
+
+                            {{item.moduleName}}
+
+                        </td>
+
+                        <td>
+
+                            {{item.assignmentMethod}}
+
+                        </td>
+
+                        <td>
+
+                            <span *ngIf="item.teamId">Team #{{item.teamId}}</span>
+
+                            <span *ngIf="item.userId">
+                                <span *ngIf="item.teamId">, </span>
+                                User #{{item.userId}}
+                            </span>
+
+                            <span *ngIf="!item.teamId && !item.userId">-</span>
+
+                        </td>
+
+                        <td>
+
+                            <span class="badge" [ngClass]="item.isActive ? 'bg-success' : 'bg-secondary'">
+
+                                {{item.isActive ? 'Active' : 'Inactive'}}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <button class="btn btn-warning btn-sm me-2" (click)="edit(item.autoAssignmentRuleId)">
+
+                                <i class="fa-solid fa-pen"></i>
+
+                                Edit
+
+                            </button>
+
+                            <button class="btn btn-danger btn-sm" (click)="delete(item.autoAssignmentRuleId)">
+
+                                <i class="fa-solid fa-trash"></i>
+
+                                Delete
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                    <tr *ngIf="pagedAutoAssignmentRules.length==0">
+
+                        <td colspan="8" class="text-center text-muted py-5">
+
+                            <i class="fa-solid fa-people-arrows fa-3x mb-3"></i>
+
+                            <br>
+
+                            No Auto Assignment Rules Found.
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
 
         </div>
 
     </div>
 
-    <table class="table table-bordered table-hover">
+</div>
 
-        <thead class="table-danger">
+<!-- ========================================= -->
+<!-- Pagination -->
+<!-- ========================================= -->
 
-            <tr>
+<div class="mt-3">
 
-                <th>#</th>
-                <th>Rule Name</th>
-                <th>Module</th>
-                <th>Assignment Method</th>
-                <th>Assign To</th>
-                <th>Condition</th>
-                <th>Priority</th>
-                <th>Status</th>
-                <th width="150">Action</th>
+    <app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredAutoAssignmentRules.length"
+        (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
 
-            </tr>
-
-        </thead>
-
-        <tbody>
-
-            <tr>
-
-                <td>1</td>
-                <td>Website Lead Assignment</td>
-                <td>Leads</td>
-                <td>Round Robin</td>
-                <td>Sales Team</td>
-                <td>Lead Source = Website</td>
-                <td>High</td>
-                <td>Active</td>
-
-                <td>
-
-                    <button class="btn btn-warning btn-sm me-2">
-                        Edit
-                    </button>
-
-                    <button class="btn btn-danger btn-sm">
-                        Delete
-                    </button>
-
-                </td>
-
-            </tr>
-
-            <tr>
-
-                <td>2</td>
-                <td>Support Ticket Routing</td>
-                <td>Tickets</td>
-                <td>Least Workload</td>
-                <td>Support Team</td>
-                <td>Priority = High</td>
-                <td>High</td>
-                <td>Active</td>
-
-                <td>
-
-                    <button class="btn btn-warning btn-sm me-2">
-                        Edit
-                    </button>
-
-                    <button class="btn btn-danger btn-sm">
-                        Delete
-                    </button>
-
-                </td>
-
-            </tr>
-
-            <tr>
-
-                <td>3</td>
-                <td>Enterprise Accounts</td>
-                <td>Accounts</td>
-                <td>Territory Based</td>
-                <td>Enterprise Team</td>
-                <td>Country = USA</td>
-                <td>Medium</td>
-                <td>Active</td>
-
-                <td>
-
-                    <button class="btn btn-warning btn-sm me-2">
-                        Edit
-                    </button>
-
-                    <button class="btn btn-danger btn-sm">
-                        Delete
-                    </button>
-
-                </td>
-
-            </tr>
-
-            <tr>
-
-                <td>4</td>
-                <td>VIP Opportunity</td>
-                <td>Opportunities</td>
-                <td>Fixed User</td>
-                <td>Sales Manager</td>
-                <td>Amount > $50,000</td>
-                <td>High</td>
-                <td>Inactive</td>
-
-                <td>
-
-                    <button class="btn btn-warning btn-sm me-2">
-                        Edit
-                    </button>
-
-                    <button class="btn btn-danger btn-sm">
-                        Delete
-                    </button>
-
-                </td>
-
-            </tr>
-
-        </tbody>
-
-    </table>
-
+    </app-pagination>
 
 </div>

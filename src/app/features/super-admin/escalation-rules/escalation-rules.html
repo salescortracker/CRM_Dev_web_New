@@ -1,23 +1,209 @@
-<div class="container mt-4">
+<div class="container-fluid mt-4">
 
-    <div class="card">
+    <!-- ========================================= -->
+    <!-- Page Header -->
+    <!-- ========================================= -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h3 class="fw-bold text-danger mb-1">
+
+                <i class="fa-solid fa-triangle-exclamation me-2"></i>
+
+                Escalation Rules
+
+            </h3>
+
+            <p class="text-muted mb-0">
+
+                Manage Automatic Escalation Rules Across Modules.
+
+            </p>
+
+        </div>
+
+        <div>
+
+            <button class="btn btn-outline-secondary me-2" (click)="clear()">
+
+                <i class="fa-solid fa-rotate"></i>
+
+                Clear
+
+            </button>
+
+            <button class="btn btn-danger" (click)="saveEscalationRule()">
+
+                <i class="fa-solid" [ngClass]="isEdit ? 'fa-pen' : 'fa-plus'"></i>
+
+                {{isEdit ? ' Update Rule' : ' Add Rule'}}
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Statistics -->
+    <!-- ========================================= -->
+
+    <div class="row mb-4">
+
+        <div class="col-md-3 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Total Rules</div>
+                <div class="fw-bold fs-4 text-danger">{{totalRules}}</div>
+            </div>
+
+        </div>
+
+        <div class="col-md-3 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Active</div>
+                <div class="fw-bold fs-4 text-success">{{activeRules}}</div>
+            </div>
+
+        </div>
+
+        <div class="col-md-3 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Inactive</div>
+                <div class="fw-bold fs-4 text-secondary">{{inactiveRules}}</div>
+            </div>
+
+        </div>
+
+        <div class="col-md-3 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Repeating</div>
+                <div class="fw-bold fs-4 text-primary">{{repeatingRules}}</div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Escalation Rule Form -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm border-0 mb-4">
 
         <div class="card-header bg-danger text-white">
-            <h4>Escalation Rules</h4>
+
+            <h5 class="mb-0">
+
+                Escalation Rule Information
+
+            </h5>
+
         </div>
 
         <div class="card-body">
 
             <div class="row">
 
-                <div class="col-md-4 mb-3">
-                    <label>Rule Name <span class="text-danger">*</span></label>
-                    <input class="form-control" placeholder="High Priority Ticket Escalation">
-                </div>
+                <!-- Company -->
 
                 <div class="col-md-4 mb-3">
-                    <label>Module <span class="text-danger">*</span></label>
-                    <select class="form-select">
+
+                    <label class="form-label">
+
+                        Company
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="escalationRule.companyId" (ngModelChange)="onCompanyChange()">
+
+                        <option [ngValue]="null">Select Company</option>
+
+                        <option *ngFor="let c of companies" [ngValue]="c.companyId">{{c.companyName}}</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !escalationRule.companyId">
+
+                        Company is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Region -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Region
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="escalationRule.regionId">
+
+                        <option [ngValue]="null">Select Region</option>
+
+                        <option *ngFor="let r of formRegions" [ngValue]="r.regionId">{{r.regionName}}</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !escalationRule.regionId">
+
+                        Region is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Rule Name -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Rule Name
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input class="form-control" placeholder="High Priority Ticket Escalation"
+                        [(ngModel)]="escalationRule.ruleName">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !escalationRule.ruleName">
+
+                        Rule Name is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Module -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Module
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="escalationRule.moduleName">
+
+                        <option value="">Select Module</option>
                         <option>Leads</option>
                         <option>Opportunities</option>
                         <option>Support Tickets</option>
@@ -25,189 +211,501 @@
                         <option>Orders</option>
                         <option>Invoices</option>
                         <option>Approvals</option>
+
                     </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !escalationRule.moduleName">
+
+                        Module is required.
+
+                    </div>
+
                 </div>
 
-                <div class="col-md-4 mb-3">
-                    <label>Priority</label>
-                    <select class="form-select">
-                        <option>Critical</option>
-                        <option>High</option>
-                        <option>Medium</option>
-                        <option>Low</option>
-                    </select>
-                </div>
+                <!-- Escalate After -->
 
-                <div class="col-md-4 mb-3">
-                    <label>Escalate After</label>
-                    <input type="number"
-                           class="form-control"
-                           placeholder="24">
-                </div>
+                <div class="col-md-2 mb-3">
 
-                <div class="col-md-4 mb-3">
-                    <label>Time Unit</label>
-                    <select class="form-select">
-                        <option>Minutes</option>
-                        <option>Hours</option>
-                        <option>Days</option>
-                    </select>
-                </div>
+                    <label class="form-label">
 
-                <div class="col-md-4 mb-3">
-                    <label>Escalate To</label>
-                    <select class="form-select">
-                        <option>Sales Manager</option>
-                        <option>Support Manager</option>
-                        <option>Regional Manager</option>
-                        <option>Finance Manager</option>
-                        <option>Company Admin</option>
-                    </select>
-                </div>
+                        Escalate After
 
-                <div class="col-md-6 mb-3">
-                    <label>Escalation Condition</label>
-                    <input class="form-control"
-                           placeholder="Status = Pending">
-                </div>
+                        <span class="text-danger">*</span>
 
-                <div class="col-md-6 mb-3">
-                    <label>Escalation Action</label>
-                    <select class="form-select">
-                        <option>Send Email</option>
-                        <option>Send SMS</option>
-                        <option>Send WhatsApp</option>
-                        <option>Create Task</option>
-                        <option>Notify Manager</option>
-                        <option>Change Owner</option>
-                    </select>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label>Description</label>
-                    <textarea class="form-control"
-                              rows="2"
-                              placeholder="Enter escalation description"></textarea>
-                </div>
-
-                <div class="col-md-3 mt-4">
-                    <label>
-                        <input type="checkbox" checked>
-                        Active
                     </label>
+
+                    <input type="number" min="1" class="form-control" placeholder="24"
+                        [(ngModel)]="escalationRule.escalateAfterValue">
+
+                </div>
+
+                <!-- Time Unit -->
+
+                <div class="col-md-2 mb-3">
+
+                    <label class="form-label">
+
+                        Time Unit
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="escalationRule.escalateAfterUnit">
+
+                        <option *ngFor="let u of timeUnits" [value]="u.label">{{u.label}}</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1"
+                        *ngIf="submitted && (!escalationRule.escalateAfterValue || escalationRule.escalateAfterValue <= 0)">
+
+                        Required.
+
+                    </div>
+
+                </div>
+
+                <!-- Escalation Level -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Escalation Level
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="number" min="1" class="form-control"
+                        [(ngModel)]="escalationRule.escalationLevel">
+
+                    <div class="text-danger mt-1"
+                        *ngIf="submitted && (!escalationRule.escalationLevel || escalationRule.escalationLevel <= 0)">
+
+                        Escalation Level must be greater than zero.
+
+                    </div>
+
+                </div>
+
+                <!-- Maximum Escalation Level -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Maximum Escalation Level
+
+                    </label>
+
+                    <input type="number" min="1" class="form-control"
+                        [(ngModel)]="escalationRule.maximumEscalationLevel">
+
+                </div>
+
+                <!-- Escalate To Type -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Escalate To
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="escalationRule.escalateToType">
+
+                        <option value="">Select Escalate To</option>
+                        <option>Manager</option>
+                        <option>Role</option>
+                        <option>Team</option>
+                        <option>Specific User</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !escalationRule.escalateToType">
+
+                        Escalate To is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Escalate To User Id -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Escalate To User ID
+
+                    </label>
+
+                    <input type="number" min="1" class="form-control" placeholder="Enter User ID (optional)"
+                        [(ngModel)]="escalationRule.escalateToUserId">
+
+                </div>
+
+                <!-- Notification Method -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Notification Method
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="escalationRule.notificationMethod">
+
+                        <option value="">Select Notification Method</option>
+                        <option>Email</option>
+                        <option>SMS</option>
+                        <option>WhatsApp</option>
+                        <option>Push Notification</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !escalationRule.notificationMethod">
+
+                        Notification Method is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Description -->
+
+                <div class="col-md-12 mb-3">
+
+                    <label class="form-label">
+
+                        Description
+
+                    </label>
+
+                    <textarea rows="3" class="form-control" [(ngModel)]="escalationRule.description"></textarea>
+
+                </div>
+
+                <!-- Checkboxes -->
+
+                <div class="col-md-4 mb-3">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="escalationRule.repeatEscalation">
+
+                        <label class="form-check-label">
+
+                            Repeat Escalation
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="escalationRule.isActive">
+
+                        <label class="form-check-label">
+
+                            Active
+
+                        </label>
+
+                    </div>
+
                 </div>
 
             </div>
 
-            <button class="btn btn-danger me-2">
-                Save
-            </button>
+        </div>
 
-            <button class="btn btn-secondary">
-                Clear
-            </button>
+    </div>
+
+</div>
+
+<!-- ========================================= -->
+<!-- Search Section -->
+<!-- ========================================= -->
+
+<div class="card shadow-sm border-0 mb-3">
+
+    <div class="card-body">
+
+        <div class="row">
+
+            <div class="col-md-4">
+
+                <input class="form-control" placeholder="Search Escalation Rule..." [(ngModel)]="searchText">
+
+            </div>
+
+            <div class="col-md-3">
+
+                <select class="form-select" [(ngModel)]="companyFilter">
+
+                    <option value="">All Companies</option>
+
+                    <option *ngFor="let c of companies" [value]="c.companyId">{{c.companyName}}</option>
+
+                </select>
+
+            </div>
+
+            <div class="col-md-3">
+
+                <select class="form-select" [(ngModel)]="statusFilter">
+
+                    <option value="">All Status</option>
+
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+
+                </select>
+
+            </div>
+
+            <div class="col-md-2">
+
+                <button class="btn btn-secondary w-100" (click)="clearFilters()">
+
+                    Clear
+
+                </button>
+
+            </div>
 
         </div>
 
     </div>
 
-    <br>
+</div>
 
-    <div class="row mb-3">
+<!-- ========================================= -->
+<!-- Escalation Rule List -->
+<!-- ========================================= -->
 
-        <div class="col-md-4">
-            <input class="form-control"
-                   placeholder="Search Escalation Rule...">
+<div class="card shadow-sm border-0">
+
+    <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+
+        <h5 class="mb-0">
+
+            Escalation Rules
+
+        </h5>
+
+        <span class="badge bg-light text-dark">
+
+            Total Records : {{filteredEscalationRules.length}}
+
+        </span>
+
+    </div>
+
+    <div class="card-body p-0">
+
+        <div class="table-responsive">
+
+            <table class="table table-hover table-bordered align-middle mb-0">
+
+                <thead class="table-danger">
+
+                    <tr>
+
+                        <th width="70">
+
+                            #
+
+                        </th>
+
+                        <th>
+
+                            Rule
+
+                        </th>
+
+                        <th>
+
+                            Company
+
+                        </th>
+
+                        <th>
+
+                            Module
+
+                        </th>
+
+                        <th>
+
+                            Escalate After
+
+                        </th>
+
+                        <th>
+
+                            Escalate To
+
+                        </th>
+
+                        <th>
+
+                            Notification
+
+                        </th>
+
+                        <th>
+
+                            Status
+
+                        </th>
+
+                        <th width="170">
+
+                            Action
+
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr *ngFor="let item of pagedEscalationRules; let i=index">
+
+                        <td>
+
+                            {{((page-1)*pageSize)+i+1}}
+
+                        </td>
+
+                        <td>
+
+                            <div class="fw-bold">
+
+                                {{item.ruleName}}
+
+                            </div>
+
+                            <small class="text-muted">
+
+                                Level {{item.escalationLevel}}
+
+                            </small>
+
+                        </td>
+
+                        <td>
+
+                            {{getCompanyName(item.companyId)}}
+
+                        </td>
+
+                        <td>
+
+                            {{item.moduleName}}
+
+                        </td>
+
+                        <td>
+
+                            {{getEscalateAfterLabel(item)}}
+
+                        </td>
+
+                        <td>
+
+                            {{item.escalateToType}}
+
+                            <span *ngIf="item.escalateToUserId">
+                                (User #{{item.escalateToUserId}})
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            {{item.notificationMethod}}
+
+                        </td>
+
+                        <td>
+
+                            <span class="badge" [ngClass]="item.isActive ? 'bg-success' : 'bg-secondary'">
+
+                                {{item.isActive ? 'Active' : 'Inactive'}}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <button class="btn btn-warning btn-sm me-2" (click)="edit(item.escalationRuleId)">
+
+                                <i class="fa-solid fa-pen"></i>
+
+                                Edit
+
+                            </button>
+
+                            <button class="btn btn-danger btn-sm" (click)="delete(item.escalationRuleId)">
+
+                                <i class="fa-solid fa-trash"></i>
+
+                                Delete
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                    <tr *ngIf="pagedEscalationRules.length==0">
+
+                        <td colspan="9" class="text-center text-muted py-5">
+
+                            <i class="fa-solid fa-triangle-exclamation fa-3x mb-3"></i>
+
+                            <br>
+
+                            No Escalation Rules Found.
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
         </div>
 
     </div>
 
-    <table class="table table-bordered table-hover">
+</div>
 
-        <thead class="table-danger">
+<!-- ========================================= -->
+<!-- Pagination -->
+<!-- ========================================= -->
 
-            <tr>
+<div class="mt-3">
 
-                <th>#</th>
-                <th>Rule Name</th>
-                <th>Module</th>
-                <th>Priority</th>
-                <th>Escalate After</th>
-                <th>Escalate To</th>
-                <th>Action</th>
-                <th>Status</th>
-                <th width="150">Actions</th>
+    <app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredEscalationRules.length"
+        (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
 
-            </tr>
-
-        </thead>
-
-        <tbody>
-
-            <tr>
-                <td>1</td>
-                <td>Critical Ticket Escalation</td>
-                <td>Support Tickets</td>
-                <td>Critical</td>
-                <td>30 Minutes</td>
-                <td>Support Manager</td>
-                <td>Send Email</td>
-                <td>Active</td>
-                <td>
-                    <button class="btn btn-warning btn-sm me-2">Edit</button>
-                    <button class="btn btn-danger btn-sm">Delete</button>
-                </td>
-            </tr>
-
-            <tr>
-                <td>2</td>
-                <td>Pending Lead Escalation</td>
-                <td>Leads</td>
-                <td>High</td>
-                <td>24 Hours</td>
-                <td>Sales Manager</td>
-                <td>Notify Manager</td>
-                <td>Active</td>
-                <td>
-                    <button class="btn btn-warning btn-sm me-2">Edit</button>
-                    <button class="btn btn-danger btn-sm">Delete</button>
-                </td>
-            </tr>
-
-            <tr>
-                <td>3</td>
-                <td>Invoice Approval Delay</td>
-                <td>Approvals</td>
-                <td>Medium</td>
-                <td>2 Days</td>
-                <td>Finance Manager</td>
-                <td>Send Email</td>
-                <td>Active</td>
-                <td>
-                    <button class="btn btn-warning btn-sm me-2">Edit</button>
-                    <button class="btn btn-danger btn-sm">Delete</button>
-                </td>
-            </tr>
-
-            <tr>
-                <td>4</td>
-                <td>Overdue Opportunity</td>
-                <td>Opportunities</td>
-                <td>High</td>
-                <td>3 Days</td>
-                <td>Regional Manager</td>
-                <td>Create Task</td>
-                <td>Inactive</td>
-                <td>
-                    <button class="btn btn-warning btn-sm me-2">Edit</button>
-                    <button class="btn btn-danger btn-sm">Delete</button>
-                </td>
-            </tr>
-
-        </tbody>
-
-    </table>
-
-   
+    </app-pagination>
 
 </div>

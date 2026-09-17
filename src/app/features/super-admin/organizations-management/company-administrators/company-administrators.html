@@ -47,6 +47,50 @@
     </div>
 
     <!-- ========================================= -->
+    <!-- Statistics -->
+    <!-- ========================================= -->
+
+    <div class="row mb-4">
+
+        <div class="col-md-3 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Total Administrators</div>
+                <div class="fw-bold fs-4 text-danger">{{totalAdmins}}</div>
+            </div>
+
+        </div>
+
+        <div class="col-md-3 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Active</div>
+                <div class="fw-bold fs-4 text-success">{{activeAdmins}}</div>
+            </div>
+
+        </div>
+
+        <div class="col-md-3 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Inactive</div>
+                <div class="fw-bold fs-4 text-secondary">{{inactiveAdmins}}</div>
+            </div>
+
+        </div>
+
+        <div class="col-md-3 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Companies</div>
+                <div class="fw-bold fs-4 text-primary">{{totalCompanies}}</div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
     <!-- Administrator Form -->
     <!-- ========================================= -->
 
@@ -78,21 +122,15 @@
 
                     </label>
 
-                    <select class="form-select" [(ngModel)]="admin.company">
+                    <select class="form-select" [(ngModel)]="admin.companyId" (ngModelChange)="onCompanyChange()">
 
-                        <option value="">Select Company</option>
+                        <option [ngValue]="null">Select Company</option>
 
-                        <option>ABC Technologies</option>
-
-                        <option>XYZ Solutions</option>
-
-                        <option>TechSoft Pvt Ltd</option>
-
-                        <option>Open CRM</option>
+                        <option *ngFor="let c of companies" [ngValue]="c.companyId">{{c.companyName}}</option>
 
                     </select>
 
-                    <div class="text-danger mt-1" *ngIf="submitted && !admin.company">
+                    <div class="text-danger mt-1" *ngIf="submitted && !admin.companyId">
 
                         Company is required.
 
@@ -134,9 +172,9 @@
 
                     </label>
 
-                    <input class="form-control" [(ngModel)]="admin.userName">
+                    <input class="form-control" [(ngModel)]="admin.username">
 
-                    <div class="text-danger mt-1" *ngIf="submitted && !admin.userName">
+                    <div class="text-danger mt-1" *ngIf="submitted && !admin.username">
 
                         Username is required.
 
@@ -214,9 +252,9 @@
 
                     </label>
 
-                    <input class="form-control" [(ngModel)]="admin.mobile">
+                    <input class="form-control" [(ngModel)]="admin.mobileNumber">
 
-                    <div class="text-danger mt-1" *ngIf="submitted && !admin.mobile">
+                    <div class="text-danger mt-1" *ngIf="submitted && !admin.mobileNumber">
 
                         Mobile Number is required.
 
@@ -224,33 +262,17 @@
 
                 </div>
 
-                <!-- Password -->
+                <!-- Role -->
 
                 <div class="col-md-4 mb-3">
 
                     <label class="form-label">
 
-                        Password
-
-                        <span class="text-danger">*</span>
+                        Role
 
                     </label>
 
-                    <input type="password" class="form-control" [(ngModel)]="admin.password">
-
-                </div>
-
-                <!-- Confirm Password -->
-
-                <div class="col-md-4 mb-3">
-
-                    <label class="form-label">
-
-                        Confirm Password
-
-                    </label>
-
-                    <input type="password" class="form-control" [(ngModel)]="admin.confirmPassword">
+                    <input class="form-control" placeholder="e.g. Company Administrator" [(ngModel)]="admin.roleName">
 
                 </div>
 
@@ -260,42 +282,6 @@
 
     </div>
     <div class="row">
-
-        <!-- Role -->
-
-        <div class="col-md-4 mb-3">
-
-            <label class="form-label">
-
-                Role
-
-                <span class="text-danger">*</span>
-
-            </label>
-
-            <select class="form-select" [(ngModel)]="admin.role">
-
-                <option value="">Select Role</option>
-
-                <option>Company Administrator</option>
-
-                <option>HR Administrator</option>
-
-                <option>Sales Administrator</option>
-
-                <option>Finance Administrator</option>
-
-                <option>Operations Administrator</option>
-
-            </select>
-
-            <div class="text-danger mt-1" *ngIf="submitted && !admin.role">
-
-                Role is required.
-
-            </div>
-
-        </div>
 
         <!-- Department -->
 
@@ -307,14 +293,11 @@
 
             </label>
 
-            <select class="form-select" [(ngModel)]="admin.department">
+            <select class="form-select" [(ngModel)]="admin.departmentId">
 
-                <option>Administration</option>
-                <option>Human Resources</option>
-                <option>Sales</option>
-                <option>Finance</option>
-                <option>Operations</option>
-                <option>IT</option>
+                <option [ngValue]="null">Select Department</option>
+
+                <option *ngFor="let d of departments" [ngValue]="d.departmentId">{{d.departmentName}}</option>
 
             </select>
 
@@ -330,7 +313,13 @@
 
             </label>
 
-            <input type="text" class="form-control" [(ngModel)]="admin.designation">
+            <select class="form-select" [(ngModel)]="admin.designationId">
+
+                <option [ngValue]="null">Select Designation</option>
+
+                <option *ngFor="let d of formDesignations" [ngValue]="d.designationId">{{d.designationName}}</option>
+
+            </select>
 
         </div>
 
@@ -344,12 +333,11 @@
 
             </label>
 
-            <select class="form-select" [(ngModel)]="admin.region">
+            <select class="form-select" [(ngModel)]="admin.regionId" (ngModelChange)="onRegionChange()">
 
-                <option>South Region</option>
-                <option>North Region</option>
-                <option>East Region</option>
-                <option>West Region</option>
+                <option [ngValue]="null">Select Region</option>
+
+                <option *ngFor="let r of formRegions" [ngValue]="r.regionId">{{r.regionName}}</option>
 
             </select>
 
@@ -365,12 +353,11 @@
 
             </label>
 
-            <select class="form-select" [(ngModel)]="admin.branch">
+            <select class="form-select" [(ngModel)]="admin.branchId">
 
-                <option>Hyderabad</option>
-                <option>Bangalore</option>
-                <option>Chennai</option>
-                <option>Mumbai</option>
+                <option [ngValue]="null">Select Branch</option>
+
+                <option *ngFor="let b of formBranches" [ngValue]="b.branchId">{{b.branchName}}</option>
 
             </select>
 
@@ -390,93 +377,17 @@
 
         </div>
 
-        <!-- Time Zone -->
+        <!-- Profile Image Path -->
 
         <div class="col-md-4 mb-3">
 
             <label class="form-label">
 
-                Time Zone
+                Profile Image URL
 
             </label>
 
-            <select class="form-select" [(ngModel)]="admin.timeZone">
-
-                <option>Asia/Kolkata</option>
-                <option>UTC</option>
-                <option>America/New_York</option>
-                <option>Europe/London</option>
-
-            </select>
-
-        </div>
-
-        <!-- Language -->
-
-        <div class="col-md-4 mb-3">
-
-            <label class="form-label">
-
-                Language
-
-            </label>
-
-            <select class="form-select" [(ngModel)]="admin.language">
-
-                <option>English</option>
-                <option>Hindi</option>
-                <option>Telugu</option>
-                <option>Tamil</option>
-
-            </select>
-
-        </div>
-
-        <!-- Last Login -->
-
-        <div class="col-md-4 mb-3">
-
-            <label class="form-label">
-
-                Last Login
-
-            </label>
-
-            <input type="datetime-local" class="form-control" [(ngModel)]="admin.lastLogin">
-
-        </div>
-
-        <!-- Profile Image -->
-
-        <div class="col-md-6 mb-3">
-
-            <label class="form-label">
-
-                Profile Image
-
-            </label>
-
-            <input type="file" class="form-control">
-
-        </div>
-
-        <!-- Status -->
-
-        <div class="col-md-6 mb-3">
-
-            <label class="form-label">
-
-                Status
-
-            </label>
-
-            <select class="form-select" [(ngModel)]="admin.status">
-
-                <option>Active</option>
-                <option>Inactive</option>
-                <option>Locked</option>
-
-            </select>
+            <input class="form-control" placeholder="Image path / URL" [(ngModel)]="admin.profileImagePath">
 
         </div>
 
@@ -486,7 +397,7 @@
 
             <div class="form-check mt-4">
 
-                <input class="form-check-input" type="checkbox" [(ngModel)]="admin.isActive">
+                <input class="form-check-input" type="checkbox" [(ngModel)]="admin.status">
 
                 <label class="form-check-label">
 
@@ -534,27 +445,11 @@
 
             <div class="form-check mt-4">
 
-                <input class="form-check-input" type="checkbox" [(ngModel)]="admin.twoFactorEnabled">
+                <input class="form-check-input" type="checkbox" [(ngModel)]="admin.twoFactorAuthentication">
 
                 <label class="form-check-label">
 
                     Two Factor Authentication
-
-                </label>
-
-            </div>
-
-        </div>
-
-        <div class="col-md-4 mb-3">
-
-            <div class="form-check">
-
-                <input class="form-check-input" type="checkbox" [(ngModel)]="admin.forcePasswordChange">
-
-                <label class="form-check-label">
-
-                    Force Password Change
 
                 </label>
 
@@ -572,9 +467,7 @@
 
             </label>
 
-            <textarea rows="3" class="form-control" [(ngModel)]="admin.remarks">
-
-                    </textarea>
+            <textarea rows="3" class="form-control" [(ngModel)]="admin.remarks"></textarea>
 
         </div>
 
@@ -606,10 +499,7 @@
 
                     <option value="">All Companies</option>
 
-                    <option>ABC Technologies</option>
-                    <option>XYZ Solutions</option>
-                    <option>TechSoft Pvt Ltd</option>
-                    <option>Open CRM</option>
+                    <option *ngFor="let c of companies" [value]="c.companyId">{{c.companyName}}</option>
 
                 </select>
 
@@ -621,9 +511,8 @@
 
                     <option value="">All Status</option>
 
-                    <option>Active</option>
-                    <option>Inactive</option>
-                    <option>Locked</option>
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
 
                 </select>
 
@@ -720,6 +609,12 @@
 
                         <th>
 
+                            Department
+
+                        </th>
+
+                        <th>
+
                             Region
 
                         </th>
@@ -727,12 +622,6 @@
                         <th>
 
                             Branch
-
-                        </th>
-
-                        <th>
-
-                            Last Login
 
                         </th>
 
@@ -781,7 +670,7 @@
 
                                     <small class="text-muted">
 
-                                        {{item.userName}}
+                                        {{item.username}}
 
                                     </small>
 
@@ -799,7 +688,7 @@
 
                         <td>
 
-                            {{item.company}}
+                            {{getCompanyName(item.companyId)}}
 
                         </td>
 
@@ -811,15 +700,45 @@
 
                         <td>
 
-                            {{item.mobile}}
+                            {{item.mobileNumber}}
 
                         </td>
 
                         <td>
 
-                            <span class="badge bg-primary">
+                            <span class="badge bg-primary" *ngIf="item.roleName">
 
-                                {{item.role}}
+                                {{item.roleName}}
+
+                            </span>
+
+                            <span *ngIf="!item.roleName">-</span>
+
+                        </td>
+
+                        <td>
+
+                            {{getDepartmentName(item.departmentId)}}
+
+                        </td>
+
+                        <td>
+
+                            {{getRegionName(item.regionId)}}
+
+                        </td>
+
+                        <td>
+
+                            {{getBranchName(item.branchId)}}
+
+                        </td>
+
+                        <td>
+
+                            <span class="badge" [ngClass]="item.status ? 'bg-success' : 'bg-secondary'">
+
+                                {{item.status ? 'Active' : 'Inactive'}}
 
                             </span>
 
@@ -827,43 +746,7 @@
 
                         <td>
 
-                            {{item.region}}
-
-                        </td>
-
-                        <td>
-
-                            {{item.branch}}
-
-                        </td>
-
-                        <td>
-
-                            {{item.lastLogin | date:'dd-MMM-yyyy hh:mm a'}}
-
-                        </td>
-
-                        <td>
-
-                            <span class="badge" [ngClass]="{
-
-                                    'bg-success': item.status=='Active',
-
-                                    'bg-danger': item.status=='Inactive',
-
-                                    'bg-warning text-dark': item.status=='Locked'
-
-                                    }">
-
-                                {{item.status}}
-
-                            </span>
-
-                        </td>
-
-                        <td>
-
-                            <button class="btn btn-warning btn-sm me-2" (click)="edit(item.adminId)">
+                            <button class="btn btn-warning btn-sm me-2" (click)="edit(item.administratorId)">
 
                                 <i class="fa-solid fa-pen"></i>
 
@@ -871,7 +754,7 @@
 
                             </button>
 
-                            <button class="btn btn-danger btn-sm" (click)="delete(item.adminId)">
+                            <button class="btn btn-danger btn-sm" (click)="delete(item.administratorId)">
 
                                 <i class="fa-solid fa-trash"></i>
 
@@ -885,7 +768,7 @@
 
                     <tr *ngIf="pagedAdmins.length==0">
 
-                        <td colspan="12" class="text-center text-muted py-5">
+                        <td colspan="11" class="text-center text-muted py-5">
 
                             <i class="fa-solid fa-users fa-3x mb-3"></i>
 

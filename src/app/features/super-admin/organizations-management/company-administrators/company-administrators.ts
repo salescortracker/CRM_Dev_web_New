@@ -1,25 +1,30 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Alertservice } from '../../../../core/services/alertservice';
 import { Spinnerservice } from '../../../../core/services/spinnerservice';
 import { Pagination } from '../../../../shared/pagination/pagination';
+import { AuthService } from '../../../../core/authentication/services/auth.service';
+import { ControlsystemService } from '../../services/controlsystem-service';
 
 @Component({
   selector: 'app-company-administrators',
   standalone: true,
-  imports: [CommonModule,FormsModule,Pagination],
+  imports: [CommonModule, FormsModule, Pagination],
   templateUrl: './company-administrators.html',
   styleUrl: './company-administrators.css',
 })
-export class CompanyAdministrators {
-    constructor(
+export class CompanyAdministrators implements OnInit {
+  constructor(
     private alert: Alertservice,
-    private spinner: Spinnerservice
+    private spinner: Spinnerservice,
+    private cd: ChangeDetectorRef,
+    private authService: AuthService,
+    private controlsystemService: ControlsystemService
   ) { }
 
   // ============================================
-  // Form
+  // Form / Screen State
   // ============================================
 
   submitted = false;
@@ -32,7 +37,25 @@ export class CompanyAdministrators {
   page = 1;
   pageSize = 10;
 
-  adminId = 0;
+  // ============================================
+  // Dropdown Data (from backend)
+  // ============================================
+
+  companies: any[] = [];
+  regions: any[] = [];
+  departments: any[] = [];
+  designations: any[] = [];
+  branches: any[] = [];
+
+  // ============================================
+  // Administrators List
+  // ============================================
+
+  administrators: any[] = [];
+
+  // ============================================
+  // Form Model
+  // ============================================
 
   admin: any = this.getEmptyModel();
 
@@ -40,13 +63,21 @@ export class CompanyAdministrators {
 
     return {
 
-      adminId: 0,
+      administratorId: 0,
 
-      company: '',
+      companyId: null,
+
+      departmentId: null,
+
+      designationId: null,
+
+      regionId: null,
+
+      branchId: null,
 
       employeeCode: '',
 
-      userName: '',
+      username: '',
 
       firstName: '',
 
@@ -54,43 +85,21 @@ export class CompanyAdministrators {
 
       email: '',
 
-      mobile: '',
+      mobileNumber: '',
 
-      password: '',
-
-      confirmPassword: '',
-
-      role: '',
-
-      department: 'Administration',
-
-      designation: '',
+      roleName: '',
 
       reportingManager: '',
 
-      region: 'South Region',
+      profileImagePath: '',
 
-      branch: 'Hyderabad',
+      status: true,
 
-      language: 'English',
+      emailVerified: false,
 
-      timeZone: 'Asia/Kolkata',
+      mobileVerified: false,
 
-      profileImage: '',
-
-      lastLogin: new Date(),
-
-      status: 'Active',
-
-      isActive: true,
-
-      emailVerified: true,
-
-      mobileVerified: true,
-
-      twoFactorEnabled: false,
-
-      forcePasswordChange: false,
+      twoFactorAuthentication: false,
 
       remarks: ''
 
@@ -99,124 +108,310 @@ export class CompanyAdministrators {
   }
 
   // ============================================
-  // Static Data
+  // Lifecycle
   // ============================================
 
-  administrators: any[] = [
+  ngOnInit(): void {
 
-    {
+    this.loadCompanies();
 
-      adminId: 1,
+    this.loadRegions();
 
-      company: 'ABC Technologies',
+    this.loadDepartments();
 
-      employeeCode: 'EMP0001',
+    this.loadDesignations();
 
-      userName: 'john.admin',
+    this.loadBranches();
 
-      firstName: 'John',
+    this.loadAdministrators();
 
-      lastName: 'David',
+  }
 
-      email: 'john@abc.com',
+  // ============================================
+  // Load Dropdown Data
+  // ============================================
 
-      mobile: '9876543210',
+  loadCompanies(): void {
 
-      password: '123',
+    this.authService.getCompanies().subscribe({
 
-      confirmPassword: '123',
+      next: (res: any) => {
 
-      role: 'Company Administrator',
+        this.companies = (res?.data || []).filter(
+          (x: any) => x.isActive !== false
+        );
 
-      department: 'Administration',
+        this.cd.detectChanges();
 
-      designation: 'Admin Manager',
+      },
 
-      reportingManager: 'CEO',
+      error: (err) => {
 
-      region: 'South Region',
+        console.error('Error loading companies:', err);
 
-      branch: 'Hyderabad',
+        this.companies = [];
 
-      language: 'English',
+      }
 
-      timeZone: 'Asia/Kolkata',
+    });
 
-      lastLogin: new Date(),
+  }
 
-      status: 'Active',
+  loadRegions(): void {
 
-      isActive: true,
+    this.authService.getRegions().subscribe({
 
-      emailVerified: true,
+      next: (res: any) => {
 
-      mobileVerified: true,
+        this.regions = (res?.data || []).filter(
+          (x: any) => x.isActive !== false
+        );
 
-      twoFactorEnabled: true,
+        this.cd.detectChanges();
 
-      forcePasswordChange: false,
+      },
 
-      remarks: ''
+      error: (err) => {
 
-    },
+        console.error('Error loading regions:', err);
 
-    {
+        this.regions = [];
 
-      adminId: 2,
+      }
 
-      company: 'XYZ Solutions',
+    });
 
-      employeeCode: 'EMP0002',
+  }
 
-      userName: 'smith.hr',
+  loadDepartments(): void {
 
-      firstName: 'Smith',
+    this.controlsystemService.getDepartments().subscribe({
 
-      lastName: 'Joseph',
+      next: (res: any) => {
 
-      email: 'smith@xyz.com',
+        this.departments = (res?.data || []).filter(
+          (x: any) => x.status === true || x.status === 'Active'
+        );
 
-      mobile: '9988776655',
+        this.cd.detectChanges();
 
-      password: '123',
+      },
 
-      confirmPassword: '123',
+      error: (err) => {
 
-      role: 'HR Administrator',
+        console.error('Error loading departments:', err);
 
-      department: 'Human Resources',
+        this.departments = [];
 
-      designation: 'HR Manager',
+      }
 
-      reportingManager: 'Director',
+    });
 
-      region: 'North Region',
+  }
 
-      branch: 'Delhi',
+  loadDesignations(): void {
 
-      language: 'English',
+    this.controlsystemService.getDesignations().subscribe({
 
-      timeZone: 'Asia/Kolkata',
+      next: (res: any) => {
 
-      lastLogin: new Date(),
+        this.designations = (res?.data || []).filter(
+          (x: any) => x.status === true || x.status === 'Active'
+        );
 
-      status: 'Inactive',
+        this.cd.detectChanges();
 
-      isActive: false,
+      },
 
-      emailVerified: true,
+      error: (err) => {
 
-      mobileVerified: true,
+        console.error('Error loading designations:', err);
 
-      twoFactorEnabled: false,
+        this.designations = [];
 
-      forcePasswordChange: true,
+      }
 
-      remarks: ''
+    });
 
-    }
+  }
 
-  ];
+  loadBranches(): void {
+
+    this.controlsystemService.getBranches().subscribe({
+
+      next: (res: any) => {
+
+        this.branches = (res?.data || []).filter(
+          (x: any) => x.status === true || x.status === 'Active'
+        );
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error loading branches:', err);
+
+        this.branches = [];
+
+      }
+
+    });
+
+  }
+
+  // ============================================
+  // Load Company Administrators
+  // ============================================
+
+  loadAdministrators(): void {
+
+    this.spinner.show();
+
+    this.controlsystemService.getCompanyAdministrators().subscribe({
+
+      next: (res: any) => {
+
+        this.spinner.hide();
+
+        if (res?.success) {
+
+          this.administrators = res.data || [];
+
+        } else {
+
+          this.administrators = [];
+
+          this.alert.warning(
+            res?.message || 'No company administrator records found.'
+          );
+
+        }
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        this.spinner.hide();
+
+        console.error('Error loading company administrators:', err);
+
+        this.administrators = [];
+
+        this.alert.error(
+          err?.error?.message || 'Failed to load company administrators.'
+        );
+
+        this.cd.detectChanges();
+
+      }
+
+    });
+
+  }
+
+  // ============================================
+  // Lookup Helpers (Display Names)
+  // ============================================
+
+  getCompanyName(id: any): string {
+
+    const item = this.companies.find(x => x.companyId === Number(id));
+
+    return item ? item.companyName : '-';
+
+  }
+
+  getDepartmentName(id: any): string {
+
+    const item = this.departments.find(x => x.departmentId === Number(id));
+
+    return item ? item.departmentName : '-';
+
+  }
+
+  getDesignationName(id: any): string {
+
+    const item = this.designations.find(x => x.designationId === Number(id));
+
+    return item ? item.designationName : '-';
+
+  }
+
+  getRegionName(id: any): string {
+
+    const item = this.regions.find(x => x.regionId === Number(id));
+
+    return item ? item.regionName : '-';
+
+  }
+
+  getBranchName(id: any): string {
+
+    const item = this.branches.find(x => x.branchId === Number(id));
+
+    return item ? item.branchName : '-';
+
+  }
+
+  // ============================================
+  // Cascading Dropdown Filters
+  // ============================================
+
+  get formRegions(): any[] {
+
+    if (!this.admin.companyId) return this.regions;
+
+    return this.regions.filter(
+      x => x.companyId === Number(this.admin.companyId)
+    );
+
+  }
+
+  get formDesignations(): any[] {
+
+    if (!this.admin.companyId) return this.designations;
+
+    return this.designations.filter(
+      x => x.companyId === Number(this.admin.companyId)
+    );
+
+  }
+
+  get formBranches(): any[] {
+
+    return this.branches.filter(x => {
+
+      const matchesCompany =
+        !this.admin.companyId ||
+        x.companyId === Number(this.admin.companyId);
+
+      const matchesRegion =
+        !this.admin.regionId ||
+        x.regionId === Number(this.admin.regionId);
+
+      return matchesCompany && matchesRegion;
+
+    });
+
+  }
+
+  onCompanyChange(): void {
+
+    this.admin.regionId = null;
+    this.admin.designationId = null;
+    this.admin.branchId = null;
+
+  }
+
+  onRegionChange(): void {
+
+    this.admin.branchId = null;
+
+  }
 
   // ============================================
   // Filters
@@ -226,31 +421,26 @@ export class CompanyAdministrators {
 
     return this.administrators.filter(x => {
 
-      const search =
+      const search = this.searchText.trim().toLowerCase();
 
-        x.firstName.toLowerCase().includes(this.searchText.toLowerCase()) ||
+      const matchSearch =
+        !search ||
+        (x.firstName || '').toLowerCase().includes(search) ||
+        (x.lastName || '').toLowerCase().includes(search) ||
+        (x.username || '').toLowerCase().includes(search) ||
+        (x.employeeCode || '').toLowerCase().includes(search) ||
+        (x.email || '').toLowerCase().includes(search);
 
-        x.lastName.toLowerCase().includes(this.searchText.toLowerCase()) ||
-
-        x.userName.toLowerCase().includes(this.searchText.toLowerCase()) ||
-
-        x.employeeCode.toLowerCase().includes(this.searchText.toLowerCase()) ||
-
-        x.email.toLowerCase().includes(this.searchText.toLowerCase());
-
-      const company =
-
+      const matchCompany =
         !this.companyFilter ||
+        Number(x.companyId) === Number(this.companyFilter);
 
-        x.company === this.companyFilter;
+      const matchStatus =
+        this.statusFilter === '' ||
+        (this.statusFilter === 'Active' && x.status === true) ||
+        (this.statusFilter === 'Inactive' && x.status === false);
 
-      const status =
-
-        !this.statusFilter ||
-
-        x.status === this.statusFilter;
-
-      return search && company && status;
+      return matchSearch && matchCompany && matchStatus;
 
     });
 
@@ -272,73 +462,352 @@ export class CompanyAdministrators {
   // Statistics
   // ============================================
 
-  get totalAdmins() {
+  get totalAdmins(): number {
 
     return this.administrators.length;
 
   }
 
-  get activeAdmins() {
+  get activeAdmins(): number {
 
-    return this.administrators.filter(x => x.status === 'Active').length;
-
-  }
-
-  get inactiveAdmins() {
-
-    return this.administrators.filter(x => x.status === 'Inactive').length;
+    return this.administrators.filter(x => x.status === true).length;
 
   }
 
-  get lockedAdmins() {
+  get inactiveAdmins(): number {
 
-    return this.administrators.filter(x => x.status === 'Locked').length;
+    return this.administrators.filter(x => x.status === false).length;
 
   }
-  edit(id: number): void {
 
-    const data = this.administrators.find(x => x.adminId === id);
+  get totalCompanies(): number {
 
-    if (!data) {
+    return [...new Set(this.administrators.map(x => x.companyId))].length;
+
+  }
+
+  // ============================================
+  // Save / Update
+  // ============================================
+
+  saveAdmin(): void {
+
+    this.submitted = true;
+
+    if (
+      !this.admin.companyId ||
+      !this.admin.employeeCode ||
+      !this.admin.employeeCode.trim() ||
+      !this.admin.username ||
+      !this.admin.username.trim() ||
+      !this.admin.firstName ||
+      !this.admin.firstName.trim() ||
+      !this.admin.email ||
+      !this.admin.email.trim() ||
+      !this.admin.mobileNumber ||
+      !this.admin.mobileNumber.trim()
+    ) {
+
+      this.alert.warning('Please fill all required fields.');
+
       return;
+
     }
 
-    this.admin = { ...data };
+    const payload = {
 
-    this.isEdit = true;
+      administratorId: this.isEdit ? this.admin.administratorId : 0,
 
-    this.submitted = false;
+      companyId: Number(this.admin.companyId),
+
+      departmentId: this.admin.departmentId ? Number(this.admin.departmentId) : null,
+
+      designationId: this.admin.designationId ? Number(this.admin.designationId) : null,
+
+      regionId: this.admin.regionId ? Number(this.admin.regionId) : null,
+
+      branchId: this.admin.branchId ? Number(this.admin.branchId) : null,
+
+      employeeCode: this.admin.employeeCode.trim(),
+
+      username: this.admin.username.trim(),
+
+      firstName: this.admin.firstName.trim(),
+
+      lastName: this.admin.lastName ? this.admin.lastName.trim() : null,
+
+      email: this.admin.email.trim(),
+
+      mobileNumber: this.admin.mobileNumber.trim(),
+
+      roleName: this.admin.roleName ? this.admin.roleName.trim() : null,
+
+      reportingManager: this.admin.reportingManager
+        ? this.admin.reportingManager.trim()
+        : null,
+
+      profileImagePath: this.admin.profileImagePath
+        ? this.admin.profileImagePath.trim()
+        : null,
+
+      status: !!this.admin.status,
+
+      emailVerified: !!this.admin.emailVerified,
+
+      mobileVerified: !!this.admin.mobileVerified,
+
+      twoFactorAuthentication: this.admin.twoFactorAuthentication ? 1 : 0,
+
+      remarks: this.admin.remarks ? this.admin.remarks.trim() : null
+
+    };
+
+    this.spinner.show();
+
+    if (this.isEdit) {
+
+      this.controlsystemService.updateCompanyAdministrator(payload).subscribe({
+
+        next: (res: any) => {
+
+          this.spinner.hide();
+
+          if (res?.success) {
+
+            this.alert.success(
+              res.message || 'Company Administrator updated successfully.'
+            );
+
+            this.clear();
+
+            this.loadAdministrators();
+
+          } else {
+
+            this.alert.warning(
+              res?.message || 'Failed to update company administrator.'
+            );
+
+          }
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Update company administrator error:', err);
+
+          this.alert.error(
+            err?.error?.message || 'Failed to update company administrator.'
+          );
+
+        }
+
+      });
+
+    } else {
+
+      this.controlsystemService.createCompanyAdministrator(payload).subscribe({
+
+        next: (res: any) => {
+
+          this.spinner.hide();
+
+          if (res?.success) {
+
+            this.alert.success(
+              res.message || 'Company Administrator created successfully.'
+            );
+
+            this.clear();
+
+            this.loadAdministrators();
+
+          } else {
+
+            this.alert.warning(
+              res?.message || 'Failed to create company administrator.'
+            );
+
+          }
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Create company administrator error:', err);
+
+          this.alert.error(
+            err?.error?.message || 'Failed to create company administrator.'
+          );
+
+        }
+
+      });
+
+    }
 
   }
+
+  // ============================================
+  // Edit
+  // ============================================
+
+  edit(id: number): void {
+
+    this.spinner.show();
+
+    this.controlsystemService.getCompanyAdministratorById(id).subscribe({
+
+      next: (res: any) => {
+
+        this.spinner.hide();
+
+        if (res?.success && res.data) {
+
+          const data = res.data;
+
+          this.admin = {
+
+            administratorId: data.administratorId,
+
+            companyId: data.companyId,
+
+            departmentId: data.departmentId,
+
+            designationId: data.designationId,
+
+            regionId: data.regionId,
+
+            branchId: data.branchId,
+
+            employeeCode: data.employeeCode || '',
+
+            username: data.username || '',
+
+            firstName: data.firstName || '',
+
+            lastName: data.lastName || '',
+
+            email: data.email || '',
+
+            mobileNumber: data.mobileNumber || '',
+
+            roleName: data.roleName || '',
+
+            reportingManager: data.reportingManager || '',
+
+            profileImagePath: data.profileImagePath || '',
+
+            status: data.status === true,
+
+            emailVerified: data.emailVerified === true,
+
+            mobileVerified: data.mobileVerified === true,
+
+            twoFactorAuthentication: Number(data.twoFactorAuthentication) === 1,
+
+            remarks: data.remarks || ''
+
+          };
+
+          this.isEdit = true;
+
+          this.submitted = false;
+
+          this.cd.detectChanges();
+
+        } else {
+
+          this.alert.warning(
+            res?.message || 'Company Administrator not found.'
+          );
+
+        }
+
+      },
+
+      error: (err) => {
+
+        this.spinner.hide();
+
+        console.error('Get company administrator error:', err);
+
+        this.alert.error(
+          err?.error?.message || 'Failed to load company administrator.'
+        );
+
+      }
+
+    });
+
+  }
+
+  // ============================================
+  // Delete
+  // ============================================
 
   delete(id: number): void {
 
     this.alert.deleteConfirm().then(result => {
 
-      if (!result.isConfirmed) {
-        return;
-      }
+      if (!result.isConfirmed) return;
 
       this.spinner.show();
 
-      setTimeout(() => {
+      this.controlsystemService.deleteCompanyAdministrator(id).subscribe({
 
-       this.administrators =
-this.administrators.filter(x => x.adminId !== id);
+        next: (res: any) => {
 
-if (this.page > Math.ceil(this.filteredAdmins.length / this.pageSize)) {
-    this.page = Math.max(1, this.page - 1);
-}
+          this.spinner.hide();
 
-        this.spinner.hide();
+          if (res?.success) {
 
-        this.alert.success('Company Administrator deleted successfully.');
+            this.alert.success(
+              res.message || 'Company Administrator deleted successfully.'
+            );
 
-      }, 400);
+            if (this.page > 1 &&
+              this.pagedAdmins.length === 1) {
+              this.page = this.page - 1;
+            }
+
+            this.loadAdministrators();
+
+          } else {
+
+            this.alert.warning(
+              res?.message || 'Failed to delete company administrator.'
+            );
+
+          }
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Delete company administrator error:', err);
+
+          this.alert.error(
+            err?.error?.message || 'Failed to delete company administrator.'
+          );
+
+        }
+
+      });
 
     });
 
   }
+
+  // ============================================
+  // Clear Form
+  // ============================================
 
   clear(): void {
 
@@ -347,114 +816,13 @@ if (this.page > Math.ceil(this.filteredAdmins.length / this.pageSize)) {
     this.isEdit = false;
 
     this.submitted = false;
-  }
-
-
-
- 
-  changePage(page: number): void {
-
-    this.page = page;
-
 
   }
 
-  changePageSize(size: number): void {
+  // ============================================
+  // Filters / Pagination / Refresh
+  // ============================================
 
-    this.pageSize = size;
-
-    this.page = 1;
-
-   
-
-  }
-
-refresh(): void {
-
-    this.spinner.show();
-
-    setTimeout(() => {
-
-        this.page = 1;
-
-        this.spinner.hide();
-
-        this.alert.success('Company Administrators refreshed successfully.');
-
-    },500);
-
-}
-
-  get totalActive(): number {
-
-    return this.administrators.filter(x => x.isActive).length;
-
-  }
-
-  get totalInactive(): number {
-
-    return this.administrators.filter(x => !x.isActive).length;
-
-  }
-
-  get totalCompanies(): number {
-
-    return [...new Set(this.administrators.map(x => x.companyName))].length;
-
-  }
-
-  get totalAdministrators(): number {
-
-    return this.administrators.length;
-
-  }
-  saveAdmin(): void {
-
-    this.submitted = true;
-
-    if (
-      !this.admin.company ||
-      !this.admin.employeeCode ||
-      !this.admin.userName ||
-      !this.admin.firstName ||
-      !this.admin.email ||
-      !this.admin.mobile ||
-      !this.admin.role
-    ) {
-      return;
-    }
-
-    this.spinner.show();
-
-    setTimeout(() => {
-
-      if (this.isEdit) {
-
-        const index = this.administrators.findIndex(x => x.adminId === this.admin.adminId);
-
-        if (index > -1) {
-          this.administrators[index] = { ...this.admin };
-        }
-
-        this.alert.success('Company Administrator updated successfully.');
-
-      } else {
-
-        this.admin.adminId = new Date().getTime();
-
-        this.administrators.unshift({ ...this.admin });
-
-        this.alert.success('Company Administrator created successfully.');
-
-      }
-
-      this.spinner.hide();
-
-      this.clear();
-
-    }, 500);
-
-  }
   clearFilters(): void {
 
     this.searchText = '';
@@ -466,4 +834,27 @@ refresh(): void {
     this.page = 1;
 
   }
+
+  changePage(page: number): void {
+
+    this.page = page;
+
+  }
+
+  changePageSize(size: number): void {
+
+    this.pageSize = size;
+
+    this.page = 1;
+
+  }
+
+  refresh(): void {
+
+    this.page = 1;
+
+    this.loadAdministrators();
+
+  }
+
 }

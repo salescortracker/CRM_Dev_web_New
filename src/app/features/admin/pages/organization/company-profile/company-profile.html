@@ -23,8 +23,62 @@
             <div class="row">
 
                 <!-- ========================================= -->
-                <!-- Company Name -->
+                <!-- Company / Region -->
                 <!-- ========================================= -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Company
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="company.companyId" (ngModelChange)="onCompanyChange()">
+
+                        <option [ngValue]="null">Select Company</option>
+
+                        <option *ngFor="let c of companies" [ngValue]="c.companyId">{{c.companyName}}</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !company.companyId">
+
+                        Company is required.
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Region
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="company.regionId">
+
+                        <option [ngValue]="null">Select Region</option>
+
+                        <option *ngFor="let r of formRegions" [ngValue]="r.regionId">{{r.regionName}}</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !company.regionId">
+
+                        Region is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Company Name -->
 
                 <div class="col-md-4 mb-3">
 
@@ -110,7 +164,7 @@
 
                     </label>
 
-                    <input type="text" class="form-control" placeholder="GST Number" [(ngModel)]="company.gstNumber">
+                    <input type="text" class="form-control" placeholder="GST Number" [(ngModel)]="company.gstnumber">
 
                 </div>
 
@@ -122,7 +176,7 @@
 
                     </label>
 
-                    <input type="text" class="form-control" placeholder="PAN Number" [(ngModel)]="company.panNumber">
+                    <input type="text" class="form-control" placeholder="PAN Number" [(ngModel)]="company.pannumber">
 
                 </div>
 
@@ -136,30 +190,15 @@
 
                         Industry
 
-                        <span class="text-danger">*</span>
-
                     </label>
 
-                    <select class="form-select" [(ngModel)]="company.industry">
+                    <select class="form-select" [(ngModel)]="company.industryId">
 
-                        <option value="">Select Industry</option>
+                        <option [ngValue]="null">Select Industry</option>
 
-                        <option>Information Technology</option>
-                        <option>Healthcare</option>
-                        <option>Manufacturing</option>
-                        <option>Education</option>
-                        <option>Finance</option>
-                        <option>Retail</option>
-                        <option>Construction</option>
-                        <option>Telecommunications</option>
+                        <option *ngFor="let ind of industries" [ngValue]="ind.industryId">{{ind.industryName}}</option>
 
                     </select>
-
-                    <div class="text-danger mt-1" *ngIf="submitted && !company.industry">
-
-                        Industry is required.
-
-                    </div>
 
                 </div>
 
@@ -171,28 +210,15 @@
 
                         Company Type
 
-                        <span class="text-danger">*</span>
-
                     </label>
 
-                    <select class="form-select" [(ngModel)]="company.companyType">
+                    <select class="form-select" [(ngModel)]="company.companyTypeId">
 
-                        <option value="">Select Company Type</option>
+                        <option [ngValue]="null">Select Company Type</option>
 
-                        <option>Private Limited</option>
-                        <option>Public Limited</option>
-                        <option>LLP</option>
-                        <option>Partnership</option>
-                        <option>Proprietorship</option>
-                        <option>Government</option>
+                        <option *ngFor="let ct of companyTypes" [ngValue]="ct.companyTypeId">{{ct.companyTypeName}}</option>
 
                     </select>
-
-                    <div class="text-danger mt-1" *ngIf="submitted && !company.companyType">
-
-                        Company Type is required.
-
-                    </div>
 
                 </div>
 
@@ -220,17 +246,9 @@
 
                         Email
 
-                        <span class="text-danger">*</span>
-
                     </label>
 
                     <input type="email" class="form-control" placeholder="Enter Email" [(ngModel)]="company.email">
-
-                    <div class="text-danger mt-1" *ngIf="submitted && !company.email">
-
-                        Email is required.
-
-                    </div>
 
                 </div>
 
@@ -240,17 +258,9 @@
 
                         Phone
 
-                        <span class="text-danger">*</span>
-
                     </label>
 
                     <input type="text" class="form-control" placeholder="Enter Phone" [(ngModel)]="company.phone">
-
-                    <div class="text-danger mt-1" *ngIf="submitted && !company.phone">
-
-                        Phone Number is required.
-
-                    </div>
 
                 </div>
 
@@ -281,25 +291,18 @@
 
                 </div>
 
-                <!-- Time Zone -->
+                <!-- Company Logo Path -->
 
                 <div class="col-md-6 mb-3">
 
                     <label class="form-label">
 
-                        Time Zone
+                        Company Logo Path
 
                     </label>
 
-                    <select class="form-select" [(ngModel)]="company.timeZone">
-
-                        <option>Asia/Kolkata</option>
-                        <option>UTC</option>
-                        <option>America/New_York</option>
-                        <option>Europe/London</option>
-                        <option>Asia/Dubai</option>
-
-                    </select>
+                    <input type="text" class="form-control" placeholder="Path or URL to the company logo"
+                        [(ngModel)]="company.companyLogoPath">
 
                 </div>
 
@@ -313,18 +316,10 @@
 
                         Address Line 1
 
-                        <span class="text-danger">*</span>
-
                     </label>
 
                     <input type="text" class="form-control" placeholder="Enter Address Line 1"
-                        [(ngModel)]="company.address1">
-
-                    <div class="text-danger mt-1" *ngIf="submitted && !company.address1">
-
-                        Address Line 1 is required.
-
-                    </div>
+                        [(ngModel)]="company.addressLine1">
 
                 </div>
 
@@ -337,7 +332,7 @@
                     </label>
 
                     <input type="text" class="form-control" placeholder="Enter Address Line 2"
-                        [(ngModel)]="company.address2">
+                        [(ngModel)]="company.addressLine2">
 
                 </div>
 
@@ -349,26 +344,15 @@
 
                         Country
 
-                        <span class="text-danger">*</span>
-
                     </label>
 
-                    <select class="form-select" [(ngModel)]="company.country">
+                    <select class="form-select" [(ngModel)]="company.countryId" (ngModelChange)="onCountryChange()">
 
-                        <option value="">Select Country</option>
+                        <option [ngValue]="null">Select Country</option>
 
-                        <option>India</option>
-                        <option>USA</option>
-                        <option>UK</option>
-                        <option>Australia</option>
+                        <option *ngFor="let c of countries" [ngValue]="c.countryId">{{c.countryName}}</option>
 
                     </select>
-
-                    <div class="text-danger mt-1" *ngIf="submitted && !company.country">
-
-                        Country is required.
-
-                    </div>
 
                 </div>
 
@@ -380,27 +364,15 @@
 
                         State
 
-                        <span class="text-danger">*</span>
-
                     </label>
 
-                    <select class="form-select" [(ngModel)]="company.state">
+                    <select class="form-select" [(ngModel)]="company.stateId">
 
-                        <option value="">Select State</option>
+                        <option [ngValue]="null">Select State</option>
 
-                        <option>Andhra Pradesh</option>
-                        <option>Telangana</option>
-                        <option>Karnataka</option>
-                        <option>Tamil Nadu</option>
-                        <option>Maharashtra</option>
+                        <option *ngFor="let s of formStates" [ngValue]="s.stateId">{{s.stateName}}</option>
 
                     </select>
-
-                    <div class="text-danger mt-1" *ngIf="submitted && !company.state">
-
-                        State is required.
-
-                    </div>
 
                 </div>
 
@@ -412,17 +384,9 @@
 
                         City
 
-                        <span class="text-danger">*</span>
-
                     </label>
 
                     <input type="text" class="form-control" placeholder="City" [(ngModel)]="company.city">
-
-                    <div class="text-danger mt-1" *ngIf="submitted && !company.city">
-
-                        City is required.
-
-                    </div>
 
                 </div>
 
@@ -452,12 +416,11 @@
 
                     </label>
 
-                    <select class="form-select" [(ngModel)]="company.currency">
+                    <select class="form-select" [(ngModel)]="company.currencyId">
 
-                        <option>INR</option>
-                        <option>USD</option>
-                        <option>EUR</option>
-                        <option>AED</option>
+                        <option [ngValue]="null">Select Currency</option>
+
+                        <option *ngFor="let cur of currencies" [ngValue]="cur.currencyId">{{cur.currencyName}} ({{cur.currencyCode}})</option>
 
                     </select>
 
@@ -471,25 +434,8 @@
 
                     </label>
 
-                    <select class="form-select" [(ngModel)]="company.financialYear">
-
-                        <option>2026-2027</option>
-                        <option>2025-2026</option>
-                        <option>2024-2025</option>
-
-                    </select>
-
-                </div>
-
-                <div class="col-md-4 mb-3">
-
-                    <label class="form-label">
-
-                        Company Logo
-
-                    </label>
-
-                    <input type="file" class="form-control">
+                    <input type="text" class="form-control" placeholder="Example: 2026-2027"
+                        [(ngModel)]="company.financialYear">
 
                 </div>
 
@@ -506,9 +452,7 @@
                     </label>
 
                     <textarea rows="4" class="form-control" placeholder="Enter Company Description"
-                        [(ngModel)]="company.description">
-
-                    </textarea>
+                        [(ngModel)]="company.description"></textarea>
 
                 </div>
 
@@ -518,7 +462,7 @@
 
                     <div class="form-check">
 
-                        <input type="checkbox" id="isActive" class="form-check-input" [(ngModel)]="company.isActive">
+                        <input type="checkbox" id="isActive" class="form-check-input" [(ngModel)]="company.active">
 
                         <label class="form-check-label ms-2" for="isActive">
 
@@ -582,6 +526,8 @@
                     <th width="60">#</th>
                     <th>Company Name</th>
                     <th>Company Code</th>
+                    <th>Company</th>
+                    <th>Region</th>
                     <th>Industry</th>
                     <th>Company Type</th>
                     <th>Email</th>
@@ -599,7 +545,7 @@
 
                 <tr *ngIf="pagedCompanies.length == 0">
 
-                    <td colspan="11" class="text-center text-muted">
+                    <td colspan="13" class="text-center text-muted">
 
                         No Company Records Found
 
@@ -629,13 +575,25 @@
 
                     <td>
 
-                        {{ item.industry }}
+                        {{ getCompanyName(item.companyId) }}
 
                     </td>
 
                     <td>
 
-                        {{ item.companyType }}
+                        {{ getRegionName(item.regionId) }}
+
+                    </td>
+
+                    <td>
+
+                        {{ getIndustryName(item.industryId) }}
+
+                    </td>
+
+                    <td>
+
+                        {{ getCompanyTypeName(item.companyTypeId) }}
 
                     </td>
 
@@ -653,21 +611,21 @@
 
                     <td>
 
-                        {{ item.country }}
+                        {{ getCountryName(item.countryId) }}
 
                     </td>
 
                     <td>
 
-                        {{ item.state }}
+                        {{ getStateName(item.stateId) }}
 
                     </td>
 
                     <td>
 
-                        <span class="badge" [ngClass]="item.isActive ? 'bg-success' : 'bg-danger'">
+                        <span class="badge" [ngClass]="item.active ? 'bg-success' : 'bg-danger'">
 
-                            {{ item.isActive ? 'Active' : 'Inactive' }}
+                            {{ item.active ? 'Active' : 'Inactive' }}
 
                         </span>
 
@@ -675,13 +633,13 @@
 
                     <td>
 
-                        <button class="btn btn-warning btn-sm me-2" (click)="edit(item.companyId)">
+                        <button class="btn btn-warning btn-sm me-2" (click)="edit(item.companyProfileId)">
 
                             <i class="fa fa-edit"></i>
 
                         </button>
 
-                        <button class="btn btn-danger btn-sm" (click)="delete(item.companyId)">
+                        <button class="btn btn-danger btn-sm" (click)="delete(item.companyProfileId)">
 
                             <i class="fa fa-trash"></i>
 

@@ -887,6 +887,98 @@
 
 
 
+                <!-- COMPANY -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Company
+
+                    </label>
+
+
+
+                    <select
+
+                        [(ngModel)]="model.companyId">
+
+
+                        <option value="">
+
+                            -- Select Company --
+
+                        </option>
+
+
+                        <option
+
+                            *ngFor="let item of companies"
+
+                            [value]="item.companyId">
+
+                            {{item.companyName}}
+
+                        </option>
+
+
+                    </select>
+
+
+
+                </div>
+
+
+
+
+                <!-- REGION -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Region
+
+                    </label>
+
+
+
+                    <select
+
+                        [(ngModel)]="model.regionId">
+
+
+                        <option value="">
+
+                            -- Select Region --
+
+                        </option>
+
+
+                        <option
+
+                            *ngFor="let item of regions"
+
+                            [value]="item.regionId">
+
+                            {{item.regionName}}
+
+                        </option>
+
+
+                    </select>
+
+
+
+                </div>
+
+
+
+
 
 
 

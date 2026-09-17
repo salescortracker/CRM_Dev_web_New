@@ -1,0 +1,487 @@
+<div class="page-container">
+
+
+    <!-- ========================= -->
+    <!-- Page Header -->
+    <!-- ========================= -->
+
+
+    <div class="page-header">
+
+
+        <div>
+
+
+            <p class="page-subtitle">
+                WORKFLOW &amp; AUTOMATION
+            </p>
+
+
+            <h1>
+                Workflow Rule Actions
+            </h1>
+
+
+            <p class="page-description">
+                Define the actions that get executed when a workflow rule's conditions are met.
+            </p>
+
+
+        </div>
+
+
+        <div class="header-buttons">
+
+
+            <button class="btn btn-light" (click)="refresh()">
+
+                <i class="fa-solid fa-rotate"></i>
+                Refresh
+
+            </button>
+
+
+            <button class="btn btn-danger" (click)="openAddModal()">
+
+                <i class="fa-solid fa-plus"></i>
+                Add Action
+
+            </button>
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+    <!-- ========================= -->
+    <!-- Statistics -->
+    <!-- ========================= -->
+
+
+    <div class="stats-grid">
+
+
+        <div class="stat-card">
+
+            <span>
+                Total Actions
+            </span>
+
+            <h2>
+                {{totalCount}}
+            </h2>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>
+                Active Actions
+            </span>
+
+            <h2>
+                {{activeCount}}
+            </h2>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>
+                Inactive Actions
+            </span>
+
+            <h2>
+                {{inactiveCount}}
+            </h2>
+
+        </div>
+
+    </div>
+
+
+
+
+    <!-- ========================= -->
+    <!-- Search Filter -->
+    <!-- ========================= -->
+
+
+    <div class="search-panel">
+
+
+        <div class="search-box">
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input type="text" placeholder="Search action type, name or workflow rule..." [(ngModel)]="searchText">
+
+        </div>
+
+
+        <select class="form-control" [(ngModel)]="workflowRuleFilter">
+
+            <option [ngValue]="''">
+                All Workflow Rules
+            </option>
+
+            <option *ngFor="let rule of workflowRules" [ngValue]="rule.workflowRuleId">
+                {{rule.workflowRuleName}}
+            </option>
+
+        </select>
+
+
+        <select class="form-control" [(ngModel)]="statusFilter">
+
+            <option value="">
+                All Status
+            </option>
+
+            <option value="Active">
+                Active
+            </option>
+
+            <option value="Inactive">
+                Inactive
+            </option>
+
+        </select>
+
+
+        <button class="btn btn-secondary" (click)="clearFilters()">
+            Clear
+        </button>
+
+
+    </div>
+
+
+
+
+    <!-- ========================= -->
+    <!-- Actions Table -->
+    <!-- ========================= -->
+
+
+    <div class="table-card">
+
+
+        <div class="table-header">
+
+            <h3>
+                Workflow Rule Actions
+            </h3>
+
+            <span>
+                {{filteredActions.length}} Records
+            </span>
+
+        </div>
+
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Workflow Rule
+                    </th>
+
+                    <th>
+                        Action Type
+                    </th>
+
+                    <th>
+                        Action Name
+                    </th>
+
+                    <th>
+                        Configuration
+                    </th>
+
+                    <th>
+                        Order
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                    <th width="170">
+                        Actions
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                <tr *ngFor="let item of filteredActions">
+
+                    <td>
+
+                        <div class="provider-info">
+
+                            <div class="provider-icon">
+                                <i class="fa-solid fa-bolt"></i>
+                            </div>
+
+                            <div>
+                                <strong>
+                                    {{item.workflowRuleName || '—'}}
+                                </strong>
+                            </div>
+
+                        </div>
+
+                    </td>
+
+
+                    <td>
+                        <span class="type-badge">
+                            {{item.actionType}}
+                        </span>
+                    </td>
+
+
+                    <td>
+                        {{item.actionName || '—'}}
+                    </td>
+
+
+                    <td>
+                        <span class="config-text" [title]="item.actionConfiguration">
+                            {{(item.actionConfiguration || '—')}}
+                        </span>
+                    </td>
+
+
+                    <td>
+                        {{item.actionOrder}}
+                    </td>
+
+
+                    <td>
+
+                        <span class="status" [ngClass]="item.isActive ? 'active' : 'inactive'">
+                            {{item.isActive ? 'Active' : 'Inactive'}}
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <button class="icon-btn" (click)="edit(item)">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+
+                        <button class="icon-btn danger" (click)="delete(item.workflowRuleActionId)">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+
+                    </td>
+
+                </tr>
+
+
+                <tr *ngIf="!filteredActions.length">
+
+                    <td colspan="7" style="text-align:center; padding: 24px; color:#667085;">
+                        No workflow rule actions found.
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+
+    </div>
+
+
+</div>
+
+
+
+
+<!-- ================================= -->
+<!-- Add / Edit Action Modal -->
+<!-- ================================= -->
+
+
+<div class="modal-overlay" *ngIf="showModal">
+
+
+    <div class="modal-box">
+
+
+        <!-- Modal Header -->
+
+        <div class="modal-header">
+
+            <h3>
+                {{isEdit ? 'Edit Workflow Rule Action' : 'Add Workflow Rule Action'}}
+            </h3>
+
+            <button class="close-btn" (click)="closeModal()">
+                ×
+            </button>
+
+        </div>
+
+
+
+
+        <!-- Modal Body -->
+
+        <div class="modal-body">
+
+            <div class="form-grid">
+
+
+                <!-- Workflow Rule -->
+
+                <div class="full-width">
+
+                    <label>
+                        Workflow Rule
+                    </label>
+
+                    <select [(ngModel)]="model.workflowRuleId" (ngModelChange)="onWorkflowRuleChange()">
+
+                        <option [ngValue]="0">
+                            Select Workflow Rule
+                        </option>
+
+                        <option *ngFor="let rule of workflowRules" [ngValue]="rule.workflowRuleId">
+                            {{rule.workflowRuleName}}
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Action Type -->
+
+                <div>
+
+                    <label>
+                        Action Type
+                    </label>
+
+                    <select [(ngModel)]="model.actionType">
+
+                        <option value="">
+                            Select Action Type
+                        </option>
+
+                        <option *ngFor="let opt of actionTypeOptions" [value]="opt.value">
+                            {{opt.label}}
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Action Name -->
+
+                <div>
+
+                    <label>
+                        Action Name
+                    </label>
+
+                    <input type="text" placeholder="Enter a display name for this action" [(ngModel)]="model.actionName">
+
+                </div>
+
+
+                <!-- Action Order -->
+
+                <div>
+
+                    <label>
+                        Action Order
+                    </label>
+
+                    <input type="number" min="0" [(ngModel)]="model.actionOrder">
+
+                </div>
+
+
+                <!-- Status -->
+
+                <div>
+
+                    <label>
+                        Status
+                    </label>
+
+                    <select [(ngModel)]="model.isActive">
+
+                        <option [ngValue]="true">
+                            Active
+                        </option>
+
+                        <option [ngValue]="false">
+                            Inactive
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Action Configuration -->
+
+                <div class="full-width">
+
+                    <label>
+                        Action Configuration
+                    </label>
+
+                    <textarea rows="4" placeholder="Enter action configuration (e.g. JSON payload, template, recipient, etc.)" [(ngModel)]="model.actionConfiguration"></textarea>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+
+
+        <!-- Modal Footer -->
+
+        <div class="modal-footer">
+
+            <button class="btn-secondary" (click)="closeModal()">
+                Cancel
+            </button>
+
+            <button class="btn-primary" (click)="saveAction()">
+                {{isEdit ? 'Update Action' : 'Save Action'}}
+            </button>
+
+        </div>
+
+
+    </div>
+
+
+</div>

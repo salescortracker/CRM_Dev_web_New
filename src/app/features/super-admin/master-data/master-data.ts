@@ -1,208 +1,23 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { MasterDataService } from './master-data.service';
+import { AuthService } from '../../../core/authentication/services/auth.service';
 
-type CategoryId = 'geographic' | 'finance' | 'crm' | 'organization' | 'product' | 'support' | 'hr';
-type FilterStatus = 'all' | 'active' | 'inactive';
-
-interface CatTheme {
-  color: string;
-  light: string;
-  soft: string;
-}
-
-interface Category {
-  id: CategoryId;
-  label: string;
-  iconCls: string;
-}
-
-interface SubTab {
-  id: string;
-  label: string;
-  iconCls: string;
-}
-
-interface SimpleEntity {
-  id: string;
+interface MasterType {
   name: string;
-  description: string;
-  isActive: boolean;
-  extra?: string;
+  icon: string;
 }
 
-interface Country {
-  id: string;
-  regionId: string;
-  name: string;
-  iso2: string;
-  iso3: string;
-  phoneCode: string;
-  currencyId: string;
-  isActive: boolean;
-}
-
-interface State {
-  id: string;
-  countryId: string;
-  name: string;
+interface MasterDataItem {
+  id: number;
   code: string;
-  isActive: boolean;
-}
-
-interface City {
-  id: string;
-  stateId: string;
-  countryId: string;
   name: string;
-  isActive: boolean;
+  company: string;
+  region: string;
+  status: 'Active' | 'Inactive';
 }
-
-interface Currency {
-  id: string;
-  name: string;
-  code: string;
-  symbol: string;
-  decimals: number;
-  isDefault: boolean;
-  isActive: boolean;
-}
-
-interface TimeZone {
-  id: string;
-  name: string;
-  offset: string;
-  abbreviation: string;
-  isActive: boolean;
-}
-
-interface Language {
-  id: string;
-  name: string;
-  code: string;
-  nativeName: string;
-  isActive: boolean;
-}
-
-interface Nationality {
-  id: string;
-  name: string;
-  countryId: string;
-  isActive: boolean;
-}
-
-const THEMES: Record<CategoryId, CatTheme> = {
-  geographic: { color: '#3b82f6', light: 'rgba(59,130,246,0.08)', soft: 'rgba(59,130,246,0.15)' },
-  finance: { color: '#10b981', light: 'rgba(16,185,129,0.08)', soft: 'rgba(16,185,129,0.15)' },
-  crm: { color: '#8b5cf6', light: 'rgba(139,92,246,0.08)', soft: 'rgba(139,92,246,0.15)' },
-  organization: { color: '#f59e0b', light: 'rgba(245,158,11,0.08)', soft: 'rgba(245,158,11,0.15)' },
-  product: { color: '#6366f1', light: 'rgba(99,102,241,0.08)', soft: 'rgba(99,102,241,0.15)' },
-  support: { color: '#f43f5e', light: 'rgba(244,63,94,0.08)', soft: 'rgba(244,63,94,0.15)' },
-  hr: { color: '#14b8a6', light: 'rgba(20,184,166,0.08)', soft: 'rgba(20,184,166,0.15)' },
-};
-
-const CATEGORIES: Category[] = [
-  { id: 'geographic', label: 'Geographic', iconCls: 'fa-globe' },
-  { id: 'finance', label: 'Finance', iconCls: 'fa-receipt' },
-  { id: 'crm', label: 'CRM', iconCls: 'fa-bullseye' },
-  { id: 'organization', label: 'Organization', iconCls: 'fa-building' },
-  { id: 'product', label: 'Product', iconCls: 'fa-box' },
-  { id: 'support', label: 'Support', iconCls: 'fa-headset' },
-  { id: 'hr', label: 'HR', iconCls: 'fa-user-check' },
-];
-
-const GEO_TABS: SubTab[] = [
-  { id: 'countries', label: 'Countries', iconCls: 'fa-flag' },
-  { id: 'states', label: 'States', iconCls: 'fa-map-pin' },
-  { id: 'cities', label: 'Cities', iconCls: 'fa-city' },
-  { id: 'currencies', label: 'Currencies', iconCls: 'fa-dollar-sign' },
-  { id: 'timezones', label: 'Time Zones', iconCls: 'fa-clock' },
-  { id: 'languages', label: 'Languages', iconCls: 'fa-language' },
-  { id: 'nationalities', label: 'Nationalities', iconCls: 'fa-user' },
-];
-
-const FIN_TABS: SubTab[] = [
-  { id: 'taxTypes', label: 'Tax Types', iconCls: 'fa-percent' },
-  { id: 'gst', label: 'GST', iconCls: 'fa-file-invoice' },
-  { id: 'vat', label: 'VAT', iconCls: 'fa-badge-dollar' },
-  { id: 'paymentTerms', label: 'Payment Terms', iconCls: 'fa-credit-card' },
-  { id: 'paymentMethods', label: 'Payment Methods', iconCls: 'fa-money-check-dollar' },
-  { id: 'invoicePrefixes', label: 'Invoice Prefix', iconCls: 'fa-hashtag' },
-  { id: 'creditTerms', label: 'Credit Terms', iconCls: 'fa-calendar-days' },
-];
-
-const CRM_TABS: SubTab[] = [
-  { id: 'leadSources', label: 'Lead Sources', iconCls: 'fa-filter' },
-  { id: 'leadStatuses', label: 'Lead Statuses', iconCls: 'fa-code-branch' },
-  { id: 'opportunityStages', label: 'Opportunity Stages', iconCls: 'fa-bolt' },
-  { id: 'pipelines', label: 'Pipelines', iconCls: 'fa-diagram-project' },
-  { id: 'customerTypes', label: 'Customer Types', iconCls: 'fa-circle-user' },
-  { id: 'customerCategories', label: 'Customer Categories', iconCls: 'fa-tag' },
-  { id: 'activityTypes', label: 'Activity Types', iconCls: 'fa-bullseye' },
-  { id: 'followUpTypes', label: 'Follow-up Types', iconCls: 'fa-phone' },
-  { id: 'communicationTypes', label: 'Communication Types', iconCls: 'fa-message' },
-  { id: 'meetingTypes', label: 'Meeting Types', iconCls: 'fa-users' },
-  { id: 'callOutcomes', label: 'Call Outcomes', iconCls: 'fa-phone-volume' },
-  { id: 'winReasons', label: 'Win Reasons', iconCls: 'fa-trophy' },
-  { id: 'lossReasons', label: 'Loss Reasons', iconCls: 'fa-thumbs-down' },
-  { id: 'competitors', label: 'Competitors', iconCls: 'fa-shield-halved' },
-  { id: 'priorities', label: 'Priorities', iconCls: 'fa-triangle-exclamation' },
-  { id: 'ratings', label: 'Ratings', iconCls: 'fa-star' },
-];
-
-const ORG_TABS: SubTab[] = [
-  { id: 'industries', label: 'Industries', iconCls: 'fa-briefcase' },
-  { id: 'businessTypes', label: 'Business Types', iconCls: 'fa-tag' },
-  { id: 'companyCategories', label: 'Company Categories', iconCls: 'fa-layer-group' },
-  { id: 'branchTypes', label: 'Branch Types', iconCls: 'fa-building' },
-  { id: 'departments', label: 'Departments', iconCls: 'fa-sitemap' },
-  { id: 'designations', label: 'Designations', iconCls: 'fa-id-badge' },
-  { id: 'employeeTypes', label: 'Employee Types', iconCls: 'fa-user' },
-  { id: 'businessUnits', label: 'Business Units', iconCls: 'fa-network-wired' },
-];
-
-const PROD_TABS: SubTab[] = [
-  { id: 'productCategories', label: 'Product Categories', iconCls: 'fa-layer-group' },
-  { id: 'brands', label: 'Brands', iconCls: 'fa-tag' },
-  { id: 'unitsOfMeasure', label: 'Units of Measure', iconCls: 'fa-ruler' },
-  { id: 'warehouses', label: 'Warehouses', iconCls: 'fa-boxes-stacked' },
-  { id: 'productTypes', label: 'Product Types', iconCls: 'fa-box' },
-];
-
-const SUPPORT_TABS: SubTab[] = [
-  { id: 'ticketPriorities', label: 'Ticket Priority', iconCls: 'fa-triangle-exclamation' },
-  { id: 'ticketCategories', label: 'Ticket Categories', iconCls: 'fa-clipboard-list' },
-  { id: 'ticketStatuses', label: 'Ticket Statuses', iconCls: 'fa-code-branch' },
-  { id: 'slaLevels', label: 'SLA Levels', iconCls: 'fa-shield-halved' },
-  { id: 'resolutionTypes', label: 'Resolution Types', iconCls: 'fa-file-lines' },
-];
-
-const HR_TABS: SubTab[] = [
-  { id: 'holidays', label: 'Holidays', iconCls: 'fa-calendar' },
-  { id: 'shifts', label: 'Shifts', iconCls: 'fa-clock' },
-  { id: 'leaveTypes', label: 'Leave Types', iconCls: 'fa-umbrella-beach' },
-  { id: 'attendanceStatuses', label: 'Attendance Status', iconCls: 'fa-user-check' },
-];
-
-const TAB_MAP: Record<CategoryId, SubTab[]> = {
-  geographic: GEO_TABS,
-  finance: FIN_TABS,
-  crm: CRM_TABS,
-  organization: ORG_TABS,
-  product: PROD_TABS,
-  support: SUPPORT_TABS,
-  hr: HR_TABS,
-};
-
-const se = (id: string, name: string, description: string, isActive: boolean, extra = ''): SimpleEntity => ({
-  id,
-  name,
-  description,
-  isActive,
-  extra,
-});
 
 @Component({
   selector: 'app-master-data',
@@ -210,945 +25,2969 @@ const se = (id: string, name: string, description: string, isActive: boolean, ex
   imports: [CommonModule, FormsModule],
   templateUrl: './master-data.html',
   styleUrl: './master-data.css',
-  animations: [
-    trigger('fadeUp', [
-      transition(':enter', [
-        style({ opacity: 0, transform: 'translateY(10px)' }),
-        animate('200ms ease-out', style({ opacity: 1, transform: 'translateY(0)' })),
-      ]),
-      transition(':leave', [animate('150ms ease-in', style({ opacity: 0 }))]),
-    ]),
-    trigger('toast', [
-      transition(':enter', [
-        style({ opacity: 0, transform: 'translateY(20px) scale(0.92)' }),
-        animate('220ms ease-out', style({ opacity: 1, transform: 'translateY(0) scale(1)' })),
-      ]),
-      transition(':leave', [animate('150ms ease-in', style({ opacity: 0, transform: 'scale(0.92)' }))]),
-    ]),
-  ],
+  
 })
-export class MasterData implements OnDestroy, OnInit {
-  readonly themes = THEMES;
-  readonly filterStatuses: FilterStatus[] = ['all', 'active', 'inactive'];
+export class MasterData implements  OnInit {
 
-  category: CategoryId = 'geographic';
-  activeSubTab = 'countries';
-  search = '';
-  statusFilter: FilterStatus = 'all';
-  regionFilter = 'all';
-  countryFilter = 'all';
-  stateFilter = 'all';
-  toast: string | null = null;
-  private toastTimer: ReturnType<typeof setTimeout> | null = null;
+  constructor(
+    private authService: AuthService,
+    private masterDataService: MasterDataService,
+    private cd: ChangeDetectorRef
+  ) { }
 
-  geoModalOpen = false;
-  geoModalEditing: any = null;
-  geoModalTab = 'countries';
-  geoForm: Record<string, any> = {};
-  geoErrors: Record<string, string> = {};
-  modalCid = '';
+   // =========================================================
+  // MASTER TYPES
+  // =========================================================
 
-  simModalOpen = false;
-  simModalEditing: SimpleEntity | null = null;
-  simModalLabel = '';
-  simModalExtraLabel = '';
-  simModalExtraIsColor = false;
-  private simModalKey = '';
-  simForm = { name: '', description: '', isActive: true, extra: '' };
-  simErrors: Record<string, string> = {};
-  private companies: any[] = [];
-  private loadingTabs = new Set<string>();
-
-  regions: Array<{ id: string; name: string; companyId?: number }> = [
-    { id: 'r1', name: 'Asia' },
-    { id: 'r2', name: 'Europe' },
-    { id: 'r3', name: 'North America' },
-    { id: 'r4', name: 'Middle East' },
-    { id: 'r5', name: 'Africa' },
-    { id: 'r6', name: 'Oceania' },
-    { id: 'r7', name: 'South America' },
+  masterTypes: MasterType[] = [
+    {
+      name: 'Country',
+      icon: 'fa-solid fa-globe'
+    },
+    {
+      name: 'State',
+      icon: 'fa-solid fa-map'
+    },
+    // {
+    //   name: 'City',
+    //   icon: 'fa-solid fa-city'
+    // },
+    {
+      name: 'Currency',
+      icon: 'fa-solid fa-circle-dollar-to-slot'
+    },
+    // {
+    //   name: 'Departments',
+    //   icon: 'fa-solid fa-sitemap'
+    // },
+    // {
+    //   name: 'Designation',
+    //   icon: 'fa-solid fa-user-tie'
+    // },
+    {
+      name: 'Lead Source',
+      icon: 'fa-solid fa-bolt'
+    },
+    {
+      name: 'Lead Status',
+      icon: 'fa-solid fa-square-check'
+    },
+    // {
+    //   name: 'Call Type',
+    //   icon: 'fa-solid fa-phone'
+    // },
+    {
+      name: 'Call Purpose',
+      icon: 'fa-solid fa-phone-volume'
+    },
+    {
+      name: 'Call Outcome',
+      icon: 'fa-solid fa-list-check'
+    },
+    // {
+    //   name: 'Ticket Category',
+    //   icon: 'fa-solid fa-ticket'
+    // },
+    {
+      name: 'Priority',
+      icon: 'fa-solid fa-shield-halved'
+    },
+    // {
+    //   name: 'Customer Type',
+    //   icon: 'fa-solid fa-user-group'
+    // },
+    {
+      name: 'Industry',
+      icon: 'fa-solid fa-building'
+    },
+    {
+      name: 'Billing Cycle',
+      icon: 'fa-solid fa-file-invoice-dollar'
+    },
+    {
+      name: 'Contact Type',
+      icon: 'fa-solid fa-address-book'
+    },
+    {
+      name: 'Relationship',
+      icon: 'fa-solid fa-people-arrows'
+    },
+    {
+      name: 'Company Type',
+      icon: 'fa-solid fa-building-columns'
+    },
+    {
+      name: 'Lead Type',
+      icon: 'fa-solid fa-tags'
+    },
+    {
+      name: 'License',
+      icon: 'fa-solid fa-certificate'
+    },
+    {
+      name: 'Payment Method',
+      icon: 'fa-solid fa-credit-card'
+    },
+    {
+      name: 'Discount Type',
+      icon: 'fa-solid fa-percent'
+    },
+    {
+      name: 'Meeting Purpose',
+      icon: 'fa-solid fa-handshake'
+    }
   ];
 
-  constructor(private masterDataService: MasterDataService) {}
+
+  // =========================================================
+  // SELECTED MASTER
+  // =========================================================
+
+  selectedMasterType: string = 'Country';
+
+
+  // =========================================================
+  // SEARCH / FILTER
+  // =========================================================
+
+  searchText: string = '';
+
+  selectedStatus: string = 'All';
+
+
+  // =========================================================
+  // FORM
+  // =========================================================
+
+  showForm: boolean = false;
+
+  isEditMode: boolean = false;
+
+  formData: MasterDataItem = {
+    id: 0,
+    code: '',
+    name: '',
+    company: '',
+    region: '',
+    status: 'Active'
+  };
+
+
+  // =========================================================
+  // COMPANY / REGION (DYNAMIC, FROM EXISTING MASTER APIs)
+  // =========================================================
+
+  companies: any[] = [];
+
+  regions: any[] = [];
+
+  countries: any[] = [];
+
+  selectedCompanyId: number | null = null;
+
+  selectedCountryId: number | null = null;
+
+  // Maps a StateId to its CountryId/CountryName, since MasterDataItem
+  // has no country field to carry this through the mapped listing rows.
+  stateCountryLookup: { [stateId: number]: { countryId: number; countryName: string } } = {};
+
+  loadCompanies(): void {
+
+    this.authService.getCompanies().subscribe({
+
+      next: (res: any) => {
+
+        this.companies = (res?.data || []).filter(
+          (x: any) => x.isActive !== false
+        );
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error loading companies:', err);
+
+        this.companies = [];
+
+      }
+
+    });
+
+  }
+
+  loadRegions(): void {
+
+    this.authService.getRegions().subscribe({
+
+      next: (res: any) => {
+
+        this.regions = (res?.data || []).filter(
+          (x: any) => x.isActive !== false
+        );
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error loading regions:', err);
+
+        this.regions = [];
+
+      }
+
+    });
+
+  }
+
+
+  // =========================================================
+  // COUNTRY (DYNAMIC, FROM EXISTING MASTER APIs)
+  // =========================================================
+
+  // Raw country records (companyId/regionId/countryId) used to populate
+  // the Country dropdown on the State form; kept separate from
+  // allMasterData['Country'], which holds the mapped listing rows.
+  loadCountriesForForm(): void {
+
+    this.masterDataService.getAll('countries').subscribe({
+
+      next: (res: any) => {
+
+        this.countries = (res?.data || []).filter(
+          (x: any) => x.isActive !== false
+        );
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error loading countries for form:', err);
+
+        this.countries = [];
+
+      }
+
+    });
+
+  }
+
+  loadCountries(): void {
+
+    this.masterDataService.getAll('countries').subscribe({
+
+      next: (res: any) => {
+
+        const mapped: MasterDataItem[] = (res?.data || []).map((c: any) => ({
+          id: c.countryId,
+          code: c.countryCode,
+          name: c.countryName,
+          company: c.companyName,
+          region: c.regionName,
+          status: c.isActive ? 'Active' : 'Inactive'
+        }));
+
+        this.allMasterData['Country'] = mapped;
+
+        if (this.selectedMasterType === 'Country') {
+
+          this.masterData = mapped;
+
+          this.filterData();
+
+        }
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error loading countries:', err);
+
+      }
+
+    });
+
+  }
+
+  private saveCountry(): void {
+
+    const selectedRegion = this.regions.find(
+      r => r.regionName === this.formData.region &&
+        r.companyId === Number(this.selectedCompanyId)
+    );
+
+    const payload = {
+      countryId: this.isEditMode ? this.formData.id : 0,
+      companyId: Number(this.selectedCompanyId),
+      regionId: selectedRegion ? selectedRegion.regionId : 0,
+      countryName: this.formData.name.trim(),
+      countryCode: this.formData.code.trim(),
+      isActive: this.formData.status === 'Active'
+    };
+
+    const request = this.isEditMode
+      ? this.masterDataService.update('countries', payload)
+      : this.masterDataService.create('countries', payload);
+
+    request.subscribe({
+
+      next: () => {
+
+        this.loadCountries();
+
+        this.closeForm();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error saving country:', err);
+
+        window.alert('Failed to save country.');
+
+      }
+
+    });
+
+  }
+
+
+  // =========================================================
+  // STATE (DYNAMIC, FROM EXISTING MASTER APIs)
+  // =========================================================
+
+  loadStates(): void {
+
+    this.masterDataService.getAll('states').subscribe({
+
+      next: (res: any) => {
+
+        const data = res?.data || [];
+
+        const mapped: MasterDataItem[] = data.map((s: any) => ({
+          id: s.stateId,
+          code: s.stateCode,
+          name: s.stateName,
+          company: s.companyName,
+          region: s.regionName,
+          status: s.isActive ? 'Active' : 'Inactive'
+        }));
+
+        this.stateCountryLookup = {};
+
+        data.forEach((s: any) => {
+          this.stateCountryLookup[s.stateId] = {
+            countryId: s.countryId,
+            countryName: s.countryName
+          };
+        });
+
+        this.allMasterData['State'] = mapped;
+
+        if (this.selectedMasterType === 'State') {
+
+          this.masterData = mapped;
+
+          this.filterData();
+
+        }
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error loading states:', err);
+
+      }
+
+    });
+
+  }
+
+  private saveState(): void {
+
+    const selectedRegion = this.regions.find(
+      r => r.regionName === this.formData.region &&
+        r.companyId === Number(this.selectedCompanyId)
+    );
+
+    const payload = {
+      stateId: this.isEditMode ? this.formData.id : 0,
+      companyId: Number(this.selectedCompanyId),
+      regionId: selectedRegion ? selectedRegion.regionId : 0,
+      countryId: this.selectedCountryId ? Number(this.selectedCountryId) : 0,
+      stateName: this.formData.name.trim(),
+      stateCode: this.formData.code.trim(),
+      isActive: this.formData.status === 'Active'
+    };
+
+    const request = this.isEditMode
+      ? this.masterDataService.update('states', payload)
+      : this.masterDataService.create('states', payload);
+
+    request.subscribe({
+
+      next: () => {
+
+        this.loadStates();
+
+        this.closeForm();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error saving state:', err);
+
+        window.alert('Failed to save state.');
+
+      }
+
+    });
+
+  }
+
+
+  // =========================================================
+  // INDUSTRY (DYNAMIC, FROM EXISTING MASTER APIs)
+  // =========================================================
+
+  loadIndustries(): void {
+
+    this.masterDataService.getAll('industries').subscribe({
+
+      next: (res: any) => {
+
+        const mapped: MasterDataItem[] = (res?.data || []).map((i: any) => ({
+          id: i.industryId,
+          code: i.industryCode,
+          name: i.industryName,
+          company: i.companyName,
+          region: i.regionName,
+          status: i.isActive ? 'Active' : 'Inactive'
+        }));
+
+        this.allMasterData['Industry'] = mapped;
+
+        if (this.selectedMasterType === 'Industry') {
+
+          this.masterData = mapped;
+
+          this.filterData();
+
+        }
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error loading industries:', err);
+
+      }
+
+    });
+
+  }
+
+  private saveIndustry(): void {
+
+    const selectedRegion = this.regions.find(
+      r => r.regionName === this.formData.region &&
+        r.companyId === Number(this.selectedCompanyId)
+    );
+
+    const payload = {
+      industryId: this.isEditMode ? this.formData.id : 0,
+      companyId: Number(this.selectedCompanyId),
+      regionId: selectedRegion ? selectedRegion.regionId : 0,
+      industryName: this.formData.name.trim(),
+      industryCode: this.formData.code.trim(),
+      isActive: this.formData.status === 'Active'
+    };
+
+    const request = this.isEditMode
+      ? this.masterDataService.update('industries', payload)
+      : this.masterDataService.create('industries', payload);
+
+    request.subscribe({
+
+      next: () => {
+
+        this.loadIndustries();
+
+        this.closeForm();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error saving industry:', err);
+
+        window.alert('Failed to save industry.');
+
+      }
+
+    });
+
+  }
+
+
+  // =========================================================
+  // CURRENCY (DYNAMIC, FROM EXISTING MASTER APIs)
+  // =========================================================
+
+  loadCurrencies(): void {
+
+    this.masterDataService.getAll('currencies').subscribe({
+
+      next: (res: any) => {
+
+        const mapped: MasterDataItem[] = (res?.data || []).map((c: any) => ({
+          id: c.currencyId,
+          code: c.currencyCode,
+          name: c.currencyName,
+          company: c.companyName,
+          region: c.regionName,
+          status: c.isActive ? 'Active' : 'Inactive'
+        }));
+
+        this.allMasterData['Currency'] = mapped;
+
+        if (this.selectedMasterType === 'Currency') {
+
+          this.masterData = mapped;
+
+          this.filterData();
+
+        }
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error loading currencies:', err);
+
+      }
+
+    });
+
+  }
+
+  private saveCurrency(): void {
+
+    const selectedRegion = this.regions.find(
+      r => r.regionName === this.formData.region &&
+        r.companyId === Number(this.selectedCompanyId)
+    );
+
+    const payload = {
+      currencyId: this.isEditMode ? this.formData.id : 0,
+      companyId: Number(this.selectedCompanyId),
+      regionId: selectedRegion ? selectedRegion.regionId : 0,
+      currencyName: this.formData.name.trim(),
+      currencyCode: this.formData.code.trim(),
+      isActive: this.formData.status === 'Active'
+    };
+
+    const request = this.isEditMode
+      ? this.masterDataService.update('currencies', payload)
+      : this.masterDataService.create('currencies', payload);
+
+    request.subscribe({
+
+      next: () => {
+
+        this.loadCurrencies();
+
+        this.closeForm();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error saving currency:', err);
+
+        window.alert('Failed to save currency.');
+
+      }
+
+    });
+
+  }
+
+
+  // =========================================================
+  // PRIORITY (DYNAMIC, FROM EXISTING MASTER APIs)
+  // =========================================================
+
+  loadPriorities(): void {
+
+    this.masterDataService.getAll('priorities').subscribe({
+
+      next: (res: any) => {
+
+        const mapped: MasterDataItem[] = (res?.data || []).map((p: any) => ({
+          id: p.priorityId,
+          code: p.priorityCode,
+          name: p.priorityName,
+          company: p.companyName,
+          region: p.regionName,
+          status: p.isActive ? 'Active' : 'Inactive'
+        }));
+
+        this.allMasterData['Priority'] = mapped;
+
+        if (this.selectedMasterType === 'Priority') {
+
+          this.masterData = mapped;
+
+          this.filterData();
+
+        }
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error loading priorities:', err);
+
+      }
+
+    });
+
+  }
+
+  private savePriority(): void {
+
+    const selectedRegion = this.regions.find(
+      r => r.regionName === this.formData.region &&
+        r.companyId === Number(this.selectedCompanyId)
+    );
+
+    const payload = {
+      priorityId: this.isEditMode ? this.formData.id : 0,
+      companyId: Number(this.selectedCompanyId),
+      regionId: selectedRegion ? selectedRegion.regionId : 0,
+      priorityName: this.formData.name.trim(),
+      priorityCode: this.formData.code.trim(),
+      isActive: this.formData.status === 'Active'
+    };
+
+    const request = this.isEditMode
+      ? this.masterDataService.update('priorities', payload)
+      : this.masterDataService.create('priorities', payload);
+
+    request.subscribe({
+
+      next: () => {
+
+        this.loadPriorities();
+
+        this.closeForm();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error saving priority:', err);
+
+        window.alert('Failed to save priority.');
+
+      }
+
+    });
+
+  }
+
+
+  // =========================================================
+  // LEAD STATUS (DYNAMIC, FROM EXISTING MASTER APIs)
+  // =========================================================
+
+  loadLeadStatuses(): void {
+
+    this.masterDataService.getAll('leadStatuses').subscribe({
+
+      next: (res: any) => {
+
+        const mapped: MasterDataItem[] = (res?.data || []).map((l: any) => ({
+          id: l.leadStatusId,
+          code: l.leadStatusCode,
+          name: l.leadStatusName,
+          company: l.companyName,
+          region: l.regionName,
+          status: l.isActive ? 'Active' : 'Inactive'
+        }));
+
+        this.allMasterData['Lead Status'] = mapped;
+
+        if (this.selectedMasterType === 'Lead Status') {
+
+          this.masterData = mapped;
+
+          this.filterData();
+
+        }
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error loading lead statuses:', err);
+
+      }
+
+    });
+
+  }
+
+  private saveLeadStatus(): void {
+
+    const selectedRegion = this.regions.find(
+      r => r.regionName === this.formData.region &&
+        r.companyId === Number(this.selectedCompanyId)
+    );
+
+    const payload = {
+      leadStatusId: this.isEditMode ? this.formData.id : 0,
+      companyId: Number(this.selectedCompanyId),
+      regionId: selectedRegion ? selectedRegion.regionId : 0,
+      leadStatusName: this.formData.name.trim(),
+      leadStatusCode: this.formData.code.trim(),
+      isActive: this.formData.status === 'Active'
+    };
+
+    const request = this.isEditMode
+      ? this.masterDataService.update('leadStatuses', payload)
+      : this.masterDataService.create('leadStatuses', payload);
+
+    request.subscribe({
+
+      next: () => {
+
+        this.loadLeadStatuses();
+
+        this.closeForm();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error saving lead status:', err);
+
+        window.alert('Failed to save lead status.');
+
+      }
+
+    });
+
+  }
+
+
+  // =========================================================
+  // LEAD SOURCE (DYNAMIC, FROM EXISTING MASTER APIs)
+  // =========================================================
+
+  loadLeadSources(): void {
+
+    this.masterDataService.getAll('leadSources').subscribe({
+
+      next: (res: any) => {
+
+        const mapped: MasterDataItem[] = (res?.data || []).map((l: any) => ({
+          id: l.leadSourceId,
+          code: l.leadSourceCode,
+          name: l.leadSourceName,
+          company: l.companyName,
+          region: l.regionName,
+          status: l.isActive ? 'Active' : 'Inactive'
+        }));
+
+        this.allMasterData['Lead Source'] = mapped;
+
+        if (this.selectedMasterType === 'Lead Source') {
+
+          this.masterData = mapped;
+
+          this.filterData();
+
+        }
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error loading lead sources:', err);
+
+      }
+
+    });
+
+  }
+
+  private saveLeadSource(): void {
+
+    const selectedRegion = this.regions.find(
+      r => r.regionName === this.formData.region &&
+        r.companyId === Number(this.selectedCompanyId)
+    );
+
+    const payload = {
+      leadSourceId: this.isEditMode ? this.formData.id : 0,
+      companyId: Number(this.selectedCompanyId),
+      regionId: selectedRegion ? selectedRegion.regionId : 0,
+      leadSourceName: this.formData.name.trim(),
+      leadSourceCode: this.formData.code.trim(),
+      isActive: this.formData.status === 'Active'
+    };
+
+    const request = this.isEditMode
+      ? this.masterDataService.update('leadSources', payload)
+      : this.masterDataService.create('leadSources', payload);
+
+    request.subscribe({
+
+      next: () => {
+
+        this.loadLeadSources();
+
+        this.closeForm();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error saving lead source:', err);
+
+        window.alert('Failed to save lead source.');
+
+      }
+
+    });
+
+  }
+
+
+  // =========================================================
+  // BILLING CYCLE (DYNAMIC, FROM EXISTING MASTER APIs)
+  // =========================================================
+
+  loadBillingCycles(): void {
+
+    this.masterDataService.getAll('billingCycles').subscribe({
+
+      next: (res: any) => {
+
+        const mapped: MasterDataItem[] = (res?.data || []).map((b: any) => ({
+          id: b.billingCycleId,
+          code: b.billingCycleCode,
+          name: b.billingCycleName,
+          company: b.companyName,
+          region: b.regionName,
+          status: b.isActive ? 'Active' : 'Inactive'
+        }));
+
+        this.allMasterData['Billing Cycle'] = mapped;
+
+        if (this.selectedMasterType === 'Billing Cycle') {
+
+          this.masterData = mapped;
+
+          this.filterData();
+
+        }
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error loading billing cycles:', err);
+
+      }
+
+    });
+
+  }
+
+  private saveBillingCycle(): void {
+
+    const selectedRegion = this.regions.find(
+      r => r.regionName === this.formData.region &&
+        r.companyId === Number(this.selectedCompanyId)
+    );
+
+    const payload = {
+      billingCycleId: this.isEditMode ? this.formData.id : 0,
+      companyId: Number(this.selectedCompanyId),
+      regionId: selectedRegion ? selectedRegion.regionId : 0,
+      billingCycleName: this.formData.name.trim(),
+      billingCycleCode: this.formData.code.trim(),
+      isActive: this.formData.status === 'Active'
+    };
+
+    const request = this.isEditMode
+      ? this.masterDataService.update('billingCycles', payload)
+      : this.masterDataService.create('billingCycles', payload);
+
+    request.subscribe({
+
+      next: () => {
+
+        this.loadBillingCycles();
+
+        this.closeForm();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error saving billing cycle:', err);
+
+        window.alert('Failed to save billing cycle.');
+
+      }
+
+    });
+
+  }
+
+
+  // =========================================================
+  // CONTACT TYPE (DYNAMIC, FROM EXISTING MASTER APIs)
+  // =========================================================
+
+  loadContactTypes(): void {
+
+    this.masterDataService.getAll('contactTypes').subscribe({
+
+      next: (res: any) => {
+
+        const mapped: MasterDataItem[] = (res?.data || []).map((c: any) => ({
+          id: c.contactTypeId,
+          code: c.contactTypeCode,
+          name: c.contactTypeName,
+          company: c.companyName,
+          region: c.regionName,
+          status: c.isActive ? 'Active' : 'Inactive'
+        }));
+
+        this.allMasterData['Contact Type'] = mapped;
+
+        if (this.selectedMasterType === 'Contact Type') {
+
+          this.masterData = mapped;
+
+          this.filterData();
+
+        }
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error loading contact types:', err);
+
+      }
+
+    });
+
+  }
+
+  private saveContactType(): void {
+
+    const selectedRegion = this.regions.find(
+      r => r.regionName === this.formData.region &&
+        r.companyId === Number(this.selectedCompanyId)
+    );
+
+    const payload = {
+      contactTypeId: this.isEditMode ? this.formData.id : 0,
+      companyId: Number(this.selectedCompanyId),
+      regionId: selectedRegion ? selectedRegion.regionId : 0,
+      contactTypeName: this.formData.name.trim(),
+      contactTypeCode: this.formData.code.trim(),
+      isActive: this.formData.status === 'Active'
+    };
+
+    const request = this.isEditMode
+      ? this.masterDataService.update('contactTypes', payload)
+      : this.masterDataService.create('contactTypes', payload);
+
+    request.subscribe({
+
+      next: () => {
+
+        this.loadContactTypes();
+
+        this.closeForm();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error saving contact type:', err);
+
+        window.alert('Failed to save contact type.');
+
+      }
+
+    });
+
+  }
+
+
+  // =========================================================
+  // RELATIONSHIP (DYNAMIC, FROM EXISTING MASTER APIs)
+  // =========================================================
+
+  loadRelationships(): void {
+
+    this.masterDataService.getAll('relationships').subscribe({
+
+      next: (res: any) => {
+
+        const mapped: MasterDataItem[] = (res?.data || []).map((r: any) => ({
+          id: r.relationshipId,
+          code: r.relationshipCode,
+          name: r.relationshipName,
+          company: r.companyName,
+          region: r.regionName,
+          status: r.isActive ? 'Active' : 'Inactive'
+        }));
+
+        this.allMasterData['Relationship'] = mapped;
+
+        if (this.selectedMasterType === 'Relationship') {
+
+          this.masterData = mapped;
+
+          this.filterData();
+
+        }
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error loading relationships:', err);
+
+      }
+
+    });
+
+  }
+
+  private saveRelationship(): void {
+
+    const selectedRegion = this.regions.find(
+      r => r.regionName === this.formData.region &&
+        r.companyId === Number(this.selectedCompanyId)
+    );
+
+    const payload = {
+      relationshipId: this.isEditMode ? this.formData.id : 0,
+      companyId: Number(this.selectedCompanyId),
+      regionId: selectedRegion ? selectedRegion.regionId : 0,
+      relationshipName: this.formData.name.trim(),
+      relationshipCode: this.formData.code.trim(),
+      isActive: this.formData.status === 'Active'
+    };
+
+    const request = this.isEditMode
+      ? this.masterDataService.update('relationships', payload)
+      : this.masterDataService.create('relationships', payload);
+
+    request.subscribe({
+
+      next: () => {
+
+        this.loadRelationships();
+
+        this.closeForm();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error saving relationship:', err);
+
+        window.alert('Failed to save relationship.');
+
+      }
+
+    });
+
+  }
+
+
+  // =========================================================
+  // COMPANY TYPE (DYNAMIC, FROM EXISTING MASTER APIs)
+  // =========================================================
+
+  loadCompanyTypes(): void {
+
+    this.masterDataService.getAll('companyTypes').subscribe({
+
+      next: (res: any) => {
+
+        const mapped: MasterDataItem[] = (res?.data || []).map((c: any) => ({
+          id: c.companyTypeId,
+          code: c.companyTypeCode,
+          name: c.companyTypeName,
+          company: c.companyName,
+          region: c.regionName,
+          status: c.isActive ? 'Active' : 'Inactive'
+        }));
+
+        this.allMasterData['Company Type'] = mapped;
+
+        if (this.selectedMasterType === 'Company Type') {
+
+          this.masterData = mapped;
+
+          this.filterData();
+
+        }
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error loading company types:', err);
+
+      }
+
+    });
+
+  }
+
+  private saveCompanyType(): void {
+
+    const selectedRegion = this.regions.find(
+      r => r.regionName === this.formData.region &&
+        r.companyId === Number(this.selectedCompanyId)
+    );
+
+    const payload = {
+      companyTypeId: this.isEditMode ? this.formData.id : 0,
+      companyId: Number(this.selectedCompanyId),
+      regionId: selectedRegion ? selectedRegion.regionId : 0,
+      companyTypeName: this.formData.name.trim(),
+      companyTypeCode: this.formData.code.trim(),
+      isActive: this.formData.status === 'Active'
+    };
+
+    const request = this.isEditMode
+      ? this.masterDataService.update('companyTypes', payload)
+      : this.masterDataService.create('companyTypes', payload);
+
+    request.subscribe({
+
+      next: () => {
+
+        this.loadCompanyTypes();
+
+        this.closeForm();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error saving company type:', err);
+
+        window.alert('Failed to save company type.');
+
+      }
+
+    });
+
+  }
+
+
+  // =========================================================
+  // LEAD TYPE (DYNAMIC, FROM EXISTING MASTER APIs)
+  // =========================================================
+
+  loadLeadTypes(): void {
+
+    this.masterDataService.getAll('leadTypes').subscribe({
+
+      next: (res: any) => {
+
+        const mapped: MasterDataItem[] = (res?.data || []).map((l: any) => ({
+          id: l.leadTypeId,
+          code: l.leadTypeCode,
+          name: l.leadTypeName,
+          company: l.companyName,
+          region: l.regionName,
+          status: l.isActive ? 'Active' : 'Inactive'
+        }));
+
+        this.allMasterData['Lead Type'] = mapped;
+
+        if (this.selectedMasterType === 'Lead Type') {
+
+          this.masterData = mapped;
+
+          this.filterData();
+
+        }
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error loading lead types:', err);
+
+      }
+
+    });
+
+  }
+
+  private saveLeadType(): void {
+
+    const selectedRegion = this.regions.find(
+      r => r.regionName === this.formData.region &&
+        r.companyId === Number(this.selectedCompanyId)
+    );
+
+    const payload = {
+      leadTypeId: this.isEditMode ? this.formData.id : 0,
+      companyId: Number(this.selectedCompanyId),
+      regionId: selectedRegion ? selectedRegion.regionId : 0,
+      leadTypeName: this.formData.name.trim(),
+      leadTypeCode: this.formData.code.trim(),
+      isActive: this.formData.status === 'Active'
+    };
+
+    const request = this.isEditMode
+      ? this.masterDataService.update('leadTypes', payload)
+      : this.masterDataService.create('leadTypes', payload);
+
+    request.subscribe({
+
+      next: () => {
+
+        this.loadLeadTypes();
+
+        this.closeForm();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error saving lead type:', err);
+
+        window.alert('Failed to save lead type.');
+
+      }
+
+    });
+
+  }
+
+
+  // =========================================================
+  // LICENSE (DYNAMIC, FROM EXISTING MASTER APIs)
+  // =========================================================
+
+  loadLicenses(): void {
+
+    this.masterDataService.getAll('licenses').subscribe({
+
+      next: (res: any) => {
+
+        const mapped: MasterDataItem[] = (res?.data || []).map((l: any) => ({
+          id: l.licenseId,
+          code: l.licenseCode,
+          name: l.licenseName,
+          company: l.companyName,
+          region: l.regionName,
+          status: l.isActive ? 'Active' : 'Inactive'
+        }));
+
+        this.allMasterData['License'] = mapped;
+
+        if (this.selectedMasterType === 'License') {
+
+          this.masterData = mapped;
+
+          this.filterData();
+
+        }
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error loading licenses:', err);
+
+      }
+
+    });
+
+  }
+
+  private saveLicense(): void {
+
+    const selectedRegion = this.regions.find(
+      r => r.regionName === this.formData.region &&
+        r.companyId === Number(this.selectedCompanyId)
+    );
+
+    const payload = {
+      licenseId: this.isEditMode ? this.formData.id : 0,
+      companyId: Number(this.selectedCompanyId),
+      regionId: selectedRegion ? selectedRegion.regionId : 0,
+      licenseName: this.formData.name.trim(),
+      licenseCode: this.formData.code.trim(),
+      isActive: this.formData.status === 'Active'
+    };
+
+    const request = this.isEditMode
+      ? this.masterDataService.update('licenses', payload)
+      : this.masterDataService.create('licenses', payload);
+
+    request.subscribe({
+
+      next: () => {
+
+        this.loadLicenses();
+
+        this.closeForm();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error saving license:', err);
+
+        window.alert('Failed to save license.');
+
+      }
+
+    });
+
+  }
+
+
+  // =========================================================
+  // PAYMENT METHOD (DYNAMIC, FROM EXISTING MASTER APIs)
+  // =========================================================
+
+  loadPaymentMethods(): void {
+
+    this.masterDataService.getAll('paymentMethods').subscribe({
+
+      next: (res: any) => {
+
+        const mapped: MasterDataItem[] = (res?.data || []).map((p: any) => ({
+          id: p.paymentMethodId,
+          code: p.paymentMethodCode,
+          name: p.paymentMethodName,
+          company: p.companyName,
+          region: p.regionName,
+          status: p.isActive ? 'Active' : 'Inactive'
+        }));
+
+        this.allMasterData['Payment Method'] = mapped;
+
+        if (this.selectedMasterType === 'Payment Method') {
+
+          this.masterData = mapped;
+
+          this.filterData();
+
+        }
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error loading payment methods:', err);
+
+      }
+
+    });
+
+  }
+
+  private savePaymentMethod(): void {
+
+    const selectedRegion = this.regions.find(
+      r => r.regionName === this.formData.region &&
+        r.companyId === Number(this.selectedCompanyId)
+    );
+
+    const payload = {
+      paymentMethodId: this.isEditMode ? this.formData.id : 0,
+      companyId: Number(this.selectedCompanyId),
+      regionId: selectedRegion ? selectedRegion.regionId : 0,
+      paymentMethodName: this.formData.name.trim(),
+      paymentMethodCode: this.formData.code.trim(),
+      isActive: this.formData.status === 'Active'
+    };
+
+    const request = this.isEditMode
+      ? this.masterDataService.update('paymentMethods', payload)
+      : this.masterDataService.create('paymentMethods', payload);
+
+    request.subscribe({
+
+      next: () => {
+
+        this.loadPaymentMethods();
+
+        this.closeForm();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error saving payment method:', err);
+
+        window.alert('Failed to save payment method.');
+
+      }
+
+    });
+
+  }
+
+
+  // =========================================================
+  // DISCOUNT TYPE (DYNAMIC, FROM EXISTING MASTER APIs)
+  // =========================================================
+
+  loadDiscountTypes(): void {
+
+    this.masterDataService.getAll('discountTypes').subscribe({
+
+      next: (res: any) => {
+
+        const mapped: MasterDataItem[] = (res?.data || []).map((d: any) => ({
+          id: d.discountTypeId,
+          code: d.discountTypeCode,
+          name: d.discountTypeName,
+          company: d.companyName,
+          region: d.regionName,
+          status: d.isActive ? 'Active' : 'Inactive'
+        }));
+
+        this.allMasterData['Discount Type'] = mapped;
+
+        if (this.selectedMasterType === 'Discount Type') {
+
+          this.masterData = mapped;
+
+          this.filterData();
+
+        }
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error loading discount types:', err);
+
+      }
+
+    });
+
+  }
+
+  private saveDiscountType(): void {
+
+    const selectedRegion = this.regions.find(
+      r => r.regionName === this.formData.region &&
+        r.companyId === Number(this.selectedCompanyId)
+    );
+
+    const payload = {
+      discountTypeId: this.isEditMode ? this.formData.id : 0,
+      companyId: Number(this.selectedCompanyId),
+      regionId: selectedRegion ? selectedRegion.regionId : 0,
+      discountTypeName: this.formData.name.trim(),
+      discountTypeCode: this.formData.code.trim(),
+      isActive: this.formData.status === 'Active'
+    };
+
+    const request = this.isEditMode
+      ? this.masterDataService.update('discountTypes', payload)
+      : this.masterDataService.create('discountTypes', payload);
+
+    request.subscribe({
+
+      next: () => {
+
+        this.loadDiscountTypes();
+
+        this.closeForm();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error saving discount type:', err);
+
+        window.alert('Failed to save discount type.');
+
+      }
+
+    });
+
+  }
+
+
+  // =========================================================
+  // MEETING PURPOSE (DYNAMIC, FROM EXISTING MASTER APIs)
+  // =========================================================
+
+  loadMeetingPurposes(): void {
+
+    this.masterDataService.getAll('meetingPurposes').subscribe({
+
+      next: (res: any) => {
+
+        const mapped: MasterDataItem[] = (res?.data || []).map((m: any) => ({
+          id: m.meetingPurposeId,
+          code: m.meetingPurposeCode,
+          name: m.meetingPurposeName,
+          company: m.companyName,
+          region: m.regionName,
+          status: m.isActive ? 'Active' : 'Inactive'
+        }));
+
+        this.allMasterData['Meeting Purpose'] = mapped;
+
+        if (this.selectedMasterType === 'Meeting Purpose') {
+
+          this.masterData = mapped;
+
+          this.filterData();
+
+        }
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error loading meeting purposes:', err);
+
+      }
+
+    });
+
+  }
+
+  private saveMeetingPurpose(): void {
+
+    const selectedRegion = this.regions.find(
+      r => r.regionName === this.formData.region &&
+        r.companyId === Number(this.selectedCompanyId)
+    );
+
+    const payload = {
+      meetingPurposeId: this.isEditMode ? this.formData.id : 0,
+      companyId: Number(this.selectedCompanyId),
+      regionId: selectedRegion ? selectedRegion.regionId : 0,
+      meetingPurposeName: this.formData.name.trim(),
+      meetingPurposeCode: this.formData.code.trim(),
+      isActive: this.formData.status === 'Active'
+    };
+
+    const request = this.isEditMode
+      ? this.masterDataService.update('meetingPurposes', payload)
+      : this.masterDataService.create('meetingPurposes', payload);
+
+    request.subscribe({
+
+      next: () => {
+
+        this.loadMeetingPurposes();
+
+        this.closeForm();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error saving meeting purpose:', err);
+
+        window.alert('Failed to save meeting purpose.');
+
+      }
+
+    });
+
+  }
+
+
+  // =========================================================
+  // CALL PURPOSE (DYNAMIC, FROM EXISTING MASTER APIs)
+  // =========================================================
+
+  loadCallPurposes(): void {
+
+    this.masterDataService.getAll('callPurposes').subscribe({
+
+      next: (res: any) => {
+
+        const mapped: MasterDataItem[] = (res?.data || []).map((c: any) => ({
+          id: c.callPurposesId,
+          code: c.callPurposesCode,
+          name: c.callPurposesName,
+          company: c.companyName,
+          region: c.regionName,
+          status: c.isActive ? 'Active' : 'Inactive'
+        }));
+
+        this.allMasterData['Call Purpose'] = mapped;
+
+        if (this.selectedMasterType === 'Call Purpose') {
+
+          this.masterData = mapped;
+
+          this.filterData();
+
+        }
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error loading call purposes:', err);
+
+      }
+
+    });
+
+  }
+
+  private saveCallPurpose(): void {
+
+    const selectedRegion = this.regions.find(
+      r => r.regionName === this.formData.region &&
+        r.companyId === Number(this.selectedCompanyId)
+    );
+
+    const payload = {
+      callPurposesId: this.isEditMode ? this.formData.id : 0,
+      companyId: Number(this.selectedCompanyId),
+      regionId: selectedRegion ? selectedRegion.regionId : 0,
+      callPurposesName: this.formData.name.trim(),
+      callPurposesCode: this.formData.code.trim(),
+      isActive: this.formData.status === 'Active'
+    };
+
+    const request = this.isEditMode
+      ? this.masterDataService.update('callPurposes', payload)
+      : this.masterDataService.create('callPurposes', payload);
+
+    request.subscribe({
+
+      next: () => {
+
+        this.loadCallPurposes();
+
+        this.closeForm();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error saving call purpose:', err);
+
+        window.alert('Failed to save call purpose.');
+
+      }
+
+    });
+
+  }
+
+
+  // =========================================================
+  // CALL OUTCOME (DYNAMIC, FROM EXISTING MASTER APIs)
+  // =========================================================
+
+  loadCallOutcomes(): void {
+
+    this.masterDataService.getAll('callOutcomes').subscribe({
+
+      next: (res: any) => {
+
+        const mapped: MasterDataItem[] = (res?.data || []).map((c: any) => ({
+          id: c.callOutcomesId,
+          code: c.callOutcomesCode,
+          name: c.callOutcomesName,
+          company: c.companyName,
+          region: c.regionName,
+          status: c.isActive ? 'Active' : 'Inactive'
+        }));
+
+        this.allMasterData['Call Outcome'] = mapped;
+
+        if (this.selectedMasterType === 'Call Outcome') {
+
+          this.masterData = mapped;
+
+          this.filterData();
+
+        }
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error loading call outcomes:', err);
+
+      }
+
+    });
+
+  }
+
+  private saveCallOutcome(): void {
+
+    const selectedRegion = this.regions.find(
+      r => r.regionName === this.formData.region &&
+        r.companyId === Number(this.selectedCompanyId)
+    );
+
+    const payload = {
+      callOutcomesId: this.isEditMode ? this.formData.id : 0,
+      companyId: Number(this.selectedCompanyId),
+      regionId: selectedRegion ? selectedRegion.regionId : 0,
+      callOutcomesName: this.formData.name.trim(),
+      callOutcomesCode: this.formData.code.trim(),
+      isActive: this.formData.status === 'Active'
+    };
+
+    const request = this.isEditMode
+      ? this.masterDataService.update('callOutcomes', payload)
+      : this.masterDataService.create('callOutcomes', payload);
+
+    request.subscribe({
+
+      next: () => {
+
+        this.loadCallOutcomes();
+
+        this.closeForm();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error saving call outcome:', err);
+
+        window.alert('Failed to save call outcome.');
+
+      }
+
+    });
+
+  }
+
+
+  // =========================================================
+  // SAMPLE DATA (STATIC, PER MASTER TYPE)
+  // =========================================================
+
+  allMasterData: { [masterType: string]: MasterDataItem[] } = {
+
+    Country: [],
+
+    State: [],
+
+    Industry: [],
+
+    Currency: [],
+
+    Priority: [],
+
+    'Lead Status': [],
+
+    'Lead Source': [],
+
+    'Billing Cycle': [],
+
+    'Contact Type': [],
+
+    Relationship: [],
+
+    'Company Type': [],
+
+    'Lead Type': [],
+
+    License: [],
+
+    'Payment Method': [],
+
+    'Discount Type': [],
+
+    'Meeting Purpose': [],
+
+    'Call Purpose': [],
+
+    'Call Outcome': [],
+
+    // City: [
+    //   { id: 1, code: 'HYD', name: 'Hyderabad', company: 'ABC Technologies', region: 'North', status: 'Active' },
+    //   { id: 2, code: 'BLR', name: 'Bengaluru', company: 'Global InfoTech', region: 'East', status: 'Active' },
+    //   { id: 3, code: 'CHE', name: 'Chennai', company: 'Future Vision', region: 'Central', status: 'Active' },
+    //   { id: 4, code: 'MUM', name: 'Mumbai', company: 'NextGen', region: 'South', status: 'Active' },
+    //   { id: 5, code: 'DEL', name: 'Delhi', company: 'Bright Solutions', region: 'West', status: 'Active' },
+    //   { id: 6, code: 'PUN', name: 'Pune', company: 'ABC Technologies', region: 'South', status: 'Active' },
+    //   { id: 7, code: 'KOL', name: 'Kolkata', company: 'Global InfoTech', region: 'West', status: 'Inactive' },
+    //   { id: 8, code: 'AHM', name: 'Ahmedabad', company: 'Future Vision', region: 'North', status: 'Active' }
+    // ],
+
+    // Departments: [
+    //   { id: 1, code: 'HR', name: 'Human Resources', company: 'ABC Technologies', region: 'North', status: 'Active' },
+    //   { id: 2, code: 'FIN', name: 'Finance', company: 'Global InfoTech', region: 'East', status: 'Active' },
+    //   { id: 3, code: 'SAL', name: 'Sales', company: 'Future Vision', region: 'Central', status: 'Active' },
+    //   { id: 4, code: 'MKT', name: 'Marketing', company: 'NextGen', region: 'South', status: 'Active' },
+    //   { id: 5, code: 'IT', name: 'Information Technology', company: 'Bright Solutions', region: 'West', status: 'Active' },
+    //   { id: 6, code: 'OPS', name: 'Operations', company: 'ABC Technologies', region: 'South', status: 'Active' },
+    //   { id: 7, code: 'SUP', name: 'Support', company: 'Global InfoTech', region: 'West', status: 'Active' },
+    //   { id: 8, code: 'ADM', name: 'Administration', company: 'Future Vision', region: 'North', status: 'Inactive' }
+    // ],
+
+    // Designation: [
+    //   { id: 1, code: 'CEO', name: 'Chief Executive Officer', company: 'ABC Technologies', region: 'North', status: 'Active' },
+    //   { id: 2, code: 'MGR', name: 'Manager', company: 'Global InfoTech', region: 'East', status: 'Active' },
+    //   { id: 3, code: 'SREXEC', name: 'Senior Executive', company: 'Future Vision', region: 'Central', status: 'Active' },
+    //   { id: 4, code: 'EXEC', name: 'Executive', company: 'NextGen', region: 'South', status: 'Active' },
+    //   { id: 5, code: 'TL', name: 'Team Lead', company: 'Bright Solutions', region: 'West', status: 'Active' },
+    //   { id: 6, code: 'ASSOC', name: 'Associate', company: 'ABC Technologies', region: 'South', status: 'Active' },
+    //   { id: 7, code: 'INTRN', name: 'Intern', company: 'Global InfoTech', region: 'West', status: 'Inactive' }
+    // ],
+
+    // 'Call Type': [
+    //   { id: 1, code: 'IN', name: 'Inbound', company: 'ABC Technologies', region: 'North', status: 'Active' },
+    //   { id: 2, code: 'OUT', name: 'Outbound', company: 'Global InfoTech', region: 'East', status: 'Active' },
+    //   { id: 3, code: 'MISS', name: 'Missed', company: 'Future Vision', region: 'Central', status: 'Active' },
+    //   { id: 4, code: 'SCH', name: 'Scheduled', company: 'NextGen', region: 'South', status: 'Active' }
+    // ],
+
+
+    // 'Ticket Category': [
+    //   { id: 1, code: 'TECH', name: 'Technical Issue', company: 'ABC Technologies', region: 'North', status: 'Active' },
+    //   { id: 2, code: 'BILL', name: 'Billing', company: 'Global InfoTech', region: 'East', status: 'Active' },
+    //   { id: 3, code: 'GEN', name: 'General Inquiry', company: 'Future Vision', region: 'Central', status: 'Active' },
+    //   { id: 4, code: 'FEAT', name: 'Feature Request', company: 'NextGen', region: 'South', status: 'Active' },
+    //   { id: 5, code: 'BUG', name: 'Bug Report', company: 'Bright Solutions', region: 'West', status: 'Inactive' }
+    // ],
+
+    // 'Customer Type': [
+    //   { id: 1, code: 'IND', name: 'Individual', company: 'ABC Technologies', region: 'North', status: 'Active' },
+    //   { id: 2, code: 'CORP', name: 'Corporate', company: 'Global InfoTech', region: 'East', status: 'Active' },
+    //   { id: 3, code: 'GOV', name: 'Government', company: 'Future Vision', region: 'Central', status: 'Active' },
+    //   { id: 4, code: 'NGO', name: 'Non-Profit', company: 'NextGen', region: 'South', status: 'Active' },
+    //   { id: 5, code: 'SMB', name: 'Small Business', company: 'Bright Solutions', region: 'West', status: 'Inactive' }
+    // ],
+
+
+  };
+
+
+  masterData: MasterDataItem[] = [];
+
+
+  filteredData: MasterDataItem[] = [];
+
+
+  // =========================================================
+  // INIT
+  // =========================================================
 
   ngOnInit(): void {
-    this.clearSeedData();
-    this.loadReferenceData();
-    this.loadTabData(this.activeSubTab);
+
+    this.masterData = this.allMasterData[this.selectedMasterType];
+
+    this.filteredData = [...this.masterData];
+
+    this.loadCompanies();
+
+    this.loadRegions();
+
+    this.loadCountries();
+
+    this.loadCountriesForForm();
+
+    this.loadStates();
+
+    this.loadIndustries();
+
+    this.loadCurrencies();
+
+    this.loadPriorities();
+
+    this.loadLeadStatuses();
+
+    this.loadLeadSources();
+
+    this.loadBillingCycles();
+
+    this.loadContactTypes();
+
+    this.loadRelationships();
+
+    this.loadCompanyTypes();
+
+    this.loadLeadTypes();
+
+    this.loadLicenses();
+
+    this.loadPaymentMethods();
+
+    this.loadDiscountTypes();
+
+    this.loadMeetingPurposes();
+
+    this.loadCallPurposes();
+
+    this.loadCallOutcomes();
+
   }
 
-  countries: Country[] = [
-    { id: 'c1', regionId: 'r1', name: 'India', iso2: 'IN', iso3: 'IND', phoneCode: '+91', currencyId: 'cy1', isActive: true },
-    { id: 'c2', regionId: 'r3', name: 'United States', iso2: 'US', iso3: 'USA', phoneCode: '+1', currencyId: 'cy2', isActive: true },
-    { id: 'c3', regionId: 'r4', name: 'United Arab Emirates', iso2: 'AE', iso3: 'ARE', phoneCode: '+971', currencyId: 'cy5', isActive: true },
-    { id: 'c4', regionId: 'r2', name: 'United Kingdom', iso2: 'GB', iso3: 'GBR', phoneCode: '+44', currencyId: 'cy4', isActive: true },
-    { id: 'c5', regionId: 'r3', name: 'Canada', iso2: 'CA', iso3: 'CAN', phoneCode: '+1', currencyId: 'cy6', isActive: true },
-    { id: 'c6', regionId: 'r2', name: 'Germany', iso2: 'DE', iso3: 'DEU', phoneCode: '+49', currencyId: 'cy3', isActive: true },
-    { id: 'c7', regionId: 'r6', name: 'Australia', iso2: 'AU', iso3: 'AUS', phoneCode: '+61', currencyId: 'cy7', isActive: true },
-    { id: 'c8', regionId: 'r7', name: 'Brazil', iso2: 'BR', iso3: 'BRA', phoneCode: '+55', currencyId: 'cy8', isActive: false },
-  ];
 
-  states: State[] = [
-    { id: 's1', countryId: 'c1', name: 'Maharashtra', code: 'MH', isActive: true },
-    { id: 's2', countryId: 'c1', name: 'Karnataka', code: 'KA', isActive: true },
-    { id: 's3', countryId: 'c1', name: 'Tamil Nadu', code: 'TN', isActive: true },
-    { id: 's4', countryId: 'c1', name: 'Delhi', code: 'DL', isActive: true },
-    { id: 's5', countryId: 'c2', name: 'California', code: 'CA', isActive: true },
-    { id: 's6', countryId: 'c2', name: 'Texas', code: 'TX', isActive: true },
-    { id: 's7', countryId: 'c2', name: 'New York', code: 'NY', isActive: true },
-    { id: 's8', countryId: 'c4', name: 'England', code: 'ENG', isActive: true },
-  ];
+  // =========================================================
+  // SELECT MASTER TYPE
+  // =========================================================
 
-  cities: City[] = [
-    { id: 'ci1', stateId: 's1', countryId: 'c1', name: 'Mumbai', isActive: true },
-    { id: 'ci2', stateId: 's1', countryId: 'c1', name: 'Pune', isActive: true },
-    { id: 'ci3', stateId: 's2', countryId: 'c1', name: 'Bangalore', isActive: true },
-    { id: 'ci4', stateId: 's3', countryId: 'c1', name: 'Chennai', isActive: true },
-    { id: 'ci5', stateId: 's5', countryId: 'c2', name: 'Los Angeles', isActive: true },
-    { id: 'ci6', stateId: 's7', countryId: 'c2', name: 'New York City', isActive: true },
-    { id: 'ci7', stateId: 's8', countryId: 'c4', name: 'London', isActive: true },
-  ];
+  selectMasterType(masterType: string): void {
 
-  currencies: Currency[] = [
-    { id: 'cy1', name: 'Indian Rupee', code: 'INR', symbol: 'INR', decimals: 2, isDefault: false, isActive: true },
-    { id: 'cy2', name: 'US Dollar', code: 'USD', symbol: '$', decimals: 2, isDefault: true, isActive: true },
-    { id: 'cy3', name: 'Euro', code: 'EUR', symbol: 'EUR', decimals: 2, isDefault: false, isActive: true },
-    { id: 'cy4', name: 'British Pound', code: 'GBP', symbol: 'GBP', decimals: 2, isDefault: false, isActive: true },
-    { id: 'cy5', name: 'UAE Dirham', code: 'AED', symbol: 'AED', decimals: 2, isDefault: false, isActive: true },
-    { id: 'cy6', name: 'Canadian Dollar', code: 'CAD', symbol: 'CAD', decimals: 2, isDefault: false, isActive: true },
-    { id: 'cy7', name: 'Australian Dollar', code: 'AUD', symbol: 'AUD', decimals: 2, isDefault: false, isActive: true },
-    { id: 'cy8', name: 'Brazilian Real', code: 'BRL', symbol: 'BRL', decimals: 2, isDefault: false, isActive: false },
-  ];
+    this.selectedMasterType = masterType;
 
-  timezones: TimeZone[] = [
-    { id: 'tz1', name: 'India Standard Time', offset: 'UTC+5:30', abbreviation: 'IST', isActive: true },
-    { id: 'tz2', name: 'Greenwich Mean Time', offset: 'UTC+0', abbreviation: 'GMT', isActive: true },
-    { id: 'tz3', name: 'Eastern Standard Time', offset: 'UTC-5', abbreviation: 'EST', isActive: true },
-    { id: 'tz4', name: 'Gulf Standard Time', offset: 'UTC+4', abbreviation: 'GST', isActive: true },
-  ];
+    this.searchText = '';
 
-  languages: Language[] = [
-    { id: 'l1', name: 'English', code: 'en', nativeName: 'English', isActive: true },
-    { id: 'l2', name: 'Hindi', code: 'hi', nativeName: 'Hindi', isActive: true },
-    { id: 'l3', name: 'Arabic', code: 'ar', nativeName: 'Arabic', isActive: true },
-    { id: 'l4', name: 'French', code: 'fr', nativeName: 'Francais', isActive: true },
-  ];
+    this.selectedStatus = 'All';
 
-  nationalities: Nationality[] = [
-    { id: 'n1', name: 'Indian', countryId: 'c1', isActive: true },
-    { id: 'n2', name: 'American', countryId: 'c2', isActive: true },
-    { id: 'n3', name: 'Emirati', countryId: 'c3', isActive: true },
-    { id: 'n4', name: 'British', countryId: 'c4', isActive: true },
-  ];
+    this.closeForm();
 
-  simpleData: Record<string, SimpleEntity[]> = {
-    taxTypes: [se('tt1', 'Standard Tax', 'General applicable tax', true, '18%'), se('tt2', 'Reduced Tax', 'Reduced rate', true, '5%'), se('tt3', 'Zero Rate', 'Zero-rated', true, '0%')],
-    gst: [se('g1', 'Standard GST', 'GST standard rate', true, '18%'), se('g2', 'Reduced GST', 'GST reduced rate', true, '5%'), se('g3', 'Zero GST', 'Zero-rated GST', true, '0%')],
-    vat: [se('v1', 'Standard VAT', 'VAT standard rate', true, '20%'), se('v2', 'Reduced VAT', 'VAT reduced rate', true, '5%'), se('v3', 'Zero VAT', 'Zero-rated VAT', true, '0%')],
-    paymentTerms: [se('pt1', 'Immediate', 'Due on receipt', true, '0 days'), se('pt2', 'Net 15', 'Within 15 days', true, '15 days'), se('pt3', 'Net 30', 'Within 30 days', true, '30 days')],
-    paymentMethods: [se('pm1', 'Cash', 'Physical cash', true), se('pm2', 'Bank Transfer', 'Wire transfer', true), se('pm3', 'Credit Card', 'Card via gateway', true), se('pm4', 'UPI', 'Unified Payments Interface', true)],
-    invoicePrefixes: [se('ip1', 'INV', 'Standard invoice', true, 'INV'), se('ip2', 'PRO', 'Proforma invoice', true, 'PRO'), se('ip3', 'TAX', 'Tax invoice', true, 'TAX')],
-    creditTerms: [se('ct1', 'Immediate', 'No credit period', true, '0 days'), se('ct2', '15 Days', 'Short-term credit', true, '15 days'), se('ct3', '30 Days', 'Standard credit', true, '30 days')],
-    leadSources: [se('ls1', 'Website', 'Organic inquiry', true), se('ls2', 'Referral', 'Customer referral', true), se('ls3', 'Cold Call', 'Outbound calls', true), se('ls4', 'Email Campaign', 'Email marketing', true)],
-    leadStatuses: [se('lst1', 'New', 'Freshly created', true, '#3b82f6'), se('lst2', 'Contacted', 'Outreach done', true, '#8b5cf6'), se('lst3', 'Qualified', 'Meets ICP', true, '#10b981'), se('lst4', 'Converted', 'Converted to opportunity', true, '#b91538')],
-    opportunityStages: [se('os1', 'Prospecting', 'Identifying opportunities', true, '10%'), se('os2', 'Qualification', 'Qualifying', true, '25%'), se('os3', 'Proposal', 'Proposal sent', true, '50%'), se('os4', 'Negotiation', 'Under negotiation', true, '75%')],
-    pipelines: [se('pip1', 'Standard Sales', 'Default B2B pipeline', true), se('pip2', 'Enterprise Sales', 'Large account pipeline', true), se('pip3', 'SMB Pipeline', 'Small and mid-market', true)],
-    customerTypes: [se('ct1', 'Individual', 'Single person', true), se('ct2', 'Corporate', 'Corporate entity', true), se('ct3', 'Government', 'Government body', true), se('ct4', 'Enterprise', 'Large enterprise', true)],
-    customerCategories: [se('cc1', 'Platinum', 'Highest tier', true), se('cc2', 'Gold', 'High-value', true), se('cc3', 'Silver', 'Mid-value', true), se('cc4', 'Bronze', 'Standard', true)],
-    activityTypes: [se('at1', 'Call', 'Phone or video call', true), se('at2', 'Email', 'Outbound email', true), se('at3', 'Meeting', 'Customer meeting', true), se('at4', 'Task', 'Follow-up task', true)],
-    followUpTypes: [se('fu1', 'Call Back', 'Schedule a return call', true), se('fu2', 'Email Follow-up', 'Follow up by email', true), se('fu3', 'Meeting', 'Schedule a meeting', true)],
-    communicationTypes: [se('com1', 'Phone', 'Phone communication', true), se('com2', 'Email', 'Email communication', true), se('com3', 'WhatsApp', 'WhatsApp message', true)],
-    meetingTypes: [se('mt1', 'Discovery', 'Discovery call', true), se('mt2', 'Demo', 'Product demonstration', true), se('mt3', 'Negotiation', 'Commercial discussion', true)],
-    callOutcomes: [se('co1', 'Connected', 'Customer answered', true), se('co2', 'No Answer', 'No response', true), se('co3', 'Interested', 'Customer interested', true)],
-    winReasons: [se('wr1', 'Best Price', 'Won by pricing', true), se('wr2', 'Product Fit', 'Strong functional match', true), se('wr3', 'Relationship', 'Existing relationship', true)],
-    lossReasons: [se('lr1', 'Price', 'Lost due to price', true), se('lr2', 'Competitor', 'Lost to competitor', true), se('lr3', 'No Budget', 'Budget unavailable', true)],
-    competitors: [se('cmp1', 'Salesforce', 'Enterprise CRM competitor', true), se('cmp2', 'Zoho CRM', 'SMB CRM competitor', true), se('cmp3', 'HubSpot', 'Marketing-led CRM', true)],
-    priorities: [se('pr1', 'Low', 'Low priority', true, '#22c55e'), se('pr2', 'Medium', 'Medium priority', true, '#f59e0b'), se('pr3', 'High', 'High priority', true, '#ef4444')],
-    ratings: [se('rtg1', 'Hot', 'High engagement', true), se('rtg2', 'Warm', 'Moderate engagement', true), se('rtg3', 'Cold', 'Low engagement', true)],
-    industries: [se('ind1', 'Technology', 'Technology businesses', true), se('ind2', 'Finance', 'Financial services', true), se('ind3', 'Healthcare', 'Healthcare providers', true)],
-    businessTypes: [se('bt1', 'B2B', 'Business to business', true), se('bt2', 'B2C', 'Business to consumer', true), se('bt3', 'Marketplace', 'Marketplace operator', true)],
-    companyCategories: [se('ccat1', 'Enterprise', 'Large account', true), se('ccat2', 'SMB', 'Small and medium business', true), se('ccat3', 'Startup', 'Early stage business', true)],
-    branchTypes: [se('br1', 'Head Office', 'Primary office', true), se('br2', 'Regional Office', 'Regional location', true), se('br3', 'Warehouse', 'Storage branch', true)],
-    departments: [se('dep1', 'Sales', 'Sales department', true), se('dep2', 'Marketing', 'Marketing department', true), se('dep3', 'Support', 'Support department', true)],
-    designations: [se('des1', 'Manager', 'Manager role', true), se('des2', 'Executive', 'Executive role', true), se('des3', 'Administrator', 'Administrator role', true)],
-    employeeTypes: [se('et1', 'Full Time', 'Permanent employee', true), se('et2', 'Contract', 'Contract employee', true), se('et3', 'Intern', 'Internship role', true)],
-    businessUnits: [se('bu1', 'North', 'North business unit', true), se('bu2', 'South', 'South business unit', true), se('bu3', 'International', 'International unit', true)],
-    productCategories: [se('pc1', 'Software', 'Software products', true), se('pc2', 'Services', 'Service offerings', true), se('pc3', 'Hardware', 'Hardware products', true)],
-    brands: [se('b1', 'CRM Core', 'Core CRM brand', true), se('b2', 'CRM Pro', 'Professional CRM brand', true)],
-    unitsOfMeasure: [se('u1', 'Each', 'Single unit', true), se('u2', 'Hour', 'Hourly billing', true), se('u3', 'Month', 'Monthly billing', true)],
-    warehouses: [se('w1', 'Main Warehouse', 'Primary inventory location', true), se('w2', 'Regional Warehouse', 'Regional inventory location', true)],
-    productTypes: [se('ptp1', 'Subscription', 'Recurring product', true), se('ptp2', 'One Time', 'One-time product', true), se('ptp3', 'Service', 'Service product', true)],
-    ticketPriorities: [se('tp1', 'Low', 'Low priority', true, '#22c55e'), se('tp2', 'Medium', 'Standard priority', true, '#f59e0b'), se('tp3', 'High', 'Needs attention', true, '#ef4444')],
-    ticketCategories: [se('tc1', 'Technical', 'Technical issue', true), se('tc2', 'Billing', 'Invoice query', true), se('tc3', 'Feature Request', 'New feature ask', true)],
-    ticketStatuses: [se('ts1', 'Open', 'New ticket', true, '#3b82f6'), se('ts2', 'In Progress', 'Being worked on', true, '#8b5cf6'), se('ts3', 'Closed', 'Ticket closed', true, '#94a3b8')],
-    slaLevels: [se('sl1', 'Bronze', 'Standard SLA', true, '8 hrs'), se('sl2', 'Silver', 'Enhanced SLA', true, '4 hrs'), se('sl3', 'Gold', 'Premium SLA', true, '2 hrs')],
-    resolutionTypes: [se('res1', 'Fixed', 'Root cause resolved', true), se('res2', 'Workaround', 'Temporary workaround', true), se('res3', 'Duplicate', 'Duplicate ticket', true)],
-    holidays: [se('h1', 'New Year Day', '1 January', true), se('h2', 'Republic Day', '26 January India', true), se('h3', 'Christmas Day', '25 December', true)],
-    shifts: [se('sh1', 'Morning Shift', 'Early shift', true, '06:00-14:00'), se('sh2', 'Day Shift', 'Business hours', true, '09:00-17:00'), se('sh3', 'Night Shift', 'Overnight', true, '22:00-06:00')],
-    leaveTypes: [se('lt1', 'Annual Leave', 'Paid annual leave', true), se('lt2', 'Sick Leave', 'Medical leave', true), se('lt3', 'Casual Leave', 'Short-notice leave', true)],
-    attendanceStatuses: [se('as1', 'Present', 'Full day present', true), se('as2', 'Absent', 'Not present', true), se('as3', 'Late', 'Arrived late', true)],
-  };
+    if (masterType === 'Country') {
 
-  private readonly extraLabelMap: Record<string, { label: string; isColor?: boolean }> = {
-    taxTypes: { label: 'Rate' },
-    gst: { label: 'Rate' },
-    vat: { label: 'Rate' },
-    paymentTerms: { label: 'Duration' },
-    invoicePrefixes: { label: 'Prefix Code' },
-    creditTerms: { label: 'Days' },
-    leadStatuses: { label: 'Color', isColor: true },
-    opportunityStages: { label: 'Probability' },
-    priorities: { label: 'Color', isColor: true },
-    ticketPriorities: { label: 'Color', isColor: true },
-    ticketStatuses: { label: 'Color', isColor: true },
-    slaLevels: { label: 'Response Time' },
-    shifts: { label: 'Hours' },
-  };
+      this.loadCountries();
 
-  get theme(): CatTheme {
-    return THEMES[this.category];
-  }
+    } else if (masterType === 'State') {
 
-  get categories(): Category[] {
-    return CATEGORIES;
-  }
+      this.loadStates();
 
-  get activeTabs(): SubTab[] {
-    return TAB_MAP[this.category];
-  }
+    } else if (masterType === 'Industry') {
 
-  get currentSimpleData(): SimpleEntity[] {
-    return this.simpleData[this.activeSubTab] ?? [];
-  }
+      this.loadIndustries();
 
-  get extraLabel(): string {
-    return this.extraLabelMap[this.activeSubTab]?.label ?? '';
-  }
+    } else if (masterType === 'Currency') {
 
-  get extraIsColor(): boolean {
-    return this.extraLabelMap[this.activeSubTab]?.isColor ?? false;
-  }
+      this.loadCurrencies();
 
-  get isGeoCategory(): boolean {
-    return this.category === 'geographic';
-  }
+    } else if (masterType === 'Priority') {
 
-  get activeTabLabel(): string {
-    return this.activeTabs.find((tab) => tab.id === this.activeSubTab)?.label ?? '';
-  }
+      this.loadPriorities();
 
-  get filteredGeoData(): any[] {
-    const query = this.search.toLowerCase();
-    const matchesStatus = (item: any) =>
-      this.statusFilter === 'all' || (this.statusFilter === 'active' ? item.isActive : !item.isActive);
+    } else if (masterType === 'Lead Status') {
 
-    switch (this.activeSubTab) {
-      case 'countries':
-        return this.countries.filter((country) =>
-          matchesStatus(country) &&
-          (!query || country.name.toLowerCase().includes(query) || country.iso2.toLowerCase().includes(query) || country.iso3.toLowerCase().includes(query)) &&
-          (this.regionFilter === 'all' || country.regionId === this.regionFilter)
-        );
-      case 'states':
-        return this.states.filter((state) =>
-          matchesStatus(state) &&
-          (!query || state.name.toLowerCase().includes(query) || state.code.toLowerCase().includes(query)) &&
-          (this.countryFilter === 'all' || state.countryId === this.countryFilter)
-        );
-      case 'cities':
-        return this.cities.filter((city) =>
-          matchesStatus(city) &&
-          (!query || city.name.toLowerCase().includes(query)) &&
-          (this.stateFilter === 'all' || city.stateId === this.stateFilter)
-        );
-      case 'currencies':
-        return this.currencies.filter((currency) =>
-          matchesStatus(currency) &&
-          (!query || currency.name.toLowerCase().includes(query) || currency.code.toLowerCase().includes(query))
-        );
-      case 'timezones':
-        return this.timezones.filter((timezone) =>
-          matchesStatus(timezone) &&
-          (!query || timezone.name.toLowerCase().includes(query) || timezone.abbreviation.toLowerCase().includes(query))
-        );
-      case 'languages':
-        return this.languages.filter((language) =>
-          matchesStatus(language) &&
-          (!query || language.name.toLowerCase().includes(query) || language.code.toLowerCase().includes(query))
-        );
-      case 'nationalities':
-        return this.nationalities.filter((nationality) =>
-          matchesStatus(nationality) && (!query || nationality.name.toLowerCase().includes(query))
-        );
-      default:
-        return [];
+      this.loadLeadStatuses();
+
+    } else if (masterType === 'Lead Source') {
+
+      this.loadLeadSources();
+
+    } else if (masterType === 'Billing Cycle') {
+
+      this.loadBillingCycles();
+
+    } else if (masterType === 'Contact Type') {
+
+      this.loadContactTypes();
+
+    } else if (masterType === 'Relationship') {
+
+      this.loadRelationships();
+
+    } else if (masterType === 'Company Type') {
+
+      this.loadCompanyTypes();
+
+    } else if (masterType === 'Lead Type') {
+
+      this.loadLeadTypes();
+
+    } else if (masterType === 'License') {
+
+      this.loadLicenses();
+
+    } else if (masterType === 'Payment Method') {
+
+      this.loadPaymentMethods();
+
+    } else if (masterType === 'Discount Type') {
+
+      this.loadDiscountTypes();
+
+    } else if (masterType === 'Meeting Purpose') {
+
+      this.loadMeetingPurposes();
+
+    } else if (masterType === 'Call Purpose') {
+
+      this.loadCallPurposes();
+
+    } else if (masterType === 'Call Outcome') {
+
+      this.loadCallOutcomes();
+
     }
+
+    this.masterData = this.allMasterData[this.selectedMasterType] || [];
+
+    this.filteredData = [...this.masterData];
+
   }
 
-  get filteredSimpleData(): SimpleEntity[] {
-    const query = this.search.toLowerCase();
-    return this.currentSimpleData.filter((item) =>
-      (this.statusFilter === 'all' || (this.statusFilter === 'active' ? item.isActive : !item.isActive)) &&
-      (!query || item.name.toLowerCase().includes(query) || item.description.toLowerCase().includes(query))
+
+  // =========================================================
+  // DROPDOWN CHANGE
+  // =========================================================
+
+  onMasterTypeChange(): void {
+
+    this.selectMasterType(this.selectedMasterType);
+
+  }
+
+
+  // =========================================================
+  // SEARCH + FILTER
+  // =========================================================
+
+  filterData(): void {
+
+    const search = this.searchText
+      .trim()
+      .toLowerCase();
+
+    this.filteredData = this.masterData.filter(item => {
+
+      const matchesSearch =
+        !search ||
+        item.code.toLowerCase().includes(search) ||
+        item.name.toLowerCase().includes(search) ||
+        item.company.toLowerCase().includes(search) ||
+        item.region.toLowerCase().includes(search);
+
+      const matchesStatus =
+        this.selectedStatus === 'All' ||
+        item.status === this.selectedStatus;
+
+      return matchesSearch && matchesStatus;
+
+    });
+
+  }
+
+
+  // =========================================================
+  // RESET
+  // =========================================================
+
+  resetFilters(): void {
+
+    this.searchText = '';
+
+    this.selectedStatus = 'All';
+
+    this.filteredData = [...this.masterData];
+
+  }
+
+
+  // =========================================================
+  // ADD
+  // =========================================================
+
+  openAddForm(): void {
+
+    this.isEditMode = false;
+
+    this.selectedCompanyId = null;
+
+    this.selectedCountryId = null;
+
+    this.formData = {
+      id: 0,
+      code: '',
+      name: '',
+      company: '',
+      region: '',
+      status: 'Active'
+    };
+
+    this.showForm = true;
+
+  }
+
+
+  // =========================================================
+  // EDIT
+  // =========================================================
+
+  editItem(item: MasterDataItem): void {
+
+    this.isEditMode = true;
+
+    this.formData = {
+      id: item.id,
+      code: item.code,
+      name: item.name,
+      company: item.company,
+      region: item.region,
+      status: item.status
+    };
+
+    const matchedCompany = this.companies.find(
+      c => c.companyName === item.company
     );
-  }
 
-  get activeFilteredData(): any[] {
-    return this.isGeoCategory ? this.filteredGeoData : this.filteredSimpleData;
-  }
+    this.selectedCompanyId = matchedCompany
+      ? matchedCompany.companyId
+      : null;
 
-  get entityTotal(): number {
-    return this.isGeoCategory ? this.getGeoRaw().length : this.currentSimpleData.length;
-  }
+    if (this.selectedMasterType === 'State') {
 
-  get entityActive(): number {
-    return this.isGeoCategory
-      ? this.getGeoRaw().filter((item: any) => item.isActive).length
-      : this.currentSimpleData.filter((item) => item.isActive).length;
-  }
+      const countryInfo = this.stateCountryLookup[item.id];
 
-  get catTotal(): number {
-    return this.activeTabs.reduce((sum, tab) => sum + this.getTabCount(tab.id).total, 0);
-  }
+      this.selectedCountryId = countryInfo ? countryInfo.countryId : null;
 
-  get globalTotal(): number {
-    return CATEGORIES.reduce((sum, category) => sum + this.getCategoryTotal(category.id), 0);
-  }
+    } else {
 
-  getTabIcon(tabId: string): string {
-    return this.activeTabs.find((tab) => tab.id === tabId)?.iconCls ?? '';
-  }
+      this.selectedCountryId = null;
 
-  getTabCount(tabId: string): { total: number; active: number } {
-    const category = CATEGORIES.find((item) => item.id === tabId);
-    if (category) {
-      return { total: this.getCategoryTotal(category.id), active: this.getCategoryActive(category.id) };
     }
 
-    if (this.category === 'geographic') {
-      const raw = this.getGeoRawFor(tabId);
-      return { total: raw.length, active: raw.filter((item: any) => item.isActive).length };
+    this.showForm = true;
+
+  }
+
+
+  // =========================================================
+  // FORM: COMPANY -> REGION CASCADE
+  // =========================================================
+
+  get formRegions(): any[] {
+
+    if (!this.selectedCompanyId) {
+      return [];
     }
 
-    const items = this.simpleData[tabId] ?? [];
-    return { total: items.length, active: items.filter((item) => item.isActive).length };
+    return this.regions.filter(
+      r => r.companyId === Number(this.selectedCompanyId)
+    );
+
   }
 
-  countryName(id: string): string {
-    return this.countries.find((country) => country.id === id)?.name ?? '-';
+  onFormCompanyChange(): void {
+
+    const company = this.companies.find(
+      c => c.companyId === Number(this.selectedCompanyId)
+    );
+
+    this.formData.company = company ? company.companyName : '';
+
+    this.formData.region = '';
+
+    this.selectedCountryId = null;
+
   }
 
-  stateName(id: string): string {
-    return this.states.find((state) => state.id === id)?.name ?? '-';
-  }
 
-  currCode(id: string): string {
-    return this.currencies.find((currency) => currency.id === id)?.code ?? '-';
-  }
+  // =========================================================
+  // FORM: COMPANY + REGION -> COUNTRY CASCADE (STATE ONLY)
+  // =========================================================
 
-  regionName(id: string): string {
-    return this.regions.find((region) => region.id === id)?.name ?? '-';
-  }
+  get formCountries(): any[] {
 
-  statesFor(countryId: string): State[] {
-    return this.states.filter((state) => state.countryId === countryId);
-  }
-
-  tabRatio(tabId: string): number {
-    const count = this.getTabCount(tabId);
-    return count.total ? Math.round((count.active / count.total) * 100) : 0;
-  }
-
-  selectCategory(category: CategoryId): void {
-    this.category = category;
-    this.activeSubTab = TAB_MAP[category][0].id;
-    this.resetFilters();
-    this.loadTabData(this.activeSubTab);
-  }
-
-  selectSubTab(tabId: string): void {
-    this.activeSubTab = tabId;
-    this.resetFilters();
-    this.loadTabData(tabId);
-  }
-
-  openGeoAdd(tab: string): void {
-    const defaultCompanyId = this.defaultCompanyId();
-    const blanks: Record<string, any> = {
-      countries: { companyId: defaultCompanyId, regionId: '', name: '', iso2: '', iso3: '', phoneCode: '+', currencyId: '', isActive: true },
-      states: { companyId: defaultCompanyId, regionId: '', countryId: '', name: '', code: '', isActive: true },
-      cities: { companyId: defaultCompanyId, regionId: '', countryId: '', stateId: '', name: '', isActive: true },
-      currencies: { name: '', code: '', symbol: '', decimals: 2, isDefault: false, isActive: true },
-      timezones: { name: '', offset: 'UTC+0', abbreviation: '', isActive: true },
-      languages: { name: '', code: '', nativeName: '', isActive: true },
-      nationalities: { name: '', countryId: '', isActive: true },
-    };
-
-    this.geoForm = { ...blanks[tab] };
-    this.geoErrors = {};
-    this.modalCid = '';
-    this.geoModalEditing = null;
-    this.geoModalTab = tab;
-    this.geoModalOpen = true;
-  }
-
-  openGeoEdit(tab: string, item: any): void {
-    this.geoForm = { ...item };
-    this.geoErrors = {};
-    this.modalCid = item.countryId ?? '';
-    this.geoModalEditing = item;
-    this.geoModalTab = tab;
-    this.geoModalOpen = true;
-  }
-
-  saveGeo(): void {
-    const form = this.geoForm;
-    const errors: Record<string, string> = {};
-
-    if (!form['name']?.trim()) {
-      errors['name'] = 'Name is required.';
-    }
-    if (this.geoModalTab === 'countries') {
-      if (!form['regionId']) {
-        errors['regionId'] = 'Region required.';
-      }
-      if (!form['iso2']?.trim() || form['iso2'].trim().length !== 2) {
-        errors['iso2'] = 'Must be 2 characters.';
-      }
-      if (!form['iso3']?.trim() || form['iso3'].trim().length !== 3) {
-        errors['iso3'] = 'Must be 3 characters.';
-      }
-      if (!form['phoneCode']?.startsWith('+')) {
-        errors['phoneCode'] = 'Must start with +.';
-      }
-    }
-    if (this.geoModalTab === 'states' && !form['countryId']) {
-      errors['countryId'] = 'Country required.';
-    }
-    if (this.geoModalTab === 'cities' && !form['stateId']) {
-      errors['stateId'] = 'State required.';
-    }
-    if (this.geoModalTab === 'currencies') {
-      if (!form['code']?.trim() || form['code'].trim().length !== 3) {
-        errors['code'] = 'Must be 3 characters.';
-      }
-      if (!form['symbol']?.trim()) {
-        errors['symbol'] = 'Symbol required.';
-      }
-    }
-    if (this.geoModalTab === 'languages' && !form['code']?.trim()) {
-      errors['code'] = 'Code required.';
-    }
-    if (this.geoModalTab === 'nationalities' && !form['countryId']) {
-      errors['countryId'] = 'Country required.';
+    if (!this.selectedCompanyId) {
+      return [];
     }
 
-    if (Object.keys(errors).length) {
-      this.geoErrors = errors;
+    const region = this.regions.find(
+      r => r.regionName === this.formData.region &&
+        r.companyId === Number(this.selectedCompanyId)
+    );
+
+    if (!region) {
+      return [];
+    }
+
+    return this.countries.filter(
+      c => c.companyId === Number(this.selectedCompanyId) &&
+        c.regionId === region.regionId
+    );
+
+  }
+
+
+  // =========================================================
+  // DELETE
+  // =========================================================
+
+  deleteItem(item: MasterDataItem): void {
+
+    const confirmed = window.confirm(
+      `Are you sure you want to delete ${item.name}?`
+    );
+
+    if (!confirmed) {
       return;
     }
 
-    const request = this.geoModalEditing
-      ? this.masterDataService.update(this.geoModalTab, this.toApiPayload(this.geoModalTab, form))
-      : this.masterDataService.create(this.geoModalTab, this.toApiPayload(this.geoModalTab, form));
+    if (this.selectedMasterType === 'Country') {
 
-    request.subscribe({
-      next: (res) => {
-        this.showToast(res?.message || `${form['name']} ${this.geoModalEditing ? 'updated' : 'added'}.`);
-        this.geoModalOpen = false;
-        this.loadTabData(this.geoModalTab);
-        this.loadReferenceData();
-      },
-      error: (error) => {
-        this.showToast(error?.error?.message || `${this.activeTabLabel} API is not ready yet.`);
-      },
-    });
-  }
+      this.masterDataService.delete('countries', item.id).subscribe({
 
-  toggleGeo(tab: string, id: string): void {
-    const item = this.getGeoRawFor(tab).find((entry: any) => entry.id === id);
-    if (!item) {
-      return;
-    }
+        next: () => {
 
-    const payload = this.toApiPayload(tab, { ...item, isActive: !item.isActive });
-    this.masterDataService.update(tab, payload).subscribe({
-      next: (res) => {
-        this.showToast(res?.message || 'Status updated.');
-        this.loadTabData(tab);
-      },
-      error: (error) => {
-        this.showToast(error?.error?.message || `${this.activeTabLabel} API is not ready yet.`);
-      },
-    });
-  }
+          this.loadCountries();
 
-  setDefaultCurrency(id: string): void {
-    this.currencies = this.currencies.map((currency) => ({ ...currency, isDefault: currency.id === id }));
-    this.showToast('Default currency set.');
-  }
+        },
 
-  onCityCountryChange(countryId: string): void {
-    this.modalCid = countryId;
-    this.geoForm['countryId'] = countryId;
-    this.geoForm['stateId'] = '';
-  }
+        error: (err) => {
 
-  openSimAdd(tabId: string): void {
-    this.simModalKey = tabId;
-    this.simModalLabel = this.activeTabs.find((tab) => tab.id === tabId)?.label ?? tabId;
-    this.simModalExtraLabel = this.extraLabelMap[tabId]?.label ?? '';
-    this.simModalExtraIsColor = this.extraLabelMap[tabId]?.isColor ?? false;
-    this.simForm = { name: '', description: '', isActive: true, extra: '' };
-    this.simErrors = {};
-    this.simModalEditing = null;
-    this.simModalOpen = true;
-  }
+          console.error('Error deleting country:', err);
 
-  openSimEdit(tabId: string, item: SimpleEntity): void {
-    this.simModalKey = tabId;
-    this.simModalLabel = this.activeTabs.find((tab) => tab.id === tabId)?.label ?? tabId;
-    this.simModalExtraLabel = this.extraLabelMap[tabId]?.label ?? '';
-    this.simModalExtraIsColor = this.extraLabelMap[tabId]?.isColor ?? false;
-    this.simForm = { name: item.name, description: item.description, isActive: item.isActive, extra: item.extra ?? '' };
-    this.simErrors = {};
-    this.simModalEditing = item;
-    this.simModalOpen = true;
-  }
+          window.alert('Failed to delete country.');
 
-  saveSim(): void {
-    const errors: Record<string, string> = {};
-    if (!this.simForm.name.trim()) {
-      errors['name'] = `${this.simModalLabel} name is required.`;
-    }
-
-    if (Object.keys(errors).length) {
-      this.simErrors = errors;
-      return;
-    }
-
-    const payload = this.toApiPayload(this.simModalKey, {
-      ...this.simModalEditing,
-      ...this.simForm,
-    });
-    const request = this.simModalEditing
-      ? this.masterDataService.update(this.simModalKey, payload)
-      : this.masterDataService.create(this.simModalKey, payload);
-
-    request.subscribe({
-      next: (res) => {
-        this.showToast(res?.message || `${this.simForm.name} ${this.simModalEditing ? 'updated' : 'saved'}.`);
-        this.simModalOpen = false;
-        this.loadTabData(this.simModalKey);
-      },
-      error: (error) => {
-        this.showToast(error?.error?.message || `${this.simModalLabel} API is not ready yet.`);
-      },
-    });
-  }
-
-  toggleSim(tabId: string, id: string): void {
-    const items = this.simpleData[tabId] ?? [];
-    const item = items.find((entry) => entry.id === id);
-    if (!item) {
-      return;
-    }
-
-    this.masterDataService.update(tabId, this.toApiPayload(tabId, { ...item, isActive: !item.isActive })).subscribe({
-      next: (res) => {
-        this.showToast(res?.message || 'Status updated.');
-        this.loadTabData(tabId);
-      },
-      error: (error) => {
-        this.showToast(error?.error?.message || `${this.activeTabLabel} API is not ready yet.`);
-      },
-    });
-  }
-
-  loadTabData(tabId: string, silent = false): void {
-    if (this.loadingTabs.has(tabId)) {
-      return;
-    }
-
-    this.loadingTabs.add(tabId);
-    this.masterDataService.getAll(tabId).subscribe({
-      next: (res) => {
-        this.setTabData(tabId, res?.data || []);
-        this.loadingTabs.delete(tabId);
-      },
-      error: () => {
-        this.setTabData(tabId, []);
-        this.loadingTabs.delete(tabId);
-        if (!silent) {
-          this.showToast(`${this.activeTabLabel || tabId} API is not ready yet.`);
         }
-      },
-    });
-  }
 
-  private loadReferenceData(): void {
-    this.masterDataService.getAll('companies').subscribe({
-      next: (res) => {
-        this.companies = res?.data || [];
-      },
-      error: () => {
-        this.companies = [];
-      },
-    });
+      });
 
-    this.masterDataService.getAll('regions').subscribe({
-      next: (res) => {
-        this.regions = (res?.data || []).map((item: any) => ({
-          id: String(item.regionId ?? item.id),
-          name: item.regionName ?? item.name ?? '',
-          companyId: item.companyId,
-        }));
-      },
-      error: () => {
-        this.regions = [];
-      },
-    });
+      return;
 
-    this.loadTabData('countries', true);
-    this.loadTabData('states', true);
-  }
-
-  private setTabData(tabId: string, rows: any[]): void {
-    switch (tabId) {
-      case 'countries':
-        this.countries = rows.map((row) => this.toCountry(row));
-        break;
-      case 'states':
-        this.states = rows.map((row) => this.toState(row));
-        break;
-      case 'cities':
-        this.cities = rows.map((row) => this.toCity(row));
-        break;
-      case 'currencies':
-        this.currencies = rows.map((row) => this.toCurrency(row));
-        break;
-      case 'timezones':
-        this.timezones = rows.map((row) => this.toTimeZone(row));
-        break;
-      case 'languages':
-        this.languages = rows.map((row) => this.toLanguage(row));
-        break;
-      case 'nationalities':
-        this.nationalities = rows.map((row) => this.toNationality(row));
-        break;
-      default:
-        this.simpleData[tabId] = rows.map((row) => this.toSimpleEntity(row));
-        break;
     }
-  }
 
-  private toCountry(row: any): Country {
-    const code = row.countryCode ?? row.code ?? row.iso2 ?? '';
-    return {
-      ...row,
-      id: String(row.countryId ?? row.id),
-      regionId: String(row.regionId ?? ''),
-      name: row.countryName ?? row.name ?? '',
-      iso2: row.iso2 ?? code,
-      iso3: row.iso3 ?? code,
-      phoneCode: row.phoneCode ?? '+',
-      currencyId: String(row.currencyId ?? ''),
-      isActive: row.isActive ?? true,
-    };
-  }
+    if (this.selectedMasterType === 'State') {
 
-  private toState(row: any): State {
-    return {
-      ...row,
-      id: String(row.stateId ?? row.id),
-      countryId: String(row.countryId ?? ''),
-      name: row.stateName ?? row.name ?? '',
-      code: row.stateCode ?? row.code ?? '',
-      isActive: row.isActive ?? true,
-    };
-  }
+      this.masterDataService.delete('states', item.id).subscribe({
 
-  private toCity(row: any): City {
-    return {
-      ...row,
-      id: String(row.cityId ?? row.id),
-      stateId: String(row.stateId ?? ''),
-      countryId: String(row.countryId ?? ''),
-      name: row.cityName ?? row.name ?? '',
-      isActive: row.isActive ?? true,
-    };
-  }
+        next: () => {
 
-  private toCurrency(row: any): Currency {
-    return {
-      ...row,
-      id: String(row.currencyId ?? row.id),
-      name: row.currencyName ?? row.name ?? '',
-      code: row.currencyCode ?? row.code ?? '',
-      symbol: row.currencySymbol ?? row.symbol ?? '',
-      decimals: row.decimalPlaces ?? row.decimals ?? 2,
-      isDefault: row.isDefault ?? false,
-      isActive: row.isActive ?? true,
-    };
-  }
+          this.loadStates();
 
-  private toTimeZone(row: any): TimeZone {
-    return {
-      ...row,
-      id: String(row.timeZoneId ?? row.timezoneId ?? row.id),
-      name: row.timeZoneName ?? row.name ?? '',
-      offset: row.offset ?? '',
-      abbreviation: row.abbreviation ?? '',
-      isActive: row.isActive ?? true,
-    };
-  }
+        },
 
-  private toLanguage(row: any): Language {
-    return {
-      ...row,
-      id: String(row.languageId ?? row.id),
-      name: row.languageName ?? row.name ?? '',
-      code: row.languageCode ?? row.code ?? '',
-      nativeName: row.nativeName ?? '',
-      isActive: row.isActive ?? true,
-    };
-  }
+        error: (err) => {
 
-  private toNationality(row: any): Nationality {
-    return {
-      ...row,
-      id: String(row.nationalityId ?? row.id),
-      name: row.nationalityName ?? row.name ?? '',
-      countryId: String(row.countryId ?? ''),
-      isActive: row.isActive ?? true,
-    };
-  }
+          console.error('Error deleting state:', err);
 
-  private toSimpleEntity(row: any): SimpleEntity {
-    return {
-      ...row,
-      id: String(row.id ?? row.masterId ?? row[`${this.activeSubTab}Id`] ?? row[`${this.activeSubTab.slice(0, -1)}Id`] ?? ''),
-      name: row.name ?? row.masterName ?? row.title ?? '',
-      description: row.description ?? '',
-      extra: row.extra ?? row.code ?? row.color ?? row.rate ?? '',
-      isActive: row.isActive ?? true,
-    };
-  }
+          window.alert('Failed to delete state.');
 
-  showToast(message: string): void {
-    if (this.toastTimer) {
-      clearTimeout(this.toastTimer);
+        }
+
+      });
+
+      return;
+
     }
-    this.toast = message;
-    this.toastTimer = setTimeout(() => {
-      this.toast = null;
-    }, 3000);
-  }
 
-  ngOnDestroy(): void {
-    if (this.toastTimer) {
-      clearTimeout(this.toastTimer);
+    if (this.selectedMasterType === 'Industry') {
+
+      this.masterDataService.delete('industries', item.id).subscribe({
+
+        next: () => {
+
+          this.loadIndustries();
+
+        },
+
+        error: (err) => {
+
+          console.error('Error deleting industry:', err);
+
+          window.alert('Failed to delete industry.');
+
+        }
+
+      });
+
+      return;
+
     }
-  }
 
-  trackById(_: number, item: any): string {
-    return item.id;
-  }
+    if (this.selectedMasterType === 'Currency') {
 
-  private clearSeedData(): void {
-    this.regions = [];
-    this.countries = [];
-    this.states = [];
-    this.cities = [];
-    this.currencies = [];
-    this.timezones = [];
-    this.languages = [];
-    this.nationalities = [];
-    Object.keys(this.simpleData).forEach((key) => {
-      this.simpleData[key] = [];
-    });
-  }
+      this.masterDataService.delete('currencies', item.id).subscribe({
 
-  private defaultCompanyId(): number {
-    return Number(this.companies[0]?.companyId ?? this.companies[0]?.id ?? 0);
-  }
+        next: () => {
 
-  private companyIdForRegion(regionId: string): number {
-    return Number(this.regions.find((region) => region.id === String(regionId))?.companyId ?? this.defaultCompanyId());
-  }
+          this.loadCurrencies();
 
-  private toApiPayload(tabId: string, form: any): any {
-    switch (tabId) {
-      case 'countries':
-        return {
-          countryId: Number(form.countryId ?? form.id ?? 0),
-          companyId: Number(form.companyId ?? this.companyIdForRegion(form.regionId)),
-          regionId: Number(form.regionId ?? 0),
-          countryName: form.name ?? form.countryName ?? '',
-          countryCode: form.countryCode ?? form.iso2 ?? form.code ?? '',
-          isActive: form.isActive ?? true,
-        };
-      case 'states': {
-        const country = this.countries.find((item) => item.id === String(form.countryId));
-        return {
-          stateId: Number(form.stateId ?? form.id ?? 0),
-          companyId: Number(form.companyId ?? this.companyIdForRegion(form.regionId || country?.regionId)),
-          regionId: Number(form.regionId ?? country?.regionId ?? 0),
-          countryId: Number(form.countryId ?? 0),
-          stateName: form.name ?? form.stateName ?? '',
-          stateCode: form.code ?? form.stateCode ?? '',
-          isActive: form.isActive ?? true,
-        };
-      }
-      case 'cities': {
-        const country = this.countries.find((item) => item.id === String(form.countryId));
-        return {
-          cityId: Number(form.cityId ?? form.id ?? 0),
-          companyId: Number(form.companyId ?? this.companyIdForRegion(form.regionId || country?.regionId)),
-          regionId: Number(form.regionId ?? country?.regionId ?? 0),
-          countryId: Number(form.countryId ?? 0),
-          stateId: Number(form.stateId ?? 0),
-          cityName: form.name ?? form.cityName ?? '',
-          isActive: form.isActive ?? true,
-        };
-      }
-      case 'currencies':
-        return {
-          currencyId: Number(form.currencyId ?? form.id ?? 0),
-          currencyName: form.name ?? form.currencyName ?? '',
-          currencyCode: form.code ?? form.currencyCode ?? '',
-          currencySymbol: form.symbol ?? form.currencySymbol ?? '',
-          decimalPlaces: Number(form.decimals ?? form.decimalPlaces ?? 2),
-          isDefault: form.isDefault ?? false,
-          isActive: form.isActive ?? true,
-        };
-      case 'timezones':
-        return {
-          timeZoneId: Number(form.timeZoneId ?? form.timezoneId ?? form.id ?? 0),
-          timeZoneName: form.name ?? form.timeZoneName ?? '',
-          offset: form.offset ?? '',
-          abbreviation: form.abbreviation ?? '',
-          isActive: form.isActive ?? true,
-        };
-      case 'languages':
-        return {
-          languageId: Number(form.languageId ?? form.id ?? 0),
-          languageName: form.name ?? form.languageName ?? '',
-          languageCode: form.code ?? form.languageCode ?? '',
-          nativeName: form.nativeName ?? '',
-          isActive: form.isActive ?? true,
-        };
-      case 'nationalities':
-        return {
-          nationalityId: Number(form.nationalityId ?? form.id ?? 0),
-          nationalityName: form.name ?? form.nationalityName ?? '',
-          countryId: Number(form.countryId ?? 0),
-          isActive: form.isActive ?? true,
-        };
-      default:
-        return {
-          id: Number(form.id ?? 0),
-          name: form.name ?? '',
-          description: form.description ?? '',
-          extra: form.extra ?? '',
-          isActive: form.isActive ?? true,
-        };
+        },
+
+        error: (err) => {
+
+          console.error('Error deleting currency:', err);
+
+          window.alert('Failed to delete currency.');
+
+        }
+
+      });
+
+      return;
+
     }
-  }
 
-  private resetFilters(): void {
-    this.search = '';
-    this.statusFilter = 'all';
-    this.regionFilter = 'all';
-    this.countryFilter = 'all';
-    this.stateFilter = 'all';
-  }
+    if (this.selectedMasterType === 'Priority') {
 
-  private getGeoRaw(): any[] {
-    return this.getGeoRawFor(this.activeSubTab);
-  }
+      this.masterDataService.delete('priorities', item.id).subscribe({
 
-  private getGeoRawFor(tab: string): any[] {
-    switch (tab) {
-      case 'countries':
-        return this.countries;
-      case 'states':
-        return this.states;
-      case 'cities':
-        return this.cities;
-      case 'currencies':
-        return this.currencies;
-      case 'timezones':
-        return this.timezones;
-      case 'languages':
-        return this.languages;
-      case 'nationalities':
-        return this.nationalities;
-      default:
-        return [];
+        next: () => {
+
+          this.loadPriorities();
+
+        },
+
+        error: (err) => {
+
+          console.error('Error deleting priority:', err);
+
+          window.alert('Failed to delete priority.');
+
+        }
+
+      });
+
+      return;
+
     }
+
+    if (this.selectedMasterType === 'Lead Status') {
+
+      this.masterDataService.delete('leadStatuses', item.id).subscribe({
+
+        next: () => {
+
+          this.loadLeadStatuses();
+
+        },
+
+        error: (err) => {
+
+          console.error('Error deleting lead status:', err);
+
+          window.alert('Failed to delete lead status.');
+
+        }
+
+      });
+
+      return;
+
+    }
+
+    if (this.selectedMasterType === 'Lead Source') {
+
+      this.masterDataService.delete('leadSources', item.id).subscribe({
+
+        next: () => {
+
+          this.loadLeadSources();
+
+        },
+
+        error: (err) => {
+
+          console.error('Error deleting lead source:', err);
+
+          window.alert('Failed to delete lead source.');
+
+        }
+
+      });
+
+      return;
+
+    }
+
+    if (this.selectedMasterType === 'Billing Cycle') {
+
+      this.masterDataService.delete('billingCycles', item.id).subscribe({
+
+        next: () => {
+
+          this.loadBillingCycles();
+
+        },
+
+        error: (err) => {
+
+          console.error('Error deleting billing cycle:', err);
+
+          window.alert('Failed to delete billing cycle.');
+
+        }
+
+      });
+
+      return;
+
+    }
+
+    if (this.selectedMasterType === 'Contact Type') {
+
+      this.masterDataService.delete('contactTypes', item.id).subscribe({
+
+        next: () => {
+
+          this.loadContactTypes();
+
+        },
+
+        error: (err) => {
+
+          console.error('Error deleting contact type:', err);
+
+          window.alert('Failed to delete contact type.');
+
+        }
+
+      });
+
+      return;
+
+    }
+
+    if (this.selectedMasterType === 'Relationship') {
+
+      this.masterDataService.delete('relationships', item.id).subscribe({
+
+        next: () => {
+
+          this.loadRelationships();
+
+        },
+
+        error: (err) => {
+
+          console.error('Error deleting relationship:', err);
+
+          window.alert('Failed to delete relationship.');
+
+        }
+
+      });
+
+      return;
+
+    }
+
+    if (this.selectedMasterType === 'Company Type') {
+
+      this.masterDataService.delete('companyTypes', item.id).subscribe({
+
+        next: () => {
+
+          this.loadCompanyTypes();
+
+        },
+
+        error: (err) => {
+
+          console.error('Error deleting company type:', err);
+
+          window.alert('Failed to delete company type.');
+
+        }
+
+      });
+
+      return;
+
+    }
+
+    if (this.selectedMasterType === 'Lead Type') {
+
+      this.masterDataService.delete('leadTypes', item.id).subscribe({
+
+        next: () => {
+
+          this.loadLeadTypes();
+
+        },
+
+        error: (err) => {
+
+          console.error('Error deleting lead type:', err);
+
+          window.alert('Failed to delete lead type.');
+
+        }
+
+      });
+
+      return;
+
+    }
+
+    if (this.selectedMasterType === 'License') {
+
+      this.masterDataService.delete('licenses', item.id).subscribe({
+
+        next: () => {
+
+          this.loadLicenses();
+
+        },
+
+        error: (err) => {
+
+          console.error('Error deleting license:', err);
+
+          window.alert('Failed to delete license.');
+
+        }
+
+      });
+
+      return;
+
+    }
+
+    if (this.selectedMasterType === 'Payment Method') {
+
+      this.masterDataService.delete('paymentMethods', item.id).subscribe({
+
+        next: () => {
+
+          this.loadPaymentMethods();
+
+        },
+
+        error: (err) => {
+
+          console.error('Error deleting payment method:', err);
+
+          window.alert('Failed to delete payment method.');
+
+        }
+
+      });
+
+      return;
+
+    }
+
+    if (this.selectedMasterType === 'Discount Type') {
+
+      this.masterDataService.delete('discountTypes', item.id).subscribe({
+
+        next: () => {
+
+          this.loadDiscountTypes();
+
+        },
+
+        error: (err) => {
+
+          console.error('Error deleting discount type:', err);
+
+          window.alert('Failed to delete discount type.');
+
+        }
+
+      });
+
+      return;
+
+    }
+
+    if (this.selectedMasterType === 'Meeting Purpose') {
+
+      this.masterDataService.delete('meetingPurposes', item.id).subscribe({
+
+        next: () => {
+
+          this.loadMeetingPurposes();
+
+        },
+
+        error: (err) => {
+
+          console.error('Error deleting meeting purpose:', err);
+
+          window.alert('Failed to delete meeting purpose.');
+
+        }
+
+      });
+
+      return;
+
+    }
+
+    if (this.selectedMasterType === 'Call Purpose') {
+
+      this.masterDataService.delete('callPurposes', item.id).subscribe({
+
+        next: () => {
+
+          this.loadCallPurposes();
+
+        },
+
+        error: (err) => {
+
+          console.error('Error deleting call purpose:', err);
+
+          window.alert('Failed to delete call purpose.');
+
+        }
+
+      });
+
+      return;
+
+    }
+
+    if (this.selectedMasterType === 'Call Outcome') {
+
+      this.masterDataService.delete('callOutcomes', item.id).subscribe({
+
+        next: () => {
+
+          this.loadCallOutcomes();
+
+        },
+
+        error: (err) => {
+
+          console.error('Error deleting call outcome:', err);
+
+          window.alert('Failed to delete call outcome.');
+
+        }
+
+      });
+
+      return;
+
+    }
+
+    this.masterData = this.masterData.filter(
+      x => x.id !== item.id
+    );
+
+    this.allMasterData[this.selectedMasterType] = this.masterData;
+
+    this.filterData();
+
   }
 
-  private getCategoryTotal(category: CategoryId): number {
-    return TAB_MAP[category].reduce((sum, tab) => {
-      if (category === 'geographic') {
-        return sum + this.getGeoRawFor(tab.id).length;
-      }
-      return sum + (this.simpleData[tab.id]?.length ?? 0);
-    }, 0);
-  }
 
-  private getCategoryActive(category: CategoryId): number {
-    return TAB_MAP[category].reduce((sum, tab) => {
-      if (category === 'geographic') {
-        return sum + this.getGeoRawFor(tab.id).filter((item: any) => item.isActive).length;
-      }
-      return sum + (this.simpleData[tab.id] ?? []).filter((item) => item.isActive).length;
-    }, 0);
-  }
+  // =========================================================
+  // SAVE / UPDATE
+  // =========================================================
 
-  private applyGeoSave(form: any): void {
-    const tab = this.geoModalTab;
-    const update = (items: any[], setter: (value: any[]) => void) => {
-      if (this.geoModalEditing) {
-        setter(items.map((item) => {
-          if (item.id === this.geoModalEditing.id) {
-            return { ...item, ...form };
-          }
-          return tab === 'currencies' && form.isDefault ? { ...item, isDefault: false } : item;
-        }));
-        return;
-      }
+  saveItem(): void {
 
-      const next = { id: `${tab[0]}${Date.now()}`, ...form };
-      setter(tab === 'currencies' && form.isDefault
-        ? [...items.map((item: any) => ({ ...item, isDefault: false })), next]
-        : [...items, next]
+    if (!this.formData.code.trim()) {
+
+      window.alert(
+        `${this.selectedMasterType} code is required.`
       );
-    };
 
-    switch (tab) {
-      case 'countries':
-        update(this.countries, (value) => this.countries = value);
-        break;
-      case 'states':
-        update(this.states, (value) => this.states = value);
-        break;
-      case 'cities':
-        update(this.cities, (value) => this.cities = value);
-        break;
-      case 'currencies':
-        update(this.currencies, (value) => this.currencies = value);
-        break;
-      case 'timezones':
-        update(this.timezones, (value) => this.timezones = value);
-        break;
-      case 'languages':
-        update(this.languages, (value) => this.languages = value);
-        break;
-      case 'nationalities':
-        update(this.nationalities, (value) => this.nationalities = value);
-        break;
+      return;
+
     }
+
+    if (!this.formData.name.trim()) {
+
+      window.alert(
+        `${this.selectedMasterType} name is required.`
+      );
+
+      return;
+
+    }
+
+    if (!this.formData.company) {
+
+      window.alert('Company is required.');
+
+      return;
+
+    }
+
+    if (!this.formData.region) {
+
+      window.alert('Region is required.');
+
+      return;
+
+    }
+
+    if (this.selectedMasterType === 'Country') {
+
+      this.saveCountry();
+
+      return;
+
+    }
+
+    if (this.selectedMasterType === 'State') {
+
+      if (!this.selectedCountryId) {
+
+        window.alert('Country is required.');
+
+        return;
+
+      }
+
+      this.saveState();
+
+      return;
+
+    }
+
+    if (this.selectedMasterType === 'Industry') {
+
+      this.saveIndustry();
+
+      return;
+
+    }
+
+    if (this.selectedMasterType === 'Currency') {
+
+      this.saveCurrency();
+
+      return;
+
+    }
+
+    if (this.selectedMasterType === 'Priority') {
+
+      this.savePriority();
+
+      return;
+
+    }
+
+    if (this.selectedMasterType === 'Lead Status') {
+
+      this.saveLeadStatus();
+
+      return;
+
+    }
+
+    if (this.selectedMasterType === 'Lead Source') {
+
+      this.saveLeadSource();
+
+      return;
+
+    }
+
+    if (this.selectedMasterType === 'Billing Cycle') {
+
+      this.saveBillingCycle();
+
+      return;
+
+    }
+
+    if (this.selectedMasterType === 'Contact Type') {
+
+      this.saveContactType();
+
+      return;
+
+    }
+
+    if (this.selectedMasterType === 'Relationship') {
+
+      this.saveRelationship();
+
+      return;
+
+    }
+
+    if (this.selectedMasterType === 'Company Type') {
+
+      this.saveCompanyType();
+
+      return;
+
+    }
+
+    if (this.selectedMasterType === 'Lead Type') {
+
+      this.saveLeadType();
+
+      return;
+
+    }
+
+    if (this.selectedMasterType === 'License') {
+
+      this.saveLicense();
+
+      return;
+
+    }
+
+    if (this.selectedMasterType === 'Payment Method') {
+
+      this.savePaymentMethod();
+
+      return;
+
+    }
+
+    if (this.selectedMasterType === 'Discount Type') {
+
+      this.saveDiscountType();
+
+      return;
+
+    }
+
+    if (this.selectedMasterType === 'Meeting Purpose') {
+
+      this.saveMeetingPurpose();
+
+      return;
+
+    }
+
+    if (this.selectedMasterType === 'Call Purpose') {
+
+      this.saveCallPurpose();
+
+      return;
+
+    }
+
+    if (this.selectedMasterType === 'Call Outcome') {
+
+      this.saveCallOutcome();
+
+      return;
+
+    }
+
+
+    // UPDATE
+
+    if (this.isEditMode) {
+
+      const index = this.masterData.findIndex(
+        x => x.id === this.formData.id
+      );
+
+      if (index !== -1) {
+
+        this.masterData[index] = {
+          ...this.formData
+        };
+
+      }
+
+    }
+
+    // ADD
+
+    else {
+
+      const newId =
+        this.masterData.length > 0
+          ? Math.max(
+              ...this.masterData.map(x => x.id)
+            ) + 1
+          : 1;
+
+      this.masterData.push({
+
+        id: newId,
+
+        code: this.formData.code.trim(),
+
+        name: this.formData.name.trim(),
+
+        company: this.formData.company,
+
+        region: this.formData.region,
+
+        status: this.formData.status
+
+      });
+
+    }
+
+    this.allMasterData[this.selectedMasterType] = this.masterData;
+
+    this.filterData();
+
+    this.closeForm();
+
+  }
+
+
+  // =========================================================
+  // CLOSE FORM
+  // =========================================================
+
+  closeForm(): void {
+
+    this.showForm = false;
+
   }
 }

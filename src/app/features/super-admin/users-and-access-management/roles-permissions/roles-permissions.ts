@@ -1,8 +1,10 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Alertservice } from '../../../../core/services/alertservice';
 import { Spinnerservice } from '../../../../core/services/spinnerservice';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../../../core/authentication/services/auth.service';
+import { Menu } from '../menu-access/menu-access';
 
 @Component({
   selector: 'app-roles-permissions',
@@ -11,16 +13,172 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './roles-permissions.html',
   styleUrl: './roles-permissions.css',
 })
-export class RolesPermissions {
+export class RolesPermissions implements OnInit {
   constructor(
 
     private alert: Alertservice,
 
     private spinner: Spinnerservice,
 
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+
+    private authService: AuthService
 
   ) {}
+
+
+
+  ngOnInit(): void {
+
+    this.loadActiveMenus();
+
+    this.loadCompanies();
+
+    this.loadRegions();
+
+    this.loadRoles();
+
+  }
+
+
+
+
+  // ==============================
+  // Module Permissions (Active Menus)
+  // ==============================
+
+
+  menuTree: { parent: Menu; children: Menu[] }[] = [];
+
+
+  loadActiveMenus(): void {
+
+    this.authService
+      .getMenus()
+      .subscribe({
+
+        next: (response) => {
+
+          const activeMenus: Menu[] =
+            (response.data || []).filter(
+              (x: Menu) => x.isActive
+            );
+
+          this.menuTree =
+            this.buildMenuTree(activeMenus);
+
+        },
+
+        error: (err) => {
+
+          console.error(err);
+
+        }
+      });
+
+  }
+
+
+  private buildMenuTree(
+    activeMenus: Menu[]
+  ): { parent: Menu; children: Menu[] }[] {
+
+    const activeIds =
+      new Set(activeMenus.map(x => x.menuId));
+
+    const parents = activeMenus.filter(
+      x => !x.parentMenuId || !activeIds.has(x.parentMenuId)
+    );
+
+    return parents.map(parent => ({
+
+      parent,
+
+      children: activeMenus.filter(
+        x => x.parentMenuId === parent.menuId
+      )
+
+    }));
+
+  }
+
+
+  allPermissionsSelected = false;
+
+
+  toggleAllPermissions(): void {
+
+    for (const group of this.menuTree) {
+
+      this.model.permissions[group.parent.menuId] =
+        this.allPermissionsSelected;
+
+      for (const child of group.children) {
+
+        this.model.permissions[child.menuId] =
+          this.allPermissionsSelected;
+
+      }
+
+    }
+
+  }
+
+
+
+
+  // ==============================
+  // Company / Region Dropdowns
+  // ==============================
+
+
+  companies: any[] = [];
+
+  regions: any[] = [];
+
+
+  loadCompanies(): void {
+
+    this.authService
+      .getCompanies()
+      .subscribe({
+
+        next: (response) => {
+
+          this.companies = response.data || [];
+
+        },
+
+        error: (err) => {
+
+          console.error(err);
+
+        }
+      });
+
+  }
+
+
+  loadRegions(): void {
+
+    this.authService
+      .getRegions()
+      .subscribe({
+
+        next: (response) => {
+
+          this.regions = response.data || [];
+
+        },
+
+        error: (err) => {
+
+          console.error(err);
+
+        }
+      });
+
+  }
 
 
 
@@ -58,190 +216,72 @@ export class RolesPermissions {
 
 
   // ==============================
-  // Static Roles Data
+  // Roles Data
   // ==============================
 
 
-  roles:any[] = [
+  roles:any[] = [];
 
 
-    {
+  loadRoles(): void {
 
-      id:1,
+    this.authService
+      .getRoles()
+      .subscribe({
 
-      roleName:'Super Admin',
+        next: (response) => {
 
-      accessLevel:'Full Access',
+          this.roles = this.mapRoles(response.data);
 
-      userCount:2,
+          this.cd.detectChanges();
 
-      description:'Complete system access with all permissions.',
+        },
 
-      permissions:{
+        error: (err) => {
 
-        dashboard:true,
+          console.error(err);
 
-        leads:true,
+        }
+      });
 
-        contacts:true,
+  }
 
-        accounts:true,
 
-        opportunities:true,
+  private mapRoles(data: any[] | undefined): any[] {
 
-        activities:true,
+    return (data || []).map((x: any) => ({
 
-        reports:true,
+      id: x.roleId,
 
-        settings:true,
+      companyId: x.companyId,
 
-        userManagement:true
+      regionId: x.regionId,
 
-      },
+      roleName: x.roleName,
 
-      status:'Active',
+      accessLevel: x.accessLevel,
 
-      isDefault:true
+      userCount: x.userCount,
 
-    },
+      description: x.description || '',
 
+      permissions: x.permissions || {},
 
+      status: x.status ? 'Active' : 'Inactive',
 
+      isDefault: x.isDefault
 
+    }));
 
-    {
+  }
 
-      id:2,
 
-      roleName:'CRM Manager',
+  permissionCount(item: any): number {
 
-      accessLevel:'Admin Access',
+    return Object.values(item.permissions || {})
+      .filter(v => v).length;
 
-      userCount:5,
-
-      description:'Manage CRM operations and sales activities.',
-
-      permissions:{
-
-        dashboard:true,
-
-        leads:true,
-
-        contacts:true,
-
-        accounts:true,
-
-        opportunities:true,
-
-        activities:true,
-
-        reports:true,
-
-        settings:false,
-
-        userManagement:false
-
-      },
-
-      status:'Active',
-
-      isDefault:false
-
-    },
-
-
-
-
-
-
-    {
-
-      id:3,
-
-      roleName:'Sales Executive',
-
-      accessLevel:'Limited Access',
-
-      userCount:20,
-
-      description:'Handle leads, contacts and opportunities.',
-
-      permissions:{
-
-        dashboard:true,
-
-        leads:true,
-
-        contacts:true,
-
-        accounts:false,
-
-        opportunities:true,
-
-        activities:true,
-
-        reports:false,
-
-        settings:false,
-
-        userManagement:false
-
-      },
-
-      status:'Active',
-
-      isDefault:false
-
-    },
-
-
-
-
-
-
-    {
-
-      id:4,
-
-      roleName:'Read Only User',
-
-      accessLevel:'Read Only',
-
-      userCount:10,
-
-      description:'View only CRM information.',
-
-      permissions:{
-
-        dashboard:true,
-
-        leads:true,
-
-        contacts:true,
-
-        accounts:true,
-
-        opportunities:false,
-
-        activities:false,
-
-        reports:true,
-
-        settings:false,
-
-        userManagement:false
-
-      },
-
-      status:'Inactive',
-
-      isDefault:false
-
-    }
-
-
-
-  ];
+  }
 
 
 
@@ -280,40 +320,16 @@ export class RolesPermissions {
       userCount:0,
 
 
+      companyId:'',
+
+
+      regionId:'',
+
+
       description:'',
 
 
-      permissions:{
-
-
-        dashboard:false,
-
-
-        leads:false,
-
-
-        contacts:false,
-
-
-        accounts:false,
-
-
-        opportunities:false,
-
-
-        activities:false,
-
-
-        reports:false,
-
-
-        settings:false,
-
-
-        userManagement:false
-
-
-      },
+      permissions:{},
 
 
       status:'Active',
@@ -487,32 +503,33 @@ export class RolesPermissions {
     this.spinner.show();
 
 
+    this.authService
+      .getRoles()
+      .subscribe({
 
-    setTimeout(()=>{
+        next: (response) => {
 
+          this.roles = this.mapRoles(response.data);
 
-      this.spinner.hide();
+          this.spinner.hide();
 
+          this.alert.success(
+            'Roles data refreshed successfully.'
+          );
 
+        },
 
-      this.alert.success(
+        error: (err) => {
 
-        'Roles data refreshed successfully.'
+          this.spinner.hide();
 
-      );
+          this.alert.error(err?.error?.message || 'Failed to refresh roles.');
 
-
-
-    },500);
-
+        }
+      });
 
 
   }
-
-
-
-
-
 
 
 
@@ -534,15 +551,13 @@ export class RolesPermissions {
     this.model=this.emptyModel();
 
 
+    this.allPermissionsSelected=false;
+
+
     this.showModal=true;
 
 
   }
-
-
-
-
-
 
 
 
@@ -568,11 +583,6 @@ export class RolesPermissions {
 
 
   }
-
-
-
-
-
 
 
 
@@ -603,131 +613,97 @@ export class RolesPermissions {
     }
 
 
+    if(!this.model.companyId){
 
+
+      this.alert.warning(
+
+        'Company is required.'
+
+      );
+
+
+      return;
+
+    }
+
+
+    if(!this.model.regionId){
+
+
+      this.alert.warning(
+
+        'Region is required.'
+
+      );
+
+
+      return;
+
+    }
 
 
 
     this.spinner.show();
 
 
+    const payload = {
+
+      roleId: this.isEdit ? this.editId : 0,
+
+      companyId: +this.model.companyId,
+
+      regionId: +this.model.regionId,
+
+      roleName: this.model.roleName.trim(),
+
+      accessLevel: this.model.accessLevel,
+
+      userCount: +this.model.userCount || 0,
+
+      description: this.model.description,
+
+      status: this.model.status === 'Active',
+
+      isDefault: this.model.isDefault,
+
+      permissions: this.model.permissions
+
+    };
 
 
+    const request$ = this.isEdit
 
-    setTimeout(()=>{
+      ? this.authService.updateRole(payload)
 
-
-
-
-
-      if(this.isEdit){
+      : this.authService.createRole(payload);
 
 
+    request$.subscribe({
 
-        const index = this.roles.findIndex(
+      next: (res: any) => {
 
-          x=>x.id===this.editId
+        this.spinner.hide();
 
-        );
+        this.alert.success(res.message);
 
+        this.loadRoles();
 
+        this.closeModal();
 
+        this.cd.detectChanges();
 
+      },
 
-        if(index!==-1){
+      error: (err) => {
 
+        this.spinner.hide();
 
-
-          this.roles[index]={
-
-
-            ...this.model,
-
-
-            id:this.editId
-
-
-          };
-
-
-
-        }
-
-
-
-
-
-        this.alert.success(
-
-          'Role updated successfully.'
-
-        );
-
-
-
+        this.alert.error(err?.error?.message || 'Failed to save role.');
 
       }
 
-      else{
-
-
-
-
-
-        this.model.id=new Date().getTime();
-
-
-
-
-
-        this.roles.unshift({
-
-
-          ...this.model
-
-
-        });
-
-
-
-
-
-        this.alert.success(
-
-          'Role created successfully.'
-
-        );
-
-
-
-      }
-
-
-
-
-
-
-
-      this.spinner.hide();
-
-
-
-
-
-      this.closeModal();
-
-
-
-
-
-      this.cd.detectChanges();
-
-
-
-
-
-    },500);
-
-
+    });
 
   }
 
@@ -773,6 +749,7 @@ export class RolesPermissions {
     };
 
 
+    this.allPermissionsSelected=false;
 
 
 
@@ -812,48 +789,30 @@ export class RolesPermissions {
         this.spinner.show();
 
 
+        this.authService
+          .deleteRole(id)
+          .subscribe({
 
+            next: (res: any) => {
 
+              this.spinner.hide();
 
-        setTimeout(()=>{
+              this.alert.success(res.message);
 
+              this.loadRoles();
 
+              this.cd.detectChanges();
 
+            },
 
+            error: (err) => {
 
-          this.roles = this.roles.filter(
+              this.spinner.hide();
 
-            x=>x.id!==id
+              this.alert.error(err?.error?.message || 'Failed to delete role.');
 
-          );
-
-
-
-
-
-          this.spinner.hide();
-
-
-
-
-
-          this.alert.success(
-
-            'Role deleted successfully.'
-
-          );
-
-
-
-
-
-          this.cd.detectChanges();
-
-
-
-
-
-        },500);
+            }
+          });
 
 
 
@@ -866,10 +825,6 @@ export class RolesPermissions {
 
 
   }
-
-
-
-
 
 
 

@@ -1,1180 +1,663 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Pagination } from '../../../../../shared/pagination/pagination';
 import { Alertservice } from '../../../../../core/services/alertservice';
 import { Spinnerservice } from '../../../../../core/services/spinnerservice';
+import { AuthService } from '../../../../../core/authentication/services/auth.service';
+import { ControlsystemService } from '../../../../super-admin/services/controlsystem-service';
 
 @Component({
   selector: 'app-marketing-lists',
   standalone: true,
-  imports: [CommonModule,FormsModule,Pagination],
+  imports: [CommonModule, FormsModule, Pagination],
   templateUrl: './marketing-lists.html',
   styleUrl: './marketing-lists.css',
 })
-export class MarketingLists {
-    submitted = false;
+export class MarketingLists implements OnInit {
 
+  constructor(
+    private alert: Alertservice,
+    private spinner: Spinnerservice,
+    private cd: ChangeDetectorRef,
+    private authService: AuthService,
+    private controlsystemService: ControlsystemService
+  ) { }
+
+  //====================================================
+  // Screen Variables
+  //====================================================
+
+  submitted = false;
   isEdit = false;
 
-
   page = 1;
-
-  pageSize = 5;
-
-  totalRecords = 0;
-
+  pageSize = 10;
 
   searchText = '';
+  companyFilter = '';
+  statusFilter = '';
 
+  //====================================================
+  // Dropdown Data (from backend)
+  //====================================================
 
+  companies: any[] = [];
+  regions: any[] = [];
+
+  //====================================================
+  // Marketing List Records
+  //====================================================
 
   marketingLists: any[] = [];
 
+  //====================================================
+  // Form Model
+  //====================================================
 
+  marketingList: any = this.getEmptyModel();
 
+  getEmptyModel() {
 
-  marketingList: any = {
-
-
-    marketingListId: 0,
-
-    listName: '',
-
-    listCode: '',
-
-    listType: '',
-
-    targetAudience: '',
-
-    totalMembers: 0,
-
-    createdDate: '',
-
-    owner: '',
-
-    status: '',
-
-    description: '',
-
-    isActive: true
-
-
-  };
-
-
-
-
-
-
-  constructor(
-
-    private alert: Alertservice,
-
-    private spinner: Spinnerservice,
-
-    private cd: ChangeDetectorRef
-
-  ) { }
-
-
-
-
-
-  ngOnInit(): void {
-
-
-    this.loadMarketingLists();
-
-
-  }
-
-
-
-
-
-
-
-  loadMarketingLists() {
-
-
-    this.spinner.show();
-
-
-
-
-    setTimeout(() => {
-
-
-
-      this.marketingLists = [
-
-
-
-
-
-
-        {
-
-          marketingListId: 1,
-
-          listName: 'Enterprise Customers',
-
-          listCode: 'ML001',
-
-          listType: 'Customer List',
-
-          targetAudience: 'Existing Customers',
-
-          totalMembers: 250,
-
-          createdDate: '2026-07-01',
-
-          owner: 'Karishma',
-
-          status: 'Active',
-
-          description: 'Premium enterprise customer marketing list.',
-
-          isActive: true
-
-        },
-
-
-
-
-
-
-
-        {
-
-          marketingListId: 2,
-
-          listName: 'New Sales Leads',
-
-          listCode: 'ML002',
-
-          listType: 'Lead List',
-
-          targetAudience: 'New Leads',
-
-          totalMembers: 500,
-
-          createdDate: '2026-07-05',
-
-          owner: 'Rahul',
-
-          status: 'Active',
-
-          description: 'Fresh leads collected from sales campaigns.',
-
-          isActive: true
-
-        },
-
-
-
-
-
-
-
-        {
-
-          marketingListId: 3,
-
-          listName: 'Product Campaign Contacts',
-
-          listCode: 'ML003',
-
-          listType: 'Contact List',
-
-          targetAudience: 'All Contacts',
-
-          totalMembers: 350,
-
-          createdDate: '2026-07-10',
-
-          owner: 'Sneha',
-
-          status: 'Draft',
-
-          description: 'Contacts prepared for upcoming product campaign.',
-
-          isActive: true
-
-        },
-                {
-
-
-          marketingListId: 4,
-
-
-          listName: 'Partner Network',
-
-
-          listCode: 'ML004',
-
-
-          listType: 'Campaign List',
-
-
-          targetAudience: 'Business Partners',
-
-
-          totalMembers: 120,
-
-
-          createdDate: '2026-07-15',
-
-
-          owner: 'Arun',
-
-
-          status: 'Active',
-
-
-          description: 'Business partner communication and campaign list.',
-
-
-          isActive: true
-
-
-        },
-
-
-
-
-
-
-
-
-        {
-
-
-          marketingListId: 5,
-
-
-          listName: 'Old Prospects',
-
-
-          listCode: 'ML005',
-
-
-          listType: 'Prospect List',
-
-
-          targetAudience: 'Potential Customers',
-
-
-          totalMembers: 200,
-
-
-          createdDate: '2026-07-20',
-
-
-          owner: 'Durga',
-
-
-          status: 'Archived',
-
-
-          description: 'Previous prospects list maintained for future reference.',
-
-
-          isActive: false
-
-
-        }
-
-
-
-
-
-      ];
-
-
-
-
-
-
-
-      this.marketingLists.sort(
-
-
-        (a, b) => b.marketingListId - a.marketingListId
-
-
-      );
-
-
-
-
-
-
-
-      this.totalRecords = this.marketingLists.length;
-
-
-
-
-
-
-
-      this.spinner.hide();
-
-
-
-
-
-
-
-      this.cd.detectChanges();
-
-
-
-
-
-
-    }, 500);
-
-
-
-
-
-  }
-    saveMarketingList() {
-
-
-    this.submitted = true;
-
-
-
-    if (
-
-
-      !this.marketingList.listName ||
-
-
-      !this.marketingList.listCode ||
-
-
-      !this.marketingList.listType ||
-
-
-      !this.marketingList.targetAudience ||
-
-
-      !this.marketingList.status
-
-
-    ) {
-
-
-      return;
-
-
-    }
-
-
-
-
-
-
-    this.spinner.show();
-
-
-
-
-
-    setTimeout(() => {
-
-
-
-
-
-      if (!this.isEdit) {
-
-
-
-
-
-        const newMarketingList = {
-
-
-
-
-          ...this.marketingList,
-
-
-
-
-          marketingListId: this.marketingLists.length
-
-
-
-            ? Math.max(...this.marketingLists.map(x => x.marketingListId)) + 1
-
-
-
-            : 1
-
-
-
-
-
-        };
-
-
-
-
-
-        this.marketingLists.unshift(newMarketingList);
-
-
-
-
-
-
-      }
-
-      else {
-
-
-
-
-
-        const index = this.marketingLists.findIndex(
-
-
-
-          x => x.marketingListId === this.marketingList.marketingListId
-
-
-
-        );
-
-
-
-
-
-
-        if (index !== -1) {
-
-
-
-
-          this.marketingLists[index] = {
-
-
-
-
-            ...this.marketingList
-
-
-
-
-          };
-
-
-
-
-
-        }
-
-
-
-
-
-      }
-
-
-
-
-
-
-
-      this.marketingLists = [...this.marketingLists];
-
-
-
-
-
-
-      this.totalRecords = this.marketingLists.length;
-
-
-
-
-
-
-      this.page = 1;
-
-
-
-
-
-
-      const isUpdate = this.isEdit;
-
-
-
-
-
-
-      this.clear();
-
-
-
-
-
-
-      this.spinner.hide();
-
-
-
-
-
-
-      this.cd.detectChanges();
-
-
-
-
-
-
-
-      this.alert.success(
-
-
-
-
-        isUpdate
-
-
-
-          ? 'Marketing List updated successfully.'
-
-
-
-          : 'Marketing List created successfully.'
-
-
-
-
-
-      );
-
-
-
-
-
-
-    }, 500);
-
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-  edit(id: number) {
-
-
-
-
-    this.spinner.show();
-
-
-
-
-
-
-    setTimeout(() => {
-
-
-
-
-
-
-      const selected = this.marketingLists.find(
-
-
-
-        x => x.marketingListId === id
-
-
-
-      );
-
-
-
-
-
-
-      if (selected) {
-
-
-
-
-
-        this.marketingList = {
-
-
-
-
-          ...selected
-
-
-
-
-        };
-
-
-
-
-
-        this.isEdit = true;
-
-
-
-
-
-        this.submitted = false;
-
-
-
-
-
-        this.cd.detectChanges();
-
-
-
-
-
-      }
-
-
-
-
-
-
-      this.spinner.hide();
-
-
-
-
-
-
-    }, 300);
-
-
-
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-  delete(id: number) {
-
-
-
-
-    this.alert.deleteConfirm().then(result => {
-
-
-
-
-
-
-      if (result.isConfirmed) {
-
-
-
-
-
-
-
-        this.spinner.show();
-
-
-
-
-
-
-
-        setTimeout(() => {
-
-
-
-
-
-
-          this.marketingLists = this.marketingLists.filter(
-
-
-
-            x => x.marketingListId !== id
-
-
-
-          );
-
-
-
-
-
-
-
-          this.totalRecords = this.marketingLists.length;
-
-
-
-
-
-
-
-          if (
-
-
-
-            this.page > 1 &&
-
-
-
-            this.pagedMarketingLists.length === 0
-
-
-
-          ) {
-
-
-
-            this.page--;
-
-
-
-          }
-
-
-
-
-
-
-
-          this.marketingLists = [...this.marketingLists];
-
-
-
-
-
-
-
-          this.spinner.hide();
-
-
-
-
-
-
-
-          this.cd.detectChanges();
-
-
-
-
-
-
-
-          this.alert.success(
-
-
-
-            'Marketing List deleted successfully.'
-
-
-
-          );
-
-
-
-
-
-
-
-        }, 500);
-
-
-
-
-
-
-      }
-
-
-
-
-
-
-    });
-
-
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-  clear() {
-
-
-
-
-    this.marketingList = {
-
-
-
+    return {
 
       marketingListId: 0,
 
+      companyId: null,
 
+      regionId: null,
 
       listName: '',
 
-
-
-      listCode: '',
-
-
+      description: '',
 
       listType: '',
 
+      source: '',
 
+      totalContacts: 0,
 
-      targetAudience: '',
+      activeContacts: 0,
 
-
-
-      totalMembers: 0,
-
-
-
-      createdDate: '',
-
-
-
-      owner: '',
-
-
-
-      status: '',
-
-
-
-      description: '',
-
-
-
-      isActive: true
-
-
-
-
+      status: 'Active'
 
     };
 
+  }
 
+  //====================================================
+  // Lifecycle
+  //====================================================
 
+  ngOnInit(): void {
 
+    this.loadCompanies();
 
+    this.loadRegions();
 
-    this.isEdit = false;
-
-
-
-
-
-
-    this.submitted = false;
-
-
-
-
-
-
-    this.cd.detectChanges();
-
-
-
-
-
+    this.loadMarketingLists();
 
   }
 
+  //====================================================
+  // Load Dropdown Data
+  //====================================================
 
+  loadCompanies(): void {
 
+    this.authService.getCompanies().subscribe({
 
+      next: (res: any) => {
 
+        this.companies = (res?.data || []).filter(
+          (x: any) => x.isActive !== false
+        );
 
+        this.cd.detectChanges();
 
+      },
 
+      error: (err) => {
+
+        console.error('Error loading companies:', err);
+
+        this.companies = [];
+
+      }
+
+    });
+
+  }
+
+  loadRegions(): void {
+
+    this.authService.getRegions().subscribe({
+
+      next: (res: any) => {
+
+        this.regions = (res?.data || []).filter(
+          (x: any) => x.isActive !== false
+        );
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error loading regions:', err);
+
+        this.regions = [];
+
+      }
+
+    });
+
+  }
+
+  //====================================================
+  // Load Marketing Lists
+  //====================================================
+
+  loadMarketingLists(): void {
+
+    this.spinner.show();
+
+    this.controlsystemService.getMarketingLists().subscribe({
+
+      next: (res: any) => {
+
+        this.spinner.hide();
+
+        if (res?.success) {
+
+          this.marketingLists = res.data || [];
+
+        } else {
+
+          this.marketingLists = [];
+
+          this.alert.warning(
+            res?.message || 'No marketing list records found.'
+          );
+
+        }
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        this.spinner.hide();
+
+        console.error('Error loading marketing lists:', err);
+
+        this.marketingLists = [];
+
+        this.alert.error(
+          err?.error?.message || 'Failed to load marketing lists.'
+        );
+
+        this.cd.detectChanges();
+
+      }
+
+    });
+
+  }
+
+  //====================================================
+  // Lookup Helpers (Display Names)
+  //====================================================
+
+  getCompanyName(id: any): string {
+
+    if (!id) return '-';
+
+    const item = this.companies.find(x => x.companyId === Number(id));
+
+    return item ? item.companyName : '-';
+
+  }
+
+  getRegionName(id: any): string {
+
+    if (!id) return '-';
+
+    const item = this.regions.find(x => x.regionId === Number(id));
+
+    return item ? item.regionName : '-';
+
+  }
+
+  //====================================================
+  // Cascading Dropdown
+  //====================================================
+
+  get formRegions(): any[] {
+
+    if (!this.marketingList.companyId) return this.regions;
+
+    return this.regions.filter(
+      x => x.companyId === Number(this.marketingList.companyId)
+    );
+
+  }
+
+  onCompanyChange(): void {
+
+    this.marketingList.regionId = null;
+
+  }
+
+  //====================================================
+  // Filtered Marketing Lists
+  //====================================================
 
   get filteredMarketingLists() {
 
+    return this.marketingLists.filter(x => {
 
+      const search = this.searchText.trim().toLowerCase();
 
+      const matchSearch =
+        !search ||
+        (x.listName || '').toLowerCase().includes(search) ||
+        (x.listType || '').toLowerCase().includes(search) ||
+        (x.source || '').toLowerCase().includes(search) ||
+        (x.description || '').toLowerCase().includes(search);
 
-    return this.marketingLists.filter(x =>
+      const matchCompany =
+        !this.companyFilter ||
+        Number(x.companyId) === Number(this.companyFilter);
 
+      const matchStatus =
+        !this.statusFilter ||
+        x.status === this.statusFilter;
 
+      return matchSearch && matchCompany && matchStatus;
 
-
-
-
-      x.listName
-
-
-
-        .toLowerCase()
-
-
-
-        .includes(this.searchText.toLowerCase())
-
-
-
-
-
-
-      ||
-
-
-
-
-
-
-      x.listCode
-
-
-
-        .toLowerCase()
-
-
-
-        .includes(this.searchText.toLowerCase())
-
-
-
-
-
-
-      ||
-
-
-
-
-
-
-      x.listType
-
-
-
-        .toLowerCase()
-
-
-
-        .includes(this.searchText.toLowerCase())
-
-
-
-
-
-
-      ||
-
-
-
-
-
-
-      x.targetAudience
-
-
-
-        .toLowerCase()
-
-
-
-        .includes(this.searchText.toLowerCase())
-
-
-
-
-
-
-      ||
-
-
-
-
-
-
-      x.owner
-
-
-
-        .toLowerCase()
-
-
-
-        .includes(this.searchText.toLowerCase())
-
-
-
-
-
-
-      ||
-
-
-
-
-
-
-      x.status
-
-
-
-        .toLowerCase()
-
-
-
-        .includes(this.searchText.toLowerCase())
-
-
-
-
-
-    );
-
-
-
+    });
 
   }
 
-
-
-
-
-
-
-
+  //====================================================
+  // Pagination
+  //====================================================
 
   get pagedMarketingLists() {
 
-
-
-
     const start = (this.page - 1) * this.pageSize;
 
+    return this.filteredMarketingLists.slice(start, start + this.pageSize);
 
+  }
 
+  //====================================================
+  // Statistics
+  //====================================================
 
+  get totalLists(): number {
 
+    return this.marketingLists.length;
 
-    return this.filteredMarketingLists.slice(
+  }
 
+  get activeLists(): number {
 
+    return this.marketingLists.filter(x => x.status === 'Active').length;
 
+  }
 
-      start,
+  get archivedLists(): number {
 
+    return this.marketingLists.filter(x => x.status === 'Archived').length;
 
+  }
 
+  get totalContactsCount(): number {
 
-      start + this.pageSize
-
-
-
-
+    return this.marketingLists.reduce(
+      (total, item) => total + Number(item.totalContacts || 0),
+      0
     );
 
+  }
 
+  //====================================================
+  // Save / Update
+  //====================================================
 
+  saveMarketingList(): void {
 
+    this.submitted = true;
+
+    if (
+      !this.marketingList.listName ||
+      !this.marketingList.listName.trim()
+    ) {
+
+      this.alert.warning('Please fill all required fields.');
+
+      return;
+
+    }
+
+    const payload = {
+
+      marketingListId: this.isEdit ? this.marketingList.marketingListId : 0,
+
+      companyId: this.marketingList.companyId
+        ? Number(this.marketingList.companyId)
+        : null,
+
+      regionId: this.marketingList.regionId
+        ? Number(this.marketingList.regionId)
+        : null,
+
+      listName: this.marketingList.listName.trim(),
+
+      description: this.marketingList.description
+        ? this.marketingList.description.trim()
+        : null,
+
+      listType: this.marketingList.listType
+        ? this.marketingList.listType.trim()
+        : '',
+
+      source: this.marketingList.source
+        ? this.marketingList.source.trim()
+        : null,
+
+      totalContacts: Number(this.marketingList.totalContacts) || 0,
+
+      activeContacts: Number(this.marketingList.activeContacts) || 0,
+
+      status: this.marketingList.status
+        ? this.marketingList.status.trim()
+        : ''
+
+    };
+
+    this.spinner.show();
+
+    if (this.isEdit) {
+
+      this.controlsystemService.updateMarketingList(payload).subscribe({
+
+        next: (res: any) => {
+
+          this.spinner.hide();
+
+          if (res?.success) {
+
+            this.alert.success(
+              res.message || 'Marketing List updated successfully.'
+            );
+
+            this.clear();
+
+            this.loadMarketingLists();
+
+          } else {
+
+            this.alert.warning(
+              res?.message || 'Failed to update marketing list.'
+            );
+
+          }
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Update marketing list error:', err);
+
+          this.alert.error(
+            err?.error?.message || 'Failed to update marketing list.'
+          );
+
+        }
+
+      });
+
+    } else {
+
+      this.controlsystemService.createMarketingList(payload).subscribe({
+
+        next: (res: any) => {
+
+          this.spinner.hide();
+
+          if (res?.success) {
+
+            this.alert.success(
+              res.message || 'Marketing List created successfully.'
+            );
+
+            this.clear();
+
+            this.loadMarketingLists();
+
+          } else {
+
+            this.alert.warning(
+              res?.message || 'Failed to create marketing list.'
+            );
+
+          }
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Create marketing list error:', err);
+
+          this.alert.error(
+            err?.error?.message || 'Failed to create marketing list.'
+          );
+
+        }
+
+      });
+
+    }
 
   }
 
+  //====================================================
+  // Edit
+  //====================================================
 
+  edit(id: number): void {
 
+    this.spinner.show();
 
+    this.controlsystemService.getMarketingListById(id).subscribe({
 
+      next: (res: any) => {
 
+        this.spinner.hide();
 
+        if (res?.success && res.data) {
 
+          const data = res.data;
 
-  changePage(page: number) {
+          this.marketingList = {
 
+            marketingListId: data.marketingListId,
 
+            companyId: data.companyId,
 
+            regionId: data.regionId,
 
-    this.page = page;
+            listName: data.listName || '',
 
+            description: data.description || '',
 
+            listType: data.listType || '',
 
+            source: data.source || '',
+
+            totalContacts: data.totalContacts ?? 0,
+
+            activeContacts: data.activeContacts ?? 0,
+
+            status: data.status || 'Active'
+
+          };
+
+          this.isEdit = true;
+
+          this.submitted = false;
+
+          this.cd.detectChanges();
+
+        } else {
+
+          this.alert.warning(res?.message || 'Marketing List not found.');
+
+        }
+
+      },
+
+      error: (err) => {
+
+        this.spinner.hide();
+
+        console.error('Get marketing list error:', err);
+
+        this.alert.error(
+          err?.error?.message || 'Failed to load marketing list.'
+        );
+
+      }
+
+    });
 
   }
 
+  //====================================================
+  // Delete
+  //====================================================
 
+  delete(id: number): void {
 
+    this.alert.deleteConfirm().then(result => {
 
+      if (!result.isConfirmed) return;
 
+      this.spinner.show();
 
+      this.controlsystemService.deleteMarketingList(id).subscribe({
 
+        next: (res: any) => {
 
+          this.spinner.hide();
 
-  changePageSize(size: number) {
+          if (res?.success) {
 
+            this.alert.success(
+              res.message || 'Marketing List deleted successfully.'
+            );
 
+            if (this.page > 1 && this.pagedMarketingLists.length === 1) {
+              this.page = this.page - 1;
+            }
 
+            this.loadMarketingLists();
 
-    this.pageSize = size;
+          } else {
 
+            this.alert.warning(
+              res?.message || 'Failed to delete marketing list.'
+            );
 
+          }
 
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Delete marketing list error:', err);
+
+          this.alert.error(
+            err?.error?.message || 'Failed to delete marketing list.'
+          );
+
+        }
+
+      });
+
+    });
+
+  }
+
+  //====================================================
+  // Clear Form
+  //====================================================
+
+  clear(): void {
+
+    this.marketingList = this.getEmptyModel();
+
+    this.submitted = false;
+
+    this.isEdit = false;
+
+  }
+
+  //====================================================
+  // Clear Filters
+  //====================================================
+
+  clearFilters(): void {
+
+    this.searchText = '';
+
+    this.companyFilter = '';
+
+    this.statusFilter = '';
 
     this.page = 1;
 
+  }
 
+  //====================================================
+  // Pagination
+  //====================================================
 
+  changePage(page: number): void {
+
+    this.page = page;
 
   }
 
+  changePageSize(size: number): void {
 
+    this.pageSize = size;
 
+    this.page = 1;
 
+  }
 
+  //====================================================
+  // Refresh
+  //====================================================
 
-        
+  refresh(): void {
+
+    this.page = 1;
+
+    this.loadMarketingLists();
+
+  }
+
 }

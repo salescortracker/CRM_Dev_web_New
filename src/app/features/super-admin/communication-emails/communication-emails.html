@@ -1,0 +1,574 @@
+<div class="page-container">
+
+
+    <!-- ========================= -->
+    <!-- Page Header -->
+    <!-- ========================= -->
+
+
+    <div class="page-header">
+
+
+        <div>
+
+
+            <p class="page-subtitle">
+                COMMUNICATION SETTINGS
+            </p>
+
+
+            <h1>
+                Email Configurations
+            </h1>
+
+
+            <p class="page-description">
+                Manage SMTP email configurations used to send system emails.
+            </p>
+
+
+        </div>
+
+
+        <div class="header-buttons">
+
+
+            <button class="btn btn-light" (click)="refresh()">
+
+                <i class="fa-solid fa-rotate"></i>
+                Refresh
+
+            </button>
+
+
+            <button class="btn btn-danger" (click)="openAddModal()">
+
+                <i class="fa-solid fa-plus"></i>
+                Add Configuration
+
+            </button>
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+    <!-- ========================= -->
+    <!-- Statistics -->
+    <!-- ========================= -->
+
+
+    <div class="stats-grid">
+
+
+        <div class="stat-card">
+
+            <span>
+                Total Configurations
+            </span>
+
+            <h2>
+                {{totalCount}}
+            </h2>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>
+                Active Configurations
+            </span>
+
+            <h2>
+                {{activeCount}}
+            </h2>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>
+                Inactive Configurations
+            </span>
+
+            <h2>
+                {{inactiveCount}}
+            </h2>
+
+        </div>
+
+    </div>
+
+
+
+
+    <!-- ========================= -->
+    <!-- Search Filter -->
+    <!-- ========================= -->
+
+
+    <div class="search-panel">
+
+
+        <div class="search-box">
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input type="text" placeholder="Search configuration, provider, host or email..." [(ngModel)]="searchText">
+
+        </div>
+
+
+        <select class="form-control" [(ngModel)]="statusFilter">
+
+            <option value="">
+                All Status
+            </option>
+
+            <option value="Active">
+                Active
+            </option>
+
+            <option value="Inactive">
+                Inactive
+            </option>
+
+        </select>
+
+
+        <button class="btn btn-secondary" (click)="clearFilters()">
+            Clear
+        </button>
+
+
+    </div>
+
+
+
+
+    <!-- ========================= -->
+    <!-- Configurations Table -->
+    <!-- ========================= -->
+
+
+    <div class="table-card">
+
+
+        <div class="table-header">
+
+            <h3>
+                Email Configurations
+            </h3>
+
+            <span>
+                {{filteredConfigurations.length}} Records
+            </span>
+
+        </div>
+
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Configuration
+                    </th>
+
+                    <th>
+                        Provider
+                    </th>
+
+                    <th>
+                        SMTP Host / Port
+                    </th>
+
+                    <th>
+                        From Email
+                    </th>
+
+                    <th>
+                        Connection Status
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                    <th width="170">
+                        Actions
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                <tr *ngFor="let item of filteredConfigurations">
+
+                    <td>
+
+                        <div class="provider-info">
+
+                            <div class="provider-icon">
+                                <i class="fa-solid fa-envelope"></i>
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    {{item.configurationName}}
+                                </strong>
+
+                                <small *ngIf="item.fromName">
+                                    {{item.fromName}}
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    </td>
+
+
+                    <td>
+                        {{item.providerName || '—'}}
+                    </td>
+
+
+                    <td>
+                        {{item.smtphost}}:{{item.smtpport}}
+                    </td>
+
+
+                    <td>
+                        {{item.fromEmail}}
+                    </td>
+
+
+                    <td>
+
+                        <span class="type-badge">
+                            {{item.connectionStatus || 'Not Tested'}}
+                        </span>
+
+                        <div *ngIf="item.lastTestedOn" class="small-muted">
+                            Last Tested: {{item.lastTestedOn | date:'dd-MMM-yyyy HH:mm'}}
+                        </div>
+
+                    </td>
+
+
+                    <td>
+
+                        <span class="status" [ngClass]="item.isActive ? 'active' : 'inactive'">
+                            {{item.isActive ? 'Active' : 'Inactive'}}
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <button class="icon-btn" (click)="edit(item)">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+
+                        <button class="icon-btn danger" (click)="delete(item.communicationEmailId)">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+
+                    </td>
+
+                </tr>
+
+
+                <tr *ngIf="!filteredConfigurations.length">
+
+                    <td colspan="7" style="text-align:center; padding: 24px; color:#667085;">
+                        No email configurations found.
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+
+    </div>
+
+
+</div>
+
+
+
+
+<!-- ================================= -->
+<!-- Add / Edit Configuration Modal -->
+<!-- ================================= -->
+
+
+<div class="modal-overlay" *ngIf="showModal">
+
+
+    <div class="modal-box">
+
+
+        <!-- Modal Header -->
+
+        <div class="modal-header">
+
+            <h3>
+                {{isEdit ? 'Edit Email Configuration' : 'Add Email Configuration'}}
+            </h3>
+
+            <button class="close-btn" (click)="closeModal()">
+                ×
+            </button>
+
+        </div>
+
+
+
+
+        <!-- Modal Body -->
+
+        <div class="modal-body">
+
+            <div class="form-grid">
+
+
+                <!-- Configuration Name -->
+
+                <div>
+
+                    <label>
+                        Configuration Name
+                    </label>
+
+                    <input type="text" placeholder="Example: Primary SMTP" [(ngModel)]="model.configurationName">
+
+                </div>
+
+
+                <!-- Provider -->
+
+                <div>
+
+                    <label>
+                        Provider
+                    </label>
+
+                    <select [(ngModel)]="model.providerName">
+
+                        <option value="">
+                            Select Provider
+                        </option>
+
+                        <option *ngFor="let p of providerOptions" [value]="p">
+                            {{p}}
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- SMTP Host -->
+
+                <div>
+
+                    <label>
+                        SMTP Host
+                    </label>
+
+                    <input type="text" placeholder="Example: smtp.gmail.com" [(ngModel)]="model.smtphost">
+
+                </div>
+
+
+                <!-- SMTP Port -->
+
+                <div>
+
+                    <label>
+                        SMTP Port
+                    </label>
+
+                    <input type="number" min="1" placeholder="Example: 587" [(ngModel)]="model.smtpport">
+
+                </div>
+
+
+                <!-- SMTP Username -->
+
+                <div>
+
+                    <label>
+                        SMTP Username
+                    </label>
+
+                    <input type="text" placeholder="SMTP login username" [(ngModel)]="model.smtpusername">
+
+                </div>
+
+
+                <!-- SMTP Password -->
+
+                <div>
+
+                    <label>
+                        SMTP Password
+                    </label>
+
+                    <input type="password"
+                        [placeholder]="isEdit ? 'Leave blank to keep current password' : 'Enter SMTP password'"
+                        [(ngModel)]="model.smtppassword">
+
+                </div>
+
+
+                <!-- From Email -->
+
+                <div>
+
+                    <label>
+                        From Email
+                    </label>
+
+                    <input type="email" placeholder="Example: noreply@company.com" [(ngModel)]="model.fromEmail">
+
+                </div>
+
+
+                <!-- From Name -->
+
+                <div>
+
+                    <label>
+                        From Name
+                    </label>
+
+                    <input type="text" placeholder="Example: Company Support" [(ngModel)]="model.fromName">
+
+                </div>
+
+
+                <!-- Encryption Type -->
+
+                <div>
+
+                    <label>
+                        Encryption Type
+                    </label>
+
+                    <select [(ngModel)]="model.encryptionType">
+
+                        <option value="">
+                            Select Encryption
+                        </option>
+
+                        <option *ngFor="let e of encryptionOptions" [value]="e">
+                            {{e}}
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Enable Authentication -->
+
+                <div>
+
+                    <label>
+                        Enable Authentication
+                    </label>
+
+                    <select [(ngModel)]="model.enableAuthentication">
+
+                        <option [ngValue]="true">
+                            Yes
+                        </option>
+
+                        <option [ngValue]="false">
+                            No
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Status -->
+
+                <div>
+
+                    <label>
+                        Status
+                    </label>
+
+                    <select [(ngModel)]="model.isActive">
+
+                        <option [ngValue]="true">
+                            Active
+                        </option>
+
+                        <option [ngValue]="false">
+                            Inactive
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Connection Status (read-only, edit view only) -->
+
+                <div *ngIf="isEdit">
+
+                    <label>
+                        Connection Status
+                    </label>
+
+                    <input type="text" [value]="model.connectionStatus || 'Not Tested'" disabled>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+
+
+        <!-- Modal Footer -->
+
+        <div class="modal-footer">
+
+            <button class="btn-secondary" (click)="closeModal()">
+                Cancel
+            </button>
+
+            <button class="btn-primary" (click)="saveConfiguration()">
+                {{isEdit ? 'Update Configuration' : 'Save Configuration'}}
+            </button>
+
+        </div>
+
+
+    </div>
+
+
+</div>

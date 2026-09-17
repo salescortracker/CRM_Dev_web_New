@@ -1,23 +1,209 @@
-<div class="container mt-4">
+<div class="container-fluid mt-4">
 
-    <div class="card">
+    <!-- ========================================= -->
+    <!-- Page Header -->
+    <!-- ========================================= -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h3 class="fw-bold text-danger mb-1">
+
+                <i class="fa-solid fa-user-check me-2"></i>
+
+                Approval Workflow
+
+            </h3>
+
+            <p class="text-muted mb-0">
+
+                Manage Multi-Level Approval Workflows Across Modules.
+
+            </p>
+
+        </div>
+
+        <div>
+
+            <button class="btn btn-outline-secondary me-2" (click)="clear()">
+
+                <i class="fa-solid fa-rotate"></i>
+
+                Clear
+
+            </button>
+
+            <button class="btn btn-danger" (click)="saveApprovalWorkflow()">
+
+                <i class="fa-solid" [ngClass]="isEdit ? 'fa-pen' : 'fa-plus'"></i>
+
+                {{isEdit ? ' Update Workflow' : ' Add Workflow'}}
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Statistics -->
+    <!-- ========================================= -->
+
+    <div class="row mb-4">
+
+        <div class="col-md-3 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Total Workflows</div>
+                <div class="fw-bold fs-4 text-danger">{{totalApprovalWorkflows}}</div>
+            </div>
+
+        </div>
+
+        <div class="col-md-3 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Active</div>
+                <div class="fw-bold fs-4 text-success">{{activeApprovalWorkflows}}</div>
+            </div>
+
+        </div>
+
+        <div class="col-md-3 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Inactive</div>
+                <div class="fw-bold fs-4 text-secondary">{{inactiveApprovalWorkflows}}</div>
+            </div>
+
+        </div>
+
+        <div class="col-md-3 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Multi-Level</div>
+                <div class="fw-bold fs-4 text-primary">{{multiLevelWorkflows}}</div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Approval Workflow Form -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm border-0 mb-4">
 
         <div class="card-header bg-danger text-white">
-            <h4>Approval Workflow</h4>
+
+            <h5 class="mb-0">
+
+                Approval Workflow Information
+
+            </h5>
+
         </div>
 
         <div class="card-body">
 
             <div class="row">
 
-                <div class="col-md-4 mb-3">
-                    <label>Workflow Name <span class="text-danger">*</span></label>
-                    <input class="form-control" placeholder="Sales Quote Approval">
-                </div>
+                <!-- Company -->
 
                 <div class="col-md-4 mb-3">
-                    <label>Module <span class="text-danger">*</span></label>
-                    <select class="form-select">
+
+                    <label class="form-label">
+
+                        Company
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="approvalWorkflow.companyId" (ngModelChange)="onCompanyChange()">
+
+                        <option [ngValue]="null">Select Company</option>
+
+                        <option *ngFor="let c of companies" [ngValue]="c.companyId">{{c.companyName}}</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !approvalWorkflow.companyId">
+
+                        Company is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Region -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Region
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="approvalWorkflow.regionId">
+
+                        <option [ngValue]="null">Select Region</option>
+
+                        <option *ngFor="let r of formRegions" [ngValue]="r.regionId">{{r.regionName}}</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !approvalWorkflow.regionId">
+
+                        Region is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Workflow Name -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Workflow Name
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input class="form-control" placeholder="Sales Quote Approval"
+                        [(ngModel)]="approvalWorkflow.workflowName">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !approvalWorkflow.workflowName">
+
+                        Workflow Name is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Module -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Module
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="approvalWorkflow.moduleName">
+
+                        <option value="">Select Module</option>
                         <option>Quotations</option>
                         <option>Orders</option>
                         <option>Invoices</option>
@@ -26,188 +212,397 @@
                         <option>Discount Approval</option>
                         <option>Refund Requests</option>
                         <option>Support Tickets</option>
+
                     </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !approvalWorkflow.moduleName">
+
+                        Module is required.
+
+                    </div>
+
                 </div>
 
-                <div class="col-md-4 mb-3">
-                    <label>Approval Level</label>
-                    <select class="form-select">
-                        <option>Level 1</option>
-                        <option>Level 2</option>
-                        <option>Level 3</option>
-                    </select>
-                </div>
+                <!-- Approval Type -->
 
                 <div class="col-md-4 mb-3">
-                    <label>Approver Role</label>
-                    <select class="form-select">
-                        <option>Sales Executive</option>
-                        <option>Sales Manager</option>
-                        <option>Finance Manager</option>
-                        <option>Company Admin</option>
-                        <option>CEO</option>
-                    </select>
-                </div>
 
-                <div class="col-md-4 mb-3">
-                    <label>Approval Type</label>
-                    <select class="form-select">
+                    <label class="form-label">
+
+                        Approval Type
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="approvalWorkflow.approvalType">
+
+                        <option value="">Select Approval Type</option>
                         <option>Single Approval</option>
                         <option>Multiple Approval</option>
                         <option>Sequential Approval</option>
                         <option>Parallel Approval</option>
+
                     </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !approvalWorkflow.approvalType">
+
+                        Approval Type is required.
+
+                    </div>
+
                 </div>
+
+                <!-- Approval Levels -->
 
                 <div class="col-md-4 mb-3">
-                    <label>Auto Approve After (Days)</label>
-                    <input type="number" class="form-control" value="3">
+
+                    <label class="form-label">
+
+                        Number of Approval Levels
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="number" min="1" class="form-control"
+                        [(ngModel)]="approvalWorkflow.approvalLevels">
+
+                    <div class="text-danger mt-1"
+                        *ngIf="submitted && (!approvalWorkflow.approvalLevels || approvalWorkflow.approvalLevels <= 0)">
+
+                        Approval Levels must be greater than zero.
+
+                    </div>
+
                 </div>
+
+                <!-- Final Approval Action -->
 
                 <div class="col-md-6 mb-3">
-                    <label>Approval Condition</label>
-                    <input class="form-control"
-                        placeholder="Quote Amount > 5000">
-                </div>
 
-                <div class="col-md-3 mb-3">
-                    <label>Priority</label>
-                    <select class="form-select">
-                        <option>High</option>
-                        <option>Medium</option>
-                        <option>Low</option>
-                    </select>
-                </div>
+                    <label class="form-label">
 
-                <div class="col-md-3 mt-4">
-                    <label>
-                        <input type="checkbox" checked>
-                        Active
+                        Final Approval Action
+
                     </label>
+
+                    <input class="form-control" placeholder="e.g. Mark as Approved, Notify Requester"
+                        [(ngModel)]="approvalWorkflow.finalApprovalAction">
+
+                </div>
+
+                <!-- Final Rejection Action -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Final Rejection Action
+
+                    </label>
+
+                    <input class="form-control" placeholder="e.g. Mark as Rejected, Notify Requester"
+                        [(ngModel)]="approvalWorkflow.finalRejectionAction">
+
+                </div>
+
+                <!-- Description -->
+
+                <div class="col-md-12 mb-3">
+
+                    <label class="form-label">
+
+                        Description
+
+                    </label>
+
+                    <textarea rows="3" class="form-control" [(ngModel)]="approvalWorkflow.description"></textarea>
+
+                </div>
+
+                <!-- Active -->
+
+                <div class="col-md-4 mb-3">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="approvalWorkflow.isActive">
+
+                        <label class="form-check-label">
+
+                            Active
+
+                        </label>
+
+                    </div>
+
                 </div>
 
             </div>
 
-            <button class="btn btn-danger me-2">
-                Save
-            </button>
+        </div>
 
-            <button class="btn btn-secondary">
-                Clear
-            </button>
+    </div>
+
+</div>
+
+<!-- ========================================= -->
+<!-- Search Section -->
+<!-- ========================================= -->
+
+<div class="card shadow-sm border-0 mb-3">
+
+    <div class="card-body">
+
+        <div class="row">
+
+            <div class="col-md-4">
+
+                <input class="form-control" placeholder="Search Approval Workflow..." [(ngModel)]="searchText">
+
+            </div>
+
+            <div class="col-md-3">
+
+                <select class="form-select" [(ngModel)]="companyFilter">
+
+                    <option value="">All Companies</option>
+
+                    <option *ngFor="let c of companies" [value]="c.companyId">{{c.companyName}}</option>
+
+                </select>
+
+            </div>
+
+            <div class="col-md-3">
+
+                <select class="form-select" [(ngModel)]="statusFilter">
+
+                    <option value="">All Status</option>
+
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+
+                </select>
+
+            </div>
+
+            <div class="col-md-2">
+
+                <button class="btn btn-secondary w-100" (click)="clearFilters()">
+
+                    Clear
+
+                </button>
+
+            </div>
 
         </div>
 
     </div>
 
-    <br>
+</div>
 
-    <div class="row mb-3">
+<!-- ========================================= -->
+<!-- Approval Workflow List -->
+<!-- ========================================= -->
 
-        <div class="col-md-4">
-            <input class="form-control"
-                placeholder="Search Approval Workflow...">
+<div class="card shadow-sm border-0">
+
+    <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+
+        <h5 class="mb-0">
+
+            Approval Workflows
+
+        </h5>
+
+        <span class="badge bg-light text-dark">
+
+            Total Records : {{filteredApprovalWorkflows.length}}
+
+        </span>
+
+    </div>
+
+    <div class="card-body p-0">
+
+        <div class="table-responsive">
+
+            <table class="table table-hover table-bordered align-middle mb-0">
+
+                <thead class="table-danger">
+
+                    <tr>
+
+                        <th width="70">
+
+                            #
+
+                        </th>
+
+                        <th>
+
+                            Workflow
+
+                        </th>
+
+                        <th>
+
+                            Company
+
+                        </th>
+
+                        <th>
+
+                            Module
+
+                        </th>
+
+                        <th>
+
+                            Approval Type
+
+                        </th>
+
+                        <th>
+
+                            Levels
+
+                        </th>
+
+                        <th>
+
+                            Status
+
+                        </th>
+
+                        <th width="170">
+
+                            Action
+
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr *ngFor="let item of pagedApprovalWorkflows; let i=index">
+
+                        <td>
+
+                            {{((page-1)*pageSize)+i+1}}
+
+                        </td>
+
+                        <td>
+
+                            <div class="fw-bold">
+
+                                {{item.workflowName}}
+
+                            </div>
+
+                            <small class="text-muted">
+
+                                {{item.description}}
+
+                            </small>
+
+                        </td>
+
+                        <td>
+
+                            {{getCompanyName(item.companyId)}}
+
+                        </td>
+
+                        <td>
+
+                            {{item.moduleName}}
+
+                        </td>
+
+                        <td>
+
+                            {{item.approvalType}}
+
+                        </td>
+
+                        <td>
+
+                            {{item.approvalLevels}}
+
+                        </td>
+
+                        <td>
+
+                            <span class="badge" [ngClass]="item.isActive ? 'bg-success' : 'bg-secondary'">
+
+                                {{item.isActive ? 'Active' : 'Inactive'}}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <button class="btn btn-warning btn-sm me-2" (click)="edit(item.approvalWorkflowId)">
+
+                                <i class="fa-solid fa-pen"></i>
+
+                                Edit
+
+                            </button>
+
+                            <button class="btn btn-danger btn-sm" (click)="delete(item.approvalWorkflowId)">
+
+                                <i class="fa-solid fa-trash"></i>
+
+                                Delete
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                    <tr *ngIf="pagedApprovalWorkflows.length==0">
+
+                        <td colspan="8" class="text-center text-muted py-5">
+
+                            <i class="fa-solid fa-user-check fa-3x mb-3"></i>
+
+                            <br>
+
+                            No Approval Workflows Found.
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
         </div>
 
     </div>
 
-    <table class="table table-bordered table-hover">
+</div>
 
-        <thead class="table-danger">
+<!-- ========================================= -->
+<!-- Pagination -->
+<!-- ========================================= -->
 
-            <tr>
+<div class="mt-3">
 
-                <th>#</th>
-                <th>Workflow</th>
-                <th>Module</th>
-                <th>Approval Level</th>
-                <th>Approver</th>
-                <th>Approval Type</th>
-                <th>Condition</th>
-                <th>Status</th>
-                <th width="150">Action</th>
+    <app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredApprovalWorkflows.length"
+        (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
 
-            </tr>
-
-        </thead>
-
-        <tbody>
-
-            <tr>
-
-                <td>1</td>
-                <td>Sales Quote Approval</td>
-                <td>Quotation</td>
-                <td>Level 1</td>
-                <td>Sales Manager</td>
-                <td>Sequential</td>
-                <td>Amount > $5,000</td>
-                <td>Active</td>
-
-                <td>
-                    <button class="btn btn-warning btn-sm me-2">Edit</button>
-                    <button class="btn btn-danger btn-sm">Delete</button>
-                </td>
-
-            </tr>
-
-            <tr>
-
-                <td>2</td>
-                <td>Discount Approval</td>
-                <td>Orders</td>
-                <td>Level 2</td>
-                <td>Finance Manager</td>
-                <td>Single</td>
-                <td>Discount > 20%</td>
-                <td>Active</td>
-
-                <td>
-                    <button class="btn btn-warning btn-sm me-2">Edit</button>
-                    <button class="btn btn-danger btn-sm">Delete</button>
-                </td>
-
-            </tr>
-
-            <tr>
-
-                <td>3</td>
-                <td>Invoice Approval</td>
-                <td>Invoices</td>
-                <td>Level 1</td>
-                <td>Finance Manager</td>
-                <td>Parallel</td>
-                <td>Amount > $10,000</td>
-                <td>Active</td>
-
-                <td>
-                    <button class="btn btn-warning btn-sm me-2">Edit</button>
-                    <button class="btn btn-danger btn-sm">Delete</button>
-                </td>
-
-            </tr>
-
-            <tr>
-
-                <td>4</td>
-                <td>Refund Approval</td>
-                <td>Refund</td>
-                <td>Level 3</td>
-                <td>Company Admin</td>
-                <td>Sequential</td>
-                <td>Refund > $2,000</td>
-                <td>Inactive</td>
-
-                <td>
-                    <button class="btn btn-warning btn-sm me-2">Edit</button>
-                    <button class="btn btn-danger btn-sm">Delete</button>
-                </td>
-
-            </tr>
-
-        </tbody>
-
-    </table>
-
+    </app-pagination>
 
 </div>

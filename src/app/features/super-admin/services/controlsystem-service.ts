@@ -96,6 +96,246 @@ export class ControlsystemService {
   }
 
 
+  // ================= WORKFLOW RULE =================
+
+  // CREATE WORKFLOW RULE
+  createWorkflowRule(data: any): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/SuperAdmin/createworkflowrule`,
+      data
+    );
+  }
+
+  // UPDATE WORKFLOW RULE
+  updateWorkflowRule(data: any): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/SuperAdmin/updateworkflowrule`,
+      data
+    );
+  }
+
+  // DELETE WORKFLOW RULE
+  deleteWorkflowRule(id: number): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/SuperAdmin/deleteworkflowrule/${id}`,
+      {}
+    );
+  }
+
+  // GET ALL WORKFLOW RULES
+  getWorkflowRules(): Observable<ApiResponse<any[]>> {
+    return this.http.get<ApiResponse<any[]>>(
+      `${this.baseUrl}/SuperAdmin/getallworkflowrules`
+    );
+  }
+
+  // GET WORKFLOW RULE BY ID
+  getWorkflowRuleById(id: number): Observable<ApiResponse<any>> {
+    return this.http.get<ApiResponse<any>>(
+      `${this.baseUrl}/SuperAdmin/getworkflowrulebyid/${id}`
+    );
+  }
+
+  // ================= APPROVAL WORKFLOW =================
+
+  // CREATE APPROVAL WORKFLOW
+  createApprovalWorkflow(data: any): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/SuperAdmin/createapprovalworkflow`,
+      data
+    );
+  }
+
+  // UPDATE APPROVAL WORKFLOW
+  updateApprovalWorkflow(data: any): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/SuperAdmin/updateapprovalworkflow`,
+      data
+    );
+  }
+
+  // DELETE APPROVAL WORKFLOW
+  deleteApprovalWorkflow(id: number): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/SuperAdmin/deleteapprovalworkflow/${id}`,
+      {}
+    );
+  }
+
+  // GET ALL APPROVAL WORKFLOWS
+  getApprovalWorkflows(): Observable<ApiResponse<any[]>> {
+    return this.http.get<ApiResponse<any[]>>(
+      `${this.baseUrl}/SuperAdmin/getallapprovalworkflows`
+    );
+  }
+
+  // GET APPROVAL WORKFLOW BY ID
+  getApprovalWorkflowById(id: number): Observable<ApiResponse<any>> {
+    return this.http.get<ApiResponse<any>>(
+      `${this.baseUrl}/SuperAdmin/getapprovalworkflowbyid/${id}`
+    );
+  }
+
+  // ================= AUTO ASSIGNMENT RULE =================
+
+  // CREATE AUTO ASSIGNMENT RULE
+  createAutoAssignmentRule(data: any): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/SuperAdmin/createautoassignmentrule`,
+      data
+    );
+  }
+
+  // UPDATE AUTO ASSIGNMENT RULE
+  updateAutoAssignmentRule(data: any): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/SuperAdmin/updateautoassignmentrule`,
+      data
+    );
+  }
+
+  // DELETE AUTO ASSIGNMENT RULE
+  deleteAutoAssignmentRule(id: number): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/SuperAdmin/deleteautoassignmentrule/${id}`,
+      {}
+    );
+  }
+
+  // GET ALL AUTO ASSIGNMENT RULES
+  getAutoAssignmentRules(): Observable<ApiResponse<any[]>> {
+    return this.http.get<ApiResponse<any[]>>(
+      `${this.baseUrl}/SuperAdmin/getallautoassignmentrules`
+    );
+  }
+
+  // GET AUTO ASSIGNMENT RULE BY ID
+  getAutoAssignmentRuleById(id: number): Observable<ApiResponse<any>> {
+    return this.http.get<ApiResponse<any>>(
+      `${this.baseUrl}/SuperAdmin/getautoassignmentrulebyid/${id}`
+    );
+  }
+
+  // ================= ESCALATION RULE =================
+
+  // CREATE ESCALATION RULE
+  createEscalationRule(data: any): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/SuperAdmin/createescalationrule`,
+      data
+    );
+  }
+
+  // UPDATE ESCALATION RULE
+  updateEscalationRule(data: any): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/SuperAdmin/updateescalationrule`,
+      data
+    );
+  }
+
+  // DELETE ESCALATION RULE
+  deleteEscalationRule(id: number): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/SuperAdmin/deleteescalationrule/${id}`,
+      {}
+    );
+  }
+
+  // GET ALL ESCALATION RULES
+  getEscalationRules(): Observable<ApiResponse<any[]>> {
+    return this.http.get<ApiResponse<any[]>>(
+      `${this.baseUrl}/SuperAdmin/getallescalationrules`
+    );
+  }
+
+  // GET ESCALATION RULE BY ID
+  getEscalationRuleById(id: number): Observable<ApiResponse<any>> {
+    return this.http.get<ApiResponse<any>>(
+      `${this.baseUrl}/SuperAdmin/getescalationrulebyid/${id}`
+    );
+  }
+
+  // ================= SLA RULE =================
+
+  // CREATE SLA RULE
+  createSlarule(data: any): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/SuperAdmin/createslarule`,
+      data
+    );
+  }
+
+  // UPDATE SLA RULE
+  updateSlarule(data: any): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/SuperAdmin/updateslarule`,
+      data
+    );
+  }
+
+  // DELETE SLA RULE
+  deleteSlarule(id: number): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/SuperAdmin/deleteslarule/${id}`,
+      {}
+    );
+  }
+
+  // GET ALL SLA RULES
+  getSlarules(): Observable<ApiResponse<any[]>> {
+    return this.http.get<ApiResponse<any[]>>(
+      `${this.baseUrl}/SuperAdmin/getslarules`
+    );
+  }
+
+  // GET SLA RULE BY ID
+  getSlaruleById(id: number): Observable<ApiResponse<any>> {
+    return this.http.get<ApiResponse<any>>(
+      `${this.baseUrl}/SuperAdmin/getslarulebyid/${id}`
+    );
+  }
+
+  // ================= EMAIL AUTOMATION =================
+
+  // CREATE EMAIL AUTOMATION
+  createEmailAutomation(data: any): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/SuperAdmin/createemailautomation`,
+      data
+    );
+  }
+
+  // UPDATE EMAIL AUTOMATION
+  updateEmailAutomation(data: any): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/SuperAdmin/updateemailautomation`,
+      data
+    );
+  }
+
+  // DELETE EMAIL AUTOMATION
+  deleteEmailAutomation(id: number): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/SuperAdmin/deleteemailautomation/${id}`,
+      {}
+    );
+  }
+
+  // GET ALL EMAIL AUTOMATIONS
+  getEmailAutomations(): Observable<ApiResponse<any[]>> {
+    return this.http.get<ApiResponse<any[]>>(
+      `${this.baseUrl}/SuperAdmin/getallemailautomations`
+    );
+  }
+
+  // GET EMAIL AUTOMATION BY ID
+  getEmailAutomationById(id: number): Observable<ApiResponse<any>> {
+    return this.http.get<ApiResponse<any>>(
+      `${this.baseUrl}/SuperAdmin/getemailautomationbyid/${id}`
+    );
+  }
+
   // ================= AUDIT LOGS =================
 
   // GET ALL AUDIT LOGS
@@ -537,6 +777,371 @@ getDesignations(): Observable<ApiResponse<any[]>> {
 getDesignationById(id: number): Observable<ApiResponse<any>> {
   return this.http.get<ApiResponse<any>>(
     `${this.baseUrl}/Master/getbydesignation/${id}`
+  );
+}
+
+// ================= BRANCH =================
+
+// CREATE BRANCH
+createBranch(data: any): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/SuperAdmin/createbranch`,
+    data
+  );
+}
+
+// UPDATE BRANCH
+updateBranch(data: any): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/SuperAdmin/updatebranch`,
+    data
+  );
+}
+
+// DELETE BRANCH
+deleteBranch(id: number): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/SuperAdmin/deletebranch/${id}`,
+    {}
+  );
+}
+
+// GET ALL BRANCHES
+getBranches(): Observable<ApiResponse<any[]>> {
+  return this.http.get<ApiResponse<any[]>>(
+    `${this.baseUrl}/SuperAdmin/getallbranch`
+  );
+}
+
+// GET BRANCH BY ID
+getBranchById(id: number): Observable<ApiResponse<any>> {
+  return this.http.get<ApiResponse<any>>(
+    `${this.baseUrl}/SuperAdmin/getbybranch/${id}`
+  );
+}
+
+// ================= BUSINESS UNIT =================
+
+// CREATE BUSINESS UNIT
+createBusinessUnit(data: any): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/SuperAdmin/createbusinessunit`,
+    data
+  );
+}
+
+// UPDATE BUSINESS UNIT
+updateBusinessUnit(data: any): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/SuperAdmin/updatebusinessunit`,
+    data
+  );
+}
+
+// DELETE BUSINESS UNIT
+deleteBusinessUnit(id: number): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/SuperAdmin/deletebusinessunit/${id}`,
+    {}
+  );
+}
+
+// GET ALL BUSINESS UNITS
+getBusinessUnits(): Observable<ApiResponse<any[]>> {
+  return this.http.get<ApiResponse<any[]>>(
+    `${this.baseUrl}/SuperAdmin/getallbusinessunit`
+  );
+}
+
+// GET BUSINESS UNIT BY ID
+getBusinessUnitById(id: number): Observable<ApiResponse<any>> {
+  return this.http.get<ApiResponse<any>>(
+    `${this.baseUrl}/SuperAdmin/getbybusinessunit/${id}`
+  );
+}
+
+// ================= COUNTRY =================
+
+// GET ALL COUNTRIES
+getCountries(): Observable<ApiResponse<any[]>> {
+  return this.http.get<ApiResponse<any[]>>(
+    `${this.baseUrl}/Master/getallcountry`
+  );
+}
+
+// ================= STATE =================
+
+// GET ALL STATES
+getStates(): Observable<ApiResponse<any[]>> {
+  return this.http.get<ApiResponse<any[]>>(
+    `${this.baseUrl}/Master/getallstate`
+  );
+}
+
+// ================= MARKETING LIST =================
+
+// CREATE MARKETING LIST
+createMarketingList(data: any): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/SuperAdmin/createmarketinglist`,
+    data
+  );
+}
+
+// UPDATE MARKETING LIST
+updateMarketingList(data: any): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/SuperAdmin/updatemarketinglist`,
+    data
+  );
+}
+
+// DELETE MARKETING LIST
+deleteMarketingList(id: number): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/SuperAdmin/deletemarketinglist/${id}`,
+    {}
+  );
+}
+
+// GET ALL MARKETING LISTS
+getMarketingLists(): Observable<ApiResponse<any[]>> {
+  return this.http.get<ApiResponse<any[]>>(
+    `${this.baseUrl}/SuperAdmin/getallmarketinglist`
+  );
+}
+
+// GET MARKETING LIST BY ID
+getMarketingListById(id: number): Observable<ApiResponse<any>> {
+  return this.http.get<ApiResponse<any>>(
+    `${this.baseUrl}/SuperAdmin/getbymarketinglist/${id}`
+  );
+}
+
+// ================= CAMPAIGN =================
+
+// CREATE CAMPAIGN
+createCampaign(data: any): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/SuperAdmin/createcampaign`,
+    data
+  );
+}
+
+// UPDATE CAMPAIGN
+updateCampaign(data: any): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/SuperAdmin/updatecampaign`,
+    data
+  );
+}
+
+// DELETE CAMPAIGN
+deleteCampaign(id: number): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/SuperAdmin/deletecampaign/${id}`,
+    {}
+  );
+}
+
+// GET ALL CAMPAIGNS
+getCampaigns(): Observable<ApiResponse<any[]>> {
+  return this.http.get<ApiResponse<any[]>>(
+    `${this.baseUrl}/SuperAdmin/getallcampaign`
+  );
+}
+
+// GET CAMPAIGN BY ID
+getCampaignById(id: number): Observable<ApiResponse<any>> {
+  return this.http.get<ApiResponse<any>>(
+    `${this.baseUrl}/SuperAdmin/getbycampaign/${id}`
+  );
+}
+
+// ================= EMAIL TEMPLATE =================
+
+// GET ALL EMAIL TEMPLATES
+getEmailTemplates(): Observable<ApiResponse<any[]>> {
+  return this.http.get<ApiResponse<any[]>>(
+    `${this.baseUrl}/SuperAdmin/getallemailtemplate`
+  );
+}
+
+// ================= EMAIL CAMPAIGN =================
+
+// CREATE EMAIL CAMPAIGN
+createEmailCampaign(data: any): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/SuperAdmin/createemailcampaign`,
+    data
+  );
+}
+
+// UPDATE EMAIL CAMPAIGN
+updateEmailCampaign(data: any): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/SuperAdmin/updateemailcampaign`,
+    data
+  );
+}
+
+// DELETE EMAIL CAMPAIGN
+deleteEmailCampaign(id: number): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/SuperAdmin/deleteemailcampaign/${id}`,
+    {}
+  );
+}
+
+// GET ALL EMAIL CAMPAIGNS
+getEmailCampaigns(): Observable<ApiResponse<any[]>> {
+  return this.http.get<ApiResponse<any[]>>(
+    `${this.baseUrl}/SuperAdmin/getallemailcampaign`
+  );
+}
+
+// GET EMAIL CAMPAIGN BY ID
+getEmailCampaignById(id: number): Observable<ApiResponse<any>> {
+  return this.http.get<ApiResponse<any>>(
+    `${this.baseUrl}/SuperAdmin/getbyemailcampaign/${id}`
+  );
+}
+
+// ================= SMS TEMPLATE =================
+
+// GET ALL SMS TEMPLATES
+getSMSTemplates(): Observable<ApiResponse<any[]>> {
+  return this.http.get<ApiResponse<any[]>>(
+    `${this.baseUrl}/SuperAdmin/getallsmsTemplate`
+  );
+}
+
+// ================= SMS CAMPAIGN =================
+
+// CREATE SMS CAMPAIGN
+createSmsCampaign(data: any): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/SuperAdmin/createsmsCampaign`,
+    data
+  );
+}
+
+// UPDATE SMS CAMPAIGN
+updateSmsCampaign(data: any): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/SuperAdmin/updatesmsCampaign`,
+    data
+  );
+}
+
+// DELETE SMS CAMPAIGN
+deleteSmsCampaign(id: number): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/SuperAdmin/deletesmsCampaign/${id}`,
+    {}
+  );
+}
+
+// GET ALL SMS CAMPAIGNS
+getSmsCampaigns(): Observable<ApiResponse<any[]>> {
+  return this.http.get<ApiResponse<any[]>>(
+    `${this.baseUrl}/SuperAdmin/getallsmsCampaign`
+  );
+}
+
+// GET SMS CAMPAIGN BY ID
+getSmsCampaignById(id: number): Observable<ApiResponse<any>> {
+  return this.http.get<ApiResponse<any>>(
+    `${this.baseUrl}/SuperAdmin/getbysmsCampaign/${id}`
+  );
+}
+
+// ================= WHATSAPP TEMPLATE =================
+
+// GET ALL WHATSAPP TEMPLATES
+getWhatsAppTemplates(): Observable<ApiResponse<any[]>> {
+  return this.http.get<ApiResponse<any[]>>(
+    `${this.baseUrl}/SuperAdmin/getallwhatsapptemplate`
+  );
+}
+
+// ================= WHATSAPP CAMPAIGN =================
+
+// CREATE WHATSAPP CAMPAIGN
+createWhatsAppCampaign(data: any): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/SuperAdmin/createwhatsappcampaign`,
+    data
+  );
+}
+
+// UPDATE WHATSAPP CAMPAIGN
+updateWhatsAppCampaign(data: any): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/SuperAdmin/updatewhatsappcampaign`,
+    data
+  );
+}
+
+// DELETE WHATSAPP CAMPAIGN
+deleteWhatsAppCampaign(id: number): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/SuperAdmin/deletewhatsappcampaign/${id}`,
+    {}
+  );
+}
+
+// GET ALL WHATSAPP CAMPAIGNS
+getWhatsAppCampaigns(): Observable<ApiResponse<any[]>> {
+  return this.http.get<ApiResponse<any[]>>(
+    `${this.baseUrl}/SuperAdmin/getallwhatsappcampaign`
+  );
+}
+
+// GET WHATSAPP CAMPAIGN BY ID
+getWhatsAppCampaignById(id: number): Observable<ApiResponse<any>> {
+  return this.http.get<ApiResponse<any>>(
+    `${this.baseUrl}/SuperAdmin/getbywhatsappcampaign/${id}`
+  );
+}
+
+// ================= COMPANY ADMINISTRATOR =================
+
+// CREATE COMPANY ADMINISTRATOR
+createCompanyAdministrator(data: any): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/SuperAdmin/createcompanyadministrator`,
+    data
+  );
+}
+
+// UPDATE COMPANY ADMINISTRATOR
+updateCompanyAdministrator(data: any): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/SuperAdmin/updatecompanyadministrator`,
+    data
+  );
+}
+
+// DELETE COMPANY ADMINISTRATOR
+deleteCompanyAdministrator(id: number): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/SuperAdmin/deletecompanyadministrator/${id}`,
+    {}
+  );
+}
+
+// GET ALL COMPANY ADMINISTRATORS
+getCompanyAdministrators(): Observable<ApiResponse<any[]>> {
+  return this.http.get<ApiResponse<any[]>>(
+    `${this.baseUrl}/SuperAdmin/getallcompanyadministrator`
+  );
+}
+
+// GET COMPANY ADMINISTRATOR BY ID
+getCompanyAdministratorById(id: number): Observable<ApiResponse<any>> {
+  return this.http.get<ApiResponse<any>>(
+    `${this.baseUrl}/SuperAdmin/getbycompanyadministrator/${id}`
   );
 }
 }

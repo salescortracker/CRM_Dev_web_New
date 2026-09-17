@@ -1,313 +1,149 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { Alertservice } from '../../../../../core/services/alertservice';
 import { Spinnerservice } from '../../../../../core/services/spinnerservice';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { Pagination } from '../../../../../shared/pagination/pagination';
+import { AuthService } from '../../../../../core/authentication/services/auth.service';
+import { ControlsystemService } from '../../../../super-admin/services/controlsystem-service';
 
 @Component({
   selector: 'app-whatsapp-campaigns',
-  standalone:true,
-  imports: [CommonModule,FormsModule,Pagination],
+  standalone: true,
+  imports: [CommonModule, FormsModule, Pagination],
   templateUrl: './whatsapp-campaigns.html',
   styleUrl: './whatsapp-campaigns.css',
 })
-export class WhatsappCampaigns {
-   submitted = false;
+export class WhatsappCampaigns implements OnInit {
+
+  constructor(
+    private alert: Alertservice,
+    private spinner: Spinnerservice,
+    private cd: ChangeDetectorRef,
+    private authService: AuthService,
+    private controlsystemService: ControlsystemService
+  ) { }
+
+  //====================================================
+  // Screen Variables
+  //====================================================
+
+  submitted = false;
   isEdit = false;
 
   page = 1;
-  pageSize = 5;
-  totalRecords = 0;
+  pageSize = 10;
+
   searchText = '';
+  companyFilter = '';
+  statusFilter = '';
+
+  //====================================================
+  // Dropdown Data (from backend)
+  //====================================================
+
+  companies: any[] = [];
+  regions: any[] = [];
+  marketingLists: any[] = [];
+  whatsAppTemplates: any[] = [];
+
+  //====================================================
+  // WhatsApp Campaign List
+  //====================================================
 
   campaigns: any[] = [];
 
-  campaign: any = {
+  //====================================================
+  // Form Model
+  //====================================================
 
-    campaignId: 0,
-    campaignName: '',
-    template: '',
-    businessNumber: '',
-    targetAudience: '',
-    scheduledDate: '',
-    totalRecipients: '',
-    deliveredCount: '',
-    readRate: '',
-    mediaType: '',
-    status: '',
-    message: '',
-    isActive: true
+  campaign: any = this.getEmptyModel();
 
-  };
+  getEmptyModel() {
 
-  constructor(
+    return {
 
-    private alert: Alertservice,
-    private spinner: Spinnerservice,
-    private cd: ChangeDetectorRef
+      whatsAppCampaignId: 0,
 
-  ) { }
+      companyId: null,
+
+      regionId: null,
+
+      campaignName: '',
+
+      marketingListId: null,
+
+      whatsAppTemplateId: null,
+
+      language: '',
+
+      message: '',
+
+      mediaUrl: '',
+
+      mediaType: '',
+
+      totalRecipients: 0,
+
+      sentCount: 0,
+
+      deliveredCount: 0,
+
+      readCount: 0,
+
+      repliedCount: 0,
+
+      failedCount: 0,
+
+      scheduledDate: '',
+
+      status: 'Draft'
+
+    };
+
+  }
+
+  //====================================================
+  // Lifecycle
+  //====================================================
 
   ngOnInit(): void {
+
+    this.loadCompanies();
+
+    this.loadRegions();
+
+    this.loadMarketingLists();
+
+    this.loadWhatsAppTemplates();
 
     this.loadCampaigns();
 
   }
 
-  loadCampaigns() {
+  //====================================================
+  // Load Dropdown Data
+  //====================================================
 
-    this.spinner.show();
+  loadCompanies(): void {
 
-    setTimeout(() => {
+    this.authService.getCompanies().subscribe({
 
-      this.campaigns = [
+      next: (res: any) => {
 
-        {
-          campaignId: 1,
-          campaignName: 'Festival Wishes',
-          template: 'Festival Wishes',
-          businessNumber: '+91 9876543210',
-          targetAudience: 'All Customers',
-          scheduledDate: '2026-08-01',
-          totalRecipients: 1000,
-          deliveredCount: 985,
-          readRate: 92,
-          mediaType: 'Image',
-          status: 'Delivered',
-          message: 'Happy Festival! Enjoy our special offers.',
-          isActive: true
-        },
-
-        {
-          campaignId: 2,
-          campaignName: 'Product Launch',
-          template: 'Product Launch',
-          businessNumber: '+91 9876543211',
-          targetAudience: 'Existing Customers',
-          scheduledDate: '2026-08-05',
-          totalRecipients: 650,
-          deliveredCount: 0,
-          readRate: 0,
-          mediaType: 'Video',
-          status: 'Scheduled',
-          message: 'Introducing our latest CRM features.',
-          isActive: true
-        },
-
-        {
-          campaignId: 3,
-          campaignName: 'Payment Reminder',
-          template: 'Payment Reminder',
-          businessNumber: '+91 9876543212',
-          targetAudience: 'Inactive Customers',
-          scheduledDate: '2026-08-08',
-          totalRecipients: 300,
-          deliveredCount: 180,
-          readRate: 60,
-          mediaType: 'Text',
-          status: 'Sending',
-          message: 'Your payment is due. Kindly renew today.',
-          isActive: true
-        },
-
-        {
-          campaignId: 4,
-          campaignName: 'Welcome Customers',
-          template: 'Welcome Message',
-          businessNumber: '+91 9876543213',
-          targetAudience: 'New Leads',
-          scheduledDate: '2026-08-10',
-          totalRecipients: 400,
-          deliveredCount: 0,
-          readRate: 0,
-          mediaType: 'Document',
-          status: 'Draft',
-          message: 'Welcome to our CRM family.',
-          isActive: true
-        },
-
-        {
-          campaignId: 5,
-          campaignName: 'Subscription Renewal',
-          template: 'Renewal Reminder',
-          businessNumber: '+91 9876543214',
-          targetAudience: 'VIP Customers',
-          scheduledDate: '2026-08-15',
-          totalRecipients: 220,
-          deliveredCount: 220,
-          readRate: 97,
-          mediaType: 'PDF',
-          status: 'Sent',
-          message: 'Please renew your subscription before expiry.',
-          isActive: true
-        }
-
-      ];
-
-      this.campaigns.sort((a, b) => b.campaignId - a.campaignId);
-
-      this.totalRecords = this.campaigns.length;
-
-      this.spinner.hide();
-
-      this.cd.detectChanges();
-
-    }, 500);
-
-  }
-
-  saveCampaign() {
-
-    this.submitted = true;
-
-    if (
-
-      !this.campaign.campaignName ||
-      !this.campaign.template ||
-      !this.campaign.businessNumber ||
-      !this.campaign.scheduledDate ||
-      !this.campaign.status
-
-    ) {
-
-      return;
-
-    }
-
-    this.spinner.show();
-
-    setTimeout(() => {
-
-      if (!this.isEdit) {
-
-        const newCampaign = {
-
-          ...this.campaign,
-
-          campaignId: this.campaigns.length
-            ? Math.max(...this.campaigns.map(x => x.campaignId)) + 1
-            : 1
-
-        };
-
-        this.campaigns.unshift(newCampaign);
-
-      }
-
-      else {
-
-        const index = this.campaigns.findIndex(
-
-          x => x.campaignId === this.campaign.campaignId
-
+        this.companies = (res?.data || []).filter(
+          (x: any) => x.isActive !== false
         );
-
-        if (index !== -1) {
-
-          this.campaigns[index] = {
-
-            ...this.campaign
-
-          };
-
-        }
-
-      }
-
-      // Refresh table
-
-      this.campaigns = [...this.campaigns];
-
-      this.totalRecords = this.campaigns.length;
-
-      this.page = 1;
-
-      const message = this.isEdit
-
-        ? 'WhatsApp Campaign updated successfully.'
-
-        : 'WhatsApp Campaign created successfully.';
-
-      this.clear();
-
-      this.spinner.hide();
-
-      this.cd.detectChanges();
-
-      this.alert.success(message);
-
-    }, 500);
-
-  }
-    edit(id: number) {
-
-    this.spinner.show();
-
-    setTimeout(() => {
-
-      const selected = this.campaigns.find(
-        x => x.campaignId === id
-      );
-
-      if (selected) {
-
-        this.campaign = {
-          ...selected
-        };
-
-        this.isEdit = true;
-
-        this.submitted = false;
 
         this.cd.detectChanges();
 
-      }
+      },
 
-      this.spinner.hide();
+      error: (err) => {
 
-    }, 300);
+        console.error('Error loading companies:', err);
 
-  }
-
-  delete(id: number) {
-
-    this.alert.deleteConfirm().then(result => {
-
-      if (result.isConfirmed) {
-
-        this.spinner.show();
-
-        setTimeout(() => {
-
-          this.campaigns = this.campaigns.filter(
-            x => x.campaignId !== id
-          );
-
-          this.totalRecords = this.campaigns.length;
-
-          if (
-            this.page > 1 &&
-            this.pagedCampaigns.length === 0
-          ) {
-
-            this.page--;
-
-          }
-
-          // Refresh table immediately
-
-          this.campaigns = [...this.campaigns];
-
-          this.spinner.hide();
-
-          this.cd.detectChanges();
-
-          this.alert.success(
-            'WhatsApp Campaign deleted successfully.'
-          );
-
-        }, 500);
+        this.companies = [];
 
       }
 
@@ -315,97 +151,632 @@ export class WhatsappCampaigns {
 
   }
 
-  clear() {
+  loadRegions(): void {
 
-    this.campaign = {
+    this.authService.getRegions().subscribe({
 
-      campaignId: 0,
-      campaignName: '',
-      template: '',
-      businessNumber: '',
-      targetAudience: '',
-      scheduledDate: '',
-      totalRecipients: '',
-      deliveredCount: '',
-      readRate: '',
-      mediaType: '',
-      status: '',
-      message: '',
-      isActive: true
+      next: (res: any) => {
 
-    };
+        this.regions = (res?.data || []).filter(
+          (x: any) => x.isActive !== false
+        );
 
-    this.isEdit = false;
+        this.cd.detectChanges();
 
-    this.submitted = false;
+      },
 
-    this.cd.detectChanges();
+      error: (err) => {
+
+        console.error('Error loading regions:', err);
+
+        this.regions = [];
+
+      }
+
+    });
 
   }
 
-  get filteredCampaigns() {
+  loadMarketingLists(): void {
 
-    return this.campaigns.filter(x =>
+    this.controlsystemService.getMarketingLists().subscribe({
 
-      x.campaignName
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
+      next: (res: any) => {
 
-      ||
+        this.marketingLists = res?.data || [];
 
-      x.template
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
+        this.cd.detectChanges();
 
-      ||
+      },
 
-      x.businessNumber
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
+      error: (err) => {
 
-      ||
+        console.error('Error loading marketing lists:', err);
 
-      x.targetAudience
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
+        this.marketingLists = [];
 
-      ||
+      }
 
-      x.mediaType
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
+    });
 
-      ||
+  }
 
-      x.status
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
+  loadWhatsAppTemplates(): void {
 
+    this.controlsystemService.getWhatsAppTemplates().subscribe({
+
+      next: (res: any) => {
+
+        this.whatsAppTemplates = res?.data || [];
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error loading WhatsApp templates:', err);
+
+        this.whatsAppTemplates = [];
+
+      }
+
+    });
+
+  }
+
+  //====================================================
+  // Load WhatsApp Campaigns
+  //====================================================
+
+  loadCampaigns(): void {
+
+    this.spinner.show();
+
+    this.controlsystemService.getWhatsAppCampaigns().subscribe({
+
+      next: (res: any) => {
+
+        this.spinner.hide();
+
+        if (res?.success) {
+
+          this.campaigns = res.data || [];
+
+        } else {
+
+          this.campaigns = [];
+
+          this.alert.warning(
+            res?.message || 'No WhatsApp campaign records found.'
+          );
+
+        }
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        this.spinner.hide();
+
+        console.error('Error loading WhatsApp campaigns:', err);
+
+        this.campaigns = [];
+
+        this.alert.error(
+          err?.error?.message || 'Failed to load WhatsApp campaigns.'
+        );
+
+        this.cd.detectChanges();
+
+      }
+
+    });
+
+  }
+
+  //====================================================
+  // Lookup Helpers (Display Names)
+  //====================================================
+
+  getCompanyName(id: any): string {
+
+    if (!id) return '-';
+
+    const item = this.companies.find(x => x.companyId === Number(id));
+
+    return item ? item.companyName : '-';
+
+  }
+
+  getRegionName(id: any): string {
+
+    if (!id) return '-';
+
+    const item = this.regions.find(x => x.regionId === Number(id));
+
+    return item ? item.regionName : '-';
+
+  }
+
+  getMarketingListName(id: any): string {
+
+    if (!id) return '-';
+
+    const item = this.marketingLists.find(
+      x => x.marketingListId === Number(id)
+    );
+
+    return item ? item.listName : '-';
+
+  }
+
+  getWhatsAppTemplateName(id: any): string {
+
+    if (!id) return '-';
+
+    const item = this.whatsAppTemplates.find(
+      x => x.whatsAppTemplateId === Number(id)
+    );
+
+    return item ? item.templateName : '-';
+
+  }
+
+  //====================================================
+  // Cascading Dropdown
+  //====================================================
+
+  get formRegions(): any[] {
+
+    if (!this.campaign.companyId) return this.regions;
+
+    return this.regions.filter(
+      x => x.companyId === Number(this.campaign.companyId)
     );
 
   }
+
+  onCompanyChange(): void {
+
+    this.campaign.regionId = null;
+
+  }
+
+  //====================================================
+  // Read Rate Helper
+  //====================================================
+
+  getReadRate(item: any): number {
+
+    const delivered = Number(item.deliveredCount || 0);
+
+    if (!delivered) return 0;
+
+    return Math.round((Number(item.readCount || 0) / delivered) * 100);
+
+  }
+
+  //====================================================
+  // Filtered Campaigns
+  //====================================================
+
+  get filteredCampaigns() {
+
+    return this.campaigns.filter(x => {
+
+      const search = this.searchText.trim().toLowerCase();
+
+      const matchSearch =
+        !search ||
+        (x.campaignName || '').toLowerCase().includes(search) ||
+        (x.message || '').toLowerCase().includes(search) ||
+        (x.mediaType || '').toLowerCase().includes(search) ||
+        (x.status || '').toLowerCase().includes(search);
+
+      const matchCompany =
+        !this.companyFilter ||
+        Number(x.companyId) === Number(this.companyFilter);
+
+      const matchStatus =
+        !this.statusFilter ||
+        x.status === this.statusFilter;
+
+      return matchSearch && matchCompany && matchStatus;
+
+    });
+
+  }
+
+  //====================================================
+  // Pagination
+  //====================================================
 
   get pagedCampaigns() {
 
     const start = (this.page - 1) * this.pageSize;
 
-    return this.filteredCampaigns.slice(
+    return this.filteredCampaigns.slice(start, start + this.pageSize);
 
-      start,
+  }
 
-      start + this.pageSize
+  //====================================================
+  // Statistics
+  //====================================================
 
+  get totalCampaigns(): number {
+
+    return this.campaigns.length;
+
+  }
+
+  get sentCampaigns(): number {
+
+    return this.campaigns.filter(
+      x => x.status === 'Sent' || x.status === 'Delivered'
+    ).length;
+
+  }
+
+  get scheduledCampaigns(): number {
+
+    return this.campaigns.filter(x => x.status === 'Scheduled').length;
+
+  }
+
+  get totalRecipientsCount(): number {
+
+    return this.campaigns.reduce(
+      (total, item) => total + Number(item.totalRecipients || 0),
+      0
     );
 
   }
 
-  changePage(page: number) {
+  //====================================================
+  // Save / Update
+  //====================================================
+
+  saveCampaign(): void {
+
+    this.submitted = true;
+
+    if (
+      !this.campaign.campaignName ||
+      !this.campaign.campaignName.trim()
+    ) {
+
+      this.alert.warning('Please fill all required fields.');
+
+      return;
+
+    }
+
+    const payload = {
+
+      whatsAppCampaignId: this.isEdit ? this.campaign.whatsAppCampaignId : 0,
+
+      companyId: this.campaign.companyId ? Number(this.campaign.companyId) : null,
+
+      regionId: this.campaign.regionId ? Number(this.campaign.regionId) : null,
+
+      campaignName: this.campaign.campaignName.trim(),
+
+      marketingListId: this.campaign.marketingListId
+        ? Number(this.campaign.marketingListId)
+        : null,
+
+      whatsAppTemplateId: this.campaign.whatsAppTemplateId
+        ? Number(this.campaign.whatsAppTemplateId)
+        : null,
+
+      language: this.campaign.language ? this.campaign.language.trim() : null,
+
+      message: this.campaign.message ? this.campaign.message.trim() : null,
+
+      mediaUrl: this.campaign.mediaUrl ? this.campaign.mediaUrl.trim() : null,
+
+      mediaType: this.campaign.mediaType ? this.campaign.mediaType.trim() : null,
+
+      totalRecipients: Number(this.campaign.totalRecipients) || 0,
+
+      sentCount: Number(this.campaign.sentCount) || 0,
+
+      deliveredCount: Number(this.campaign.deliveredCount) || 0,
+
+      readCount: Number(this.campaign.readCount) || 0,
+
+      repliedCount: Number(this.campaign.repliedCount) || 0,
+
+      failedCount: Number(this.campaign.failedCount) || 0,
+
+      scheduledDate: this.campaign.scheduledDate || null,
+
+      status: this.campaign.status ? this.campaign.status.trim() : ''
+
+    };
+
+    this.spinner.show();
+
+    if (this.isEdit) {
+
+      this.controlsystemService.updateWhatsAppCampaign(payload).subscribe({
+
+        next: (res: any) => {
+
+          this.spinner.hide();
+
+          if (res?.success) {
+
+            this.alert.success(
+              res.message || 'WhatsApp Campaign updated successfully.'
+            );
+
+            this.clear();
+
+            this.loadCampaigns();
+
+          } else {
+
+            this.alert.warning(
+              res?.message || 'Failed to update WhatsApp campaign.'
+            );
+
+          }
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Update WhatsApp campaign error:', err);
+
+          this.alert.error(
+            err?.error?.message || 'Failed to update WhatsApp campaign.'
+          );
+
+        }
+
+      });
+
+    } else {
+
+      this.controlsystemService.createWhatsAppCampaign(payload).subscribe({
+
+        next: (res: any) => {
+
+          this.spinner.hide();
+
+          if (res?.success) {
+
+            this.alert.success(
+              res.message || 'WhatsApp Campaign created successfully.'
+            );
+
+            this.clear();
+
+            this.loadCampaigns();
+
+          } else {
+
+            this.alert.warning(
+              res?.message || 'Failed to create WhatsApp campaign.'
+            );
+
+          }
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Create WhatsApp campaign error:', err);
+
+          this.alert.error(
+            err?.error?.message || 'Failed to create WhatsApp campaign.'
+          );
+
+        }
+
+      });
+
+    }
+
+  }
+
+  //====================================================
+  // Edit
+  //====================================================
+
+  edit(id: number): void {
+
+    this.spinner.show();
+
+    this.controlsystemService.getWhatsAppCampaignById(id).subscribe({
+
+      next: (res: any) => {
+
+        this.spinner.hide();
+
+        if (res?.success && res.data) {
+
+          const data = res.data;
+
+          this.campaign = {
+
+            whatsAppCampaignId: data.whatsAppCampaignId,
+
+            companyId: data.companyId,
+
+            regionId: data.regionId,
+
+            campaignName: data.campaignName || '',
+
+            marketingListId: data.marketingListId,
+
+            whatsAppTemplateId: data.whatsAppTemplateId,
+
+            language: data.language || '',
+
+            message: data.message || '',
+
+            mediaUrl: data.mediaUrl || '',
+
+            mediaType: data.mediaType || '',
+
+            totalRecipients: data.totalRecipients ?? 0,
+
+            sentCount: data.sentCount ?? 0,
+
+            deliveredCount: data.deliveredCount ?? 0,
+
+            readCount: data.readCount ?? 0,
+
+            repliedCount: data.repliedCount ?? 0,
+
+            failedCount: data.failedCount ?? 0,
+
+            scheduledDate: data.scheduledDate
+              ? data.scheduledDate.substring(0, 10)
+              : '',
+
+            status: data.status || 'Draft'
+
+          };
+
+          this.isEdit = true;
+
+          this.submitted = false;
+
+          this.cd.detectChanges();
+
+        } else {
+
+          this.alert.warning(res?.message || 'WhatsApp Campaign not found.');
+
+        }
+
+      },
+
+      error: (err) => {
+
+        this.spinner.hide();
+
+        console.error('Get WhatsApp campaign error:', err);
+
+        this.alert.error(
+          err?.error?.message || 'Failed to load WhatsApp campaign.'
+        );
+
+      }
+
+    });
+
+  }
+
+  //====================================================
+  // Delete
+  //====================================================
+
+  delete(id: number): void {
+
+    this.alert.deleteConfirm().then(result => {
+
+      if (!result.isConfirmed) return;
+
+      this.spinner.show();
+
+      this.controlsystemService.deleteWhatsAppCampaign(id).subscribe({
+
+        next: (res: any) => {
+
+          this.spinner.hide();
+
+          if (res?.success) {
+
+            this.alert.success(
+              res.message || 'WhatsApp Campaign deleted successfully.'
+            );
+
+            if (this.page > 1 && this.pagedCampaigns.length === 1) {
+              this.page = this.page - 1;
+            }
+
+            this.loadCampaigns();
+
+          } else {
+
+            this.alert.warning(
+              res?.message || 'Failed to delete WhatsApp campaign.'
+            );
+
+          }
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Delete WhatsApp campaign error:', err);
+
+          this.alert.error(
+            err?.error?.message || 'Failed to delete WhatsApp campaign.'
+          );
+
+        }
+
+      });
+
+    });
+
+  }
+
+  //====================================================
+  // Clear Form
+  //====================================================
+
+  clear(): void {
+
+    this.campaign = this.getEmptyModel();
+
+    this.submitted = false;
+
+    this.isEdit = false;
+
+  }
+
+  //====================================================
+  // Clear Filters
+  //====================================================
+
+  clearFilters(): void {
+
+    this.searchText = '';
+
+    this.companyFilter = '';
+
+    this.statusFilter = '';
+
+    this.page = 1;
+
+  }
+
+  //====================================================
+  // Pagination
+  //====================================================
+
+  changePage(page: number): void {
 
     this.page = page;
 
   }
 
-  changePageSize(size: number) {
+  changePageSize(size: number): void {
 
     this.pageSize = size;
 
@@ -413,5 +784,16 @@ export class WhatsappCampaigns {
 
   }
 
+  //====================================================
+  // Refresh
+  //====================================================
+
+  refresh(): void {
+
+    this.page = 1;
+
+    this.loadCampaigns();
+
+  }
 
 }

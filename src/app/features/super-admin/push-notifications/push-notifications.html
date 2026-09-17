@@ -1,10 +1,99 @@
-<div class="container mt-4">
+<div class="container-fluid mt-4">
 
-    <div class="card">
+    <!-- ========================================= -->
+    <!-- Page Header -->
+    <!-- ========================================= -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h3 class="fw-bold text-danger mb-1">
+
+                <i class="fa-solid fa-bell me-2"></i>
+
+                Push Notification Templates
+
+            </h3>
+
+            <p class="text-muted mb-0">
+
+                Create and manage push notification templates sent to users.
+
+            </p>
+
+        </div>
+
+        <div>
+
+            <button class="btn btn-outline-secondary me-2" (click)="clear()">
+
+                <i class="fa-solid fa-rotate"></i>
+
+                Clear
+
+            </button>
+
+            <button class="btn btn-danger" (click)="saveTemplate()">
+
+                <i class="fa-solid" [ngClass]="isEdit ? 'fa-pen' : 'fa-plus'"></i>
+
+                {{isEdit ? ' Update Template' : ' Add Template'}}
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Statistics -->
+    <!-- ========================================= -->
+
+    <div class="row mb-4">
+
+        <div class="col-md-4 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Total Templates</div>
+                <div class="fw-bold fs-4 text-danger">{{totalTemplates}}</div>
+            </div>
+
+        </div>
+
+        <div class="col-md-4 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Active</div>
+                <div class="fw-bold fs-4 text-success">{{activeTemplates}}</div>
+            </div>
+
+        </div>
+
+        <div class="col-md-4 col-6 mb-3">
+
+            <div class="card shadow-sm border-0 text-center py-3">
+                <div class="text-muted small">Inactive</div>
+                <div class="fw-bold fs-4 text-secondary">{{inactiveTemplates}}</div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Notification Template Form -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm border-0 mb-4">
 
         <div class="card-header bg-danger text-white">
 
-            <h4>Push Notification Templates</h4>
+            <h5 class="mb-0">
+
+                Push Notification Template Information
+
+            </h5>
 
         </div>
 
@@ -12,200 +101,500 @@
 
             <div class="row">
 
-                <div class="col-md-4 mb-3">
-                    <label>Module</label>
-                    <select class="form-select">
-                        <option>All Modules</option>
-                        <option>Leads</option>
-                        <option>Sales</option>
-                        <option>Support</option>
-                        <option>Projects</option>
-                        <option>Billing</option>
-                        <option>Subscription</option>
-                        <option>HR</option>
-                        <option>Marketing</option>
-                    </select>
-                </div>
+                <!-- Template Code -->
 
                 <div class="col-md-4 mb-3">
-                    <label>Notification Type</label>
-                    <select class="form-select">
-                        <option>Browser Push</option>
-                        <option>Mobile Push</option>
-                        <option>Desktop Push</option>
-                        <option>Web Push</option>
-                    </select>
+
+                    <label class="form-label">
+
+                        Template Code
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input class="form-control" placeholder="Example: NEW_LEAD_ASSIGNED"
+                        [(ngModel)]="template.templateCode">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !template.templateCode">
+
+                        Template Code is required.
+
+                    </div>
+
                 </div>
+
+                <!-- Template Name -->
 
                 <div class="col-md-4 mb-3">
-                    <label>Priority</label>
-                    <select class="form-select">
-                        <option>Low</option>
-                        <option>Medium</option>
-                        <option>High</option>
-                        <option>Critical</option>
+
+                    <label class="form-label">
+
+                        Template Name
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input class="form-control" placeholder="Example: New Lead Assigned"
+                        [(ngModel)]="template.templateName">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !template.templateName">
+
+                        Template Name is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Notification Type -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Notification Type
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="template.notificationType">
+
+                        <option value="">Select Notification Type</option>
+
+                        <option *ngFor="let n of notificationTypeOptions" [value]="n">{{n}}</option>
+
                     </select>
+
                 </div>
 
-                <div class="col-md-4">
-                    <label>
-                        <input type="checkbox" checked>
-                        Enable Push Notifications
+                <!-- Category -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Category
+
                     </label>
+
+                    <select class="form-select" [(ngModel)]="template.category">
+
+                        <option value="">Select Category</option>
+
+                        <option *ngFor="let c of categoryOptions" [value]="c">{{c}}</option>
+
+                    </select>
+
                 </div>
 
-                <div class="col-md-4">
-                    <label>
-                        <input type="checkbox" checked>
-                        Send Sound Alert
+                <!-- Channel -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Channel
+
                     </label>
+
+                    <select class="form-select" [(ngModel)]="template.channel">
+
+                        <option value="">Select Channel</option>
+
+                        <option *ngFor="let ch of channelOptions" [value]="ch">{{ch}}</option>
+
+                    </select>
+
                 </div>
 
-                <div class="col-md-4">
-                    <label>
-                        <input type="checkbox" checked>
-                        Active
+                <!-- Language -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Language
+
                     </label>
+
+                    <select class="form-select" [(ngModel)]="template.languageCode">
+
+                        <option *ngFor="let l of languageOptions" [value]="l.value">{{l.label}}</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Title -->
+
+                <div class="col-md-8 mb-3">
+
+                    <label class="form-label">
+
+                        Title
+
+                    </label>
+
+                    <input class="form-control" placeholder="Enter notification title" [(ngModel)]="template.title">
+
+                </div>
+
+                <!-- Version -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Version
+
+                    </label>
+
+                    <input type="number" min="1" class="form-control" [(ngModel)]="template.version">
+
+                </div>
+
+                <!-- Message Body -->
+
+                <div class="col-md-8 mb-3">
+
+                    <label class="form-label">
+
+                        Message Body
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <textarea rows="4" class="form-control" placeholder="Enter the notification message"
+                        [(ngModel)]="template.messageBody"></textarea>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !template.messageBody">
+
+                        Message Body is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Status -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Status
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="template.status">
+
+                        <option *ngFor="let s of statusOptions" [value]="s">{{s}}</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Active -->
+
+                <div class="col-md-4 mb-3">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="template.isActive">
+
+                        <label class="form-check-label">
+
+                            Active
+
+                        </label>
+
+                    </div>
+
                 </div>
 
             </div>
 
-            <button class="btn btn-danger me-2">
-                Save
-            </button>
+        </div>
 
-            <button class="btn btn-secondary me-2">
-                Clear
-            </button>
+    </div>
 
-            <button class="btn btn-success">
-                Add Notification
-            </button>
+</div>
+
+<!-- ========================================= -->
+<!-- Search Section -->
+<!-- ========================================= -->
+
+<div class="card shadow-sm border-0 mb-3">
+
+    <div class="card-body">
+
+        <div class="row">
+
+            <div class="col-md-4">
+
+                <input class="form-control" placeholder="Search Notification..." [(ngModel)]="searchText">
+
+            </div>
+
+            <div class="col-md-3">
+
+                <select class="form-select" [(ngModel)]="notificationTypeFilter">
+
+                    <option value="">All Types</option>
+
+                    <option *ngFor="let n of notificationTypeOptions" [value]="n">{{n}}</option>
+
+                </select>
+
+            </div>
+
+            <div class="col-md-3">
+
+                <select class="form-select" [(ngModel)]="statusFilter">
+
+                    <option value="">All Status</option>
+
+                    <option *ngFor="let s of statusOptions" [value]="s">{{s}}</option>
+
+                </select>
+
+            </div>
+
+            <div class="col-md-2">
+
+                <button class="btn btn-secondary w-100" (click)="clearFilters()">
+
+                    Clear
+
+                </button>
+
+            </div>
 
         </div>
 
     </div>
 
-    <br>
+</div>
 
-    <div class="row mb-3">
+<!-- ========================================= -->
+<!-- Notification Template List -->
+<!-- ========================================= -->
 
-        <div class="col-md-3">
-            <input class="form-control"
-                   placeholder="Search Notification...">
-        </div>
+<div class="card shadow-sm border-0">
 
-        <div class="col-md-3">
-            <select class="form-select">
-                <option>All Modules</option>
-                <option>Sales</option>
-                <option>Support</option>
-                <option>Billing</option>
-                <option>Marketing</option>
-            </select>
-        </div>
+    <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
 
-        <div class="col-md-3">
-            <select class="form-select">
-                <option>All Status</option>
-                <option>Active</option>
-                <option>Inactive</option>
-            </select>
-        </div>
+        <h5 class="mb-0">
 
-        <div class="col-md-3">
-            <button class="btn btn-danger w-100">
-                Search
-            </button>
+            Push Notification Templates
+
+        </h5>
+
+        <span class="badge bg-light text-dark">
+
+            Total Records : {{filteredTemplates.length}}
+
+        </span>
+
+    </div>
+
+    <div class="card-body p-0">
+
+        <div class="table-responsive">
+
+            <table class="table table-hover table-bordered align-middle mb-0">
+
+                <thead class="table-danger">
+
+                    <tr>
+
+                        <th width="70">#</th>
+                        <th>Template Name</th>
+                        <th>Notification Type</th>
+                        <th>Channel</th>
+                        <th>Title</th>
+                        <th>Status</th>
+                        <th>Active</th>
+                        <th width="210">Action</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr *ngFor="let item of filteredTemplates; let i=index">
+
+                        <td>
+
+                            {{i+1}}
+
+                        </td>
+
+                        <td>
+
+                            <div class="fw-bold">
+
+                                {{item.templateName}}
+
+                            </div>
+
+                            <small class="text-muted">
+
+                                {{item.templateCode}}
+
+                            </small>
+
+                        </td>
+
+                        <td>
+
+                            {{item.notificationType || '—'}}
+
+                        </td>
+
+                        <td>
+
+                            {{item.channel || '—'}}
+
+                        </td>
+
+                        <td>
+
+                            {{item.title || '—'}}
+
+                        </td>
+
+                        <td>
+
+                            <span class="badge" [ngClass]="{
+                                'bg-secondary': item.status === 'Draft',
+                                'bg-success': item.status === 'Active',
+                                'bg-dark': item.status === 'Inactive',
+                                'bg-warning text-dark': item.status === 'Archived'
+                                }">
+
+                                {{item.status}}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <span class="badge" [ngClass]="item.isActive ? 'bg-success' : 'bg-secondary'">
+
+                                {{item.isActive ? 'Active' : 'Inactive'}}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <button class="btn btn-info btn-sm me-1" (click)="preview(item)">
+
+                                <i class="fa-solid fa-eye"></i>
+                                Preview
+
+                            </button>
+
+                            <button class="btn btn-warning btn-sm me-1" (click)="edit(item.notificationTemplateId)">
+
+                                <i class="fa-solid fa-pen"></i>
+                                Edit
+
+                            </button>
+
+                            <button class="btn btn-danger btn-sm" (click)="delete(item.notificationTemplateId)">
+
+                                <i class="fa-solid fa-trash"></i>
+                                Delete
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                    <tr *ngIf="filteredTemplates.length==0">
+
+                        <td colspan="8" class="text-center text-muted py-5">
+
+                            <i class="fa-solid fa-bell fa-3x mb-3"></i>
+
+                            <br>
+
+                            No Push Notification Templates Found.
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
         </div>
 
     </div>
 
-    <table class="table table-bordered table-hover">
+</div>
 
-        <thead class="table-danger">
+<!-- ========================================= -->
+<!-- Preview Modal -->
+<!-- ========================================= -->
 
-            <tr>
+<div class="modal d-block" tabindex="-1" style="background: rgba(0,0,0,.5);" *ngIf="showPreview">
 
-                <th>#</th>
-                <th>Template Name</th>
-                <th>Module</th>
-                <th>Notification Type</th>
-                <th>Priority</th>
-                <th>Target Platform</th>
-                <th>Status</th>
-                <th width="200">Action</th>
+    <div class="modal-dialog modal-dialog-centered">
 
-            </tr>
+        <div class="modal-content">
 
-        </thead>
+            <div class="modal-header bg-danger text-white">
 
-        <tbody>
+                <h5 class="modal-title">
 
-            <tr>
-                <td>1</td>
-                <td>New Lead Assigned</td>
-                <td>Leads</td>
-                <td>Mobile Push</td>
-                <td>High</td>
-                <td>Android / iOS</td>
-                <td><span class="badge bg-success">Active</span></td>
-                <td>
-                    <button class="btn btn-info btn-sm me-1">Preview</button>
-                    <button class="btn btn-warning btn-sm me-1">Edit</button>
-                    <button class="btn btn-danger btn-sm">Delete</button>
-                </td>
-            </tr>
+                    Template Preview
 
-            <tr>
-                <td>2</td>
-                <td>Quotation Approved</td>
-                <td>Sales</td>
-                <td>Browser Push</td>
-                <td>Medium</td>
-                <td>Web</td>
-                <td><span class="badge bg-success">Active</span></td>
-                <td>
-                    <button class="btn btn-info btn-sm me-1">Preview</button>
-                    <button class="btn btn-warning btn-sm me-1">Edit</button>
-                    <button class="btn btn-danger btn-sm">Delete</button>
-                </td>
-            </tr>
+                </h5>
 
-            <tr>
-                <td>3</td>
-                <td>Ticket Assigned</td>
-                <td>Support</td>
-                <td>Desktop Push</td>
-                <td>Critical</td>
-                <td>Windows</td>
-                <td><span class="badge bg-success">Active</span></td>
-                <td>
-                    <button class="btn btn-info btn-sm me-1">Preview</button>
-                    <button class="btn btn-warning btn-sm me-1">Edit</button>
-                    <button class="btn btn-danger btn-sm">Delete</button>
-                </td>
-            </tr>
+                <button type="button" class="btn-close btn-close-white" (click)="closePreview()"></button>
 
-            <tr>
-                <td>4</td>
-                <td>Subscription Expiry</td>
-                <td>Subscription</td>
-                <td>Web Push</td>
-                <td>High</td>
-                <td>Browser</td>
-                <td><span class="badge bg-secondary">Inactive</span></td>
-                <td>
-                    <button class="btn btn-info btn-sm me-1">Preview</button>
-                    <button class="btn btn-warning btn-sm me-1">Edit</button>
-                    <button class="btn btn-danger btn-sm">Delete</button>
-                </td>
-            </tr>
+            </div>
 
-        </tbody>
+            <div class="modal-body">
 
-    </table>
+                <div class="border rounded p-3 bg-light">
 
- 
+                    <div class="fw-bold" *ngIf="previewTemplate?.title">
+
+                        {{previewTemplate?.title}}
+
+                    </div>
+
+                    <div style="white-space: pre-wrap;">
+
+                        {{previewTemplate?.messageBody}}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button class="btn btn-secondary" (click)="closePreview()">
+
+                    Close
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
