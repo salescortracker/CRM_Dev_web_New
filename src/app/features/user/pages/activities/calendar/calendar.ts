@@ -1,881 +1,430 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../../../../../environments/environment';
+import { ApiResponse } from '../../../../../core/authentication/services/auth.service';
 import { Pagination } from '../../../../../shared/pagination/pagination';
 import { Alertservice } from '../../../../../core/services/alertservice';
 import { Spinnerservice } from '../../../../../core/services/spinnerservice';
+import { fromApiTime, nullIfEmpty, toApiTime } from '../activities.util';
 
 @Component({
   selector: 'app-calendar',
-  standalone:true,
-  imports: [CommonModule,FormsModule,Pagination],
+  standalone: true,
+  imports: [CommonModule, FormsModule, Pagination],
   templateUrl: './calendar.html',
   styleUrl: './calendar.css',
 })
-export class Calendar {
-   submitted = false;
+export class Calendar implements OnInit {
 
+  private baseUrl = environment.apiUrl;
+
+  submitted = false;
   isEdit = false;
 
-
   page = 1;
-
   pageSize = 5;
-
-  totalRecords = 0;
-
   searchText = '';
-
-
 
   events: any[] = [];
 
-
-
-  event: any = {
-
-
-    eventId: 0,
-
-    title: '',
-
-    eventType: '',
-
-    relatedTo: '',
-
-    customer: '',
-
-    contactPerson: '',
-
-    assignedTo: '',
-
-    startDate: '',
-
-    startTime: '',
-
-    endDate: '',
-
-    endTime: '',
-
-    priority: '',
-
-    reminder: '',
-
-    status: '',
-
-    description: '',
-
-    isActive: true
-
-
-  };
-
-
-
-
+  event: any = this.getEmptyModel();
 
   constructor(
-
+    private http: HttpClient,
     private alert: Alertservice,
-
     private spinner: Spinnerservice,
-
     private cd: ChangeDetectorRef
-
-
   ) { }
 
+  getEmptyModel() {
 
-
-
-
-  ngOnInit(): void {
-
-
-    this.loadEvents();
-
-
-  }
-
-
-
-
-
-
-
-  loadEvents() {
-
-
-    this.spinner.show();
-
-
-
-    setTimeout(() => {
-
-
-
-      this.events = [
-
-
-
-        {
-
-          eventId: 1,
-
-          title: 'CRM Demo Meeting',
-
-          eventType: 'Demo',
-
-          relatedTo: 'Lead',
-
-          customer: 'ABC Technologies',
-
-          contactPerson: 'Rahul Sharma',
-
-          assignedTo: 'Sales Executive',
-
-          startDate: '2026-07-29',
-
-          startTime: '10:00',
-
-          endDate: '2026-07-29',
-
-          endTime: '11:00',
-
-          priority: 'High',
-
-          reminder: '15 Minutes Before',
-
-          status: 'Scheduled',
-
-          description: 'Product demo presentation for CRM solution.',
-
-          isActive: true
-
-        },
-
-
-
-        {
-
-          eventId: 2,
-
-          title: 'Customer Follow Up Call',
-
-          eventType: 'Call',
-
-          relatedTo: 'Contact',
-
-          customer: 'XYZ Solutions',
-
-          contactPerson: 'Priya Reddy',
-
-          assignedTo: 'Account Manager',
-
-          startDate: '2026-07-30',
-
-          startTime: '14:00',
-
-          endDate: '2026-07-30',
-
-          endTime: '14:30',
-
-          priority: 'Medium',
-
-          reminder: '30 Minutes Before',
-
-          status: 'Completed',
-
-          description: 'Follow up discussion regarding quotation.',
-
-          isActive: true
-
-        },
-
-
-
-        {
-
-          eventId: 3,
-
-          title: 'Product Discussion',
-
-          eventType: 'Meeting',
-
-          relatedTo: 'Opportunity',
-
-          customer: 'Future Vision',
-
-          contactPerson: 'Arjun Kumar',
-
-          assignedTo: 'Sales Manager',
-
-          startDate: '2026-08-01',
-
-          startTime: '11:30',
-
-          endDate: '2026-08-01',
-
-          endTime: '12:30',
-
-          priority: 'High',
-
-          reminder: '1 Hour Before',
-
-          status: 'Scheduled',
-
-          description: 'Discussion about enterprise package.',
-
-          isActive: true
-
-        },
-
-
-
-        {
-
-          eventId: 4,
-
-          title: 'Contract Renewal Reminder',
-
-          eventType: 'Follow Up',
-
-          relatedTo: 'Account',
-
-          customer: 'Global InfoTech',
-
-          contactPerson: 'Sneha Patel',
-
-          assignedTo: 'Customer Success',
-
-          startDate: '2026-08-05',
-
-          startTime: '09:30',
-
-          endDate: '2026-08-05',
-
-          endTime: '10:00',
-
-          priority: 'Low',
-
-          reminder: '5 Minutes Before',
-
-          status: 'Scheduled',
-
-          description: 'Annual contract renewal discussion.',
-
-          isActive: true
-
-        },
-
-
-
-        {
-
-          eventId: 5,
-
-          title: 'Training Session',
-
-          eventType: 'Training',
-
-          relatedTo: 'Account',
-
-          customer: 'NextGen Pvt Ltd',
-
-          contactPerson: 'Kiran Verma',
-
-          assignedTo: 'Support Team',
-
-          startDate: '2026-08-10',
-
-          startTime: '15:00',
-
-          endDate: '2026-08-10',
-
-          endTime: '17:00',
-
-          priority: 'Medium',
-
-          reminder: '30 Minutes Before',
-
-          status: 'Scheduled',
-
-          description: 'User training session for CRM application.',
-
-          isActive: true
-
-        }
-
-
-
-      ];
-
-
-
-
-      this.events.sort(
-
-        (a, b) => b.eventId - a.eventId
-
-      );
-
-
-
-      this.totalRecords = this.events.length;
-
-
-
-      this.spinner.hide();
-
-
-
-      this.cd.detectChanges();
-
-
-
-    }, 500);
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-  saveEvent() {
-
-
-
-    this.submitted = true;
-
-
-
-    if (
-
-
-      !this.event.title ||
-
-      !this.event.eventType ||
-
-      !this.event.startDate ||
-
-      !this.event.startTime ||
-
-      !this.event.status
-
-
-    ) {
-
-
-      return;
-
-
-    }
-
-
-
-
-
-
-    this.spinner.show();
-
-
-
-
-    setTimeout(() => {
-
-
-
-
-      if (!this.isEdit) {
-
-
-
-
-        const newEvent = {
-
-
-          ...this.event,
-
-
-          eventId:
-
-            this.events.length
-
-              ?
-
-              Math.max(
-
-                ...this.events.map(x => x.eventId)
-
-              ) + 1
-
-              :
-
-              1
-
-
-        };
-
-
-
-        this.events.unshift(newEvent);
-
-
-
-      }
-
-      else {
-
-
-
-        const index = this.events.findIndex(
-
-
-          x => x.eventId === this.event.eventId
-
-
-        );
-
-
-
-        if (index !== -1) {
-
-
-          this.events[index] = {
-
-
-            ...this.event
-
-
-          };
-
-
-        }
-
-
-
-      }
-
-
-
-
-
-      // Immediate UI refresh
-
-      this.events = [
-
-        ...this.events
-
-      ];
-
-
-
-      this.totalRecords = this.events.length;
-
-
-
-      this.page = 1;
-
-
-
-      const message = this.isEdit
-
-        ?
-
-        'Calendar event updated successfully.'
-
-        :
-
-        'Calendar event created successfully.';
-
-
-
-
-
-      this.clear();
-
-
-
-      this.spinner.hide();
-
-
-
-      this.cd.detectChanges();
-
-
-
-      this.alert.success(message);
-
-
-
-
-    }, 500);
-
-
-
-  }
-
-    edit(id: number) {
-
-
-    this.spinner.show();
-
-
-
-    setTimeout(() => {
-
-
-
-      const selected = this.events.find(
-
-        x => x.eventId === id
-
-      );
-
-
-
-      if (selected) {
-
-
-        this.event = {
-
-          ...selected
-
-        };
-
-
-
-        this.isEdit = true;
-
-
-        this.submitted = false;
-
-
-
-        this.cd.detectChanges();
-
-
-      }
-
-
-
-
-      this.spinner.hide();
-
-
-
-    }, 300);
-
-
-
-  }
-
-
-
-
-
-
-
-
-  delete(id: number) {
-
-
-
-    this.alert.deleteConfirm().then(result => {
-
-
-
-      if (result.isConfirmed) {
-
-
-
-        this.spinner.show();
-
-
-
-
-        setTimeout(() => {
-
-
-
-
-          this.events = this.events.filter(
-
-
-            x => x.eventId !== id
-
-
-          );
-
-
-
-
-          this.totalRecords = this.events.length;
-
-
-
-          if (
-
-            this.page > 1 &&
-
-            this.pagedEvents.length === 0
-
-          ) {
-
-
-            this.page--;
-
-
-          }
-
-
-
-
-          // Immediate table refresh
-
-          this.events = [
-
-            ...this.events
-
-          ];
-
-
-
-          this.spinner.hide();
-
-
-
-          this.cd.detectChanges();
-
-
-
-
-          this.alert.success(
-
-            'Calendar event deleted successfully.'
-
-          );
-
-
-
-
-        }, 500);
-
-
-
-      }
-
-
-
-    });
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-  clear() {
-
-
-
-    this.event = {
-
-
+    return {
 
       eventId: 0,
-
       title: '',
-
       eventType: '',
-
       relatedTo: '',
-
       customer: '',
-
       contactPerson: '',
-
       assignedTo: '',
-
       startDate: '',
-
       startTime: '',
-
       endDate: '',
-
       endTime: '',
-
       priority: '',
-
       reminder: '',
-
       status: '',
-
       description: '',
-
       isActive: true
-
-
 
     };
 
+  }
 
+  ngOnInit(): void {
 
+    this.loadEvents();
+
+  }
+
+  //====================================================
+  // Load
+  //====================================================
+
+  loadEvents(): void {
+
+    this.spinner.show();
+
+    this.http
+      .get<ApiResponse<any[]>>(`${this.baseUrl}/Admin/getallcalendarevents`)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.spinner.hide();
+
+          if (res?.success) {
+
+            // Times arrive as HH:mm:ss - the grid shows HH:mm
+            this.events = (res.data || []).map((x: any) => ({
+              ...x,
+              startTime: fromApiTime(x.startTime),
+              endTime: fromApiTime(x.endTime)
+            }));
+
+          } else {
+
+            this.events = [];
+
+            this.alert.warning(res?.message || 'No Calendar Events found.');
+
+          }
+
+          this.cd.detectChanges();
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Load calendar events error:', err);
+
+          this.events = [];
+
+          this.alert.error(
+            err?.error?.message || 'Failed to load Calendar Events.'
+          );
+
+          this.cd.detectChanges();
+
+        }
+
+      });
+
+  }
+
+  //====================================================
+  // Save (Create / Update)
+  //====================================================
+
+  saveEvent(): void {
+
+    this.submitted = true;
+
+    if (
+      !this.event.title?.trim() ||
+      !this.event.eventType ||
+      !this.event.startDate ||
+      !this.event.startTime ||
+      !this.event.status
+    ) {
+      return;
+    }
+
+    if (this.event.endDate && this.event.endDate < this.event.startDate) {
+      this.alert.warning('End Date cannot be earlier than Start Date.');
+      return;
+    }
+
+    // No end date means the event ends on the start date
+    const endDate = this.event.endDate || this.event.startDate;
+
+    if (
+      this.event.endTime &&
+      endDate === this.event.startDate &&
+      this.event.endTime <= this.event.startTime
+    ) {
+      this.alert.warning('End Time must be later than Start Time.');
+      return;
+    }
+
+    const payload = {
+
+      eventId: this.event.eventId,
+      title: this.event.title.trim(),
+      eventType: this.event.eventType,
+      relatedTo: nullIfEmpty(this.event.relatedTo),
+      customer: nullIfEmpty(this.event.customer),
+      contactPerson: nullIfEmpty(this.event.contactPerson),
+      assignedTo: nullIfEmpty(this.event.assignedTo),
+      startDate: this.event.startDate,
+      startTime: toApiTime(this.event.startTime),
+      endDate: this.event.endDate || null,
+      endTime: toApiTime(this.event.endTime),
+      priority: nullIfEmpty(this.event.priority),
+      reminder: nullIfEmpty(this.event.reminder),
+      status: this.event.status,
+      description: nullIfEmpty(this.event.description),
+      isActive: !!this.event.isActive
+
+    };
+
+    const url = this.isEdit
+      ? `${this.baseUrl}/Admin/updatecalendarevent`
+      : `${this.baseUrl}/Admin/createcalendarevent`;
+
+    const failMessage = this.isEdit
+      ? 'Failed to update Calendar Event.'
+      : 'Failed to create Calendar Event.';
+
+    this.spinner.show();
+
+    this.http
+      .post<ApiResponse>(url, payload)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.spinner.hide();
+
+          if (res?.success) {
+
+            this.alert.success(res.message);
+
+            this.clear();
+
+            this.page = 1;
+
+            this.loadEvents();
+
+          } else {
+
+            this.alert.warning(res?.message || failMessage);
+
+          }
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Save calendar event error:', err);
+
+          this.alert.error(err?.error?.message || failMessage);
+
+        }
+
+      });
+
+  }
+
+  //====================================================
+  // Edit
+  //====================================================
+
+  edit(id: number): void {
+
+    this.spinner.show();
+
+    this.http
+      .get<ApiResponse<any>>(`${this.baseUrl}/Admin/getbycalendarevent/${id}`)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.spinner.hide();
+
+          if (res?.success && res.data) {
+
+            const data = res.data;
+
+            this.event = {
+
+              eventId: data.eventId,
+              title: data.title || '',
+              eventType: data.eventType || '',
+              relatedTo: data.relatedTo || '',
+              customer: data.customer || '',
+              contactPerson: data.contactPerson || '',
+              assignedTo: data.assignedTo || '',
+              startDate: data.startDate || '',
+              startTime: fromApiTime(data.startTime),
+              endDate: data.endDate || '',
+              endTime: fromApiTime(data.endTime),
+              priority: data.priority || '',
+              reminder: data.reminder || '',
+              status: data.status || '',
+              description: data.description || '',
+              isActive: !!data.isActive
+
+            };
+
+            this.isEdit = true;
+
+            this.submitted = false;
+
+            this.cd.detectChanges();
+
+          } else {
+
+            this.alert.warning(res?.message || 'Calendar Event not found.');
+
+          }
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Get calendar event error:', err);
+
+          this.alert.error(
+            err?.error?.message || 'Failed to load Calendar Event.'
+          );
+
+        }
+
+      });
+
+  }
+
+  //====================================================
+  // Delete
+  //====================================================
+
+  delete(id: number): void {
+
+    this.alert.deleteConfirm().then(result => {
+
+      if (!result.isConfirmed) return;
+
+      this.spinner.show();
+
+      this.http
+        .post<ApiResponse>(`${this.baseUrl}/Admin/deletecalendarevent/${id}`, {})
+        .subscribe({
+
+          next: (res: any) => {
+
+            this.spinner.hide();
+
+            if (res?.success) {
+
+              this.alert.success(res.message);
+
+              // Editing the record that was just deleted - reset the form
+              if (this.event.eventId === id) {
+                this.clear();
+              }
+
+              if (this.page > 1 && this.pagedEvents.length === 1) {
+                this.page = this.page - 1;
+              }
+
+              this.loadEvents();
+
+            } else {
+
+              this.alert.warning(
+                res?.message || 'Failed to delete Calendar Event.'
+              );
+
+            }
+
+          },
+
+          error: (err) => {
+
+            this.spinner.hide();
+
+            console.error('Delete calendar event error:', err);
+
+            this.alert.error(
+              err?.error?.message || 'Failed to delete Calendar Event.'
+            );
+
+          }
+
+        });
+
+    });
+
+  }
+
+  //====================================================
+  // Clear
+  //====================================================
+
+  clear(): void {
+
+    this.event = this.getEmptyModel();
 
     this.isEdit = false;
 
-
-
     this.submitted = false;
-
-
 
     this.cd.detectChanges();
 
-
-
   }
 
-
-
-
-
-
-
-
+  //====================================================
+  // Search / Pagination
+  //====================================================
 
   get filteredEvents() {
 
-
+    const search = this.searchText.toLowerCase();
 
     return this.events.filter(x =>
 
-
-
-
       (
-
-        x.title +
-
-        ' ' +
-
-        x.eventType +
-
-        ' ' +
-
-        x.customer +
-
-        ' ' +
-
-        x.contactPerson +
-
-        ' ' +
-
-        x.status
-
+        (x.title || '') + ' ' +
+        (x.eventType || '') + ' ' +
+        (x.customer || '') + ' ' +
+        (x.contactPerson || '') + ' ' +
+        (x.status || '')
       )
-
-      .toLowerCase()
-
-      .includes(
-
-        this.searchText.toLowerCase()
-
-      )
-
-
+        .toLowerCase()
+        .includes(search)
 
     );
 
-
-
   }
-
-
-
-
-
-
-
-
 
   get pagedEvents() {
 
+    const start = (this.page - 1) * this.pageSize;
 
-
-    const start =
-
-      (this.page - 1) * this.pageSize;
-
-
-
-    return this.filteredEvents.slice(
-
-
-
-      start,
-
-
-
-      start + this.pageSize
-
-
-
-    );
-
-
+    return this.filteredEvents.slice(start, start + this.pageSize);
 
   }
-
-
-
-
-
-
-
-
 
   changePage(page: number) {
 
-
-
     this.page = page;
-
-
 
   }
 
-
-
-
-
-
-
-
-
   changePageSize(size: number) {
-
-
 
     this.pageSize = size;
 
-
-
     this.page = 1;
-
-
 
   }
 

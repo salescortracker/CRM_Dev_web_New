@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Pagination } from '../../../../shared/pagination/pagination';
 import { Alertservice } from '../../../../core/services/alertservice';
 import { Spinnerservice } from '../../../../core/services/spinnerservice';
+import { ControlsystemService } from '../../services/controlsystem-service';
 
 @Component({
   selector: 'app-invoices',
@@ -12,7 +13,7 @@ import { Spinnerservice } from '../../../../core/services/spinnerservice';
   templateUrl: './invoices.html',
   styleUrl: './invoices.css',
 })
-export class Invoices {
+export class Invoices implements OnInit {
   // ==========================================
   // Invoice Form Object
   // ==========================================
@@ -65,13 +66,21 @@ export class Invoices {
 
   invoices: any[] = [];
 
+  companies: any[] = [];
+
+  plans: any[] = [];
+
 
 
   constructor(
 
     private alert: Alertservice,
 
-    private spinner: Spinnerservice
+    private spinner: Spinnerservice,
+
+    private controlService: ControlsystemService,
+
+    private cdr: ChangeDetectorRef
 
   ) { }
 
@@ -84,13 +93,69 @@ export class Invoices {
 
     this.resetForm();
 
+    this.loadCompanies();
 
-    this.loadStaticInvoices();
+    this.loadPlans();
+
+    this.loadInvoices();
 
 
   }
 
 
+  // ==========================================
+  // Load Dropdown Data
+  // ==========================================
+
+  loadCompanies(): void {
+
+    this.controlService.getOrganizations().subscribe({
+      next: (res: any) => {
+        this.companies = res?.data || [];
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error loading companies:', err);
+        this.companies = [];
+      }
+    });
+
+  }
+
+  loadPlans(): void {
+
+    this.controlService.getPlans().subscribe({
+      next: (res: any) => {
+        this.plans = res?.data || [];
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error loading plans:', err);
+        this.plans = [];
+      }
+    });
+
+  }
+
+  onCompanyChange(organizationId: any): void {
+
+    const company = this.companies.find(c => c.organizationId === Number(organizationId));
+
+    this.invoice.organizationId = Number(organizationId);
+    this.invoice.companyName = company ? company.organizationName : '';
+    this.invoice.companyEmail = company ? (company.contactEmail || company.email) : '';
+    this.invoice.companyPhone = company ? (company.contactMobile || company.phone) : '';
+
+  }
+
+  onPlanChange(planId: any): void {
+
+    const plan = this.plans.find(p => p.planId === Number(planId));
+
+    this.invoice.planId = Number(planId);
+    this.invoice.planName = plan ? plan.planName : '';
+
+  }
 
 
 
@@ -111,6 +176,9 @@ export class Invoices {
       invoiceNumber: '',
 
 
+      organizationId: null,
+
+
       companyName: '',
 
 
@@ -119,6 +187,9 @@ export class Invoices {
 
       companyPhone: '',
 
+
+
+      planId: null,
 
 
       planName: '',
@@ -201,235 +272,74 @@ export class Invoices {
   }
 
 
-
-
-
-
-
   // ==========================================
-  // Static Invoice Data
+  // Load Invoices (API)
   // ==========================================
 
 
-  loadStaticInvoices(): void {
-
-
-    this.invoices = [
-
-
-
-      {
-
-
-        invoiceId: 1,
-
-
-        invoiceNumber: 'INV-1001',
-
-
-        companyName: 'ABC Technologies',
-
-
-        companyEmail: 'admin@abc.com',
-
-
-        companyPhone: '9876543210',
-
-
-
-        planName: 'Enterprise Plan',
-
-
-
-        billingCycle: 'Yearly',
-
-
-
-        invoiceDate: '2026-07-01',
-
-
-
-        dueDate: '2026-07-15',
-
-
-
-        description:
-          'CRM Enterprise Subscription',
-
-
-
-        quantity: 1,
-
-
-
-        unitPrice: 50000,
-
-
-
-        subTotal: 50000,
-
-
-
-        gstPercentage: 18,
-
-
-
-        taxAmount: 9000,
-
-
-
-        discount: 2000,
-
-
-
-        totalAmount: 57000,
-
-
-
-        paidAmount: 57000,
-
-
-
-        balanceAmount: 0,
-
-
-
-        paymentStatus: 'Paid',
-
-
-
-        paymentMethod: 'Bank Transfer',
-
-
-
-        transactionId: 'TXN100001',
-
-
-
-        currency: 'INR',
-
-
-
-        notes: 'Annual CRM Subscription',
-
-
-
-        isActive: true
-
+  loadInvoices(): void {
+
+    this.spinner.show();
+
+    this.controlService.getInvoices().subscribe({
+
+      next: (res: any) => {
+
+        this.spinner.hide();
+
+        if (res.success) {
+
+          this.invoices = (res.data || []).map((x: any) => ({
+            invoiceId: x.invoiceId,
+            invoiceNumber: x.invoiceNumber,
+            organizationId: x.organizationId,
+            companyName: x.organizationName,
+            companyEmail: x.companyEmail,
+            companyPhone: x.companyPhone,
+            planId: x.planId,
+            planName: x.planName,
+            billingCycle: x.billingCycle,
+            invoiceDate: (x.invoiceDate || '').slice(0, 10),
+            dueDate: x.dueDate ? x.dueDate.slice(0, 10) : '',
+            description: x.description,
+            quantity: x.quantity,
+            unitPrice: x.unitPrice,
+            subTotal: x.subTotal,
+            gstPercentage: x.gstPercentage,
+            taxAmount: x.taxAmount,
+            discount: x.discount,
+            totalAmount: x.totalAmount,
+            paidAmount: x.paidAmount,
+            balanceAmount: x.balanceAmount,
+            paymentStatus: x.paymentStatus,
+            paymentMethod: x.paymentMethod,
+            transactionId: x.transactionId,
+            currency: x.currency,
+            notes: x.notes,
+            isActive: x.isActive
+          }));
+
+          this.cdr.detectChanges();
+
+        } else {
+
+          this.alert.warning(res.message);
+
+        }
 
       },
 
+      error: (err) => {
 
+        this.spinner.hide();
 
+        console.error('Error loading invoices:', err);
 
-      {
-
-
-        invoiceId: 2,
-
-
-        invoiceNumber: 'INV-1002',
-
-
-        companyName: 'XYZ Solutions',
-
-
-
-        companyEmail: 'contact@xyz.com',
-
-
-
-        companyPhone: '9988776655',
-
-
-
-        planName: 'Professional Plan',
-
-
-
-        billingCycle: 'Monthly',
-
-
-
-        invoiceDate: '2026-07-05',
-
-
-
-        dueDate: '2026-07-20',
-
-
-
-        description: 'CRM Monthly Subscription',
-
-
-
-        quantity: 1,
-
-
-
-        unitPrice: 5000,
-
-
-
-        subTotal: 5000,
-
-
-
-        gstPercentage: 18,
-
-
-
-        taxAmount: 900,
-
-
-
-        discount: 0,
-
-
-
-        totalAmount: 5900,
-
-
-
-        paidAmount: 3000,
-
-
-
-        balanceAmount: 2900,
-
-
-
-        paymentStatus: 'Partial',
-
-
-
-        paymentMethod: 'UPI',
-
-
-
-        transactionId: 'TXN100002',
-
-
-
-        currency: 'INR',
-
-
-
-        notes: 'Partial payment received',
-
-
-
-        isActive: true
-
+        this.alert.error(err?.error?.message || 'Unable to load invoices.');
 
       }
 
-
-
-
-    ];
-
-
+    });
 
   }
   // ==========================================
@@ -445,8 +355,8 @@ export class Invoices {
 
 
     if (
-      !this.invoice.companyName ||
-      !this.invoice.planName ||
+      !this.invoice.organizationId ||
+      !this.invoice.planId ||
       !this.invoice.totalAmount
     ) {
 
@@ -461,103 +371,75 @@ export class Invoices {
 
     }
 
-
+    const dto = {
+      invoiceId: this.isEdit ? this.invoice.invoiceId : 0,
+      invoiceNumber: this.invoice.invoiceNumber,
+      organizationId: this.invoice.organizationId,
+      companyEmail: this.invoice.companyEmail,
+      companyPhone: this.invoice.companyPhone,
+      planId: this.invoice.planId,
+      billingCycle: this.invoice.billingCycle,
+      invoiceDate: this.invoice.invoiceDate,
+      dueDate: this.invoice.dueDate || null,
+      description: this.invoice.description,
+      quantity: this.invoice.quantity,
+      unitPrice: this.invoice.unitPrice,
+      subTotal: this.invoice.subTotal,
+      gstPercentage: this.invoice.gstPercentage,
+      taxAmount: this.invoice.taxAmount,
+      discount: this.invoice.discount,
+      totalAmount: this.invoice.totalAmount,
+      paidAmount: this.invoice.paidAmount,
+      paymentStatus: this.invoice.paymentStatus,
+      paymentMethod: this.invoice.paymentMethod,
+      transactionId: this.invoice.transactionId,
+      currency: this.invoice.currency,
+      notes: this.invoice.notes,
+      isActive: this.invoice.isActive
+    };
 
     this.spinner.show();
 
+    const request = this.isEdit
+      ? this.controlService.updateInvoice(dto)
+      : this.controlService.createInvoice(dto);
 
+    request.subscribe({
 
-    setTimeout(() => {
+      next: (res: any) => {
 
+        this.spinner.hide();
 
+        if (res.success) {
 
-      if (this.isEdit) {
+          this.loadInvoices();
 
+          this.alert.success(res.message);
 
+          this.clear();
 
-        const index =
-          this.invoices.findIndex(
-            x => x.invoiceId === this.invoice.invoiceId
-          );
+        } else {
 
-
-
-        if (index > -1) {
-
-
-          this.invoices[index] = {
-            ...this.invoice
-          };
-
+          this.alert.warning(res.message);
 
         }
 
+      },
 
+      error: (err) => {
 
-        this.alert.success(
-          'Invoice updated successfully.'
-        );
+        this.spinner.hide();
 
+        console.error(err);
 
-      }
-      else {
-
-
-
-        this.invoice.invoiceId =
-          new Date().getTime();
-
-
-
-        if (!this.invoice.invoiceNumber) {
-
-
-          this.invoice.invoiceNumber =
-            'INV-' + this.invoice.invoiceId;
-
-
-        }
-
-
-
-        this.invoice.balanceAmount =
-          this.invoice.totalAmount -
-          this.invoice.paidAmount;
-
-
-
-        this.invoices.unshift(
-          {
-            ...this.invoice
-          }
-        );
-
-
-
-        this.alert.success(
-          'Invoice created successfully.'
-        );
-
-
+        this.alert.error(err?.error?.message || 'Unable to save invoice.');
 
       }
 
-
-
-      this.spinner.hide();
-
-
-
-      this.clear();
-
-
-
-    }, 500);
-
+    });
 
 
   }
-
 
 
 
@@ -585,7 +467,6 @@ export class Invoices {
 
 
   }
-
 
 
 
@@ -669,30 +550,37 @@ export class Invoices {
 
         this.spinner.show();
 
+        this.controlService.deleteInvoice(invoiceId).subscribe({
 
+          next: (res: any) => {
 
-        setTimeout(() => {
+            this.spinner.hide();
 
+            if (res.success) {
 
+              this.loadInvoices();
 
-          this.invoices =
-            this.invoices.filter(
-              x => x.invoiceId !== invoiceId
-            );
+              this.alert.success(res.message);
 
+            } else {
 
+              this.alert.warning(res.message);
 
-          this.spinner.hide();
+            }
 
+          },
 
+          error: (err) => {
 
-          this.alert.success(
-            'Invoice deleted successfully.'
-          );
+            this.spinner.hide();
 
+            console.error(err);
 
+            this.alert.error(err?.error?.message || 'Unable to delete invoice.');
 
-        }, 500);
+          }
+
+        });
 
 
 
@@ -701,6 +589,7 @@ export class Invoices {
 
 
   }
+
 
 
 
@@ -747,6 +636,7 @@ export class Invoices {
 
 
 
+
   // ==========================================
   // Print Invoice
   // ==========================================
@@ -776,6 +666,7 @@ export class Invoices {
 
 
   }
+
 
 
 
@@ -851,6 +742,7 @@ export class Invoices {
 
 
   }
+
 
 
 
@@ -1033,7 +925,6 @@ export class Invoices {
 
 
     return data;
-
 
 
   }
@@ -1246,7 +1137,6 @@ export class Invoices {
     ).length;
 
 
-
   }
 
 
@@ -1266,7 +1156,6 @@ export class Invoices {
     ).length;
 
 
-
   }
 
 
@@ -1284,7 +1173,6 @@ export class Invoices {
         x.paymentStatus === 'Partial'
 
     ).length;
-
 
 
   }
@@ -1320,7 +1208,6 @@ export class Invoices {
     }).length;
 
 
-
   }
 
 
@@ -1338,31 +1225,13 @@ export class Invoices {
   refresh(): void {
 
 
-    this.spinner.show();
+    this.loadInvoices();
 
+    this.alert.success(
 
+      'Invoice list refreshed successfully.'
 
-    setTimeout(() => {
-
-
-      this.loadStaticInvoices();
-
-
-
-      this.spinner.hide();
-
-
-
-      this.alert.success(
-
-        'Invoice list refreshed successfully.'
-
-      );
-
-
-
-    }, 500);
-
+    );
 
 
   }
@@ -1399,36 +1268,66 @@ export class Invoices {
 
 
 
-    const copy = {
-
-      ...data,
-
-      invoiceId: new Date().getTime(),
-
-      invoiceNumber:
-        'INV-' + new Date().getTime(),
-
-      paymentStatus: 'Pending',
-
+    const dto = {
+      invoiceId: 0,
+      invoiceNumber: 'INV-' + Date.now(),
+      organizationId: data.organizationId,
+      companyEmail: data.companyEmail,
+      companyPhone: data.companyPhone,
+      planId: data.planId,
+      billingCycle: data.billingCycle,
+      invoiceDate: new Date().toISOString().slice(0, 10),
+      dueDate: data.dueDate || null,
+      description: data.description,
+      quantity: data.quantity,
+      unitPrice: data.unitPrice,
+      subTotal: data.subTotal,
+      gstPercentage: data.gstPercentage,
+      taxAmount: data.taxAmount,
+      discount: data.discount,
+      totalAmount: data.totalAmount,
       paidAmount: 0,
-
-      balanceAmount: data.totalAmount
-
-
+      paymentStatus: 'Pending',
+      paymentMethod: data.paymentMethod,
+      transactionId: '',
+      currency: data.currency,
+      notes: data.notes,
+      isActive: true
     };
 
+    this.spinner.show();
 
+    this.controlService.createInvoice(dto).subscribe({
 
-    this.invoices.unshift(copy);
+      next: (res: any) => {
 
+        this.spinner.hide();
 
+        if (res.success) {
 
-    this.alert.success(
+          this.loadInvoices();
 
-      'Invoice duplicated successfully.'
+          this.alert.success('Invoice duplicated successfully.');
 
-    );
+        } else {
 
+          this.alert.warning(res.message);
+
+        }
+
+      },
+
+      error: (err) => {
+
+        this.spinner.hide();
+
+        console.error(err);
+
+        this.alert.error(err?.error?.message || 'Unable to duplicate invoice.');
+
+      }
+
+    });
 
 
   }
@@ -1456,7 +1355,7 @@ get totalInvoiceAmount(): number {
 
   return this.invoices.reduce(
 
-    (sum, item) => 
+    (sum, item) =>
       sum + Number(item.totalAmount || 0),
 
     0

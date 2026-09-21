@@ -601,26 +601,16 @@
                     </label>
 
 
-                    <select class="form-select" [(ngModel)]="coupon.applicablePlan">
+                    <select class="form-select" [(ngModel)]="coupon.planId">
 
 
-                        <option>
+                        <option [ngValue]="null">
                             All Plans
                         </option>
 
 
-                        <option>
-                            Basic Plan
-                        </option>
-
-
-                        <option>
-                            Professional Plan
-                        </option>
-
-
-                        <option>
-                            Enterprise Plan
+                        <option *ngFor="let plan of plans" [ngValue]="plan.planId">
+                            {{plan.planName}}
                         </option>
 
 

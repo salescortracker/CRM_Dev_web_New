@@ -71,11 +71,7 @@
                     <select class="form-select" [(ngModel)]="project.customer">
 
                         <option value="">Select Customer</option>
-                        <option>ABC Technologies</option>
-                        <option>XYZ Solutions</option>
-                        <option>Global Systems</option>
-                        <option>TechNova Pvt Ltd</option>
-                        <option>Sunrise Industries</option>
+                        <option *ngFor="let c of customers" [value]="c">{{ c }}</option>
 
                     </select>
 
@@ -92,13 +88,13 @@
 
                     <label class="form-label">
 
-                        Project Manager
+                        Project Manager (User ID)
 
                         <span class="text-danger">*</span>
 
                     </label>
 
-                    <input type="text" class="form-control" placeholder="Enter Project Manager"
+                    <input type="number" min="1" class="form-control" placeholder="Enter Project Manager User ID"
                         [(ngModel)]="project.projectManager">
 
                     <div class="text-danger mt-1" *ngIf="submitted && !project.projectManager">
@@ -123,12 +119,7 @@
                     <select class="form-select" [(ngModel)]="project.projectType">
 
                         <option value="">Select Type</option>
-                        <option>CRM Implementation</option>
-                        <option>Product Development</option>
-                        <option>Internal Project</option>
-                        <option>Support Project</option>
-                        <option>Migration</option>
-                        <option>Integration</option>
+                        <option *ngFor="let t of projectTypes" [value]="t">{{ t }}</option>
 
                     </select>
 
@@ -154,10 +145,7 @@
                     <select class="form-select" [(ngModel)]="project.priority">
 
                         <option value="">Select Priority</option>
-                        <option>Low</option>
-                        <option>Medium</option>
-                        <option>High</option>
-                        <option>Critical</option>
+                        <option *ngFor="let p of priorities" [value]="p">{{ p }}</option>
 
                     </select>
 
@@ -183,11 +171,7 @@
                     <select class="form-select" [(ngModel)]="project.status">
 
                         <option value="">Select Status</option>
-                        <option>Planning</option>
-                        <option>In Progress</option>
-                        <option>On Hold</option>
-                        <option>Completed</option>
-                        <option>Cancelled</option>
+                        <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
 
                     </select>
 
@@ -264,7 +248,7 @@
                     </label>
 
                     <input type="number" min="0" max="100" class="form-control" placeholder="0 - 100"
-                        [(ngModel)]="project.completion">
+                        [(ngModel)]="project.completionPercentage">
 
                 </div>
 
@@ -292,27 +276,9 @@
                     </label>
 
                     <textarea rows="5" class="form-control" placeholder="Enter Project Description..."
-                        [(ngModel)]="project.description">
+                        [(ngModel)]="project.projectDescription">
 
                     </textarea>
-
-                </div>
-
-                <!-- Active -->
-                <div class="col-md-2 mb-3 d-flex align-items-end">
-
-                    <div class="form-check">
-
-                        <input id="projectActive" type="checkbox" class="form-check-input"
-                            [(ngModel)]="project.isActive">
-
-                        <label for="projectActive" class="form-check-label ms-2">
-
-                            Active
-
-                        </label>
-
-                    </div>
 
                 </div>
 
@@ -394,7 +360,7 @@
                             <th>Project Code</th>
                             <th>Project Name</th>
                             <th>Customer</th>
-                            <th>Project Manager</th>
+                            <th>Manager (User ID)</th>
                             <th>Priority</th>
                             <th>Status</th>
                             <th>Completion</th>
@@ -484,9 +450,9 @@
 
                                 <div class="progress" style="height:22px;">
 
-                                    <div class="progress-bar" role="progressbar" [style.width.%]="item.completion">
+                                    <div class="progress-bar" role="progressbar" [style.width.%]="item.completionPercentage">
 
-                                        {{ item.completion }}%
+                                        {{ item.completionPercentage }}%
 
                                     </div>
 
@@ -496,7 +462,7 @@
 
                             <td>
 
-                                {{ item.endDate }}
+                                {{ item.endDate ? (item.endDate | date:'dd-MMM-yyyy') : '-' }}
 
                             </td>
 

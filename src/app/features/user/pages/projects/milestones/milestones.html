@@ -58,11 +58,7 @@
                     <select class="form-select" [(ngModel)]="milestone.project">
 
                         <option value="">Select Project</option>
-                        <option>CRM Implementation</option>
-                        <option>ERP Integration</option>
-                        <option>Support Portal</option>
-                        <option>Data Migration</option>
-                        <option>Internal HR Portal</option>
+                        <option *ngFor="let p of projectOptions" [value]="p">{{ p }}</option>
 
                     </select>
 
@@ -79,11 +75,11 @@
 
                     <label class="form-label">
 
-                        Owner
+                        Owner (User ID)
 
                     </label>
 
-                    <input type="text" class="form-control" placeholder="Enter Owner Name"
+                    <input type="number" min="1" class="form-control" placeholder="Enter Owner User ID"
                         [(ngModel)]="milestone.owner">
 
                 </div>
@@ -123,10 +119,7 @@
                     <select class="form-select" [(ngModel)]="milestone.status">
 
                         <option value="">Select Status</option>
-                        <option>Pending</option>
-                        <option>In Progress</option>
-                        <option>Completed</option>
-                        <option>Delayed</option>
+                        <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
 
                     </select>
 
@@ -148,7 +141,7 @@
                     </label>
 
                     <input type="number" class="form-control" min="0" max="100" placeholder="0 - 100"
-                        [(ngModel)]="milestone.completion">
+                        [(ngModel)]="milestone.completionPercentage">
 
                 </div>
 
@@ -187,17 +180,22 @@
 
                         Priority
 
+                        <span class="text-danger">*</span>
+
                     </label>
 
                     <select class="form-select" [(ngModel)]="milestone.priority">
 
                         <option value="">Select Priority</option>
-                        <option>Low</option>
-                        <option>Medium</option>
-                        <option>High</option>
-                        <option>Critical</option>
+                        <option *ngFor="let p of priorities" [value]="p">{{ p }}</option>
 
                     </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !milestone.priority">
+
+                        Priority is required.
+
+                    </div>
 
                 </div>
 
@@ -227,24 +225,6 @@
                         [(ngModel)]="milestone.description">
 
                     </textarea>
-
-                </div>
-
-                <!-- Active -->
-                <div class="col-md-2 mb-3 d-flex align-items-end">
-
-                    <div class="form-check">
-
-                        <input id="milestoneActive" type="checkbox" class="form-check-input"
-                            [(ngModel)]="milestone.isActive">
-
-                        <label for="milestoneActive" class="form-check-label ms-2">
-
-                            Active
-
-                        </label>
-
-                    </div>
 
                 </div>
 
@@ -325,7 +305,7 @@
                             <th width="60">#</th>
                             <th>Milestone</th>
                             <th>Project</th>
-                            <th>Owner</th>
+                            <th>Owner (User ID)</th>
                             <th>Priority</th>
                             <th>Status</th>
                             <th>Completion</th>
@@ -408,9 +388,9 @@
 
                                 <div class="progress" style="height:22px;">
 
-                                    <div class="progress-bar" role="progressbar" [style.width.%]="item.completion">
+                                    <div class="progress-bar" role="progressbar" [style.width.%]="item.completionPercentage">
 
-                                        {{ item.completion }}%
+                                        {{ item.completionPercentage }}%
 
                                     </div>
 
@@ -420,7 +400,7 @@
 
                             <td>
 
-                                {{ item.dueDate }}
+                                {{ item.dueDate ? (item.dueDate | date:'dd-MMM-yyyy') : '-' }}
 
                             </td>
 

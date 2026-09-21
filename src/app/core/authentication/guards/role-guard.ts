@@ -28,10 +28,16 @@ CanActivateFn =
     user?.user?.role ||
     user?.user?.roleName;
 
+  // A role such as "Company Admin" still opens the Admin screens: the
+  // layout the server assigned from the user's role is checked too.
+  const userRoles = [userRole, authService.getUserLayout()]
+    .filter(Boolean)
+    .map(normalizeRole);
+
   if (
-    userRole &&
+    userRoles.length > 0 &&
     requiredRoles.some((role: string) =>
-      normalizeRole(userRole) === normalizeRole(role)
+      userRoles.includes(normalizeRole(role))
     )
   ) {
     return true;

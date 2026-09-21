@@ -96,6 +96,188 @@ export class ControlsystemService {
   }
 
 
+  // ================= COMPANY SUBSCRIPTION =================
+
+  createCompanySubscription(data: any): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/SuperAdmin/createcompanysubscription`,
+      data
+    );
+  }
+
+  updateCompanySubscription(data: any): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/SuperAdmin/updatecompanysubscription`,
+      data
+    );
+  }
+
+  deleteCompanySubscription(id: number): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/SuperAdmin/deletecompanysubscription/${id}`,
+      {}
+    );
+  }
+
+  getCompanySubscriptions(): Observable<ApiResponse<any[]>> {
+    return this.http.get<ApiResponse<any[]>>(
+      `${this.baseUrl}/SuperAdmin/getallcompanysubscription`
+    );
+  }
+
+  getCompanySubscriptionById(id: number): Observable<ApiResponse<any>> {
+    return this.http.get<ApiResponse<any>>(
+      `${this.baseUrl}/SuperAdmin/getbyidcompanysubscription/${id}`
+    );
+  }
+
+  // ================= PAYMENT TRACKING =================
+
+  createPaymentTracking(data: any): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/SuperAdmin/createpaymenttracking`,
+      data
+    );
+  }
+
+  updatePaymentTracking(data: any): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/SuperAdmin/updatepaymenttracking`,
+      data
+    );
+  }
+
+  deletePaymentTracking(id: number): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/SuperAdmin/deletepaymenttracking/${id}`,
+      {}
+    );
+  }
+
+  getPaymentTrackings(): Observable<ApiResponse<any[]>> {
+    return this.http.get<ApiResponse<any[]>>(
+      `${this.baseUrl}/SuperAdmin/getallpaymenttracking`
+    );
+  }
+
+  getPaymentTrackingById(id: number): Observable<ApiResponse<any>> {
+    return this.http.get<ApiResponse<any>>(
+      `${this.baseUrl}/SuperAdmin/getbyidpaymenttracking/${id}`
+    );
+  }
+
+  refundPaymentTracking(id: number, refundAmount: number, refundReason: string): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/SuperAdmin/refundpaymenttracking/${id}`,
+      { refundAmount, refundReason }
+    );
+  }
+
+  // ================= BILLING =================
+
+  createBilling(data: any): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/SuperAdmin/createbilling`,
+      data
+    );
+  }
+
+  updateBilling(data: any): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/SuperAdmin/updatebilling`,
+      data
+    );
+  }
+
+  deleteBilling(id: number): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/SuperAdmin/deletebilling/${id}`,
+      {}
+    );
+  }
+
+  getBillings(): Observable<ApiResponse<any[]>> {
+    return this.http.get<ApiResponse<any[]>>(
+      `${this.baseUrl}/SuperAdmin/getallbilling`
+    );
+  }
+
+  getBillingById(id: number): Observable<ApiResponse<any>> {
+    return this.http.get<ApiResponse<any>>(
+      `${this.baseUrl}/SuperAdmin/getbyidbilling/${id}`
+    );
+  }
+
+  // ================= INVOICE =================
+
+  createInvoice(data: any): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/SuperAdmin/createinvoice`,
+      data
+    );
+  }
+
+  updateInvoice(data: any): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/SuperAdmin/updateinvoice`,
+      data
+    );
+  }
+
+  deleteInvoice(id: number): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/SuperAdmin/deleteinvoice/${id}`,
+      {}
+    );
+  }
+
+  getInvoices(): Observable<ApiResponse<any[]>> {
+    return this.http.get<ApiResponse<any[]>>(
+      `${this.baseUrl}/SuperAdmin/getallinvoice`
+    );
+  }
+
+  getInvoiceById(id: number): Observable<ApiResponse<any>> {
+    return this.http.get<ApiResponse<any>>(
+      `${this.baseUrl}/SuperAdmin/getbyidinvoice/${id}`
+    );
+  }
+
+  // ================= COUPON =================
+
+  createCoupon(data: any): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/SuperAdmin/createcoupon`,
+      data
+    );
+  }
+
+  updateCoupon(data: any): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/SuperAdmin/updatecoupon`,
+      data
+    );
+  }
+
+  deleteCoupon(id: number): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(
+      `${this.baseUrl}/SuperAdmin/deletecoupon/${id}`,
+      {}
+    );
+  }
+
+  getCoupons(): Observable<ApiResponse<any[]>> {
+    return this.http.get<ApiResponse<any[]>>(
+      `${this.baseUrl}/SuperAdmin/getallcoupon`
+    );
+  }
+
+  getCouponById(id: number): Observable<ApiResponse<any>> {
+    return this.http.get<ApiResponse<any>>(
+      `${this.baseUrl}/SuperAdmin/getbyidcoupon/${id}`
+    );
+  }
+
   // ================= WORKFLOW RULE =================
 
   // CREATE WORKFLOW RULE

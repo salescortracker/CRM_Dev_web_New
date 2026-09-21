@@ -151,7 +151,10 @@ export class Login {
 
   private redirectUser(response: any): void {
 
+    // The server decides the layout from the user's assigned role
+    // ('Super Admin' | 'Admin' | 'User'); the role name is the fallback.
     const role = this.normalizeRole(
+      response?.layout ||
       response?.role ||
       response?.roleName ||
       response?.userRole ||

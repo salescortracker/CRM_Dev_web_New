@@ -1,62 +1,146 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../../../environments/environment';
+import { ApiResponse } from '../../../../../core/authentication/services/auth.service';
 import { Pagination } from '../../../../../shared/pagination/pagination';
 import { Alertservice } from '../../../../../core/services/alertservice';
 import { Spinnerservice } from '../../../../../core/services/spinnerservice';
 
 @Component({
   selector: 'app-project-documents',
-  standalone:true,
-  imports: [CommonModule,FormsModule,Pagination],
+  standalone: true,
+  imports: [CommonModule, FormsModule, Pagination],
   templateUrl: './project-documents.html',
   styleUrl: './project-documents.css',
 })
-export class ProjectDocuments {
-   submitted = false;
+export class ProjectDocuments implements OnInit {
+
+  private baseUrl = environment.apiUrl;
+
+  constructor(
+    private http: HttpClient,
+    private alert: Alertservice,
+    private spinner: Spinnerservice,
+    private cd: ChangeDetectorRef
+  ) { }
+
+  //====================================================
+  // Screen Variables
+  //====================================================
+
+  submitted = false;
   isEdit = false;
 
   page = 1;
   pageSize = 5;
-  totalRecords = 0;
   searchText = '';
 
   selectedFileName = '';
 
+  //====================================================
+  // Static Options
+  //====================================================
+
+  categories = [
+    'Proposal', 'Requirement Document', 'Design', 'Contract',
+    'Invoice', 'User Manual', 'Testing', 'Deployment'
+  ];
+
+  statuses = ['Draft', 'Active', 'Archived'];
+
+  //====================================================
+  // Dropdown Data (from backend)
+  //====================================================
+
+  projects: any[] = [];
+
+  //====================================================
+  // Documents List
+  //====================================================
+
   documents: any[] = [];
 
-  document: any = {
+  //====================================================
+  // Form Model
+  //====================================================
 
-    documentId: 0,
-    documentName: '',
-    project: '',
-    category: '',
-    version: '',
-    fileName: '',
-    fileSize: '',
-    fileType: '',
-    uploadedBy: '',
-    uploadDate: '',
-    description: '',
-    isActive: true
+  document: any = this.getEmptyModel();
 
-  };
+  getEmptyModel() {
 
-  constructor(
+    return {
 
-    private alert: Alertservice,
-    private spinner: Spinnerservice,
-    private cd: ChangeDetectorRef
+      documentId: 0,
 
-  ) { }
+      documentName: '',
+      projectId: null,
+
+      category: '',
+      version: '',
+
+      uploadedBy: null,
+      uploadDate: '',
+
+      uploadFile: '',
+      fileSizeKb: null,
+      fileType: '',
+
+      description: '',
+      status: ''
+
+    };
+
+  }
+
+  //====================================================
+  // Lifecycle
+  //====================================================
 
   ngOnInit(): void {
+
+    this.loadProjects();
 
     this.loadDocuments();
 
   }
 
-  onFileSelected(event: any) {
+  //====================================================
+  // Load Dropdown Data
+  //====================================================
+
+  loadProjects(): void {
+
+    this.http
+      .get<ApiResponse<any[]>>(`${this.baseUrl}/Admin/getallprojects`)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.projects = res?.data || [];
+
+          this.cd.detectChanges();
+
+        },
+
+        error: (err) => {
+
+          console.error('Error loading projects:', err);
+
+          this.projects = [];
+
+        }
+
+      });
+
+  }
+
+  //====================================================
+  // File Selection (metadata only — no upload endpoint)
+  //====================================================
+
+  onFileSelected(event: any): void {
 
     if (event.target.files.length > 0) {
 
@@ -64,347 +148,103 @@ export class ProjectDocuments {
 
       this.selectedFileName = file.name;
 
-      this.document.fileName = file.name;
+      this.document.uploadFile = file.name;
 
-      this.document.fileSize = Math.round(file.size / 1024);
+      this.document.fileSizeKb = Math.round(file.size / 1024);
 
       const extension = file.name.split('.').pop();
 
-      this.document.fileType = extension?.toUpperCase();
+      this.document.fileType = extension ? extension.toUpperCase() : '';
 
     }
 
   }
 
-  loadDocuments() {
+  //====================================================
+  // Load Documents
+  //====================================================
+
+  loadDocuments(): void {
 
     this.spinner.show();
 
-    setTimeout(() => {
-
-      this.documents = [
-
-        {
-
-          documentId: 1,
-          documentName: 'Business Requirements',
-          project: 'CRM Implementation',
-          category: 'Requirement Document',
-          version: 'v1.0',
-          fileName: 'BRD.pdf',
-          fileSize: 650,
-          fileType: 'PDF',
-          uploadedBy: 'Rahul Sharma',
-          uploadDate: '2026-08-02',
-          description: 'Business requirement document.',
-          isActive: true
-
-        },
-
-        {
-
-          documentId: 2,
-          documentName: 'Database Design',
-          project: 'ERP Integration',
-          category: 'Design',
-          version: 'v2.0',
-          fileName: 'Database.docx',
-          fileSize: 820,
-          fileType: 'DOCX',
-          uploadedBy: 'Anil Kumar',
-          uploadDate: '2026-08-06',
-          description: 'Database design document.',
-          isActive: true
-
-        },
-
-        {
-
-          documentId: 3,
-          documentName: 'Test Cases',
-          project: 'Support Portal',
-          category: 'Testing',
-          version: 'v1.1',
-          fileName: 'Testing.xlsx',
-          fileSize: 420,
-          fileType: 'XLSX',
-          uploadedBy: 'Priya Reddy',
-          uploadDate: '2026-08-11',
-          description: 'Application testing documents.',
-          isActive: true
-
-        },
-
-        {
-
-          documentId: 4,
-          documentName: 'Deployment Guide',
-          project: 'Data Migration',
-          category: 'Deployment',
-          version: 'v1.3',
-          fileName: 'Deployment.pdf',
-          fileSize: 350,
-          fileType: 'PDF',
-          uploadedBy: 'Kiran Kumar',
-          uploadDate: '2026-08-16',
-          description: 'Deployment steps.',
-          isActive: true
-
-        },
-
-        {
-
-          documentId: 5,
-          documentName: 'User Manual',
-          project: 'Internal HR Portal',
-          category: 'User Manual',
-          version: 'v3.0',
-          fileName: 'Manual.pdf',
-          fileSize: 980,
-          fileType: 'PDF',
-          uploadedBy: 'Sandeep',
-          uploadDate: '2026-08-22',
-          description: 'End user manual.',
-          isActive: true
-
-        }
-
-      ];
-
-      this.documents.sort((a, b) => b.documentId - a.documentId);
-
-      this.totalRecords = this.documents.length;
-
-      this.spinner.hide();
-
-      this.cd.detectChanges();
-
-    }, 500);
-
-  }
-
-  saveDocument() {
-
-    this.submitted = true;
-
-    if (
-
-      !this.document.documentName ||
-      !this.document.project ||
-      !this.document.category
-
-    ) {
-
-      return;
-
-    }
-
-    this.spinner.show();
-
-    setTimeout(() => {
-
-      if (!this.isEdit) {
-
-        const nextId = this.documents.length
-          ? Math.max(...this.documents.map(x => x.documentId)) + 1
-          : 1;
-
-        const newDocument = {
-
-          ...this.document,
-
-          documentId: nextId
-
-        };
-
-        this.documents.unshift(newDocument);
-
-      }
-
-      else {
-
-        const index = this.documents.findIndex(
-
-          x => x.documentId === this.document.documentId
-
-        );
-
-        if (index !== -1) {
-
-          this.documents[index] = {
-
-            ...this.document
-
-          };
-
-        }
-
-      }
-
-      this.documents = [...this.documents];
-
-      this.totalRecords = this.documents.length;
-
-      this.page = 1;
-
-      const message = this.isEdit
-
-        ? 'Project document updated successfully.'
-
-        : 'Project document created successfully.';
-
-      this.clear();
-
-      this.spinner.hide();
-
-      this.cd.detectChanges();
-
-      this.alert.success(message);
-
-    }, 500);
-
-  }
-    edit(id: number) {
-
-    this.spinner.show();
-
-    setTimeout(() => {
-
-      const selected = this.documents.find(
-        x => x.documentId === id
-      );
-
-      if (selected) {
-
-        this.document = {
-          ...selected
-        };
-
-        this.selectedFileName = selected.fileName;
-
-        this.isEdit = true;
-
-        this.submitted = false;
-
-        this.cd.detectChanges();
-
-      }
-
-      this.spinner.hide();
-
-    }, 300);
-
-  }
-
-  delete(id: number) {
-
-    this.alert.deleteConfirm().then(result => {
-
-      if (result.isConfirmed) {
-
-        this.spinner.show();
-
-        setTimeout(() => {
-
-          this.documents = this.documents.filter(
-            x => x.documentId !== id
-          );
-
-          this.totalRecords = this.documents.length;
-
-          if (
-            this.page > 1 &&
-            this.pagedDocuments.length === 0
-          ) {
-
-            this.page--;
-
-          }
-
-          this.documents = [...this.documents];
+    this.http
+      .get<ApiResponse<any[]>>(`${this.baseUrl}/Admin/getallprojectdocuments`)
+      .subscribe({
+
+        next: (res: any) => {
 
           this.spinner.hide();
 
+          if (res?.success) {
+
+            this.documents = res.data || [];
+
+          } else {
+
+            this.documents = [];
+
+            this.alert.warning(
+              res?.message || 'No Document records found.'
+            );
+
+          }
+
           this.cd.detectChanges();
 
-          this.alert.success(
-            'Project document deleted successfully.'
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Error loading documents:', err);
+
+          this.documents = [];
+
+          this.alert.error(
+            err?.error?.message || 'Failed to load documents.'
           );
 
-        }, 500);
+          this.cd.detectChanges();
 
-      }
+        }
 
-    });
+      });
+
+  }
+
+  //====================================================
+  // Lookup Helpers
+  //====================================================
+
+  getProjectName(id: any): string {
+
+    if (id === null || id === undefined || id === '') return '-';
+
+    const item = this.projects.find(x => x.projectId === Number(id));
+
+    return item ? item.projectName : '-';
 
   }
 
-  clear() {
-
-    this.document = {
-
-      documentId: 0,
-      documentName: '',
-      project: '',
-      category: '',
-      version: '',
-      fileName: '',
-      fileSize: '',
-      fileType: '',
-      uploadedBy: '',
-      uploadDate: '',
-      description: '',
-      isActive: true
-
-    };
-
-    this.selectedFileName = '';
-
-    this.isEdit = false;
-
-    this.submitted = false;
-
-    this.cd.detectChanges();
-
-  }
+  //====================================================
+  // Filtered Documents
+  //====================================================
 
   get filteredDocuments() {
 
+    const search = this.searchText.trim().toLowerCase();
+
+    if (!search) return this.documents;
+
     return this.documents.filter(x =>
 
-      x.documentName
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
-
-      ||
-
-      x.project
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
-
-      ||
-
-      x.category
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
-
-      ||
-
-      x.version
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
-
-      ||
-
-      x.fileName
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
-
-      ||
-
-      x.uploadedBy
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
+      (x.documentName || '').toLowerCase().includes(search) ||
+      (x.category || '').toLowerCase().includes(search) ||
+      (x.version || '').toLowerCase().includes(search) ||
+      (x.uploadFile || '').toLowerCase().includes(search) ||
+      this.getProjectName(x.projectId).toLowerCase().includes(search)
 
     );
 
@@ -414,29 +254,356 @@ export class ProjectDocuments {
 
     const start = (this.page - 1) * this.pageSize;
 
-    return this.filteredDocuments.slice(
-
-      start,
-
-      start + this.pageSize
-
-    );
+    return this.filteredDocuments.slice(start, start + this.pageSize);
 
   }
 
-  changePage(page: number) {
+  //====================================================
+  // Save / Update
+  //====================================================
+
+  saveDocument(): void {
+
+    this.submitted = true;
+
+    if (
+      !this.document.documentName || !this.document.documentName.trim() ||
+      !this.document.projectId ||
+      !this.document.status
+    ) {
+
+      this.alert.warning('Please fill all required fields.');
+
+      return;
+
+    }
+
+    if (
+      this.document.fileSizeKb !== null &&
+      this.document.fileSizeKb !== '' &&
+      Number(this.document.fileSizeKb) < 0
+    ) {
+
+      this.alert.warning('File Size cannot be negative.');
+
+      return;
+
+    }
+
+    const payload = {
+
+      documentId: this.isEdit ? this.document.documentId : 0,
+
+      documentName: this.document.documentName.trim(),
+      projectId: Number(this.document.projectId),
+
+      category: this.document.category
+        ? this.document.category.trim()
+        : null,
+
+      version: this.document.version
+        ? this.document.version.trim()
+        : null,
+
+      uploadedBy: this.document.uploadedBy
+        ? Number(this.document.uploadedBy)
+        : null,
+
+      uploadDate: this.document.uploadDate || new Date().toISOString(),
+
+      uploadFile: this.document.uploadFile
+        ? this.document.uploadFile.trim()
+        : null,
+
+      fileSizeKb:
+        this.document.fileSizeKb !== null && this.document.fileSizeKb !== ''
+          ? Number(this.document.fileSizeKb)
+          : null,
+
+      fileType: this.document.fileType
+        ? this.document.fileType.trim()
+        : null,
+
+      description: this.document.description
+        ? this.document.description.trim()
+        : null,
+
+      status: this.document.status.trim()
+
+    };
+
+    this.spinner.show();
+
+    if (this.isEdit) {
+
+      this.http
+        .post<ApiResponse>(
+          `${this.baseUrl}/Admin/updateprojectdocument`,
+          payload
+        )
+        .subscribe({
+
+          next: (res: any) => {
+
+            this.spinner.hide();
+
+            if (res?.success) {
+
+              this.alert.success(
+                res.message || 'Project document updated successfully.'
+              );
+
+              this.clear();
+
+              this.loadDocuments();
+
+            } else {
+
+              this.alert.warning(
+                res?.message || 'Failed to update project document.'
+              );
+
+            }
+
+          },
+
+          error: (err) => {
+
+            this.spinner.hide();
+
+            console.error('Update project document error:', err);
+
+            this.alert.error(
+              err?.error?.message || 'Failed to update project document.'
+            );
+
+          }
+
+        });
+
+    } else {
+
+      this.http
+        .post<ApiResponse>(
+          `${this.baseUrl}/Admin/createprojectdocument`,
+          payload
+        )
+        .subscribe({
+
+          next: (res: any) => {
+
+            this.spinner.hide();
+
+            if (res?.success) {
+
+              this.alert.success(
+                res.message || 'Project document created successfully.'
+              );
+
+              this.clear();
+
+              this.loadDocuments();
+
+            } else {
+
+              this.alert.warning(
+                res?.message || 'Failed to create project document.'
+              );
+
+            }
+
+          },
+
+          error: (err) => {
+
+            this.spinner.hide();
+
+            console.error('Create project document error:', err);
+
+            this.alert.error(
+              err?.error?.message || 'Failed to create project document.'
+            );
+
+          }
+
+        });
+
+    }
+
+  }
+
+  //====================================================
+  // Edit
+  //====================================================
+
+  edit(id: number): void {
+
+    this.spinner.show();
+
+    this.http
+      .get<ApiResponse<any>>(`${this.baseUrl}/Admin/getbyprojectdocument/${id}`)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.spinner.hide();
+
+          if (res?.success && res.data) {
+
+            const data = res.data;
+
+            this.document = {
+
+              documentId: data.documentId,
+
+              documentName: data.documentName || '',
+              projectId: data.projectId ?? null,
+
+              category: data.category || '',
+              version: data.version || '',
+
+              uploadedBy: data.uploadedBy ?? null,
+
+              uploadDate: data.uploadDate
+                ? data.uploadDate.substring(0, 10)
+                : '',
+
+              uploadFile: data.uploadFile || '',
+              fileSizeKb: data.fileSizeKb ?? null,
+              fileType: data.fileType || '',
+
+              description: data.description || '',
+              status: data.status || ''
+
+            };
+
+            this.selectedFileName = data.uploadFile || '';
+
+            this.isEdit = true;
+
+            this.submitted = false;
+
+            this.cd.detectChanges();
+
+          } else {
+
+            this.alert.warning(res?.message || 'Project document not found.');
+
+          }
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Get project document error:', err);
+
+          this.alert.error(
+            err?.error?.message || 'Failed to load project document.'
+          );
+
+        }
+
+      });
+
+  }
+
+  //====================================================
+  // Delete
+  //====================================================
+
+  delete(id: number): void {
+
+    this.alert.deleteConfirm().then(result => {
+
+      if (!result.isConfirmed) return;
+
+      this.spinner.show();
+
+      this.http
+        .post<ApiResponse>(
+          `${this.baseUrl}/Admin/deleteprojectdocument/${id}`,
+          {}
+        )
+        .subscribe({
+
+          next: (res: any) => {
+
+            this.spinner.hide();
+
+            if (res?.success) {
+
+              this.alert.success(
+                res.message || 'Project document deleted successfully.'
+              );
+
+              if (this.page > 1 && this.pagedDocuments.length === 1) {
+                this.page = this.page - 1;
+              }
+
+              this.loadDocuments();
+
+            } else {
+
+              this.alert.warning(
+                res?.message || 'Failed to delete project document.'
+              );
+
+            }
+
+          },
+
+          error: (err) => {
+
+            this.spinner.hide();
+
+            console.error('Delete project document error:', err);
+
+            this.alert.error(
+              err?.error?.message || 'Failed to delete project document.'
+            );
+
+          }
+
+        });
+
+    });
+
+  }
+
+  //====================================================
+  // Clear Form
+  //====================================================
+
+  clear(): void {
+
+    this.document = this.getEmptyModel();
+
+    this.selectedFileName = '';
+
+    this.isEdit = false;
+
+    this.submitted = false;
+
+  }
+
+  //====================================================
+  // Pagination
+  //====================================================
+
+  changePage(page: number): void {
 
     this.page = page;
 
   }
 
-  changePageSize(size: number) {
+  changePageSize(size: number): void {
 
     this.pageSize = size;
 
     this.page = 1;
 
   }
-
 
 }

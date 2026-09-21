@@ -1,6 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../../../../../environments/environment';
+import { ApiResponse } from '../../../../../core/authentication/services/auth.service';
 import { Pagination } from '../../../../../shared/pagination/pagination';
 import { Alertservice } from '../../../../../core/services/alertservice';
 import { Spinnerservice } from '../../../../../core/services/spinnerservice';
@@ -12,7 +15,10 @@ import { Spinnerservice } from '../../../../../core/services/spinnerservice';
   templateUrl: './storage-usage.html',
   styleUrl: './storage-usage.css',
 })
-export class StorageUsage {
+export class StorageUsage implements OnInit {
+
+  private baseUrl = environment.apiUrl;
+
   submitted = false;
 
   isEdit = false;
@@ -21,57 +27,46 @@ export class StorageUsage {
 
   pageSize = 5;
 
-  totalRecords = 0;
-
   searchText = '';
-
-
 
   storageUsages: any[] = [];
 
-
-
-  storageUsage: any = {
-
-    storageUsageId: 0,
-
-    storageName: '',
-
-    storageType: '',
-
-    totalCapacity: null,
-
-    usedCapacity: null,
-
-    availableCapacity: null,
-
-    usagePercentage: null,
-
-    providerName: '',
-
-    description: '',
-
-    isActive: true
-
-  };
-
-
-
-
+  storageUsage: any = this.getEmptyModel();
 
   constructor(
-
+    private http: HttpClient,
     private alert: Alertservice,
-
     private spinner: Spinnerservice,
-
     private cd: ChangeDetectorRef
-
   ) { }
 
+  getEmptyModel() {
 
+    return {
 
+      storageUsageId: 0,
 
+      storageName: '',
+
+      storageType: '',
+
+      totalCapacity: null,
+
+      usedCapacity: null,
+
+      availableCapacity: null,
+
+      usagePercentage: null,
+
+      providerName: '',
+
+      description: '',
+
+      isActive: true
+
+    };
+
+  }
 
   ngOnInit(): void {
 
@@ -79,668 +74,413 @@ export class StorageUsage {
 
   }
 
+  //====================================================
+  // Available capacity and usage % are derived from total / used
+  // (the server recalculates them on save as well)
+  //====================================================
 
+  calculateUsage(): void {
 
+    const total = Number(this.storageUsage.totalCapacity);
 
+    const used = Number(this.storageUsage.usedCapacity);
 
+    if (
+      this.storageUsage.totalCapacity === null ||
+      this.storageUsage.usedCapacity === null ||
+      !(total > 0) ||
+      isNaN(used)
+    ) {
 
+      this.storageUsage.availableCapacity = null;
 
-  loadStorageUsage() {
+      this.storageUsage.usagePercentage = null;
 
+      return;
+
+    }
+
+    this.storageUsage.availableCapacity = Math.round((total - used) * 100) / 100;
+
+    this.storageUsage.usagePercentage = Math.round((used / total) * 10000) / 100;
+
+  }
+
+  get isUsedExceedingTotal(): boolean {
+
+    return (
+      this.storageUsage.totalCapacity !== null &&
+      this.storageUsage.usedCapacity !== null &&
+      Number(this.storageUsage.usedCapacity) > Number(this.storageUsage.totalCapacity)
+    );
+
+  }
+
+  //====================================================
+  // Load
+  //====================================================
+
+  loadStorageUsage(): void {
 
     this.spinner.show();
 
+    this.http
+      .get<ApiResponse<any[]>>(`${this.baseUrl}/Admin/getallstorageusages`)
+      .subscribe({
 
-    setTimeout(() => {
+        next: (res: any) => {
 
+          this.spinner.hide();
 
-      this.storageUsages = [
+          if (res?.success) {
 
+            this.storageUsages = res.data || [];
 
-        {
+          } else {
 
-          storageUsageId: 1,
+            this.storageUsages = [];
 
-          storageName: 'Employee Storage',
+            this.alert.warning(
+              res?.message || 'No Storage Usage records found.'
+            );
 
-          storageType: 'Local Storage',
+          }
 
-          totalCapacity: 500,
-
-          usedCapacity: 320,
-
-          availableCapacity: 180,
-
-          usagePercentage: 64,
-
-          providerName: 'Internal Server',
-
-          description: 'Storage for employee documents and files.',
-
-          isActive: true
+          this.cd.detectChanges();
 
         },
 
+        error: (err) => {
 
+          this.spinner.hide();
 
+          console.error('Load storage usage error:', err);
 
+          this.storageUsages = [];
 
-        {
+          this.alert.error(
+            err?.error?.message || 'Failed to load Storage Usage records.'
+          );
 
-          storageUsageId: 2,
-
-          storageName: 'Customer Files',
-
-          storageType: 'Azure Blob Storage',
-
-          totalCapacity: 1000,
-
-          usedCapacity: 650,
-
-          availableCapacity: 350,
-
-          usagePercentage: 65,
-
-          providerName: 'Microsoft Azure',
-
-          description: 'Customer uploaded files storage.',
-
-          isActive: true
-
-        },
-
-
-
-
-
-        {
-
-          storageUsageId: 3,
-
-          storageName: 'Backup Storage',
-
-          storageType: 'Amazon S3',
-
-          totalCapacity: 2000,
-
-          usedCapacity: 900,
-
-          availableCapacity: 1100,
-
-          usagePercentage: 45,
-
-          providerName: 'AWS',
-
-          description: 'Application backup storage.',
-
-          isActive: true
-
-        },
-                {
-
-          storageUsageId: 4,
-
-          storageName: 'Marketing Storage',
-
-          storageType: 'Google Cloud Storage',
-
-          totalCapacity: 1500,
-
-          usedCapacity: 450,
-
-          availableCapacity: 1050,
-
-          usagePercentage: 30,
-
-          providerName: 'Google Cloud',
-
-          description: 'Storage for marketing images, videos and promotional files.',
-
-          isActive: true
-
-        },
-
-
-
-
-
-        {
-
-          storageUsageId: 5,
-
-          storageName: 'Archive Storage',
-
-          storageType: 'Azure Blob Storage',
-
-          totalCapacity: 3000,
-
-          usedCapacity: 1200,
-
-          availableCapacity: 1800,
-
-          usagePercentage: 40,
-
-          providerName: 'Microsoft Azure',
-
-          description: 'Long term archived document storage.',
-
-          isActive: false
+          this.cd.detectChanges();
 
         }
 
-
-      ];
-
-
-
-
-
-      this.storageUsages.sort(
-
-
-        (a, b) => b.storageUsageId - a.storageUsageId
-
-
-      );
-
-
-
-
-
-      this.totalRecords = this.storageUsages.length;
-
-
-
-
-
-      this.spinner.hide();
-
-
-
-
-
-      this.cd.detectChanges();
-
-
-
-
-
-    }, 500);
-
+      });
 
   }
-    saveStorageUsage() {
+
+  //====================================================
+  // Save (Create / Update)
+  //====================================================
+
+  saveStorageUsage(): void {
 
     this.submitted = true;
 
     if (
-      !this.storageUsage.storageName ||
+      !this.storageUsage.storageName?.trim() ||
       !this.storageUsage.storageType ||
       !this.storageUsage.totalCapacity ||
-      !this.storageUsage.usedCapacity
+      this.storageUsage.usedCapacity === null ||
+      this.storageUsage.usedCapacity === ''
     ) {
       return;
     }
 
+    if (Number(this.storageUsage.totalCapacity) <= 0) {
+      this.alert.warning('Total Capacity must be greater than 0.');
+      return;
+    }
 
-    this.spinner.show();
+    if (Number(this.storageUsage.usedCapacity) < 0) {
+      this.alert.warning('Used Capacity cannot be negative.');
+      return;
+    }
 
+    if (this.isUsedExceedingTotal) {
+      return;
+    }
 
-    setTimeout(() => {
+    const payload = {
 
+      storageUsageId: this.storageUsage.storageUsageId,
 
-      if (!this.isEdit) {
+      storageName: this.storageUsage.storageName.trim(),
 
+      storageType: this.storageUsage.storageType,
 
-        const newStorage = {
+      providerName: this.storageUsage.providerName
+        ? this.storageUsage.providerName.trim()
+        : null,
 
+      totalCapacity: Number(this.storageUsage.totalCapacity),
 
-          ...this.storageUsage,
+      usedCapacity: Number(this.storageUsage.usedCapacity),
 
+      availableCapacity: Number(this.storageUsage.availableCapacity) || 0,
 
-          storageUsageId: this.storageUsages.length
+      usagePercentage: Number(this.storageUsage.usagePercentage) || 0,
 
-            ? Math.max(...this.storageUsages.map(x => x.storageUsageId)) + 1
+      description: this.storageUsage.description
+        ? this.storageUsage.description.trim()
+        : null,
 
-            : 1
-
-
-        };
-
-
-        this.storageUsages.unshift(newStorage);
-
-
-      }
-
-      else {
-
-
-        const index = this.storageUsages.findIndex(
-
-
-          x => x.storageUsageId === this.storageUsage.storageUsageId
-
-
-        );
-
-
-        if (index !== -1) {
-
-
-          this.storageUsages[index] = {
-
-
-            ...this.storageUsage
-
-
-          };
-
-
-        }
-
-
-      }
-
-
-
-
-
-      this.storageUsages = [...this.storageUsages];
-
-
-      this.totalRecords = this.storageUsages.length;
-
-
-      this.page = 1;
-
-
-      const isUpdate = this.isEdit;
-
-
-      this.clear();
-
-
-      this.spinner.hide();
-
-
-      this.cd.detectChanges();
-
-
-
-      this.alert.success(
-
-
-        isUpdate
-
-          ? 'Storage Usage updated successfully.'
-
-          : 'Storage Usage created successfully.'
-
-
-      );
-
-
-
-    }, 500);
-
-
-  }
-
-
-
-
-
-
-
-  edit(id: number) {
-
-
-    this.spinner.show();
-
-
-
-    setTimeout(() => {
-
-
-
-      const selected = this.storageUsages.find(
-
-
-        x => x.storageUsageId === id
-
-
-      );
-
-
-
-      if (selected) {
-
-
-
-        this.storageUsage = {
-
-
-          ...selected
-
-
-        };
-
-
-
-        this.isEdit = true;
-
-
-        this.submitted = false;
-
-
-
-        this.cd.detectChanges();
-
-
-
-      }
-
-
-
-      this.spinner.hide();
-
-
-
-    }, 300);
-
-
-
-  }
-
-
-
-
-
-
-
-  delete(id: number) {
-
-
-
-    this.alert.deleteConfirm().then(result => {
-
-
-
-      if (result.isConfirmed) {
-
-
-
-        this.spinner.show();
-
-
-
-        setTimeout(() => {
-
-
-
-          this.storageUsages = this.storageUsages.filter(
-
-
-            x => x.storageUsageId !== id
-
-
-          );
-
-
-
-          this.totalRecords = this.storageUsages.length;
-
-
-
-
-          if (
-
-
-            this.page > 1 &&
-
-
-            this.pagedStorageUsages.length === 0
-
-
-          ) {
-
-
-            this.page--;
-
-
-          }
-
-
-
-
-
-          this.storageUsages = [...this.storageUsages];
-
-
-
-          this.spinner.hide();
-
-
-
-          this.cd.detectChanges();
-
-
-
-
-          this.alert.success(
-
-
-            'Storage Usage deleted successfully.'
-
-
-          );
-
-
-
-        }, 500);
-
-
-
-      }
-
-
-
-    });
-
-
-
-  }
-
-
-
-
-
-
-
-  clear() {
-
-
-
-    this.storageUsage = {
-
-
-
-      storageUsageId: 0,
-
-
-      storageName: '',
-
-
-      storageType: '',
-
-
-      totalCapacity: null,
-
-
-      usedCapacity: null,
-
-
-      availableCapacity: null,
-
-
-      usagePercentage: null,
-
-
-      providerName: '',
-
-
-      description: '',
-
-
-      isActive: true
-
-
+      isActive: !!this.storageUsage.isActive
 
     };
 
+    const url = this.isEdit
+      ? `${this.baseUrl}/Admin/updatestorageusage`
+      : `${this.baseUrl}/Admin/createstorageusage`;
 
+    const failMessage = this.isEdit
+      ? 'Failed to update Storage Usage.'
+      : 'Failed to create Storage Usage.';
+
+    this.spinner.show();
+
+    this.http
+      .post<ApiResponse>(url, payload)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.spinner.hide();
+
+          if (res?.success) {
+
+            this.alert.success(res.message);
+
+            this.clear();
+
+            this.page = 1;
+
+            this.loadStorageUsage();
+
+          } else {
+
+            this.alert.warning(res?.message || failMessage);
+
+          }
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Save storage usage error:', err);
+
+          this.alert.error(err?.error?.message || failMessage);
+
+        }
+
+      });
+
+  }
+
+  //====================================================
+  // Edit
+  //====================================================
+
+  edit(id: number): void {
+
+    this.spinner.show();
+
+    this.http
+      .get<ApiResponse<any>>(`${this.baseUrl}/Admin/getbystorageusage/${id}`)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.spinner.hide();
+
+          if (res?.success && res.data) {
+
+            const data = res.data;
+
+            this.storageUsage = {
+
+              storageUsageId: data.storageUsageId,
+
+              storageName: data.storageName || '',
+
+              storageType: data.storageType || '',
+
+              totalCapacity: data.totalCapacity ?? null,
+
+              usedCapacity: data.usedCapacity ?? null,
+
+              availableCapacity: data.availableCapacity ?? null,
+
+              usagePercentage: data.usagePercentage ?? null,
+
+              providerName: data.providerName || '',
+
+              description: data.description || '',
+
+              isActive: !!data.isActive
+
+            };
+
+            this.isEdit = true;
+
+            this.submitted = false;
+
+            this.cd.detectChanges();
+
+          } else {
+
+            this.alert.warning(
+              res?.message || 'Storage Usage not found.'
+            );
+
+          }
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Get storage usage error:', err);
+
+          this.alert.error(
+            err?.error?.message || 'Failed to load Storage Usage.'
+          );
+
+        }
+
+      });
+
+  }
+
+  //====================================================
+  // Delete
+  //====================================================
+
+  delete(id: number): void {
+
+    this.alert.deleteConfirm().then(result => {
+
+      if (!result.isConfirmed) return;
+
+      this.spinner.show();
+
+      this.http
+        .post<ApiResponse>(
+          `${this.baseUrl}/Admin/deletestorageusage/${id}`,
+          {}
+        )
+        .subscribe({
+
+          next: (res: any) => {
+
+            this.spinner.hide();
+
+            if (res?.success) {
+
+              this.alert.success(res.message);
+
+              // Editing the record that was just deleted - reset the form
+              if (this.storageUsage.storageUsageId === id) {
+                this.clear();
+              }
+
+              if (this.page > 1 && this.pagedStorageUsages.length === 1) {
+                this.page = this.page - 1;
+              }
+
+              this.loadStorageUsage();
+
+            } else {
+
+              this.alert.warning(
+                res?.message || 'Failed to delete Storage Usage.'
+              );
+
+            }
+
+          },
+
+          error: (err) => {
+
+            this.spinner.hide();
+
+            console.error('Delete storage usage error:', err);
+
+            this.alert.error(
+              err?.error?.message || 'Failed to delete Storage Usage.'
+            );
+
+          }
+
+        });
+
+    });
+
+  }
+
+  //====================================================
+  // Clear
+  //====================================================
+
+  clear(): void {
+
+    this.storageUsage = this.getEmptyModel();
 
     this.submitted = false;
 
-
-
     this.isEdit = false;
-
-
 
     this.cd.detectChanges();
 
-
-
   }
 
-
-
-
-
-
+  //====================================================
+  // Search / Pagination
+  //====================================================
 
   get filteredStorageUsages() {
 
-
+    const search = this.searchText.toLowerCase();
 
     return this.storageUsages.filter(x =>
 
+      (x.storageName || '').toLowerCase().includes(search) ||
 
+      (x.storageType || '').toLowerCase().includes(search) ||
 
-      x.storageName.toLowerCase().includes(
-
-
-        this.searchText.toLowerCase()
-
-
-      )
-
-
-
-      ||
-
-
-
-      x.storageType.toLowerCase().includes(
-
-
-        this.searchText.toLowerCase()
-
-
-      )
-
-
-
-      ||
-
-
-
-      x.providerName.toLowerCase().includes(
-
-
-        this.searchText.toLowerCase()
-
-
-      )
-
-
+      (x.providerName || '').toLowerCase().includes(search)
 
     );
 
-
-
   }
-
-
-
-
-
-
 
   get pagedStorageUsages() {
 
-
-
     const start = (this.page - 1) * this.pageSize;
 
-
-
     return this.filteredStorageUsages.slice(
-
-
-
       start,
-
-
-
       start + this.pageSize
-
-
-
     );
 
-
-
   }
-
-
-
-
-
-
 
   changePage(page: number) {
 
-
-
     this.page = page;
 
-
-
   }
-
-
-
-
-
-
 
   changePageSize(size: number) {
 
-
-
     this.pageSize = size;
-
-
 
     this.page = 1;
 
-
-
   }
-
-
 
 }

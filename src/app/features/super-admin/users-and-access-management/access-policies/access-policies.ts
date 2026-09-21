@@ -1,8 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Alertservice } from '../../../../core/services/alertservice';
 import { Spinnerservice } from '../../../../core/services/spinnerservice';
+import { AuthService } from '../../../../core/authentication/services/auth.service';
+import { ControlsystemService } from '../../services/controlsystem-service';
 
 @Component({
   selector: 'app-access-policies',
@@ -11,17 +13,34 @@ import { Spinnerservice } from '../../../../core/services/spinnerservice';
   templateUrl: './access-policies.html',
   styleUrl: './access-policies.css',
 })
-export class AccessPolicies {
+export class AccessPolicies implements OnInit {
   constructor(
 
 private alert:Alertservice,
 
 private spinner:Spinnerservice,
 
-private cd:ChangeDetectorRef
+private cd:ChangeDetectorRef,
+
+private authService: AuthService,
+
+private controlService: ControlsystemService
 
 ){}
 
+
+
+ngOnInit(): void {
+
+  this.loadCompanies();
+
+  this.loadRegions();
+
+  this.loadDepartments();
+
+  this.loadPolicies();
+
+}
 
 
 
@@ -43,134 +62,178 @@ statusFilter='';
 
 
 
+// ==============================
+// Company / Region Dropdowns
+// ==============================
 
+companies: any[] = [];
 
-policies:any[]=[
+regions: any[] = [];
 
 
-{
+loadCompanies(): void {
 
-id:1,
+  this.authService
+    .getCompanies()
+    .subscribe({
 
-policyName:'Admin Full Access',
+      next: (response) => {
 
-policyCode:'POL001',
+        this.companies = (response.data || []).filter(
+          (x: any) => x.isActive !== false
+        );
 
-role:'Admin',
+      },
 
-department:'All Departments',
+      error: (err) => {
 
-modules:[
+        console.error(err);
 
-'Dashboard',
-
-'Leads',
-
-'Contacts',
-
-'Deals',
-
-'Reports'
-
-],
-
-ipRestriction:true,
-
-allowedIP:'192.168.1.100',
-
-loginRestriction:'24 Hours',
-
-sessionTimeout:30,
-
-status:'Active',
-
-isDefault:true
-
-
-},
-
-
-
-
-{
-
-id:2,
-
-policyName:'Sales User Access',
-
-policyCode:'POL002',
-
-role:'User',
-
-department:'Sales',
-
-modules:[
-
-'Dashboard',
-
-'Leads',
-
-'Contacts'
-
-],
-
-ipRestriction:false,
-
-allowedIP:'',
-
-loginRestriction:'Business Hours',
-
-sessionTimeout:60,
-
-status:'Active',
-
-isDefault:false
-
-
-},
-
-
-
-
-{
-
-id:3,
-
-policyName:'Temporary Access Policy',
-
-policyCode:'POL003',
-
-role:'User',
-
-department:'IT',
-
-modules:[
-
-'Dashboard',
-
-'Settings'
-
-],
-
-ipRestriction:true,
-
-allowedIP:'10.10.10.10',
-
-loginRestriction:'Custom Time',
-
-sessionTimeout:15,
-
-status:'Inactive',
-
-isDefault:false
-
+      }
+    });
 
 }
 
 
-];
+loadRegions(): void {
+
+  this.authService
+    .getRegions()
+    .subscribe({
+
+      next: (response) => {
+
+        this.regions = (response.data || []).filter(
+          (x: any) => x.isActive !== false
+        );
+
+      },
+
+      error: (err) => {
+
+        console.error(err);
+
+      }
+    });
+
+}
 
 
+get formRegions(): any[] {
+
+  if (!this.model.companyId) {
+    return [];
+  }
+
+  return this.regions.filter(
+    r => r.companyId === Number(this.model.companyId)
+  );
+
+}
+
+
+onFormCompanyChange(): void {
+
+  this.model.regionId = '';
+
+}
+
+
+
+// ==============================
+// Department Dropdown
+// ==============================
+
+departments: any[] = [];
+
+
+loadDepartments(): void {
+
+  this.controlService
+    .getDepartments()
+    .subscribe({
+
+      next: (res: any) => {
+
+        this.departments = (res?.data || []).filter(
+          (x: any) => x.status === true || x.status === 'Active'
+        );
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error loading departments:', err);
+
+        this.departments = [];
+
+      }
+
+    });
+
+}
+
+
+
+
+policies:any[]=[];
+
+
+loadPolicies(): void {
+
+  this.spinner.show();
+
+  this.authService
+    .getAccessPolicies()
+    .subscribe({
+
+      next: (response: any) => {
+
+        this.spinner.hide();
+
+        this.policies = this.mapPolicies(response.data);
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        this.spinner.hide();
+
+        this.alert.error(err?.error?.message || 'Failed to load access policies.');
+
+      }
+    });
+
+}
+
+
+private mapPolicies(data: any[] | undefined): any[] {
+
+  return (data || []).map((x: any) => ({
+
+    id: x.policyId,
+    policyName: x.policyName,
+    policyCode: x.policyCode,
+    companyId: x.companyId,
+    regionId: x.regionId,
+    role: x.roleName,
+    departmentId: x.departmentId,
+    department: x.departmentName || 'All Departments',
+    modules: (x.modules || '').split(',').map((m: string) => m.trim()).filter((m: string) => !!m),
+    ipRestriction: x.ipRestriction,
+    allowedIP: x.allowedIp || '',
+    loginRestriction: x.loginRestriction,
+    sessionTimeout: x.sessionTimeout,
+    status: x.status ? 'Active' : 'Inactive',
+    isDefault: x.isDefault
+
+  }));
+
+}
 
 
 
@@ -178,63 +241,36 @@ isDefault:false
 model:any=this.emptyModel();
 
 
-
-
-
 emptyModel(){
-
 
 return {
 
-
 id:0,
-
 policyName:'',
-
 policyCode:'',
-
+companyId:'',
+regionId:'',
 role:'Admin',
-
-department:'All Departments',
-
+departmentId:null,
 modules:[],
-
 moduleAccess:{
-
 dashboard:false,
-
 leads:false,
-
 contacts:false,
-
 deals:false,
-
 reports:false,
-
 settings:false
-
 },
-
 ipRestriction:false,
-
 allowedIP:'',
-
 loginRestriction:'24 Hours',
-
 sessionTimeout:30,
-
 status:'Active',
-
 isDefault:false
-
 
 };
 
-
 }
-
-
-
 
 
 
@@ -245,41 +281,28 @@ isDefault:false
 get activePolicies(){
 
 return this.policies.filter(
-
 x=>x.status==='Active'
-
 ).length;
 
 }
-
-
 
 
 get inactivePolicies(){
 
 return this.policies.filter(
-
 x=>x.status==='Inactive'
-
 ).length;
 
 }
-
-
 
 
 get restrictedPolicies(){
 
 return this.policies.filter(
-
 x=>x.ipRestriction
-
 ).length;
 
 }
-
-
-
 
 
 
@@ -289,27 +312,19 @@ x=>x.ipRestriction
 
 get filteredPolicies(){
 
-
 return this.policies.filter(item=>{
-
 
 let search=
 
 item.policyName
-
 .toLowerCase()
-
 .includes(this.searchText.toLowerCase())
 
 ||
 
 item.policyCode
-
 .toLowerCase()
-
 .includes(this.searchText.toLowerCase());
-
-
 
 
 let role=
@@ -321,7 +336,6 @@ this.roleFilter==''
 item.role===this.roleFilter;
 
 
-
 let status=
 
 this.statusFilter==''
@@ -331,53 +345,25 @@ this.statusFilter==''
 item.status===this.statusFilter;
 
 
-
 return search && role && status;
-
 
 });
 
-
 }
-
-
-
 
 
 
 
 refresh(){
 
-
-this.spinner.show();
-
-
-setTimeout(()=>{
-
-
-this.spinner.hide();
-
-
-this.alert.success(
-
-'Access policies refreshed successfully.'
-
-);
-
-
-},500);
-
+this.loadPolicies();
 
 }
 
 
 
 
-
-
-
 openAddModal(){
-
 
 this.isEdit=false;
 
@@ -387,18 +373,12 @@ this.model=this.emptyModel();
 
 this.showModal=true;
 
-
 }
 
 
 
 
-
-
-
-
 closeModal(){
-
 
 this.showModal=false;
 
@@ -408,285 +388,214 @@ this.isEdit=false;
 
 this.editId=0;
 
-
 }
-
-
-
-
 
 
 
 
 savePolicy(){
 
-
 if(!this.model.policyName.trim()){
 
-
 this.alert.warning(
-
 'Policy Name is required.'
-
 );
 
-
 return;
-
 
 }
 
 
+if(!this.model.companyId){
+
+this.alert.warning(
+'Company is required.'
+);
+
+return;
+
+}
 
 
 this.spinner.show();
 
 
-
-setTimeout(()=>{
-
-
-
 let modules:string[]=[];
 
-
-
 Object.keys(this.model.moduleAccess)
-
 .forEach((key:string)=>{
-
 
 if(this.model.moduleAccess[key]){
 
-
 modules.push(
-
 key.charAt(0).toUpperCase()+key.slice(1)
-
 );
 
-
 }
-
 
 });
 
 
+const payload = {
 
+  policyId: this.isEdit ? this.editId : 0,
 
+  companyId: +this.model.companyId,
 
+  regionId: this.model.regionId ? +this.model.regionId : null,
 
-if(this.isEdit){
+  roleName: this.model.role,
 
+  departmentId: this.model.departmentId ? +this.model.departmentId : null,
 
+  policyName: this.model.policyName.trim(),
 
-let index=this.policies.findIndex(
+  modules: modules.join(','),
 
-x=>x.id===this.editId
+  ipRestriction: this.model.ipRestriction,
 
-);
+  allowedIp: this.model.allowedIP,
 
+  loginRestriction: this.model.loginRestriction,
 
+  sessionTimeout: +this.model.sessionTimeout || 30,
 
-if(index!=-1){
+  status: this.model.status === 'Active',
 
-
-
-this.policies[index]={
-
-...this.model,
-
-modules:modules,
-
-id:this.editId
+  isDefault: this.model.isDefault
 
 };
 
 
-}
+const request$ = this.isEdit
+
+  ? this.authService.updateAccessPolicy(payload)
+
+  : this.authService.createAccessPolicy(payload);
 
 
+request$.subscribe({
 
-this.alert.success(
+  next: (res: any) => {
 
-'Access policy updated successfully.'
+    this.spinner.hide();
 
-);
+    this.alert.success(res.message);
 
+    this.loadPolicies();
 
+    this.closeModal();
 
-}
+    this.cd.detectChanges();
 
-else{
+  },
 
+  error: (err) => {
 
-this.model.id=new Date().getTime();
+    this.spinner.hide();
 
+    this.alert.error(err?.error?.message || 'Failed to save access policy.');
 
-this.model.modules=modules;
-
-
-
-this.policies.unshift({
-
-...this.model
+  }
 
 });
 
 
-
-this.alert.success(
-
-'Access policy created successfully.'
-
-);
-
-
-
 }
-
-
-
-
-
-this.spinner.hide();
-
-
-this.closeModal();
-
-
-this.cd.detectChanges();
-
-
-
-},500);
-
-
-
-}
-
-
-
-
 
 
 
 
 edit(item:any){
 
-
 this.isEdit=true;
-
 
 this.editId=item.id;
 
-
 this.model={
 
-
-...item,
-
-
+id: item.id,
+policyName: item.policyName,
+policyCode: item.policyCode,
+companyId: item.companyId || '',
+regionId: item.regionId || '',
+role: item.role,
+departmentId: item.departmentId || null,
 moduleAccess:{
-
 dashboard:item.modules.includes('Dashboard'),
-
 leads:item.modules.includes('Leads'),
-
 contacts:item.modules.includes('Contacts'),
-
 deals:item.modules.includes('Deals'),
-
 reports:item.modules.includes('Reports'),
-
 settings:item.modules.includes('Settings')
-
-}
-
+},
+ipRestriction: item.ipRestriction,
+allowedIP: item.allowedIP,
+loginRestriction: item.loginRestriction,
+sessionTimeout: item.sessionTimeout,
+status: item.status,
+isDefault: item.isDefault
 
 };
 
-
 this.showModal=true;
 
-
 }
-
-
-
 
 
 
 
 delete(id:number){
 
-
 this.alert.deleteConfirm()
 
 .then(result=>{
 
-
 if(result.isConfirmed){
-
 
 this.spinner.show();
 
+this.authService
+  .deleteAccessPolicy(id)
+  .subscribe({
 
+    next: (res: any) => {
 
-setTimeout(()=>{
+      this.spinner.hide();
 
+      this.alert.success(res.message);
 
-this.policies=this.policies.filter(
+      this.loadPolicies();
 
-x=>x.id!==id
+      this.cd.detectChanges();
 
-);
+    },
 
+    error: (err) => {
 
+      this.spinner.hide();
 
-this.spinner.hide();
+      this.alert.error(err?.error?.message || 'Failed to delete access policy.');
 
-
-
-this.alert.success(
-
-'Access policy deleted successfully.'
-
-);
-
-
-
-this.cd.detectChanges();
-
-
-
-},500);
-
+    }
+  });
 
 }
-
-
 
 });
 
-
 }
-
-
-
 
 
 
 
 clearFilters(){
 
-
 this.searchText='';
 
 this.roleFilter='';
 
 this.statusFilter='';
-
 
 }
 

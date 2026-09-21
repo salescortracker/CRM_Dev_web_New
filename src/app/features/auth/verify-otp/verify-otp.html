@@ -1,0 +1,85 @@
+<div class="pw-page">
+
+  <div class="pw-card">
+
+    <div class="pw-brand">
+      <div class="pw-brand-icon">C</div>
+      <div class="pw-brand-name">COR<span>CRM</span></div>
+    </div>
+
+    <ol class="pw-steps">
+      <li class="done">1. Email</li>
+      <li class="active">2. Verify OTP</li>
+      <li>3. New password</li>
+    </ol>
+
+    <div class="pw-header">
+      <h2>Verify <span>OTP</span></h2>
+      <p>
+        We sent a 6-digit code to <strong>{{ email }}</strong>.
+        Enter it below. The code is valid for 5 minutes.
+      </p>
+    </div>
+
+    <form (ngSubmit)="verify()" novalidate>
+
+      <div class="pw-field">
+
+        <label for="otp">One-time password <em>*</em></label>
+
+        <div class="pw-input otp">
+          <input
+            id="otp"
+            type="text"
+            name="otp"
+            inputmode="numeric"
+            maxlength="6"
+            autocomplete="one-time-code"
+            placeholder="------"
+            [value]="otp"
+            (input)="onOtpInput($event)"
+          />
+        </div>
+
+      </div>
+
+      @if (errorMessage()) {
+        <div class="pw-error">
+          <i class="fa fa-circle-exclamation"></i>
+          <span>{{ errorMessage() }}</span>
+        </div>
+      }
+
+      <button type="submit" class="pw-button" [disabled]="loading()">
+        @if (loading()) {
+          <span class="pw-loader"></span>
+          <span>Please wait...</span>
+        } @else {
+          <span>Verify OTP</span>
+        }
+      </button>
+
+    </form>
+
+    <div class="pw-links">
+
+      <button
+        type="button"
+        class="pw-link-button"
+        [disabled]="resendIn() > 0 || loading()"
+        (click)="resend()"
+      >
+        @if (resendIn() > 0) {
+          Resend OTP in {{ resendIn() }}s
+        } @else {
+          Resend OTP
+        }
+      </button>
+
+      <a routerLink="/forgot-password">Change email</a>
+
+    </div>
+
+  </div>
+
+</div>

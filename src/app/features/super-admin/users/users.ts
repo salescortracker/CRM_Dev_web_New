@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Alertservice } from '../../../core/services/alertservice';
 import { Spinnerservice } from '../../../core/services/spinnerservice';
 import { AuthService } from '../../../core/authentication/services/auth.service';
+import { ControlsystemService } from '../services/controlsystem-service';
 
 @Component({
   selector: 'app-users',
@@ -21,7 +22,9 @@ private spinner:Spinnerservice,
 
 private cd:ChangeDetectorRef,
 
-private authService:AuthService
+private authService:AuthService,
+
+private controlService: ControlsystemService
 
 ){}
 
@@ -32,6 +35,14 @@ ngOnInit(): void {
   this.loadCompanies();
 
   this.loadRegions();
+
+  this.loadDepartments();
+
+  this.loadDesignations();
+
+  this.loadRoles();
+
+  this.loadUsers();
 
 }
 
@@ -92,6 +103,245 @@ loadRegions(): void {
 }
 
 
+// Regions belonging to the selected company, for the cascading dropdown.
+get formRegions(): any[] {
+
+  if (!this.model.companyId) {
+    return [];
+  }
+
+  return this.regions.filter(
+    r => r.companyId === Number(this.model.companyId)
+  );
+
+}
+
+
+onFormCompanyChange(): void {
+
+  this.model.regionId = '';
+
+  this.clearRoleIfNotAvailable();
+
+}
+
+
+onFormRegionChange(): void {
+
+  this.clearRoleIfNotAvailable();
+
+}
+
+
+
+
+// ROLE DROPDOWN (active roles created in Roles & Permissions)
+
+
+roles: any[] = [];
+
+
+loadRoles(): void {
+
+  this.authService
+    .getRoles()
+    .subscribe({
+
+      next: (response) => {
+
+        this.roles = (response.data || [])
+          .filter((x: any) => x.status !== false);
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error loading roles:', err);
+
+        this.roles = [];
+
+      }
+    });
+
+}
+
+
+// Unique, sorted role names.
+private uniqueNames(names: string[]): string[] {
+
+  const seen = new Map<string, string>();
+
+  for (const name of names) {
+
+    const key = (name || '').trim().toLowerCase();
+
+    if (key && !seen.has(key)) {
+      seen.set(key, name.trim());
+    }
+
+  }
+
+  return Array.from(seen.values())
+    .sort((a, b) => a.localeCompare(b));
+
+}
+
+
+// Roles of the selected company (and region, once one is chosen) - the
+// same rule the login uses to find the role that drives the sidebar.
+get availableRoleNames(): string[] {
+
+  if (!this.model.companyId) {
+    return [];
+  }
+
+  return this.uniqueNames(
+    this.roles
+      .filter(r =>
+        Number(r.companyId) === Number(this.model.companyId) &&
+        (!this.model.regionId ||
+          Number(r.regionId) === Number(this.model.regionId)))
+      .map(r => r.roleName)
+  );
+
+}
+
+
+// Options for the form's Role dropdown. A user's current role stays
+// visible when editing even if it is no longer in the list.
+get formRoles(): string[] {
+
+  const names = this.availableRoleNames;
+
+  const current = (this.model.role || '').trim();
+
+  const hasCurrent = names.some(
+    n => n.toLowerCase() === current.toLowerCase()
+  );
+
+  return current && !hasCurrent
+    ? [...names, current]
+    : names;
+
+}
+
+
+// Options for the Role filter above the table.
+get roleFilterOptions(): string[] {
+
+  return this.uniqueNames([
+    ...this.roles.map(r => r.roleName),
+    ...this.users.map(u => u.role)
+  ]);
+
+}
+
+
+private clearRoleIfNotAvailable(): void {
+
+  const current = (this.model.role || '').trim().toLowerCase();
+
+  const stillAvailable = this.availableRoleNames.some(
+    n => n.toLowerCase() === current
+  );
+
+  if (!stillAvailable) {
+    this.model.role = '';
+  }
+
+}
+
+
+
+
+// DEPARTMENT / DESIGNATION DROPDOWNS
+
+
+departments: any[] = [];
+
+designations: any[] = [];
+
+
+loadDepartments(): void {
+
+  this.controlService
+    .getDepartments()
+    .subscribe({
+
+      next: (res: any) => {
+
+        this.departments = (res?.data || []).filter(
+          (x: any) => x.status === true || x.status === 'Active'
+        );
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error loading departments:', err);
+
+        this.departments = [];
+
+      }
+
+    });
+
+}
+
+
+loadDesignations(): void {
+
+  this.controlService
+    .getDesignations()
+    .subscribe({
+
+      next: (res: any) => {
+
+        this.designations = (res?.data || []).filter(
+          (x: any) => x.status === true || x.status === 'Active'
+        );
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error loading designations:', err);
+
+        this.designations = [];
+
+      }
+
+    });
+
+}
+
+
+// Designations belonging to the selected department, for the cascading dropdown.
+get formDesignations(): any[] {
+
+  if (!this.model.departmentId) {
+    return [];
+  }
+
+  return this.designations.filter(
+    d => d.departmentId === Number(this.model.departmentId)
+  );
+
+}
+
+
+onFormDepartmentChange(): void {
+
+  this.model.designationId = '';
+
+}
+
 
 
 
@@ -117,127 +367,74 @@ statusFilter='';
 
 
 
-// STATIC USERS DATA
+// USERS DATA (from API)
 
 
-users:any[]=[
+users:any[]=[];
 
 
-{
+loadUsers(): void {
 
-id:1,
+  this.spinner.show();
 
-firstName:'John',
+  this.controlService
+    .getCompanyAdministrators()
+    .subscribe({
 
-lastName:'Smith',
+      next: (res: any) => {
 
-email:'john@crm.com',
+        this.spinner.hide();
 
-mobile:'9876543210',
+        if (res?.success) {
 
-employeeCode:'EMP001',
+          this.users = (res.data || []).map((x: any) => ({
+            id: x.administratorId,
+            firstName: x.firstName,
+            lastName: x.lastName || '',
+            email: x.email,
+            mobile: x.mobileNumber,
+            employeeCode: x.employeeCode,
+            username: x.username,
+            companyId: x.companyId,
+            regionId: x.regionId,
+            departmentId: x.departmentId,
+            department: x.departmentName || '',
+            designationId: x.designationId,
+            designation: x.designationName || '',
+            role: x.roleName || 'User',
+            status: x.status ? 'Active' : 'Inactive',
+            loginAccess: true,
+            lastLogin: '-'
+          }));
 
-department:'Sales',
+        } else {
 
-designation:'Manager',
+          this.users = [];
 
-role:'Admin',
+        }
 
-username:'john',
+        this.cd.detectChanges();
 
-password:'123456',
+      },
 
-confirmPassword:'123456',
+      error: (err) => {
 
-status:'Active',
+        this.spinner.hide();
 
-loginAccess:true,
+        console.error('Error loading users:', err);
 
-lastLogin:'25-Jul-2026'
+        this.users = [];
 
+        this.alert.error(
+          err?.error?.message ||
+          'Failed to load users.'
+        );
 
-},
+      }
 
-
-
-{
-
-id:2,
-
-firstName:'Sarah',
-
-lastName:'Wilson',
-
-email:'sarah@crm.com',
-
-mobile:'9988776655',
-
-employeeCode:'EMP002',
-
-department:'IT',
-
-designation:'Developer',
-
-role:'User',
-
-username:'sarah',
-
-password:'123456',
-
-confirmPassword:'123456',
-
-status:'Active',
-
-loginAccess:true,
-
-lastLogin:'24-Jul-2026'
-
-
-},
-
-
-
-{
-
-id:3,
-
-firstName:'David',
-
-lastName:'Brown',
-
-email:'david@crm.com',
-
-mobile:'8899776655',
-
-employeeCode:'EMP003',
-
-department:'HR',
-
-designation:'Executive',
-
-role:'Admin',
-
-username:'david',
-
-password:'123456',
-
-confirmPassword:'123456',
-
-status:'Inactive',
-
-loginAccess:false,
-
-lastLogin:'20-Jul-2026'
-
+    });
 
 }
-
-
-
-];
-
-
-
 
 
 
@@ -265,21 +462,17 @@ mobile:'',
 
 employeeCode:'',
 
+username:'',
+
 companyId:'',
 
 regionId:'',
 
-department:'Sales',
+departmentId:'',
 
-designation:'Manager',
+designationId:'',
 
-role:'User',
-
-username:'',
-
-password:'',
-
-confirmPassword:'',
+role:'',
 
 status:'Active',
 
@@ -394,26 +587,9 @@ return search && role && status;
 
 refresh(){
 
-
-this.spinner.show();
-
-
-setTimeout(()=>{
-
-
-this.spinner.hide();
-
-
-this.alert.success(
-'Users refreshed successfully.'
-);
-
-
-},500);
-
+this.loadUsers();
 
 }
-
 
 
 
@@ -491,6 +667,99 @@ return;
 }
 
 
+if(!this.model.mobile || !this.model.mobile.trim()){
+
+
+this.alert.warning(
+'Mobile Number is required.'
+);
+
+
+return;
+
+}
+
+
+if(!this.model.employeeCode || !this.model.employeeCode.trim()){
+
+
+this.alert.warning(
+'Employee Code is required.'
+);
+
+
+return;
+
+}
+
+
+if(!this.model.companyId){
+
+
+this.alert.warning(
+'Company is required.'
+);
+
+
+return;
+
+}
+
+
+
+if(!this.model.role || !this.model.role.trim()){
+
+
+this.alert.warning(
+'Role is required.'
+);
+
+
+return;
+
+}
+
+
+
+// Username is no longer collected from the UI. On create the backend
+// generates the real one; on edit keep the user's existing username -
+// the login uses it to find the user's role and sidebar menus.
+const derivedUsername =
+  (this.isEdit && this.model.username)
+    ? this.model.username
+    : (this.model.email.split('@')[0] || this.model.employeeCode)
+        .toLowerCase()
+        .trim();
+
+const data = {
+
+  administratorId: this.isEdit ? this.editId : 0,
+
+  companyId: Number(this.model.companyId),
+
+  regionId: this.model.regionId ? Number(this.model.regionId) : null,
+
+  departmentId: this.model.departmentId ? Number(this.model.departmentId) : null,
+
+  designationId: this.model.designationId ? Number(this.model.designationId) : null,
+
+  employeeCode: this.model.employeeCode.trim(),
+
+  username: derivedUsername,
+
+  firstName: this.model.firstName.trim(),
+
+  lastName: this.model.lastName ? this.model.lastName.trim() : '',
+
+  email: this.model.email.trim(),
+
+  mobileNumber: this.model.mobile.trim(),
+
+  roleName: this.model.role.trim(),
+
+  status: this.model.status === 'Active'
+
+};
 
 
 
@@ -498,89 +767,52 @@ this.spinner.show();
 
 
 
-setTimeout(()=>{
+const request$ = this.isEdit
+  ? this.controlService.updateCompanyAdministrator(data)
+  : this.controlService.createCompanyAdministrator(data);
 
+request$.subscribe({
 
+  next: (res: any) => {
 
-if(this.isEdit){
+    this.spinner.hide();
 
+    if (res?.success) {
 
+      this.alert.success(
+        res.message ||
+        (this.isEdit ? 'User updated successfully.' : 'User created successfully.')
+      );
 
-let index=this.users.findIndex(
-x=>x.id===this.editId
-);
+      this.closeModal();
 
+      this.loadUsers();
 
+    } else {
 
-if(index!=-1){
+      this.alert.warning(
+        res?.message || 'Unable to save user.'
+      );
 
+    }
 
-this.users[index]={
+    this.cd.detectChanges();
 
-...this.model,
+  },
 
-id:this.editId
+  error: (err) => {
 
-};
+    this.spinner.hide();
 
+    console.error('Save user error:', err);
 
-}
+    this.alert.error(
+      err?.error?.message || 'Failed to save user.'
+    );
 
-
-
-this.alert.success(
-'User updated successfully.'
-);
-
-
-
-}
-
-else{
-
-
-
-this.model.id=new Date().getTime();
-
-
-
-this.model.lastLogin='Today';
-
-
-
-this.users.unshift({
-
-...this.model
+  }
 
 });
-
-
-
-this.alert.success(
-'User created successfully.'
-);
-
-
-
-}
-
-
-
-
-this.spinner.hide();
-
-
-
-this.closeModal();
-
-
-
-this.cd.detectChanges();
-
-
-
-},500);
-
 
 
 }
@@ -596,22 +828,46 @@ edit(item:any){
 
 this.isEdit=true;
 
-
 this.editId=item.id;
-
 
 this.model={
 
-...item
+  id: item.id,
+
+  firstName: item.firstName,
+
+  lastName: item.lastName,
+
+  email: item.email,
+
+  mobile: item.mobile,
+
+  employeeCode: item.employeeCode,
+
+  username: item.username || '',
+
+  companyId: item.companyId || '',
+
+  regionId: item.regionId || '',
+
+  departmentId: item.departmentId || '',
+
+  designationId: item.designationId || '',
+
+  role: item.role,
+
+  status: item.status,
+
+  loginAccess: item.loginAccess,
+
+  lastLogin: item.lastLogin
 
 };
-
 
 this.showModal=true;
 
 
 }
-
 
 
 
@@ -631,36 +887,49 @@ this.alert.deleteConfirm()
 if(result.isConfirmed){
 
 
-
 this.spinner.show();
 
+this.controlService
+  .deleteCompanyAdministrator(id)
+  .subscribe({
 
+    next: (res: any) => {
 
-setTimeout(()=>{
+      this.spinner.hide();
 
+      if (res?.success) {
 
-this.users=this.users.filter(
-x=>x.id!==id
-);
+        this.alert.success(
+          res.message || 'User deleted successfully.'
+        );
 
+        this.loadUsers();
 
+      } else {
 
-this.spinner.hide();
+        this.alert.warning(
+          res?.message || 'Unable to delete user.'
+        );
 
+      }
 
+      this.cd.detectChanges();
 
-this.alert.success(
-'User deleted successfully.'
-);
+    },
 
+    error: (err) => {
 
+      this.spinner.hide();
 
-this.cd.detectChanges();
+      console.error('Delete user error:', err);
 
+      this.alert.error(
+        err?.error?.message || 'Failed to delete user.'
+      );
 
+    }
 
-},500);
-
+  });
 
 
 }

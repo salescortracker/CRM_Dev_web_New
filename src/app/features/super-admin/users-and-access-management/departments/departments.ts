@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Alertservice } from '../../../../core/services/alertservice';
 import { Spinnerservice } from '../../../../core/services/spinnerservice';
 import { ControlsystemService } from '../../services/controlsystem-service';
+import { AuthService } from '../../../../core/authentication/services/auth.service';
 
 @Component({
   selector: 'app-departments',
@@ -17,7 +18,8 @@ export class Departments {
      private controlSystemService: ControlsystemService,
     private alert: Alertservice,
     private spinner: Spinnerservice,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private authService: AuthService
   ) {}
 
 
@@ -51,6 +53,18 @@ export class Departments {
   departments:any[] = [];
 
 
+  // ==============================
+  // Company / Region Dropdown Data
+  // ==============================
+
+  // Active companies from the database.
+  companies: any[] = [];
+
+  // All active regions from the database.
+  regions: any[] = [];
+
+  // Active regions of the company selected in the form.
+  companyRegions: any[] = [];
 
 
   // ==============================
@@ -66,7 +80,97 @@ export class Departments {
 
   ngOnInit(): void {
 
+    this.loadCompanies();
+
+    this.loadRegions();
+
     this.loadDepartments();
+
+  }
+
+
+  // =========================================================
+  // COMPANY / REGION DROPDOWNS
+  // =========================================================
+
+  loadCompanies(): void {
+
+    this.authService.getCompanies().subscribe({
+
+      next: (res: any) => {
+
+        this.companies = (res?.data || []).filter(
+          (x: any) => x.isActive !== false
+        );
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error loading companies:', err);
+
+        this.companies = [];
+
+      }
+
+    });
+
+  }
+
+
+  loadRegions(): void {
+
+    this.authService.getRegions().subscribe({
+
+      next: (res: any) => {
+
+        this.regions = (res?.data || []).filter(
+          (x: any) => x.isActive !== false
+        );
+
+        // Regions may arrive after the edit modal opened.
+        this.updateCompanyRegions();
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error loading regions:', err);
+
+        this.regions = [];
+
+        this.companyRegions = [];
+
+      }
+
+    });
+
+  }
+
+
+  // Only the regions that belong to the selected company.
+  updateCompanyRegions(): void {
+
+    const companyId = Number(this.model.companyId);
+
+    this.companyRegions = companyId
+      ? this.regions.filter(
+          (r: any) => Number(r.companyId) === companyId
+        )
+      : [];
+
+  }
+
+
+  onCompanyChange(): void {
+
+    this.model.regionId = null;
+
+    this.updateCompanyRegions();
 
   }
 
@@ -86,6 +190,10 @@ export class Departments {
       departmentCode: '',
 
       description: '',
+
+      companyId: null as number | null,
+
+      regionId: null as number | null,
 
       status: true
 
@@ -224,13 +332,26 @@ export class Departments {
           .toLowerCase();
 
 
+      const companyName =
+        (item.companyName || '')
+          .toLowerCase();
+
+      const regionName =
+        (item.regionName || '')
+          .toLowerCase();
+
+
       const matchesSearch =
 
         departmentName.includes(search) ||
 
         departmentCode.includes(search) ||
 
-        description.includes(search);
+        description.includes(search) ||
+
+        companyName.includes(search) ||
+
+        regionName.includes(search);
 
 
       const matchesStatus =
@@ -270,6 +391,8 @@ export class Departments {
 
     this.model = this.emptyModel();
 
+    this.updateCompanyRegions();
+
     this.showModal = true;
 
   }
@@ -284,6 +407,8 @@ export class Departments {
     this.showModal = false;
 
     this.model = this.emptyModel();
+
+    this.updateCompanyRegions();
 
     this.isEdit = false;
 
@@ -335,6 +460,32 @@ export class Departments {
 
 
     // -----------------------------------------
+    // Company / Region Validation
+    // -----------------------------------------
+
+    if (!this.model.companyId) {
+
+      this.alert.warning(
+        'Please select a Company.'
+      );
+
+      return;
+
+    }
+
+
+    if (!this.model.regionId) {
+
+      this.alert.warning(
+        'Please select a Region.'
+      );
+
+      return;
+
+    }
+
+
+    // -----------------------------------------
     // Prepare API Model
     // -----------------------------------------
 
@@ -343,6 +494,12 @@ export class Departments {
       departmentId: this.isEdit
         ? this.editId
         : 0,
+
+      companyId:
+        Number(this.model.companyId),
+
+      regionId:
+        Number(this.model.regionId),
 
       departmentName:
         this.model.departmentName.trim(),
@@ -509,6 +666,13 @@ export class Departments {
       description:
         item.description || '',
 
+      // 0 (legacy records saved without a company) -> nothing selected
+      companyId:
+        item.companyId || null,
+
+      regionId:
+        item.regionId || null,
+
       status:
         item.status === true ||
         item.status === 'Active'
@@ -516,6 +680,8 @@ export class Departments {
           : 'Inactive'
 
     };
+
+    this.updateCompanyRegions();
 
 
     this.showModal = true;

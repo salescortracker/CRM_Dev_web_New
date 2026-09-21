@@ -210,23 +210,11 @@
             </option>
 
 
-            <option value="Super Admin">
+            <option
+                *ngFor="let roleName of roleFilterOptions"
+                [value]="roleName">
 
-                Super Admin
-
-            </option>
-
-
-            <option value="Admin">
-
-                Admin
-
-            </option>
-
-
-            <option value="User">
-
-                User
+                {{ roleName }}
 
             </option>
 
@@ -903,7 +891,8 @@
 
                     <select
 
-                        [(ngModel)]="model.companyId">
+                        [(ngModel)]="model.companyId"
+                        (ngModelChange)="onFormCompanyChange()">
 
 
                         <option value="">
@@ -949,7 +938,9 @@
 
                     <select
 
-                        [(ngModel)]="model.regionId">
+                        [(ngModel)]="model.regionId"
+
+                        (ngModelChange)="onFormRegionChange()">
 
 
                         <option value="">
@@ -961,7 +952,7 @@
 
                         <option
 
-                            *ngFor="let item of regions"
+                            *ngFor="let item of formRegions"
 
                             [value]="item.regionId">
 
@@ -999,45 +990,26 @@
 
                     <select
 
-                        [(ngModel)]="model.department">
+                        [(ngModel)]="model.departmentId"
+                        (ngModelChange)="onFormDepartmentChange()">
 
 
 
-                        <option>
+                        <option value="">
 
-                            Sales
-
-                        </option>
-
-
-
-                        <option>
-
-                            Marketing
+                            -- Select Department --
 
                         </option>
 
 
 
-                        <option>
+                        <option
 
-                            HR
+                            *ngFor="let item of departments"
 
-                        </option>
+                            [value]="item.departmentId">
 
-
-
-                        <option>
-
-                            Finance
-
-                        </option>
-
-
-
-                        <option>
-
-                            IT
+                            {{item.departmentName}}
 
                         </option>
 
@@ -1072,37 +1044,25 @@
 
                     <select
 
-                        [(ngModel)]="model.designation">
+                        [(ngModel)]="model.designationId">
 
 
 
-                        <option>
+                        <option value="">
 
-                            Manager
-
-                        </option>
-
-
-
-                        <option>
-
-                            Team Lead
+                            -- Select Designation --
 
                         </option>
 
 
 
-                        <option>
+                        <option
 
-                            Executive
+                            *ngFor="let item of formDesignations"
 
-                        </option>
+                            [value]="item.designationId">
 
-
-
-                        <option>
-
-                            Developer
+                            {{item.designationName}}
 
                         </option>
 
@@ -1137,29 +1097,25 @@
 
                     <select
 
-                        [(ngModel)]="model.role">
+                        [(ngModel)]="model.role"
+
+                        [disabled]="!model.companyId">
 
 
+                        <option value="">
 
-                        <option>
-
-                            Super Admin
-
-                        </option>
-
-
-
-                        <option>
-
-                            Admin
+                            -- Select Role --
 
                         </option>
 
 
+                        <option
 
-                        <option>
+                            *ngFor="let roleName of formRoles"
 
-                            User
+                            [value]="roleName">
+
+                            {{ roleName }}
 
                         </option>
 
@@ -1178,97 +1134,6 @@
 
 
 
-                <!-- USERNAME -->
-
-
-                <div>
-
-
-                    <label>
-
-                        Username
-
-                    </label>
-
-
-
-                    <input
-
-                        type="text"
-
-                        placeholder="Enter username"
-
-                        [(ngModel)]="model.username">
-
-
-
-                </div>
-
-
-
-
-
-
-
-
-                <!-- PASSWORD -->
-
-
-                <div>
-
-
-                    <label>
-
-                        Password
-
-                    </label>
-
-
-
-                    <input
-
-                        type="password"
-
-                        placeholder="Enter password"
-
-                        [(ngModel)]="model.password">
-
-
-
-                </div>
-
-
-
-
-
-
-
-
-                <!-- CONFIRM PASSWORD -->
-
-
-                <div>
-
-
-                    <label>
-
-                        Confirm Password
-
-                    </label>
-
-
-
-                    <input
-
-                        type="password"
-
-                        placeholder="Confirm password"
-
-                        [(ngModel)]="model.confirmPassword">
-
-
-
-                </div>
 
 
 

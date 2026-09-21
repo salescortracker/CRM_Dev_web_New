@@ -36,6 +36,10 @@ export class Header {
       .join('') || 'U';
   }
 
+  changePassword(): void {
+    this.router.navigate(['/change-password']);
+  }
+
   logout(): void {
     this.authService.logout();
     this.router.navigate(['/login']);

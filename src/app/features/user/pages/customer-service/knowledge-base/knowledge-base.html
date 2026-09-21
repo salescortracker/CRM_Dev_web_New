@@ -34,9 +34,9 @@
                     </label>
 
                     <input type="text" class="form-control" placeholder="Enter Article Title"
-                        [(ngModel)]="article.title">
+                        [(ngModel)]="article.articleTitle">
 
-                    <div class="text-danger mt-1" *ngIf="submitted && !article.title">
+                    <div class="text-danger mt-1" *ngIf="submitted && !article.articleTitle">
 
                         Article Title is required.
 
@@ -51,29 +51,14 @@
 
                         Category
 
-                        <span class="text-danger">*</span>
-
                     </label>
 
                     <select class="form-select" [(ngModel)]="article.category">
 
                         <option value="">Select Category</option>
-                        <option>Getting Started</option>
-                        <option>Account Management</option>
-                        <option>Billing</option>
-                        <option>CRM Features</option>
-                        <option>Troubleshooting</option>
-                        <option>API Documentation</option>
-                        <option>Integrations</option>
-                        <option>FAQ</option>
+                        <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
 
                     </select>
-
-                    <div class="text-danger mt-1" *ngIf="submitted && !article.category">
-
-                        Category is required.
-
-                    </div>
 
                 </div>
 
@@ -91,9 +76,7 @@
                     <select class="form-select" [(ngModel)]="article.status">
 
                         <option value="">Select Status</option>
-                        <option>Draft</option>
-                        <option>Published</option>
-                        <option>Archived</option>
+                        <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
 
                     </select>
 
@@ -126,16 +109,22 @@
 
                         Visibility
 
+                        <span class="text-danger">*</span>
+
                     </label>
 
                     <select class="form-select" [(ngModel)]="article.visibility">
 
                         <option value="">Select Visibility</option>
-                        <option>Public</option>
-                        <option>Internal</option>
-                        <option>Customers Only</option>
+                        <option *ngFor="let v of visibilities" [value]="v">{{ v }}</option>
 
                     </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !article.visibility">
+
+                        Visibility is required.
+
+                    </div>
 
                 </div>
 
@@ -160,9 +149,17 @@
 
                         Version
 
+                        <span class="text-danger">*</span>
+
                     </label>
 
                     <input type="text" class="form-control" placeholder="v1.0" [(ngModel)]="article.version">
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !article.version">
+
+                        Version is required.
+
+                    </div>
 
                 </div>
 
@@ -176,6 +173,24 @@
                     </label>
 
                     <input type="date" class="form-control" [(ngModel)]="article.lastUpdated">
+
+                </div>
+
+                <!-- Upload Type -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Upload Type
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="article.uploadType">
+
+                        <option value="">Select Upload Type</option>
+                        <option *ngFor="let ut of uploadTypes" [value]="ut">{{ ut }}</option>
+
+                    </select>
 
                 </div>
 
@@ -218,7 +233,7 @@
                     </label>
 
                     <textarea rows="8" class="form-control" placeholder="Write the complete knowledge base article..."
-                        [(ngModel)]="article.content">
+                        [(ngModel)]="article.articleContent">
 
                     </textarea>
 
@@ -351,7 +366,7 @@
 
                             <td>
 
-                                {{ item.title }}
+                                {{ item.articleTitle }}
 
                             </td>
 
@@ -411,7 +426,7 @@
 
                             <td>
 
-                                {{ item.lastUpdated }}
+                                {{ item.lastUpdated ? (item.lastUpdated | date:'dd-MMM-yyyy') : '-' }}
 
                             </td>
 

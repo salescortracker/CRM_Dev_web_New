@@ -395,8 +395,14 @@
 
                     </label>
 
-                    <input class="form-control"
-                           [(ngModel)]="invoice.companyName">
+                    <select class="form-select"
+                           [ngModel]="invoice.organizationId"
+                           (ngModelChange)="onCompanyChange($event)">
+
+                        <option [ngValue]="null" disabled>Select company</option>
+                        <option *ngFor="let company of companies" [ngValue]="company.organizationId">{{company.organizationName}}</option>
+
+                    </select>
 
                 </div>
 
@@ -409,11 +415,11 @@
                     </label>
 
                     <select class="form-select"
-                            [(ngModel)]="invoice.planName">
+                            [ngModel]="invoice.planId"
+                            (ngModelChange)="onPlanChange($event)">
 
-                        <option>Starter</option>
-                        <option>Professional</option>
-                        <option>Enterprise</option>
+                        <option [ngValue]="null" disabled>Select plan</option>
+                        <option *ngFor="let plan of plans" [ngValue]="plan.planId">{{plan.planName}}</option>
 
                     </select>
 

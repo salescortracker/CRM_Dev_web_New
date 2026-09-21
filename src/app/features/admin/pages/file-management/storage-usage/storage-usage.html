@@ -137,8 +137,9 @@
                     </label>
 
 
-                    <input type="number" class="form-control" placeholder="Enter Total Capacity"
-                        [(ngModel)]="storageUsage.totalCapacity">
+                    <input type="number" class="form-control" placeholder="Enter Total Capacity" min="0"
+                        [ngModel]="storageUsage.totalCapacity"
+                        (ngModelChange)="storageUsage.totalCapacity = $event; calculateUsage()">
 
 
                     <div class="text-danger mt-1" *ngIf="submitted && !storageUsage.totalCapacity">
@@ -165,13 +166,22 @@
                     </label>
 
 
-                    <input type="number" class="form-control" placeholder="Enter Used Capacity"
-                        [(ngModel)]="storageUsage.usedCapacity">
+                    <input type="number" class="form-control" placeholder="Enter Used Capacity" min="0"
+                        [ngModel]="storageUsage.usedCapacity"
+                        (ngModelChange)="storageUsage.usedCapacity = $event; calculateUsage()">
 
 
-                    <div class="text-danger mt-1" *ngIf="submitted && !storageUsage.usedCapacity">
+                    <div class="text-danger mt-1"
+                        *ngIf="submitted && (storageUsage.usedCapacity === null || storageUsage.usedCapacity === '')">
 
                         Used Capacity is required.
+
+                    </div>
+
+
+                    <div class="text-danger mt-1" *ngIf="isUsedExceedingTotal">
+
+                        Used Capacity cannot exceed Total Capacity.
 
                     </div>
 
@@ -192,8 +202,8 @@
                     </label>
 
 
-                    <input type="number" class="form-control" placeholder="Available Capacity"
-                        [(ngModel)]="storageUsage.availableCapacity">
+                    <input type="number" class="form-control" placeholder="Auto calculated" readonly
+                        [ngModel]="storageUsage.availableCapacity">
 
 
                 </div>
@@ -212,8 +222,8 @@
                     </label>
 
 
-                    <input type="number" class="form-control" placeholder="Usage Percentage"
-                        [(ngModel)]="storageUsage.usagePercentage">
+                    <input type="number" class="form-control" placeholder="Auto calculated" readonly
+                        [ngModel]="storageUsage.usagePercentage">
 
 
                 </div>

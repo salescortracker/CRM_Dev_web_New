@@ -145,7 +145,9 @@ export class RolesPermissions implements OnInit {
 
         next: (response) => {
 
-          this.companies = response.data || [];
+          this.companies = (response.data || []).filter(
+            (x: any) => x.isActive !== false
+          );
 
         },
 
@@ -167,7 +169,9 @@ export class RolesPermissions implements OnInit {
 
         next: (response) => {
 
-          this.regions = response.data || [];
+          this.regions = (response.data || []).filter(
+            (x: any) => x.isActive !== false
+          );
 
         },
 
@@ -177,6 +181,27 @@ export class RolesPermissions implements OnInit {
 
         }
       });
+
+  }
+
+
+  // Regions belonging to the selected company, for the cascading dropdown.
+  get formRegions(): any[] {
+
+    if (!this.model.companyId) {
+      return [];
+    }
+
+    return this.regions.filter(
+      r => r.companyId === Number(this.model.companyId)
+    );
+
+  }
+
+
+  onFormCompanyChange(): void {
+
+    this.model.regionId = '';
 
   }
 
@@ -256,6 +281,10 @@ export class RolesPermissions implements OnInit {
       companyId: x.companyId,
 
       regionId: x.regionId,
+
+      companyName: x.companyName || '',
+
+      regionName: x.regionName || '',
 
       roleName: x.roleName,
 
@@ -450,6 +479,26 @@ export class RolesPermissions implements OnInit {
       ||
 
       item.description
+
+      .toLowerCase()
+
+      .includes(this.searchText.toLowerCase())
+
+
+
+      ||
+
+      (item.companyName || '')
+
+      .toLowerCase()
+
+      .includes(this.searchText.toLowerCase())
+
+
+
+      ||
+
+      (item.regionName || '')
 
       .toLowerCase()
 

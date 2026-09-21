@@ -3,6 +3,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { OnInit } from '@angular/core';
 import { AuthService } from '../../../core/authentication/services/auth.service';
+import { AuthMenu } from '../../../core/authentication/models/login-response.model';
 // import { AuthService } from '../../core/authentication/services/auth.service';
 
 interface SidebarMenu {
@@ -42,7 +43,20 @@ export class Sidebar {
   }
   loadMenus() {
 
-    const role = this.normalizeRole(this.authService.getCurrentUser()?.role);
+    const user = this.authService.getCurrentUser();
+
+    // Layout decided by the server from the user's assigned role.
+    const role = this.authService.getUserLayout();
+
+    // Menus/screens assigned to the user's role in Roles & Permissions
+    // (sent by the login API). Super admin always keeps the full sidebar.
+    if (role !== 'super admin' && Array.isArray(user?.menus)) {
+
+      this.menus = this.buildRoleMenus(user!.menus!);
+
+      return;
+
+    }
 
     switch (role) {
 
@@ -72,8 +86,39 @@ export class Sidebar {
 
   }
 
-  private normalizeRole(role: string | undefined): string {
-    return (role || '').replace(/[-_]/g, ' ').trim().toLowerCase();
+  // Turns the flat, role-assigned menu list into the sidebar tree.
+  private buildRoleMenus(items: AuthMenu[]): SidebarMenu[] {
+
+    const ids = new Set(items.map(x => x.menuId));
+
+    const toMenu = (item: AuthMenu): SidebarMenu => {
+
+      const children = items
+        .filter(x => x.parentMenuId === item.menuId)
+        .map(toMenu);
+
+      const menu: SidebarMenu = {
+        label: item.menuName,
+        icon: item.icon || 'fa-circle',
+        group: 'CRM'
+      };
+
+      if (children.length > 0) {
+        menu.expanded = false;
+        menu.children = children;
+      } else if (item.url) {
+        menu.route = item.url.startsWith('/') ? item.url : '/' + item.url;
+      }
+
+      return menu;
+
+    };
+
+    // Top level = no parent, or a parent that is not in the assigned list.
+    return items
+      .filter(x => !x.parentMenuId || !ids.has(x.parentMenuId))
+      .map(toMenu);
+
   }
   menus: SidebarMenu[] = [];
   superAdminMenus: SidebarMenu[] = [
@@ -92,6 +137,18 @@ export class Sidebar {
       expanded: false,
       children: [
         {
+          label: 'Companys',
+          icon: 'fa-building',
+          route: '/company',
+          group: 'Administration'
+        },
+         {
+          label: 'Regions',
+          icon: 'fa-building',
+          route: '/region',
+          group: 'Administration'
+        },
+        {
           label: 'Organizations',
           icon: 'fa-users',
           route: '/organizations',
@@ -99,21 +156,15 @@ export class Sidebar {
         },
 
         {
-          label: 'Companys',
+          label: 'Departments',
           icon: 'fa-building',
-          route: '/company',
+          route: '/departments',
           group: 'Administration'
         },
         {
-          label: 'Company Administrators',
-          icon: 'fa-building',
-          route: '/company-administrators',
-          group: 'Administration'
-        },
-        {
-          label: 'Regions',
-          icon: 'fa-building',
-          route: '/region',
+          label: 'Designations',
+          icon: 'fa-code-branch',
+          route: '/designations',
           group: 'Administration'
         },
         {
@@ -122,18 +173,27 @@ export class Sidebar {
           route: '/branches',
           group: 'Administration'
         },
+        
+        {
+          label: 'Company Administrators',
+          icon: 'fa-building',
+          route: '/company-administrators',
+          group: 'Administration'
+        },
+       
+        
         {
           label: 'Business Units (Optional)',
           icon: 'fa-building',
           route: '/business-units',
           group: 'Administration'
         },
-        {
-          label: ' Company Settings',
-          icon: 'fa-building',
-          route: '/company-settings',
-          group: 'Administration'
-        },
+        // {
+        //   label: ' Company Settings',
+        //   icon: 'fa-building',
+        //   route: '/company-settings',
+        //   group: 'Administration'
+        // },
 
 
 
@@ -196,18 +256,7 @@ export class Sidebar {
       group: 'Administration',
       expanded: false,
       children: [
-        {
-          label: 'Departments',
-          icon: 'fa-building',
-          route: '/departments',
-          group: 'Administration'
-        },
-        {
-          label: 'Designations',
-          icon: 'fa-code-branch',
-          route: '/designations',
-          group: 'Administration'
-        },
+        
         {
           label: 'Menu Access',
           icon: 'fa-map-location-dot',
@@ -310,57 +359,57 @@ export class Sidebar {
       ]
 
     },
-    {
-      label: 'Integration Management',
-      icon: 'fa-plug',
-      group: 'Administration',
-      expanded: false,
-      children: [
-        {
-          label: 'Email Configuration',
-          icon: 'fa-building',
-          route: '/email-configuration',
-          group: 'Administration'
-        },
-        {
-          label: 'SMS Configuration',
-          icon: 'fa-code-branch',
-          route: '/sms-configuration',
-          group: 'Administration'
-        },
-        {
-          label: 'WhatsApp Configuration',
-          icon: 'fa-map-location-dot',
-          route: '/whatsapp-configuration',
-          group: 'Administration'
-        },
-        {
-          label: 'Telephony Configuration',
-          icon: 'fa-map-location-dot',
-          route: '/telephony-configuration',
-          group: 'Administration'
-        },
-        {
-          label: 'API Configuration',
-          icon: 'fa-map-location-dot',
-          route: '/api-configuration',
-          group: 'Administration'
-        },
-        {
-          label: 'Webhooks',
-          icon: 'fa-map-location-dot',
-          route: '/webhooks-configuration',
-          group: 'Administration'
-        },
-        {
-          label: 'Third Party Integrations',
-          icon: 'fa-map-location-dot',
-          route: '/third-party-integrations',
-          group: 'Administration'
-        }
+    // {
+    //   label: 'Integration Management',
+    //   icon: 'fa-plug',
+    //   group: 'Administration',
+    //   expanded: false,
+    //   children: [
+    //     {
+    //       label: 'Email Configuration',
+    //       icon: 'fa-building',
+    //       route: '/email-configuration',
+    //       group: 'Administration'
+    //     },
+    //     {
+    //       label: 'SMS Configuration',
+    //       icon: 'fa-code-branch',
+    //       route: '/sms-configuration',
+    //       group: 'Administration'
+    //     },
+    //     {
+    //       label: 'WhatsApp Configuration',
+    //       icon: 'fa-map-location-dot',
+    //       route: '/whatsapp-configuration',
+    //       group: 'Administration'
+    //     },
+    //     {
+    //       label: 'Telephony Configuration',
+    //       icon: 'fa-map-location-dot',
+    //       route: '/telephony-configuration',
+    //       group: 'Administration'
+    //     },
+    //     {
+    //       label: 'API Configuration',
+    //       icon: 'fa-map-location-dot',
+    //       route: '/api-configuration',
+    //       group: 'Administration'
+    //     },
+    //     {
+    //       label: 'Webhooks',
+    //       icon: 'fa-map-location-dot',
+    //       route: '/webhooks-configuration',
+    //       group: 'Administration'
+    //     },
+    //     {
+    //       label: 'Third Party Integrations',
+    //       icon: 'fa-map-location-dot',
+    //       route: '/third-party-integrations',
+    //       group: 'Administration'
+    //     }
 
-      ]
-    },
+    //   ]
+    // },
     {
       label: 'Workflow & Automation',
       icon: 'fa-gears',
@@ -429,52 +478,52 @@ export class Sidebar {
         }
       ]
     },
-    {
-      label: 'Security Center',
-      icon: 'fa-shield-halved',
+    // {
+    //   label: 'Security Center',
+    //   icon: 'fa-shield-halved',
 
-      group: 'Administration',
-      expanded: false,
+    //   group: 'Administration',
+    //   expanded: false,
 
-      children: [
-        {
-          label: 'Login Sessions',
-          icon: 'fa-building',
-          route: '/login-sessions',
-          group: 'Administration'
-        },
-        {
-          label: 'Password Policy',
-          icon: 'fa-building',
-          route: '/password-policy',
-          group: 'Administration'
-        },
-        {
-          label: 'MFA',
-          icon: 'fa-building',
-          route: '/mfa',
-          group: 'Administration'
-        },
-        {
-          label: 'IP Restrictions',
-          icon: 'fa-building',
-          route: '/ip-restrictions',
-          group: 'Administration'
-        },
-        {
-          label: 'Device Management',
-          icon: 'fa-building',
-          route: '/device-management',
-          group: 'Administration'
-        },
-        {
-          label: 'Security Logs',
-          icon: 'fa-building',
-          route: '/security-logs',
-          group: 'Administration'
-        }
-      ]
-    },
+    //   children: [
+    //     {
+    //       label: 'Login Sessions',
+    //       icon: 'fa-building',
+    //       route: '/login-sessions',
+    //       group: 'Administration'
+    //     },
+    //     {
+    //       label: 'Password Policy',
+    //       icon: 'fa-building',
+    //       route: '/password-policy',
+    //       group: 'Administration'
+    //     },
+    //     {
+    //       label: 'MFA',
+    //       icon: 'fa-building',
+    //       route: '/mfa',
+    //       group: 'Administration'
+    //     },
+    //     {
+    //       label: 'IP Restrictions',
+    //       icon: 'fa-building',
+    //       route: '/ip-restrictions',
+    //       group: 'Administration'
+    //     },
+    //     {
+    //       label: 'Device Management',
+    //       icon: 'fa-building',
+    //       route: '/device-management',
+    //       group: 'Administration'
+    //     },
+    //     {
+    //       label: 'Security Logs',
+    //       icon: 'fa-building',
+    //       route: '/security-logs',
+    //       group: 'Administration'
+    //     }
+    //   ]
+    // },
     {
       label: 'Notification Management',
       icon: 'fa-bell',
@@ -511,12 +560,12 @@ export class Sidebar {
           route: '/push-notification',
           group: 'Administration'
         },
-        {
-          label: 'Notification Rules',
-          icon: 'fa-building',
-          route: '/notification-rules',
-          group: 'Administration'
-        },
+        // {
+        //   label: 'Notification Rules',
+        //   icon: 'fa-building',
+        //   route: '/notification-rules',
+        //   group: 'Administration'
+        // },
       ]
     },
     {
@@ -539,24 +588,24 @@ export class Sidebar {
           route: '/login-history',
           group: 'Administration'
         },
-        {
-          label: 'API Logs',
-          icon: 'fa-building',
-          route: '/api-logs',
-          group: 'Administration'
-        },
-        {
-          label: 'Error Logs',
-          icon: 'fa-building',
-          route: '/error-logs',
-          group: 'Administration'
-        },
-        {
-          label: 'User Activities',
-          icon: 'fa-building',
-          route: '/user-activities',
-          group: 'Administration'
-        },
+        // {
+        //   label: 'API Logs',
+        //   icon: 'fa-building',
+        //   route: '/api-logs',
+        //   group: 'Administration'
+        // },
+        // {
+        //   label: 'Error Logs',
+        //   icon: 'fa-building',
+        //   route: '/error-logs',
+        //   group: 'Administration'
+        // },
+        // {
+        //   label: 'User Activities',
+        //   icon: 'fa-building',
+        //   route: '/user-activities',
+        //   group: 'Administration'
+        // },
       ]
     },
     // {
@@ -635,76 +684,76 @@ export class Sidebar {
         },
       ]
     },
-    {
-      label: 'System Settings',
-      icon: 'fa-screwdriver-wrench',
-      group: 'Administration',
-      expanded: false,
-      children: [
-        {
-          label: 'General Settings',
-          icon: 'fa-sliders',
-          route: '/general-settings',
-          group: 'Administration'
-        },
-        {
-          label: 'Branding',
-          icon: 'fa-building',
-          route: '/brands',
-          group: 'Administration'
-        },
-        {
-          label: 'Localization',
-          icon: 'fa-building',
-          route: '/localization',
-          group: 'Administration'
-        },
-        {
-          label: 'Time Zones',
-          icon: 'fa-building',
-          route: '/time-zones',
-          group: 'Administration'
-        },
-        {
-          label: 'Currency',
-          icon: 'fa-building',
-          route: '/currency',
-          group: 'Administration'
-        },
-        {
-          label: 'Fiscal Year',
-          icon: 'fa-building',
-          route: '/fiscal-year',
-          group: 'Administration'
-        },
-        {
-          label: 'Number Formats',
-          icon: 'fa-building',
-          route: '/number-formats',
-          group: 'Administration'
-        },
+    // {
+    //   label: 'System Settings',
+    //   icon: 'fa-screwdriver-wrench',
+    //   group: 'Administration',
+    //   expanded: false,
+    //   children: [
+    //     {
+    //       label: 'General Settings',
+    //       icon: 'fa-sliders',
+    //       route: '/general-settings',
+    //       group: 'Administration'
+    //     },
+    //     {
+    //       label: 'Branding',
+    //       icon: 'fa-building',
+    //       route: '/brands',
+    //       group: 'Administration'
+    //     },
+    //     {
+    //       label: 'Localization',
+    //       icon: 'fa-building',
+    //       route: '/localization',
+    //       group: 'Administration'
+    //     },
+    //     {
+    //       label: 'Time Zones',
+    //       icon: 'fa-building',
+    //       route: '/time-zones',
+    //       group: 'Administration'
+    //     },
+    //     {
+    //       label: 'Currency',
+    //       icon: 'fa-building',
+    //       route: '/currency',
+    //       group: 'Administration'
+    //     },
+    //     {
+    //       label: 'Fiscal Year',
+    //       icon: 'fa-building',
+    //       route: '/fiscal-year',
+    //       group: 'Administration'
+    //     },
+    //     {
+    //       label: 'Number Formats',
+    //       icon: 'fa-building',
+    //       route: '/number-formats',
+    //       group: 'Administration'
+    //     },
 
-        {
-          label: 'File Storage',
-          icon: 'fa-building',
-          route: '/file-storage',
-          group: 'Administration'
-        },
+    //     {
+    //       label: 'File Storage',
+    //       icon: 'fa-building',
+    //       route: '/file-storage',
+    //       group: 'Administration'
+    //     },
 
-        {
-          label: 'License',
-          icon: 'fa-building',
-          route: '/license',
-          group: 'Administration'
-        },
-        {
-          label: 'file Upload Document',
-          icon: 'fa-building',
-          route: '/fileupload-document',
-          group: 'Administration'
-        },
-      ]
-    },
+    //     {
+    //       label: 'License',
+    //       icon: 'fa-building',
+    //       route: '/license',
+    //       group: 'Administration'
+    //     },
+    //     {
+    //       label: 'file Upload Document',
+    //       icon: 'fa-building',
+    //       route: '/fileupload-document',
+    //       group: 'Administration'
+    //     },
+    //   ]
+    // },
     {
       label: 'Setup',
       icon: 'fa-gears',
@@ -896,7 +945,7 @@ export class Sidebar {
         { label: 'SMS Templates', icon: 'fa-comment', route: '/sms-notification', group: 'CRM' },
         { label: 'WhatsApp Templates', icon: 'fa-comments', route: '/whatsapp-notification', group: 'CRM' },
         { label: 'Push Notifications', icon: 'fa-bell', route: '/push-notification', group: 'CRM' },
-        { label: 'Notification Rules', icon: 'fa-sliders', route: '/notification-rules', group: 'CRM' }
+        // { label: 'Notification Rules', icon: 'fa-sliders', route: '/notification-rules', group: 'CRM' }
       ]
     },
     {

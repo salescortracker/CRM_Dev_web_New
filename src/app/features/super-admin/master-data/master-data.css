@@ -491,9 +491,13 @@ tbody td {
   border: 1px solid #e5eaf2;
   border-radius: 7px;
   min-height: 700px;
-  display: flex;
+  display: none;
   flex-direction: column;
   overflow: hidden;
+}
+
+.form-panel.open {
+  display: flex;
 }
 
 .form-panel-header {

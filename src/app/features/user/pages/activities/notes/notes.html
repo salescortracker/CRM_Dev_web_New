@@ -197,9 +197,9 @@
 
                     </label>
 
-                    <input type="date" class="form-control" [(ngModel)]="note.createdDate">
+                    <input type="date" class="form-control" [(ngModel)]="note.noteDate">
 
-                    <div class="text-danger mt-1" *ngIf="submitted && !note.createdDate">
+                    <div class="text-danger mt-1" *ngIf="submitted && !note.noteDate">
 
                         Created Date is required.
 
@@ -391,7 +391,7 @@
 
                     <td>
 
-                        {{ item.createdDate }}
+                        {{ item.noteDate }}
 
                     </td>
 

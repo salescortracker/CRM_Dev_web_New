@@ -1,16 +1,21 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ControlsystemService } from '../services/controlsystem-service';
+import { Alertservice } from '../../../core/services/alertservice';
+import { Spinnerservice } from '../../../core/services/spinnerservice';
 
 type SubStatus = 'Active' | 'Trial' | 'Suspended' | 'Cancelled' | 'Past Due';
 type PayStatus = 'Paid' | 'Pending' | 'Failed' | 'Refunded';
-type SubPlan = 'Starter' | 'Premium' | 'Enterprise';
 
 interface SubscriptionRecord {
-  id: string;
+  id: number;
+  organizationId: number | null;
   company: string;
-  plan: SubPlan;
+  planId: number | null;
+  plan: string;
+  accent: string;
   status: SubStatus;
   paymentStatus: PayStatus;
   expiryDate: string;
@@ -29,13 +34,6 @@ interface SubscriptionRecord {
   styleUrl: './subscriptions.css',
 })
 export class Subscriptions implements OnInit {
-    readonly planPrice: Record<SubPlan, number> = {
-    Starter: 18000,
-    Premium: 95000,
-    Enterprise: 420000
-  };
-
-  readonly planOrder: SubPlan[] = ['Starter', 'Premium', 'Enterprise'];
   readonly statuses: Array<SubStatus | 'All'> = ['All', 'Active', 'Trial', 'Suspended', 'Cancelled', 'Past Due'];
   readonly paymentStatuses: PayStatus[] = ['Paid', 'Pending', 'Failed', 'Refunded'];
   readonly billings: Array<'Monthly' | 'Annual'> = ['Monthly', 'Annual'];
@@ -63,37 +61,91 @@ export class Subscriptions implements OnInit {
     Refunded: 'ring-slate'
   };
 
-  readonly planGradient: Record<SubPlan, string> = {
-    Starter: 'hero-starter',
-    Premium: 'hero-premium',
-    Enterprise: 'hero-enterprise'
-  };
-
   subscriptions: SubscriptionRecord[] = [];
-  selectedId: string | null = null;
+  companies: any[] = [];
+  plans: any[] = [];
+
+  selectedId: number | null = null;
   showForm = false;
   isEditing = false;
   search = '';
   statusFilter: SubStatus | 'All' = 'All';
-  activityMessage = '';
   form: Partial<SubscriptionRecord> = this.blankForm();
 
-  private activityTimer: ReturnType<typeof setTimeout> | null = null;
-
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private controlService: ControlsystemService,
+    private alert: Alertservice,
+    private spinner: Spinnerservice,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
-    this.subscriptions = [
-      { id: 'sub-001', company: 'Cyberdyne Systems', plan: 'Enterprise', status: 'Active', paymentStatus: 'Paid', expiryDate: '2026-12-01', amount: 420000, seats: 200, autoRenew: true, billing: 'Monthly', startedDate: '2024-01-15' },
-      { id: 'sub-002', company: 'Acme Corporation', plan: 'Premium', status: 'Active', paymentStatus: 'Paid', expiryDate: '2026-09-15', amount: 95000, seats: 100, autoRenew: true, billing: 'Monthly', startedDate: '2024-06-10' },
-      { id: 'sub-003', company: 'NovaStar Agency', plan: 'Starter', status: 'Trial', paymentStatus: 'Pending', expiryDate: '2026-07-01', amount: 0, seats: 20, autoRenew: false, billing: 'Monthly', startedDate: '2026-06-01' },
-      { id: 'sub-004', company: 'FinEdge Capital', plan: 'Enterprise', status: 'Active', paymentStatus: 'Paid', expiryDate: '2027-01-20', amount: 4200000, seats: 250, autoRenew: true, billing: 'Annual', startedDate: '2023-11-05' },
-      { id: 'sub-005', company: 'BrightPath Schools', plan: 'Premium', status: 'Past Due', paymentStatus: 'Failed', expiryDate: '2026-05-10', amount: 95000, seats: 75, autoRenew: false, billing: 'Monthly', startedDate: '2025-02-20' },
-      { id: 'sub-006', company: 'MedCore Systems', plan: 'Enterprise', status: 'Active', paymentStatus: 'Paid', expiryDate: '2026-11-30', amount: 420000, seats: 150, autoRenew: true, billing: 'Monthly', startedDate: '2024-03-01' },
-      { id: 'sub-007', company: 'Quantum Retail', plan: 'Starter', status: 'Trial', paymentStatus: 'Pending', expiryDate: '2026-06-25', amount: 0, seats: 20, autoRenew: false, billing: 'Monthly', startedDate: '2026-05-28' },
-      { id: 'sub-008', company: 'Innovate Inc', plan: 'Premium', status: 'Suspended', paymentStatus: 'Failed', expiryDate: '2026-04-30', amount: 95000, seats: 50, autoRenew: false, billing: 'Monthly', startedDate: '2025-01-12' }
-    ];
-    this.selectedId = this.subscriptions[0]?.id || null;
+    this.loadCompanies();
+    this.loadPlans();
+    this.loadSubscriptions();
+  }
+
+  loadCompanies(): void {
+    this.controlService.getOrganizations().subscribe({
+      next: (res: any) => {
+        this.companies = res?.data || [];
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error loading companies:', err);
+        this.companies = [];
+      }
+    });
+  }
+
+  loadPlans(): void {
+    this.controlService.getPlans().subscribe({
+      next: (res: any) => {
+        this.plans = res?.data || [];
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error loading plans:', err);
+        this.plans = [];
+      }
+    });
+  }
+
+  loadSubscriptions(): void {
+    this.spinner.show();
+    this.controlService.getCompanySubscriptions().subscribe({
+      next: (res: any) => {
+        this.spinner.hide();
+        if (res.success) {
+          this.subscriptions = (res.data || []).map((x: any) => ({
+            id: x.subscriptionId,
+            organizationId: x.organizationId,
+            company: x.organizationName,
+            planId: x.planId,
+            plan: x.planName,
+            accent: x.planAccent || 'blue',
+            status: x.status,
+            paymentStatus: x.paymentStatus,
+            expiryDate: (x.expiryDate || '').slice(0, 10),
+            amount: x.amount,
+            seats: x.seats,
+            autoRenew: x.autoRenew,
+            billing: x.billingCycle,
+            startedDate: (x.startedDate || '').slice(0, 10)
+          }));
+          this.selectedId = this.subscriptions[0]?.id ?? null;
+          this.cdr.detectChanges();
+        } else {
+          this.alert.warning(res.message);
+        }
+      },
+      error: (err) => {
+        this.spinner.hide();
+        console.error(err);
+        this.alert.error(err?.error?.message || 'Unable to load subscriptions.');
+      }
+    });
   }
 
   get selectedSubscription(): SubscriptionRecord | null {
@@ -178,86 +230,201 @@ export class Subscriptions implements OnInit {
     this.showForm = false;
   }
 
-  onPlanChange(plan: string): void {
-    const nextPlan = plan as SubPlan;
-    this.form.plan = nextPlan;
-    this.form.amount = this.planPrice[nextPlan];
+  onCompanyChange(organizationId: any): void {
+    const company = this.companies.find((c) => c.organizationId === Number(organizationId));
+    this.form.organizationId = Number(organizationId);
+    this.form.company = company ? company.organizationName : '';
+  }
+
+  onPlanChange(planId: any): void {
+    const plan = this.plans.find((p) => p.planId === Number(planId));
+    this.form.planId = Number(planId);
+    this.form.plan = plan ? plan.planName : '';
+    this.form.accent = plan ? plan.accent : 'blue';
+    this.form.amount = plan ? plan.price : 0;
   }
 
   saveSubscription(): void {
-    if (!this.form.company?.trim()) {
-      this.showActivity('Company is required.');
+    if (!this.form.organizationId) {
+      this.alert.warning('Company is required.');
       return;
     }
 
-    if (this.isEditing && this.form.id) {
-      const index = this.subscriptions.findIndex((subscription) => subscription.id === this.form.id);
-      if (index >= 0) {
-        this.subscriptions[index] = { ...this.subscriptions[index], ...this.form } as SubscriptionRecord;
-        this.selectedId = this.subscriptions[index].id;
-      }
-      this.showActivity(`${this.form.company} updated.`);
-    } else {
-      const subscription: SubscriptionRecord = {
-        id: `sub-${Date.now()}`,
-        company: this.form.company,
-        plan: this.form.plan || 'Starter',
-        status: this.form.status || 'Trial',
-        paymentStatus: this.form.paymentStatus || 'Pending',
-        expiryDate: this.form.expiryDate || '2026-06-30',
-        amount: this.form.amount || 0,
-        seats: this.form.seats || 20,
-        autoRenew: !!this.form.autoRenew,
-        billing: this.form.billing || 'Monthly',
-        startedDate: new Date().toISOString().slice(0, 10)
-      };
-      this.subscriptions.unshift(subscription);
-      this.selectedId = subscription.id;
-      this.showActivity(`${subscription.company} created.`);
+    if (!this.form.planId) {
+      this.alert.warning('Plan is required.');
+      return;
     }
 
-    this.showForm = false;
+    const dto = {
+      subscriptionId: this.isEditing ? this.form.id : 0,
+      organizationId: this.form.organizationId,
+      planId: this.form.planId,
+      status: this.form.status || 'Trial',
+      paymentStatus: this.form.paymentStatus || 'Pending',
+      startedDate: this.form.startedDate || new Date().toISOString().slice(0, 10),
+      expiryDate: this.form.expiryDate || new Date().toISOString().slice(0, 10),
+      amount: this.form.amount || 0,
+      seats: this.form.seats || 0,
+      autoRenew: !!this.form.autoRenew,
+      billingCycle: this.form.billing || 'Monthly'
+    };
+
+    this.spinner.show();
+
+    const request = this.isEditing
+      ? this.controlService.updateCompanySubscription(dto)
+      : this.controlService.createCompanySubscription(dto);
+
+    request.subscribe({
+      next: (res: any) => {
+        this.spinner.hide();
+        if (res.success) {
+          this.showForm = false;
+          this.loadSubscriptions();
+          this.alert.success(res.message);
+        } else {
+          this.alert.warning(res.message);
+        }
+      },
+      error: (err) => {
+        this.spinner.hide();
+        console.error(err);
+        this.alert.error(err?.error?.message || 'Unable to save subscription.');
+      }
+    });
+  }
+
+  private updateSubscription(subscription: SubscriptionRecord, changes: Partial<SubscriptionRecord>, successMessage: string): void {
+    const merged = { ...subscription, ...changes };
+
+    const dto = {
+      subscriptionId: merged.id,
+      organizationId: merged.organizationId,
+      planId: merged.planId,
+      status: merged.status,
+      paymentStatus: merged.paymentStatus,
+      startedDate: merged.startedDate,
+      expiryDate: merged.expiryDate,
+      amount: merged.amount,
+      seats: merged.seats,
+      autoRenew: merged.autoRenew,
+      billingCycle: merged.billing
+    };
+
+    this.spinner.show();
+
+    this.controlService.updateCompanySubscription(dto).subscribe({
+      next: (res: any) => {
+        this.spinner.hide();
+        if (res.success) {
+          this.loadSubscriptions();
+          this.alert.success(successMessage);
+        } else {
+          this.alert.warning(res.message);
+        }
+      },
+      error: (err) => {
+        this.spinner.hide();
+        console.error(err);
+        this.alert.error(err?.error?.message || 'Unable to update subscription.');
+      }
+    });
   }
 
   renew(subscription: SubscriptionRecord): void {
-    subscription.status = 'Active';
-    subscription.paymentStatus = 'Paid';
-    subscription.autoRenew = true;
-    subscription.expiryDate = '2027-05-26';
-    this.showActivity(`${subscription.company} renewed until May 26, 2027.`);
+    const nextExpiry = new Date();
+    nextExpiry.setFullYear(nextExpiry.getFullYear() + 1);
+
+    this.updateSubscription(
+      subscription,
+      {
+        status: 'Active',
+        paymentStatus: 'Paid',
+        autoRenew: true,
+        expiryDate: nextExpiry.toISOString().slice(0, 10)
+      },
+      `${subscription.company} renewed until ${nextExpiry.toDateString()}.`
+    );
   }
 
   upgrade(subscription: SubscriptionRecord): void {
-    const nextPlan = this.planOrder[Math.min(this.planOrder.indexOf(subscription.plan) + 1, this.planOrder.length - 1)];
-    if (nextPlan === subscription.plan) {
-      this.showActivity(`${subscription.company} is already on the top plan.`);
+    const sortedPlans = [...this.plans].sort((a, b) => a.price - b.price);
+    const currentIndex = sortedPlans.findIndex((p) => p.planId === subscription.planId);
+    const nextPlan = sortedPlans[Math.min(currentIndex + 1, sortedPlans.length - 1)];
+
+    if (!nextPlan || nextPlan.planId === subscription.planId) {
+      this.alert.info(`${subscription.company} is already on the top plan.`);
       return;
     }
-    subscription.plan = nextPlan;
-    subscription.amount = this.planPrice[nextPlan];
-    this.showActivity(`${subscription.company} upgraded to ${nextPlan}.`);
+
+    this.updateSubscription(
+      subscription,
+      { planId: nextPlan.planId, amount: nextPlan.price },
+      `${subscription.company} upgraded to ${nextPlan.planName}.`
+    );
   }
 
   downgrade(subscription: SubscriptionRecord): void {
-    const previousPlan = this.planOrder[Math.max(this.planOrder.indexOf(subscription.plan) - 1, 0)];
-    if (previousPlan === subscription.plan) {
-      this.showActivity(`${subscription.company} is already on the lowest plan.`);
+    const sortedPlans = [...this.plans].sort((a, b) => a.price - b.price);
+    const currentIndex = sortedPlans.findIndex((p) => p.planId === subscription.planId);
+    const previousPlan = sortedPlans[Math.max(currentIndex - 1, 0)];
+
+    if (!previousPlan || previousPlan.planId === subscription.planId) {
+      this.alert.info(`${subscription.company} is already on the lowest plan.`);
       return;
     }
-    subscription.plan = previousPlan;
-    subscription.amount = this.planPrice[previousPlan];
-    this.showActivity(`${subscription.company} downgraded to ${previousPlan}.`);
+
+    this.updateSubscription(
+      subscription,
+      { planId: previousPlan.planId, amount: previousPlan.price },
+      `${subscription.company} downgraded to ${previousPlan.planName}.`
+    );
   }
 
   toggleAutoRenew(subscription: SubscriptionRecord): void {
-    subscription.autoRenew = !subscription.autoRenew;
-    this.showActivity(`Auto-renew ${subscription.autoRenew ? 'enabled' : 'disabled'} for ${subscription.company}.`);
+    this.updateSubscription(
+      subscription,
+      { autoRenew: !subscription.autoRenew },
+      `Auto-renew ${!subscription.autoRenew ? 'enabled' : 'disabled'} for ${subscription.company}.`
+    );
   }
 
   suspend(subscription: SubscriptionRecord): void {
-    subscription.status = 'Suspended';
-    subscription.autoRenew = false;
-    this.showActivity(`${subscription.company} suspended.`);
+    this.updateSubscription(
+      subscription,
+      { status: 'Suspended', autoRenew: false },
+      `${subscription.company} suspended.`
+    );
+  }
+
+  deleteSubscription(subscription: SubscriptionRecord): void {
+    this.alert.deleteConfirm().then((result) => {
+      if (!result.isConfirmed) {
+        return;
+      }
+
+      this.spinner.show();
+
+      this.controlService.deleteCompanySubscription(subscription.id).subscribe({
+        next: (res: any) => {
+          this.spinner.hide();
+          if (res.success) {
+            if (this.selectedId === subscription.id) {
+              this.selectedId = null;
+            }
+            this.loadSubscriptions();
+            this.alert.success(res.message);
+          } else {
+            this.alert.warning(res.message);
+          }
+        },
+        error: (err) => {
+          this.spinner.hide();
+          console.error(err);
+          this.alert.error(err?.error?.message || 'Unable to delete subscription.');
+        }
+      });
+    });
   }
 
   goToOrganizations(): void {
@@ -294,29 +461,26 @@ export class Subscriptions implements OnInit {
     return `${this.formatMoney(subscription.amount)}/${subscription.billing === 'Annual' ? 'yr' : 'mo'}`;
   }
 
-  trackBySubscriptionId(_: number, subscription: SubscriptionRecord): string {
+  trackBySubscriptionId(_: number, subscription: SubscriptionRecord): number {
     return subscription.id;
   }
 
   private blankForm(): Partial<SubscriptionRecord> {
+    const defaultDate = new Date().toISOString().slice(0, 10);
     return {
+      organizationId: null,
       company: '',
-      plan: 'Starter',
+      planId: null,
+      plan: '',
+      accent: 'blue',
       status: 'Trial',
       paymentStatus: 'Pending',
-      expiryDate: '2026-06-30',
-      amount: 18000,
+      startedDate: defaultDate,
+      expiryDate: defaultDate,
+      amount: 0,
       seats: 20,
       autoRenew: false,
       billing: 'Monthly'
     };
-  }
-
-  private showActivity(message: string): void {
-    this.activityMessage = message;
-    if (this.activityTimer) {
-      clearTimeout(this.activityTimer);
-    }
-    this.activityTimer = setTimeout(() => this.activityMessage = '', 3000);
   }
 }

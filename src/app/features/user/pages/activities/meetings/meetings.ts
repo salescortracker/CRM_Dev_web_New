@@ -1,347 +1,46 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../../../../../environments/environment';
+import { ApiResponse } from '../../../../../core/authentication/services/auth.service';
 import { Pagination } from '../../../../../shared/pagination/pagination';
 import { Alertservice } from '../../../../../core/services/alertservice';
 import { Spinnerservice } from '../../../../../core/services/spinnerservice';
+import { fromApiTime, nullIfEmpty, toApiTime } from '../activities.util';
 
 @Component({
   selector: 'app-meetings',
-  standalone:true,
-  imports: [CommonModule,FormsModule,Pagination],
+  standalone: true,
+  imports: [CommonModule, FormsModule, Pagination],
   templateUrl: './meetings.html',
   styleUrl: './meetings.css',
 })
-export class Meetings {
-   submitted = false;
+export class Meetings implements OnInit {
+
+  private baseUrl = environment.apiUrl;
+
+  submitted = false;
   isEdit = false;
 
   page = 1;
   pageSize = 5;
-  totalRecords = 0;
   searchText = '';
 
   meetings: any[] = [];
 
-  meeting: any = {
-
-    meetingId: 0,
-    meetingTitle: '',
-    meetingType: '',
-    relatedTo: '',
-    customer: '',
-    contactPerson: '',
-    organizer: '',
-    meetingDate: '',
-    startTime: '',
-    endTime: '',
-    meetingMode: '',
-    location: '',
-    priority: '',
-    reminder: '',
-    status: '',
-    agenda: '',
-    isActive: true
-
-  };
+  meeting: any = this.getEmptyModel();
 
   constructor(
-
+    private http: HttpClient,
     private alert: Alertservice,
     private spinner: Spinnerservice,
     private cd: ChangeDetectorRef
-
   ) { }
 
-  ngOnInit(): void {
+  getEmptyModel() {
 
-    this.loadMeetings();
-
-  }
-
-  loadMeetings() {
-
-    this.spinner.show();
-
-    setTimeout(() => {
-
-      this.meetings = [
-
-        {
-          meetingId: 1,
-          meetingTitle: 'CRM Product Demo',
-          meetingType: 'Product Demo',
-          relatedTo: 'Opportunity',
-          customer: 'ABC Technologies',
-          contactPerson: 'Rahul Sharma',
-          organizer: 'Sales Executive',
-          meetingDate: '2026-07-30',
-          startTime: '10:00',
-          endTime: '11:00',
-          meetingMode: 'Online',
-          location: 'Microsoft Teams',
-          priority: 'High',
-          reminder: '30 Minutes Before',
-          status: 'Scheduled',
-          agenda: 'CRM Product Demonstration',
-          isActive: true
-        },
-
-        {
-          meetingId: 2,
-          meetingTitle: 'Requirement Discussion',
-          meetingType: 'Requirement Gathering',
-          relatedTo: 'Lead',
-          customer: 'XYZ Solutions',
-          contactPerson: 'Priya Reddy',
-          organizer: 'Business Analyst',
-          meetingDate: '2026-07-31',
-          startTime: '02:00',
-          endTime: '03:30',
-          meetingMode: 'Offline',
-          location: 'Hyderabad Office',
-          priority: 'Medium',
-          reminder: '1 Hour Before',
-          status: 'Completed',
-          agenda: 'Requirement Collection',
-          isActive: true
-        },
-
-        {
-          meetingId: 3,
-          meetingTitle: 'Sales Review',
-          meetingType: 'Review Meeting',
-          relatedTo: 'Quotation',
-          customer: 'Future Vision',
-          contactPerson: 'Arjun Kumar',
-          organizer: 'Sales Manager',
-          meetingDate: '2026-08-02',
-          startTime: '11:00',
-          endTime: '12:00',
-          meetingMode: 'Hybrid',
-          location: 'Conference Room',
-          priority: 'High',
-          reminder: '15 Minutes Before',
-          status: 'Scheduled',
-          agenda: 'Monthly Sales Review',
-          isActive: true
-        },
-
-        {
-          meetingId: 4,
-          meetingTitle: 'Implementation Planning',
-          meetingType: 'Project Discussion',
-          relatedTo: 'Order',
-          customer: 'Global InfoTech',
-          contactPerson: 'Sneha Patel',
-          organizer: 'Project Manager',
-          meetingDate: '2026-08-04',
-          startTime: '03:00',
-          endTime: '04:30',
-          meetingMode: 'Online',
-          location: 'Google Meet',
-          priority: 'Medium',
-          reminder: '30 Minutes Before',
-          status: 'Rescheduled',
-          agenda: 'Implementation Plan Discussion',
-          isActive: true
-        },
-
-        {
-          meetingId: 5,
-          meetingTitle: 'Customer Feedback',
-          meetingType: 'Customer Meeting',
-          relatedTo: 'Account',
-          customer: 'NextGen Pvt Ltd',
-          contactPerson: 'Kiran Verma',
-          organizer: 'Account Manager',
-          meetingDate: '2026-08-06',
-          startTime: '05:00',
-          endTime: '06:00',
-          meetingMode: 'Offline',
-          location: 'Client Office',
-          priority: 'Low',
-          reminder: '1 Day Before',
-          status: 'Scheduled',
-          agenda: 'Quarterly Customer Feedback',
-          isActive: true
-        }
-
-      ];
-
-      this.meetings.sort((a, b) => b.meetingId - a.meetingId);
-
-      this.totalRecords = this.meetings.length;
-
-      this.spinner.hide();
-
-      this.cd.detectChanges();
-
-    }, 500);
-
-  }
-
-  saveMeeting() {
-
-    this.submitted = true;
-
-    if (
-
-      !this.meeting.meetingTitle ||
-      !this.meeting.meetingType ||
-      !this.meeting.organizer ||
-      !this.meeting.meetingDate ||
-      !this.meeting.startTime ||
-      !this.meeting.meetingMode ||
-      !this.meeting.status
-
-    ) {
-
-      return;
-
-    }
-
-    this.spinner.show();
-
-    setTimeout(() => {
-
-      if (!this.isEdit) {
-
-        const newMeeting = {
-
-          ...this.meeting,
-
-          meetingId: this.meetings.length
-            ? Math.max(...this.meetings.map(x => x.meetingId)) + 1
-            : 1
-
-        };
-
-        this.meetings.unshift(newMeeting);
-
-      }
-
-      else {
-
-        const index = this.meetings.findIndex(
-
-          x => x.meetingId === this.meeting.meetingId
-
-        );
-
-        if (index !== -1) {
-
-          this.meetings[index] = {
-
-            ...this.meeting
-
-          };
-
-        }
-
-      }
-
-      // Refresh table immediately
-
-      this.meetings = [...this.meetings];
-
-      this.totalRecords = this.meetings.length;
-
-      this.page = 1;
-
-      const message = this.isEdit
-
-        ? 'Meeting updated successfully.'
-
-        : 'Meeting created successfully.';
-
-      this.clear();
-
-      this.spinner.hide();
-
-      this.cd.detectChanges();
-
-      this.alert.success(message);
-
-    }, 500);
-
-  }
-    edit(id: number) {
-
-    this.spinner.show();
-
-    setTimeout(() => {
-
-      const selected = this.meetings.find(
-        x => x.meetingId === id
-      );
-
-      if (selected) {
-
-        this.meeting = {
-          ...selected
-        };
-
-        this.isEdit = true;
-
-        this.submitted = false;
-
-        this.cd.detectChanges();
-
-      }
-
-      this.spinner.hide();
-
-    }, 300);
-
-  }
-
-  delete(id: number) {
-
-    this.alert.deleteConfirm().then(result => {
-
-      if (result.isConfirmed) {
-
-        this.spinner.show();
-
-        setTimeout(() => {
-
-          this.meetings = this.meetings.filter(
-            x => x.meetingId !== id
-          );
-
-          this.totalRecords = this.meetings.length;
-
-          if (
-            this.page > 1 &&
-            this.pagedMeetings.length === 0
-          ) {
-            this.page--;
-          }
-
-          // Refresh table immediately
-
-          this.meetings = [...this.meetings];
-
-          this.spinner.hide();
-
-          this.cd.detectChanges();
-
-          this.alert.success(
-            'Meeting deleted successfully.'
-          );
-
-        }, 500);
-
-      }
-
-    });
-
-  }
-
-  clear() {
-
-    this.meeting = {
+    return {
 
       meetingId: 0,
       meetingTitle: '',
@@ -363,6 +62,308 @@ export class Meetings {
 
     };
 
+  }
+
+  ngOnInit(): void {
+
+    this.loadMeetings();
+
+  }
+
+  //====================================================
+  // Load
+  //====================================================
+
+  loadMeetings(): void {
+
+    this.spinner.show();
+
+    this.http
+      .get<ApiResponse<any[]>>(`${this.baseUrl}/Admin/getallactivitymeetings`)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.spinner.hide();
+
+          if (res?.success) {
+
+            // Times arrive as HH:mm:ss - the grid shows HH:mm
+            this.meetings = (res.data || []).map((x: any) => ({
+              ...x,
+              startTime: fromApiTime(x.startTime),
+              endTime: fromApiTime(x.endTime)
+            }));
+
+          } else {
+
+            this.meetings = [];
+
+            this.alert.warning(res?.message || 'No Meetings found.');
+
+          }
+
+          this.cd.detectChanges();
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Load meetings error:', err);
+
+          this.meetings = [];
+
+          this.alert.error(err?.error?.message || 'Failed to load Meetings.');
+
+          this.cd.detectChanges();
+
+        }
+
+      });
+
+  }
+
+  //====================================================
+  // Save (Create / Update)
+  //====================================================
+
+  saveMeeting(): void {
+
+    this.submitted = true;
+
+    if (
+      !this.meeting.meetingTitle?.trim() ||
+      !this.meeting.meetingType ||
+      !this.meeting.organizer?.trim() ||
+      !this.meeting.meetingDate ||
+      !this.meeting.startTime ||
+      !this.meeting.meetingMode ||
+      !this.meeting.status
+    ) {
+      return;
+    }
+
+    if (
+      this.meeting.endTime &&
+      this.meeting.endTime <= this.meeting.startTime
+    ) {
+      this.alert.warning('End Time must be later than Start Time.');
+      return;
+    }
+
+    const payload = {
+
+      meetingId: this.meeting.meetingId,
+      meetingTitle: this.meeting.meetingTitle.trim(),
+      meetingType: this.meeting.meetingType,
+      relatedTo: nullIfEmpty(this.meeting.relatedTo),
+      customer: nullIfEmpty(this.meeting.customer),
+      contactPerson: nullIfEmpty(this.meeting.contactPerson),
+      organizer: this.meeting.organizer.trim(),
+      meetingDate: this.meeting.meetingDate,
+      startTime: toApiTime(this.meeting.startTime),
+      endTime: toApiTime(this.meeting.endTime),
+      meetingMode: this.meeting.meetingMode,
+      location: nullIfEmpty(this.meeting.location),
+      priority: nullIfEmpty(this.meeting.priority),
+      reminder: nullIfEmpty(this.meeting.reminder),
+      status: this.meeting.status,
+      agenda: nullIfEmpty(this.meeting.agenda),
+      isActive: !!this.meeting.isActive
+
+    };
+
+    const url = this.isEdit
+      ? `${this.baseUrl}/Admin/updateactivitymeeting`
+      : `${this.baseUrl}/Admin/createactivitymeeting`;
+
+    const failMessage = this.isEdit
+      ? 'Failed to update Meeting.'
+      : 'Failed to create Meeting.';
+
+    this.spinner.show();
+
+    this.http
+      .post<ApiResponse>(url, payload)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.spinner.hide();
+
+          if (res?.success) {
+
+            this.alert.success(res.message);
+
+            this.clear();
+
+            this.page = 1;
+
+            this.loadMeetings();
+
+          } else {
+
+            this.alert.warning(res?.message || failMessage);
+
+          }
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Save meeting error:', err);
+
+          this.alert.error(err?.error?.message || failMessage);
+
+        }
+
+      });
+
+  }
+
+  //====================================================
+  // Edit
+  //====================================================
+
+  edit(id: number): void {
+
+    this.spinner.show();
+
+    this.http
+      .get<ApiResponse<any>>(`${this.baseUrl}/Admin/getbyactivitymeeting/${id}`)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.spinner.hide();
+
+          if (res?.success && res.data) {
+
+            const data = res.data;
+
+            this.meeting = {
+
+              meetingId: data.meetingId,
+              meetingTitle: data.meetingTitle || '',
+              meetingType: data.meetingType || '',
+              relatedTo: data.relatedTo || '',
+              customer: data.customer || '',
+              contactPerson: data.contactPerson || '',
+              organizer: data.organizer || '',
+              meetingDate: data.meetingDate || '',
+              startTime: fromApiTime(data.startTime),
+              endTime: fromApiTime(data.endTime),
+              meetingMode: data.meetingMode || '',
+              location: data.location || '',
+              priority: data.priority || '',
+              reminder: data.reminder || '',
+              status: data.status || '',
+              agenda: data.agenda || '',
+              isActive: !!data.isActive
+
+            };
+
+            this.isEdit = true;
+
+            this.submitted = false;
+
+            this.cd.detectChanges();
+
+          } else {
+
+            this.alert.warning(res?.message || 'Meeting not found.');
+
+          }
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Get meeting error:', err);
+
+          this.alert.error(err?.error?.message || 'Failed to load Meeting.');
+
+        }
+
+      });
+
+  }
+
+  //====================================================
+  // Delete
+  //====================================================
+
+  delete(id: number): void {
+
+    this.alert.deleteConfirm().then(result => {
+
+      if (!result.isConfirmed) return;
+
+      this.spinner.show();
+
+      this.http
+        .post<ApiResponse>(`${this.baseUrl}/Admin/deleteactivitymeeting/${id}`, {})
+        .subscribe({
+
+          next: (res: any) => {
+
+            this.spinner.hide();
+
+            if (res?.success) {
+
+              this.alert.success(res.message);
+
+              // Editing the record that was just deleted - reset the form
+              if (this.meeting.meetingId === id) {
+                this.clear();
+              }
+
+              if (this.page > 1 && this.pagedMeetings.length === 1) {
+                this.page = this.page - 1;
+              }
+
+              this.loadMeetings();
+
+            } else {
+
+              this.alert.warning(res?.message || 'Failed to delete Meeting.');
+
+            }
+
+          },
+
+          error: (err) => {
+
+            this.spinner.hide();
+
+            console.error('Delete meeting error:', err);
+
+            this.alert.error(
+              err?.error?.message || 'Failed to delete Meeting.'
+            );
+
+          }
+
+        });
+
+    });
+
+  }
+
+  //====================================================
+  // Clear
+  //====================================================
+
+  clear(): void {
+
+    this.meeting = this.getEmptyModel();
+
     this.isEdit = false;
 
     this.submitted = false;
@@ -371,43 +372,27 @@ export class Meetings {
 
   }
 
+  //====================================================
+  // Search / Pagination
+  //====================================================
+
   get filteredMeetings() {
+
+    const search = this.searchText.toLowerCase();
 
     return this.meetings.filter(x =>
 
-      x.meetingTitle
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
+      (x.meetingTitle || '').toLowerCase().includes(search) ||
 
-      ||
+      (x.meetingType || '').toLowerCase().includes(search) ||
 
-      x.meetingType
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
+      (x.customer || '').toLowerCase().includes(search) ||
 
-      ||
+      (x.organizer || '').toLowerCase().includes(search) ||
 
-      x.customer
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
+      (x.meetingMode || '').toLowerCase().includes(search) ||
 
-      ||
-
-      x.organizer
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
-
-      ||
-
-      x.meetingMode
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
-
-      ||
-
-      x.status
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
+      (x.status || '').toLowerCase().includes(search)
 
     );
 
@@ -417,13 +402,7 @@ export class Meetings {
 
     const start = (this.page - 1) * this.pageSize;
 
-    return this.filteredMeetings.slice(
-
-      start,
-
-      start + this.pageSize
-
-    );
+    return this.filteredMeetings.slice(start, start + this.pageSize);
 
   }
 
@@ -440,6 +419,5 @@ export class Meetings {
     this.page = 1;
 
   }
-
 
 }

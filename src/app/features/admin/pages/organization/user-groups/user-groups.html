@@ -81,14 +81,7 @@
 
                         <option value="">Select Group Type</option>
 
-                        <option>Administration</option>
-                        <option>Sales</option>
-                        <option>Marketing</option>
-                        <option>Human Resources</option>
-                        <option>Finance</option>
-                        <option>Customer Support</option>
-                        <option>IT</option>
-                        <option>Operations</option>
+                        <option *ngFor="let type of groupTypes" [value]="type">{{ type }}</option>
 
                     </select>
 
@@ -109,17 +102,13 @@
 
                     </label>
 
-                    <select class="form-select" [(ngModel)]="userGroup.department">
+                    <select class="form-select" [(ngModel)]="userGroup.departmentId">
 
-                        <option value="">Select Department</option>
+                        <option [ngValue]="null">Select Department</option>
 
-                        <option>Human Resources</option>
-                        <option>Sales</option>
-                        <option>Marketing</option>
-                        <option>Finance</option>
-                        <option>IT</option>
-                        <option>Operations</option>
-                        <option>Customer Support</option>
+                        <option *ngFor="let dept of departments" [ngValue]="dept.departmentId">
+                            {{ dept.departmentName }}
+                        </option>
 
                     </select>
 
@@ -138,11 +127,7 @@
 
                         <option value="">Select Team</option>
 
-                        <option>Team Alpha</option>
-                        <option>Team Bravo</option>
-                        <option>Team Charlie</option>
-                        <option>Team Delta</option>
-                        <option>Team Omega</option>
+                        <option *ngFor="let t of teams" [value]="t">{{ t }}</option>
 
                     </select>
 
@@ -161,11 +146,7 @@
 
                         <option value="">Select Reporting Manager</option>
 
-                        <option>Rahul Sharma</option>
-                        <option>Priya Reddy</option>
-                        <option>Arjun Kumar</option>
-                        <option>Sneha Patel</option>
-                        <option>Kiran Verma</option>
+                        <option *ngFor="let rm of reportingManagers" [value]="rm">{{ rm }}</option>
 
                     </select>
 
@@ -186,12 +167,7 @@
 
                         <option value="">Select Default Role</option>
 
-                        <option>Administrator</option>
-                        <option>Manager</option>
-                        <option>Team Lead</option>
-                        <option>Executive</option>
-                        <option>Employee</option>
-                        <option>Viewer</option>
+                        <option *ngFor="let role of defaultRoles" [value]="role">{{ role }}</option>
 
                     </select>
 
@@ -212,7 +188,7 @@
 
                     </label>
 
-                    <input type="number" class="form-control" placeholder="Enter User Limit"
+                    <input type="number" min="0" class="form-control" placeholder="Enter User Limit"
                         [(ngModel)]="userGroup.userLimit">
 
                 </div>
@@ -226,11 +202,13 @@
 
                     </label>
 
-                    <select class="form-select" [(ngModel)]="userGroup.priority">
+                    <select class="form-select" [(ngModel)]="userGroup.priorityId">
 
-                        <option>High</option>
-                        <option>Medium</option>
-                        <option>Low</option>
+                        <option [ngValue]="null">Select Priority</option>
+
+                        <option *ngFor="let pr of priorities" [ngValue]="pr.priorityId">
+                            {{ pr.priorityName }}
+                        </option>
 
                     </select>
 
@@ -249,14 +227,14 @@
 
                     <select class="form-select" [(ngModel)]="userGroup.status">
 
-                        <option value="">Select Status</option>
+                        <option [ngValue]="null">Select Status</option>
 
-                        <option>Active</option>
-                        <option>Inactive</option>
+                        <option [ngValue]="true">Active</option>
+                        <option [ngValue]="false">Inactive</option>
 
                     </select>
 
-                    <div class="text-danger mt-1" *ngIf="submitted && !userGroup.status">
+                    <div class="text-danger mt-1" *ngIf="submitted && userGroup.status === null">
 
                         Status is required.
 
@@ -277,24 +255,6 @@
                         [(ngModel)]="userGroup.description">
 
                     </textarea>
-
-                </div>
-
-                <!-- Active -->
-                <div class="col-md-4 mb-3 d-flex align-items-end">
-
-                    <div class="form-check">
-
-                        <input type="checkbox" class="form-check-input" id="groupActive"
-                            [(ngModel)]="userGroup.isActive">
-
-                        <label class="form-check-label ms-2" for="groupActive">
-
-                            Active
-
-                        </label>
-
-                    </div>
 
                 </div>
 
@@ -402,13 +362,13 @@
 
                     <td>
 
-                        {{ item.department }}
+                        {{ getDepartmentName(item.departmentId) }}
 
                     </td>
 
                     <td>
 
-                        {{ item.team }}
+                        {{ item.team || '-' }}
 
                     </td>
 
@@ -420,15 +380,15 @@
 
                     <td>
 
-                        {{ item.userLimit }}
+                        {{ item.userLimit ?? '-' }}
 
                     </td>
 
                     <td>
 
-                        <span class="badge" [ngClass]="item.isActive ? 'bg-success' : 'bg-danger'">
+                        <span class="badge" [ngClass]="item.status ? 'bg-success' : 'bg-danger'">
 
-                            {{ item.status }}
+                            {{ item.status ? 'Active' : 'Inactive' }}
 
                         </span>
 
@@ -436,13 +396,13 @@
 
                     <td>
 
-                        <button class="btn btn-warning btn-sm me-2" (click)="edit(item.groupId)">
+                        <button class="btn btn-warning btn-sm me-2" (click)="edit(item.userGroupId)">
 
                             <i class="fa fa-edit"></i>
 
                         </button>
 
-                        <button class="btn btn-danger btn-sm" (click)="delete(item.groupId)">
+                        <button class="btn btn-danger btn-sm" (click)="delete(item.userGroupId)">
 
                             <i class="fa fa-trash"></i>
 

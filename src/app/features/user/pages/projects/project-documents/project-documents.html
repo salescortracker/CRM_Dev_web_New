@@ -55,18 +55,14 @@
 
                     </label>
 
-                    <select class="form-select" [(ngModel)]="document.project">
+                    <select class="form-select" [(ngModel)]="document.projectId">
 
-                        <option value="">Select Project</option>
-                        <option>CRM Implementation</option>
-                        <option>ERP Integration</option>
-                        <option>Support Portal</option>
-                        <option>Data Migration</option>
-                        <option>Internal HR Portal</option>
+                        <option [ngValue]="null">Select Project</option>
+                        <option *ngFor="let p of projects" [ngValue]="p.projectId">{{ p.projectName }}</option>
 
                     </select>
 
-                    <div class="text-danger mt-1" *ngIf="submitted && !document.project">
+                    <div class="text-danger mt-1" *ngIf="submitted && !document.projectId">
 
                         Project is required.
 
@@ -81,29 +77,14 @@
 
                         Category
 
-                        <span class="text-danger">*</span>
-
                     </label>
 
                     <select class="form-select" [(ngModel)]="document.category">
 
                         <option value="">Select Category</option>
-                        <option>Proposal</option>
-                        <option>Requirement Document</option>
-                        <option>Design</option>
-                        <option>Contract</option>
-                        <option>Invoice</option>
-                        <option>User Manual</option>
-                        <option>Testing</option>
-                        <option>Deployment</option>
+                        <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
 
                     </select>
-
-                    <div class="text-danger mt-1" *ngIf="submitted && !document.category">
-
-                        Category is required.
-
-                    </div>
 
                 </div>
 
@@ -125,11 +106,11 @@
 
                     <label class="form-label">
 
-                        Uploaded By
+                        Uploaded By (User ID)
 
                     </label>
 
-                    <input type="text" class="form-control" placeholder="Employee Name"
+                    <input type="number" min="1" class="form-control" placeholder="Enter Uploaded By User ID"
                         [(ngModel)]="document.uploadedBy">
 
                 </div>
@@ -175,8 +156,8 @@
 
                     </label>
 
-                    <input type="number" class="form-control" placeholder="Enter File Size"
-                        [(ngModel)]="document.fileSize">
+                    <input type="number" min="0" class="form-control" placeholder="Enter File Size"
+                        [(ngModel)]="document.fileSizeKb">
 
                 </div>
 
@@ -194,6 +175,32 @@
 
                 </div>
 
+                <!-- Status -->
+                <div class="col-md-3 mb-3">
+
+                    <label class="form-label">
+
+                        Status
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select class="form-select" [(ngModel)]="document.status">
+
+                        <option value="">Select Status</option>
+                        <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+
+                    </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !document.status">
+
+                        Status is required.
+
+                    </div>
+
+                </div>
+
                 <!-- Description -->
                 <div class="col-md-12 mb-3">
 
@@ -207,24 +214,6 @@
                         [(ngModel)]="document.description">
 
                     </textarea>
-
-                </div>
-
-                <!-- Active -->
-                <div class="col-md-2 mb-3 d-flex align-items-end">
-
-                    <div class="form-check">
-
-                        <input id="documentActive" type="checkbox" class="form-check-input"
-                            [(ngModel)]="document.isActive">
-
-                        <label for="documentActive" class="form-check-label ms-2">
-
-                            Active
-
-                        </label>
-
-                    </div>
 
                 </div>
 
@@ -310,6 +299,7 @@
                             <th>File</th>
                             <th>Uploaded By</th>
                             <th>Upload Date</th>
+                            <th>Status</th>
                             <th width="140" class="text-center">Action</th>
 
                         </tr>
@@ -320,7 +310,7 @@
 
                         <tr *ngIf="pagedDocuments.length == 0">
 
-                            <td colspan="9" class="text-center text-muted py-4">
+                            <td colspan="10" class="text-center text-muted py-4">
 
                                 No Documents Found
 
@@ -344,7 +334,7 @@
 
                             <td>
 
-                                {{ item.project }}
+                                {{ getProjectName(item.projectId) }}
 
                             </td>
 
@@ -368,19 +358,33 @@
 
                                 <i class="fa fa-file text-danger me-1"></i>
 
-                                {{ item.fileName }}
+                                {{ item.uploadFile || '-' }}
 
                             </td>
 
                             <td>
 
-                                {{ item.uploadedBy }}
+                                {{ item.uploadedBy ?? '-' }}
 
                             </td>
 
                             <td>
 
-                                {{ item.uploadDate }}
+                                {{ item.uploadDate ? (item.uploadDate | date:'dd-MMM-yyyy') : '-' }}
+
+                            </td>
+
+                            <td>
+
+                                <span class="badge" [ngClass]="{
+                                        'bg-warning text-dark': item.status == 'Draft',
+                                        'bg-success': item.status == 'Active',
+                                        'bg-secondary': item.status == 'Archived'
+                                    }">
+
+                                    {{ item.status }}
+
+                                </span>
 
                             </td>
 

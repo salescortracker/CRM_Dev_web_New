@@ -29,6 +29,7 @@ export class CompanyAdministrators implements OnInit {
 
   submitted = false;
   isEdit = false;
+  showPassword = false;
 
   searchText = '';
   companyFilter = '';
@@ -46,6 +47,7 @@ export class CompanyAdministrators implements OnInit {
   departments: any[] = [];
   designations: any[] = [];
   branches: any[] = [];
+  roles: any[] = [];
 
   // ============================================
   // Administrators List
@@ -78,6 +80,8 @@ export class CompanyAdministrators implements OnInit {
       employeeCode: '',
 
       username: '',
+
+      password: '',
 
       firstName: '',
 
@@ -122,6 +126,8 @@ export class CompanyAdministrators implements OnInit {
     this.loadDesignations();
 
     this.loadBranches();
+
+    this.loadRoles();
 
     this.loadAdministrators();
 
@@ -228,6 +234,33 @@ export class CompanyAdministrators implements OnInit {
         console.error('Error loading designations:', err);
 
         this.designations = [];
+
+      }
+
+    });
+
+  }
+
+  // Active roles created in Roles & Permissions.
+  loadRoles(): void {
+
+    this.authService.getRoles().subscribe({
+
+      next: (res: any) => {
+
+        this.roles = (res?.data || []).filter(
+          (x: any) => x.status !== false
+        );
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error loading roles:', err);
+
+        this.roles = [];
 
       }
 
@@ -375,9 +408,15 @@ export class CompanyAdministrators implements OnInit {
 
     if (!this.admin.companyId) return this.designations;
 
-    return this.designations.filter(
-      x => x.companyId === Number(this.admin.companyId)
+    const companyDesignations = this.designations.filter(
+      x => Number(x.companyId) === Number(this.admin.companyId)
     );
+
+    if (companyDesignations.length > 0) return companyDesignations;
+
+    // Designations are often saved without a company (companyId = 0/null);
+    // fall back to those so the dropdown is not empty.
+    return this.designations.filter(x => !x.companyId);
 
   }
 
@@ -399,17 +438,41 @@ export class CompanyAdministrators implements OnInit {
 
   }
 
+  // Active role names for the selected company/region (each role belongs to
+  // one company + region). The user's current role stays listed so editing
+  // an older user does not blank it.
+  get formRoles(): string[] {
+
+    const names = this.roles
+      .filter(x =>
+        (!this.admin.companyId ||
+          x.companyId === Number(this.admin.companyId)) &&
+        (!this.admin.regionId ||
+          x.regionId === Number(this.admin.regionId))
+      )
+      .map(x => x.roleName as string);
+
+    if (this.admin.roleName && !names.includes(this.admin.roleName)) {
+      names.push(this.admin.roleName);
+    }
+
+    return [...new Set(names)];
+
+  }
+
   onCompanyChange(): void {
 
     this.admin.regionId = null;
     this.admin.designationId = null;
     this.admin.branchId = null;
+    this.admin.roleName = '';
 
   }
 
   onRegionChange(): void {
 
     this.admin.branchId = null;
+    this.admin.roleName = '';
 
   }
 
@@ -498,8 +561,9 @@ export class CompanyAdministrators implements OnInit {
       !this.admin.companyId ||
       !this.admin.employeeCode ||
       !this.admin.employeeCode.trim() ||
-      !this.admin.username ||
-      !this.admin.username.trim() ||
+      // Username is auto-generated on create; only required when editing.
+      (this.isEdit &&
+        (!this.admin.username || !this.admin.username.trim())) ||
       !this.admin.firstName ||
       !this.admin.firstName.trim() ||
       !this.admin.email ||
@@ -530,7 +594,7 @@ export class CompanyAdministrators implements OnInit {
 
       employeeCode: this.admin.employeeCode.trim(),
 
-      username: this.admin.username.trim(),
+      username: (this.admin.username || '').trim(),
 
       firstName: this.admin.firstName.trim(),
 
@@ -688,6 +752,8 @@ export class CompanyAdministrators implements OnInit {
 
             username: data.username || '',
 
+            password: data.password || '',
+
             firstName: data.firstName || '',
 
             lastName: data.lastName || '',
@@ -715,6 +781,8 @@ export class CompanyAdministrators implements OnInit {
           };
 
           this.isEdit = true;
+
+          this.showPassword = false;
 
           this.submitted = false;
 
@@ -814,6 +882,8 @@ export class CompanyAdministrators implements OnInit {
     this.admin = this.getEmptyModel();
 
     this.isEdit = false;
+
+    this.showPassword = false;
 
     this.submitted = false;
 

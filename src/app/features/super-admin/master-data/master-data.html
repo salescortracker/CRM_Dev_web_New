@@ -134,7 +134,6 @@
 
           <thead>
             <tr>
-              <th>Code</th>
               <th>Name</th>
               <th>Company</th>
               <th>Region</th>
@@ -146,12 +145,6 @@
           <tbody>
 
             <tr *ngFor="let item of filteredData">
-
-              <td>
-                <span class="code-text">
-                  {{ item.code }}
-                </span>
-              </td>
 
               <td>
                 <span class="name-text">
@@ -211,7 +204,7 @@
             <!-- Empty State -->
             <tr *ngIf="filteredData.length === 0">
 
-              <td colspan="6" class="empty-state">
+              <td colspan="5" class="empty-state">
 
                 <i class="fa-solid fa-database"></i>
 
@@ -229,43 +222,6 @@
           </tbody>
 
         </table>
-
-      </div>
-
-
-      <!-- Pagination -->
-      <div class="pagination-section">
-
-        <div class="pagination-info">
-          Showing 1 - {{ filteredData.length }}
-          of {{ masterData.length }}
-        </div>
-
-        <div class="pagination">
-
-          <button type="button">
-            <i class="fa-solid fa-chevron-left"></i>
-          </button>
-
-          <button
-            type="button"
-            class="page-number active-page">
-            1
-          </button>
-
-          <button type="button" class="page-number">
-            2
-          </button>
-
-          <button type="button" class="page-number">
-            3
-          </button>
-
-          <button type="button">
-            <i class="fa-solid fa-chevron-right"></i>
-          </button>
-
-        </div>
 
       </div>
 
@@ -387,7 +343,7 @@
 
 
         <!-- Code -->
-        <div class="form-group">
+        <!-- <div class="form-group">
 
           <label>
             {{ selectedMasterType }} Code
@@ -399,7 +355,7 @@
             [(ngModel)]="formData.code"
             placeholder="Enter code">
 
-        </div>
+        </div> -->
 
 
         <!-- Name -->

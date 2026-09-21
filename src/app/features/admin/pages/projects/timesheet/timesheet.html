@@ -27,89 +27,64 @@
 
                     <label class="form-label">
 
-                        Employee Name
+                        Employee (User ID)
 
                         <span class="text-danger">*</span>
 
                     </label>
 
-                    <select class="form-select" [(ngModel)]="timesheet.employeeName">
+                    <input type="number" min="1" class="form-control" placeholder="Enter Employee User ID"
+                        [(ngModel)]="timesheet.employeeId">
 
-                        <option value="">Select Employee</option>
-                        <option>Karishma</option>
-                        <option>Rahul</option>
-                        <option>Sneha</option>
-                        <option>Arun</option>
-                        <option>Durga</option>
+                    <div class="text-danger mt-1" *ngIf="submitted && !timesheet.employeeId">
 
-                    </select>
-
-                    <div class="text-danger mt-1" *ngIf="submitted && !timesheet.employeeName">
-
-                        Employee Name is required.
+                        Employee is required.
 
                     </div>
 
                 </div>
 
-                <!-- Project Name -->
+                <!-- Project -->
                 <div class="col-md-4 mb-3">
 
                     <label class="form-label">
 
-                        Project Name
+                        Project
 
                         <span class="text-danger">*</span>
 
                     </label>
 
-                    <select class="form-select" [(ngModel)]="timesheet.projectName">
+                    <select class="form-select" [(ngModel)]="timesheet.projectId" (ngModelChange)="onProjectChange()">
 
-                        <option value="">Select Project</option>
-                        <option>CRM Application</option>
-                        <option>HRMS Portal</option>
-                        <option>Mobile Application</option>
-                        <option>ERP System</option>
-                        <option>Customer Portal</option>
+                        <option [ngValue]="null">Select Project</option>
+                        <option *ngFor="let p of projects" [ngValue]="p.projectId">{{ p.projectName }}</option>
 
                     </select>
 
-                    <div class="text-danger mt-1" *ngIf="submitted && !timesheet.projectName">
+                    <div class="text-danger mt-1" *ngIf="submitted && !timesheet.projectId">
 
-                        Project Name is required.
+                        Project is required.
 
                     </div>
 
                 </div>
 
-                <!-- Task Name -->
+                <!-- Task -->
                 <div class="col-md-4 mb-3">
 
                     <label class="form-label">
 
-                        Task Name
-
-                        <span class="text-danger">*</span>
+                        Task
 
                     </label>
 
-                    <select class="form-select" [(ngModel)]="timesheet.taskName">
+                    <select class="form-select" [(ngModel)]="timesheet.taskId">
 
-                        <option value="">Select Task</option>
-                        <option>Development</option>
-                        <option>Bug Fixing</option>
-                        <option>Testing</option>
-                        <option>Code Review</option>
-                        <option>Deployment</option>
-                        <option>Documentation</option>
+                        <option [ngValue]="null">Select Task</option>
+                        <option *ngFor="let t of formTasks" [ngValue]="t.taskId">{{ t.taskName }}</option>
 
                     </select>
-
-                    <div class="text-danger mt-1" *ngIf="submitted && !timesheet.taskName">
-
-                        Task Name is required.
-
-                    </div>
 
                 </div>
 
@@ -141,17 +116,10 @@
 
                         Start Time
 
-                        <span class="text-danger">*</span>
-
                     </label>
 
-                    <input type="time" class="form-control" [(ngModel)]="timesheet.startTime">
-
-                    <div class="text-danger mt-1" *ngIf="submitted && !timesheet.startTime">
-
-                        Start Time is required.
-
-                    </div>
+                    <input type="time" class="form-control" [(ngModel)]="timesheet.startTime"
+                        (ngModelChange)="computeTotalHours()">
 
                 </div>
 
@@ -162,17 +130,10 @@
 
                         End Time
 
-                        <span class="text-danger">*</span>
-
                     </label>
 
-                    <input type="time" class="form-control" [(ngModel)]="timesheet.endTime">
-
-                    <div class="text-danger mt-1" *ngIf="submitted && !timesheet.endTime">
-
-                        End Time is required.
-
-                    </div>
+                    <input type="time" class="form-control" [(ngModel)]="timesheet.endTime"
+                        (ngModelChange)="computeTotalHours()">
 
                 </div>
 
@@ -196,15 +157,22 @@
 
                         Billing Type
 
+                        <span class="text-danger">*</span>
+
                     </label>
 
                     <select class="form-select" [(ngModel)]="timesheet.billingType">
 
                         <option value="">Select Billing Type</option>
-                        <option>Billable</option>
-                        <option>Non Billable</option>
+                        <option *ngFor="let bt of billingTypes" [value]="bt">{{ bt }}</option>
 
                     </select>
+
+                    <div class="text-danger mt-1" *ngIf="submitted && !timesheet.billingType">
+
+                        Billing Type is required.
+
+                    </div>
 
                 </div>
 
@@ -222,10 +190,7 @@
                     <select class="form-select" [(ngModel)]="timesheet.status">
 
                         <option value="">Select Status</option>
-                        <option>Draft</option>
-                        <option>Submitted</option>
-                        <option>Approved</option>
-                        <option>Rejected</option>
+                        <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
 
                     </select>
 
@@ -242,11 +207,11 @@
 
                     <label class="form-label">
 
-                        Approved By
+                        Approved By (User ID)
 
                     </label>
 
-                    <input type="text" class="form-control" placeholder="Approved By"
+                    <input type="number" min="1" class="form-control" placeholder="Enter Approved By User ID"
                         [(ngModel)]="timesheet.approvedBy">
 
                 </div>
@@ -258,38 +223,12 @@
 
                         Work Description
 
-                        <span class="text-danger">*</span>
-
                     </label>
 
                     <textarea rows="4" class="form-control" placeholder="Enter Work Description"
                         [(ngModel)]="timesheet.workDescription">
 
                     </textarea>
-
-                    <div class="text-danger mt-1" *ngIf="submitted && !timesheet.workDescription">
-
-                        Work Description is required.
-
-                    </div>
-
-                </div>
-
-                <!-- Active -->
-                <div class="col-md-4 mb-3 d-flex align-items-end">
-
-                    <div class="form-check">
-
-                        <input type="checkbox" class="form-check-input" id="timesheetActive"
-                            [(ngModel)]="timesheet.isActive">
-
-                        <label class="form-check-label ms-2" for="timesheetActive">
-
-                            Active
-
-                        </label>
-
-                    </div>
 
                 </div>
 
@@ -362,7 +301,7 @@
                     <th>#</th>
 
 
-                    <th>Employee</th>
+                    <th>Employee (User ID)</th>
 
 
                     <th>Project</th>
@@ -451,7 +390,7 @@
                     <td>
 
 
-                        {{ item.employeeName }}
+                        {{ item.employeeId }}
 
 
                     </td>
@@ -465,7 +404,7 @@
                     <td>
 
 
-                        {{ item.projectName }}
+                        {{ getProjectName(item.projectId) }}
 
 
                     </td>
@@ -479,7 +418,7 @@
                     <td>
 
 
-                        {{ item.taskName }}
+                        {{ getTaskName(item.taskId) }}
 
 
                     </td>

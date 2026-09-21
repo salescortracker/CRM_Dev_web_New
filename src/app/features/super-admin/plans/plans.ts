@@ -6,20 +6,11 @@ import { ControlsystemService } from '../services/controlsystem-service';
 import { Spinnerservice } from '../../../core/services/spinnerservice';
 import { Alertservice } from '../../../core/services/alertservice';
 import { ChangeDetectorRef } from '@angular/core';
+import { AuthService } from '../../../core/authentication/services/auth.service';
 
 type PlanStatus = 'Active' | 'Draft';
 type PlanAccent = 'slate' | 'blue' | 'purple' | 'rose';
-type FeatureKey =
-  | 'Leads'
-  | 'Contacts'
-  | 'Companies'
-  | 'Deals'
-  | 'Pipeline'
-  | 'Campaigns'
-  | 'Reports'
-  | 'API Access'
-  | 'Automation'
-  | 'Integrations';
+type FeatureKey = string;
 
 interface SubscriptionPlan {
   id: string;
@@ -41,18 +32,7 @@ interface SubscriptionPlan {
   styleUrl: './plans.css',
 })
 export class Plans {
-  readonly allFeatures: FeatureKey[] = [
-    'Leads',
-    'Contacts',
-    'Companies',
-    'Deals',
-    'Pipeline',
-    'Campaigns',
-    'Reports',
-    'API Access',
-    'Automation',
-    'Integrations'
-  ];
+  allFeatures: FeatureKey[] = [];
 
   readonly accentKeys: PlanAccent[] = ['slate', 'blue', 'purple', 'rose'];
 
@@ -65,11 +45,45 @@ export class Plans {
   private activityTimer: ReturnType<typeof setTimeout> | null = null;
 
   constructor(private router: Router, private controlService: ControlsystemService, private spinner: Spinnerservice,
-  private alertService: Alertservice, private cdr: ChangeDetectorRef) { }
+  private alertService: Alertservice, private cdr: ChangeDetectorRef, private authService: AuthService) { }
 
   ngOnInit(): void {
-    this.getPlans();
+    this.loadModuleFeatures();
   }
+
+loadModuleFeatures(): void {
+
+  this.authService.getMenus().subscribe({
+
+    next: (res: any) => {
+
+      const activeMenus: any[] =
+        (res?.data || []).filter((x: any) => x.isActive);
+
+      const activeIds =
+        new Set(activeMenus.map(x => x.menuId));
+
+      this.allFeatures = activeMenus
+        .filter(x => !x.parentMenuId || !activeIds.has(x.parentMenuId))
+        .map(x => x.menuName);
+
+      this.getPlans();
+
+    },
+
+    error: (err) => {
+
+      console.error('Error loading module features:', err);
+
+      this.allFeatures = [];
+
+      this.getPlans();
+
+    }
+
+  });
+
+}
 
 getPlans(): void {
 

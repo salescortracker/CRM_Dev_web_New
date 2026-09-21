@@ -1,7 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Pagination } from '../../../../../shared/pagination/pagination';
 import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../../../environments/environment';
+import { ApiResponse } from '../../../../../core/authentication/services/auth.service';
 import { Alertservice } from '../../../../../core/services/alertservice';
 import { Spinnerservice } from '../../../../../core/services/spinnerservice';
 
@@ -12,1308 +15,492 @@ import { Spinnerservice } from '../../../../../core/services/spinnerservice';
   templateUrl: './faqs.html',
   styleUrl: './faqs.css',
 })
-export class Faqs {
+export class Faqs implements OnInit {
+
+  private baseUrl = environment.apiUrl;
+
+  constructor(
+    private http: HttpClient,
+    private alert: Alertservice,
+    private spinner: Spinnerservice,
+    private cd: ChangeDetectorRef
+  ) { }
+
+  //====================================================
+  // Screen Variables
+  //====================================================
+
   submitted = false;
-
-
   isEdit = false;
 
-
-
   page = 1;
-
-
   pageSize = 5;
-
-
-  totalRecords = 0;
-
-
-
   searchText = '';
 
+  //====================================================
+  // Static Options
+  //====================================================
 
+  categories = ['Account', 'Billing', 'Product', 'Technical', 'General'];
 
+  visibilities = ['Public', 'Internal', 'Customer Portal'];
 
+  statuses = ['Active', 'Inactive', 'Draft', 'Archived'];
+
+  //====================================================
+  // FAQs List
+  //====================================================
 
   faqs: any[] = [];
 
+  //====================================================
+  // Form Model
+  //====================================================
 
+  faq: any = this.getEmptyModel();
 
+  getEmptyModel() {
 
+    return {
 
+      faqid: 0,
 
-
-  faq: any = {
-
-
-
-    faqId: 0,
-
-
-    faqTitle: '',
-
-
-    faqCode: '',
-
-
-    category: '',
-
-
-    question: '',
-
-
-    answer: '',
-
-
-    visibility: '',
-
-
-    displayOrder: 0,
-
-
-    createdBy: '',
-
-
-    status: '',
-
-
-    isActive: true
-
-
-
-  };
-
-
-
-
-
-
-
-
-
-  constructor(
-
-
-    private alert: Alertservice,
-
-
-    private spinner: Spinnerservice,
-
-
-    private cd: ChangeDetectorRef
-
-
-  ) { }
-
-
-
-
-
-
-
-
-
-  ngOnInit(): void {
-
-
-
-    this.loadFaqs();
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-  loadFaqs() {
-
-
-
-    this.spinner.show();
-
-
-
-
-
-
-
-    setTimeout(() => {
-
-
-
-
-
-
-
-      this.faqs = [
-
-
-
-
-
-
-
-        {
-
-
-
-          faqId: 1,
-
-
-          faqTitle: 'How to create account?',
-
-
-          faqCode: 'FAQ001',
-
-
-          category: 'Account',
-
-
-          question: 'How can I create a new customer account?',
-
-
-          answer: 'Users can create an account by completing the registration form.',
-
-
-          visibility: 'Public',
-
-
-          displayOrder: 1,
-
-
-          createdBy: 'Karishma',
-
-
-          status: 'Active',
-
-
-          isActive: true
-
-
-
-        },
-
-
-
-
-
-
-
-
-
-        {
-
-
-
-          faqId: 2,
-
-
-          faqTitle: 'Payment methods available',
-
-
-          faqCode: 'FAQ002',
-
-
-          category: 'Billing',
-
-
-          question: 'Which payment methods are supported?',
-
-
-          answer: 'We support multiple online and offline payment methods.',
-
-
-          visibility: 'Customer Portal',
-
-
-          displayOrder: 2,
-
-
-          createdBy: 'Rahul',
-
-
-          status: 'Active',
-
-
-          isActive: true
-
-
-
-        },
-
-
-
-
-
-
-
-
-
-        {
-
-
-
-          faqId: 3,
-
-
-          faqTitle: 'How to reset password?',
-
-
-          faqCode: 'FAQ003',
-
-
-          category: 'Technical',
-
-
-          question: 'How can users reset their forgotten password?',
-
-
-          answer: 'Use the forgot password option to reset your password.',
-
-
-          visibility: 'Public',
-
-
-          displayOrder: 3,
-
-
-          createdBy: 'Sneha',
-
-
-          status: 'Active',
-
-
-          isActive: true
-
-
-
-        },
-        {
-
-
-
-          faqId: 4,
-
-
-          faqTitle: 'Product installation guide',
-
-
-          faqCode: 'FAQ004',
-
-
-          category: 'Product',
-
-
-          question: 'How to install and configure the product?',
-
-
-          answer: 'Follow the installation steps provided in the product setup documentation.',
-
-
-          visibility: 'Internal',
-
-
-          displayOrder: 4,
-
-
-          createdBy: 'Arun',
-
-
-          status: 'Draft',
-
-
-          isActive: true
-
-
-
-        },
-
-
-
-
-
-
-
-
-
-        {
-
-
-
-          faqId: 5,
-
-
-          faqTitle: 'Contact support team',
-
-
-          faqCode: 'FAQ005',
-
-
-          category: 'General',
-
-
-          question: 'How can customers contact support team?',
-
-
-          answer: 'Customers can raise tickets or contact support through available channels.',
-
-
-          visibility: 'Public',
-
-
-          displayOrder: 5,
-
-
-          createdBy: 'Durga',
-
-
-          status: 'Archived',
-
-
-          isActive: false
-
-
-
-        }
-
-
-
-
-
-
-
-      ];
-
-
-
-
-
-
-
-
-
-      this.faqs.sort(
-
-
-
-        (a, b) => b.faqId - a.faqId
-
-
-
-      );
-
-
-
-
-
-
-
-
-
-      this.totalRecords = this.faqs.length;
-
-
-
-
-
-
-
-
-
-      this.spinner.hide();
-
-
-
-
-
-
-
-
-
-      this.cd.detectChanges();
-
-
-
-
-
-
-
-
-
-    }, 500);
-
-
-
-
-
-
-
-  }
-  saveFaq() {
-
-
-    this.submitted = true;
-
-
-
-    if (
-
-
-      !this.faq.faqTitle ||
-
-
-      !this.faq.faqCode ||
-
-
-      !this.faq.category ||
-
-
-      !this.faq.question ||
-
-
-      !this.faq.answer ||
-
-
-      !this.faq.status
-
-
-    ) {
-
-
-      return;
-
-
-    }
-
-
-
-
-
-
-    this.spinner.show();
-
-
-
-
-
-
-    setTimeout(() => {
-
-
-
-
-
-
-      if (!this.isEdit) {
-
-
-
-
-
-        const newFaq = {
-
-
-
-
-          ...this.faq,
-
-
-
-
-          faqId: this.faqs.length
-
-
-
-            ? Math.max(...this.faqs.map(x => x.faqId)) + 1
-
-
-
-            : 1
-
-
-
-
-
-        };
-
-
-
-
-
-        this.faqs.unshift(newFaq);
-
-
-
-
-
-
-      }
-
-      else {
-
-
-
-
-
-        const index = this.faqs.findIndex(
-
-
-
-          x => x.faqId === this.faq.faqId
-
-
-
-        );
-
-
-
-
-
-
-        if (index !== -1) {
-
-
-
-
-
-          this.faqs[index] = {
-
-
-
-            ...this.faq
-
-
-
-          };
-
-
-
-
-
-        }
-
-
-
-
-
-      }
-
-
-
-
-
-
-
-
-      this.faqs = [...this.faqs];
-
-
-
-
-
-
-
-      this.totalRecords = this.faqs.length;
-
-
-
-
-
-
-
-      this.page = 1;
-
-
-
-
-
-
-
-
-      const isUpdate = this.isEdit;
-
-
-
-
-
-
-
-      this.clear();
-
-
-
-
-
-
-
-      this.spinner.hide();
-
-
-
-
-
-
-
-      this.cd.detectChanges();
-
-
-
-
-
-
-
-
-      this.alert.success(
-
-
-
-
-        isUpdate
-
-
-
-          ? 'FAQ updated successfully.'
-
-
-
-          : 'FAQ created successfully.'
-
-
-
-
-
-      );
-
-
-
-
-
-
-
-    }, 500);
-
-
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-  edit(id: number) {
-
-
-
-
-    this.spinner.show();
-
-
-
-
-
-
-
-    setTimeout(() => {
-
-
-
-
-
-
-
-      const selected = this.faqs.find(
-
-
-
-        x => x.faqId === id
-
-
-
-      );
-
-
-
-
-
-
-
-      if (selected) {
-
-
-
-
-
-        this.faq = {
-
-
-
-          ...selected
-
-
-
-        };
-
-
-
-
-
-
-        this.isEdit = true;
-
-
-
-
-
-
-        this.submitted = false;
-
-
-
-
-
-
-
-        this.cd.detectChanges();
-
-
-
-
-
-
-      }
-
-
-
-
-
-
-
-      this.spinner.hide();
-
-
-
-
-
-
-
-    }, 300);
-
-
-
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-  delete(id: number) {
-
-
-
-
-    this.alert.deleteConfirm().then(result => {
-
-
-
-
-
-
-      if (result.isConfirmed) {
-
-
-
-
-
-
-
-        this.spinner.show();
-
-
-
-
-
-
-
-        setTimeout(() => {
-
-
-
-
-
-
-          this.faqs = this.faqs.filter(
-
-
-
-            x => x.faqId !== id
-
-
-
-          );
-
-
-
-
-
-
-
-          this.totalRecords = this.faqs.length;
-
-
-
-
-
-
-
-          if (
-
-
-
-            this.page > 1 &&
-
-
-
-            this.pagedFaqs.length === 0
-
-
-
-          ) {
-
-
-
-            this.page--;
-
-
-
-          }
-
-
-
-
-
-
-
-
-          this.faqs = [...this.faqs];
-
-
-
-
-
-
-
-          this.spinner.hide();
-
-
-
-
-
-
-
-          this.cd.detectChanges();
-
-
-
-
-
-
-
-          this.alert.success(
-
-
-
-            'FAQ deleted successfully.'
-
-
-
-          );
-
-
-
-
-
-
-
-        }, 500);
-
-
-
-
-
-
-      }
-
-
-
-
-
-
-
-    });
-
-
-
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-  clear() {
-
-
-
-
-    this.faq = {
-
-
-
-
-      faqId: 0,
-
-
-      faqTitle: '',
-
-
-      faqCode: '',
-
+      faqtitle: '',
+      faqcode: '',
 
       category: '',
 
-
       question: '',
-
-
       answer: '',
-
 
       visibility: '',
 
+      displayOrder: null,
 
-      displayOrder: 0,
-
-
-      createdBy: '',
-
-
-      status: '',
-
-
-      isActive: true
-
-
+      status: ''
 
     };
 
+  }
 
+  //====================================================
+  // Lifecycle
+  //====================================================
 
+  ngOnInit(): void {
 
-
-
-
-    this.isEdit = false;
-
-
-
-
-
-
-
-    this.submitted = false;
-
-
-
-
-
-
-
-    this.cd.detectChanges();
-
-
-
-
-
+    this.loadFaqs();
 
   }
 
+  //====================================================
+  // Load FAQs
+  //====================================================
 
+  loadFaqs(): void {
 
+    this.spinner.show();
 
+    this.http
+      .get<ApiResponse<any[]>>(`${this.baseUrl}/Admin/getallfaqmanagements`)
+      .subscribe({
 
+        next: (res: any) => {
 
+          this.spinner.hide();
 
+          if (res?.success) {
 
+            this.faqs = res.data || [];
+
+          } else {
+
+            this.faqs = [];
+
+            this.alert.warning(
+              res?.message || 'No FAQ records found.'
+            );
+
+          }
+
+          this.cd.detectChanges();
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Error loading FAQs:', err);
+
+          this.faqs = [];
+
+          this.alert.error(
+            err?.error?.message || 'Failed to load FAQs.'
+          );
+
+          this.cd.detectChanges();
+
+        }
+
+      });
+
+  }
+
+  //====================================================
+  // Filtered FAQs
+  //====================================================
 
   get filteredFaqs() {
 
+    const search = this.searchText.trim().toLowerCase();
 
-
+    if (!search) return this.faqs;
 
     return this.faqs.filter(x =>
 
-
-
-
-
-
-      x.faqTitle
-
-
-
-        .toLowerCase()
-
-
-
-        .includes(this.searchText.toLowerCase())
-
-
-
-
-
-
-      ||
-
-
-
-
-
-
-      x.faqCode
-
-
-
-        .toLowerCase()
-
-
-
-        .includes(this.searchText.toLowerCase())
-
-
-
-
-
-
-      ||
-
-
-
-
-
-
-      x.category
-
-
-
-        .toLowerCase()
-
-
-
-        .includes(this.searchText.toLowerCase())
-
-
-
-
-
-
-      ||
-
-
-
-
-
-
-      x.visibility
-
-
-
-        .toLowerCase()
-
-
-
-        .includes(this.searchText.toLowerCase())
-
-
-
-
-
-
-      ||
-
-
-
-
-
-
-      x.createdBy
-
-
-
-        .toLowerCase()
-
-
-
-        .includes(this.searchText.toLowerCase())
-
-
-
-
-
-
-      ||
-
-
-
-
-
-
-      x.status
-
-
-
-        .toLowerCase()
-
-
-
-        .includes(this.searchText.toLowerCase())
-
-
-
-
-
+      (x.faqtitle || '').toLowerCase().includes(search) ||
+      (x.faqcode || '').toLowerCase().includes(search) ||
+      (x.category || '').toLowerCase().includes(search) ||
+      (x.visibility || '').toLowerCase().includes(search) ||
+      (x.status || '').toLowerCase().includes(search)
 
     );
 
-
-
-
-
-
   }
-
-
-
-
-
-
-
-
 
   get pagedFaqs() {
 
-
-
-
     const start = (this.page - 1) * this.pageSize;
 
-
-
-
-
-
-
-    return this.filteredFaqs.slice(
-
-
-
-      start,
-
-
-
-      start + this.pageSize
-
-
-
-    );
-
-
-
-
-
+    return this.filteredFaqs.slice(start, start + this.pageSize);
 
   }
 
+  //====================================================
+  // Save / Update
+  //====================================================
 
+  saveFaq(): void {
 
+    this.submitted = true;
 
+    if (
+      !this.faq.faqtitle || !this.faq.faqtitle.trim() ||
+      !this.faq.faqcode || !this.faq.faqcode.trim() ||
+      !this.faq.question || !this.faq.question.trim() ||
+      !this.faq.answer || !this.faq.answer.trim() ||
+      !this.faq.visibility ||
+      !this.faq.status
+    ) {
 
+      this.alert.warning('Please fill all required fields.');
 
+      return;
 
+    }
 
+    if (
+      this.faq.displayOrder !== null &&
+      this.faq.displayOrder !== '' &&
+      Number(this.faq.displayOrder) < 0
+    ) {
 
-  changePage(page: number) {
+      this.alert.warning('Display Order cannot be negative.');
 
+      return;
 
+    }
 
+    const payload = {
+
+      faqid: this.isEdit ? this.faq.faqid : 0,
+
+      faqtitle: this.faq.faqtitle.trim(),
+      faqcode: this.faq.faqcode.trim(),
+
+      category: this.faq.category
+        ? this.faq.category.trim()
+        : null,
+
+      question: this.faq.question.trim(),
+      answer: this.faq.answer.trim(),
+
+      visibility: this.faq.visibility.trim(),
+
+      displayOrder:
+        this.faq.displayOrder !== null &&
+          this.faq.displayOrder !== ''
+          ? Number(this.faq.displayOrder)
+          : null,
+
+      status: this.faq.status.trim()
+
+    };
+
+    this.spinner.show();
+
+    if (this.isEdit) {
+
+      this.http
+        .post<ApiResponse>(
+          `${this.baseUrl}/Admin/updatefaqmanagement`,
+          payload
+        )
+        .subscribe({
+
+          next: (res: any) => {
+
+            this.spinner.hide();
+
+            if (res?.success) {
+
+              this.alert.success(
+                res.message || 'FAQ updated successfully.'
+              );
+
+              this.clear();
+
+              this.loadFaqs();
+
+            } else {
+
+              this.alert.warning(
+                res?.message || 'Failed to update FAQ.'
+              );
+
+            }
+
+          },
+
+          error: (err) => {
+
+            this.spinner.hide();
+
+            console.error('Update FAQ error:', err);
+
+            this.alert.error(
+              err?.error?.message || 'Failed to update FAQ.'
+            );
+
+          }
+
+        });
+
+    } else {
+
+      this.http
+        .post<ApiResponse>(
+          `${this.baseUrl}/Admin/createfaqmanagement`,
+          payload
+        )
+        .subscribe({
+
+          next: (res: any) => {
+
+            this.spinner.hide();
+
+            if (res?.success) {
+
+              this.alert.success(
+                res.message || 'FAQ created successfully.'
+              );
+
+              this.clear();
+
+              this.loadFaqs();
+
+            } else {
+
+              this.alert.warning(
+                res?.message || 'Failed to create FAQ.'
+              );
+
+            }
+
+          },
+
+          error: (err) => {
+
+            this.spinner.hide();
+
+            console.error('Create FAQ error:', err);
+
+            this.alert.error(
+              err?.error?.message || 'Failed to create FAQ.'
+            );
+
+          }
+
+        });
+
+    }
+
+  }
+
+  //====================================================
+  // Edit
+  //====================================================
+
+  edit(id: number): void {
+
+    this.spinner.show();
+
+    this.http
+      .get<ApiResponse<any>>(`${this.baseUrl}/Admin/getbyfaqmanagement/${id}`)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.spinner.hide();
+
+          if (res?.success && res.data) {
+
+            const data = res.data;
+
+            this.faq = {
+
+              faqid: data.faqid,
+
+              faqtitle: data.faqtitle || '',
+              faqcode: data.faqcode || '',
+
+              category: data.category || '',
+
+              question: data.question || '',
+              answer: data.answer || '',
+
+              visibility: data.visibility || '',
+
+              displayOrder: data.displayOrder ?? null,
+
+              status: data.status || ''
+
+            };
+
+            this.isEdit = true;
+
+            this.submitted = false;
+
+            this.cd.detectChanges();
+
+          } else {
+
+            this.alert.warning(res?.message || 'FAQ not found.');
+
+          }
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Get FAQ error:', err);
+
+          this.alert.error(
+            err?.error?.message || 'Failed to load FAQ.'
+          );
+
+        }
+
+      });
+
+  }
+
+  //====================================================
+  // Delete
+  //====================================================
+
+  delete(id: number): void {
+
+    this.alert.deleteConfirm().then(result => {
+
+      if (!result.isConfirmed) return;
+
+      this.spinner.show();
+
+      this.http
+        .post<ApiResponse>(
+          `${this.baseUrl}/Admin/deletefaqmanagement/${id}`,
+          {}
+        )
+        .subscribe({
+
+          next: (res: any) => {
+
+            this.spinner.hide();
+
+            if (res?.success) {
+
+              this.alert.success(
+                res.message || 'FAQ deleted successfully.'
+              );
+
+              if (this.page > 1 && this.pagedFaqs.length === 1) {
+                this.page = this.page - 1;
+              }
+
+              this.loadFaqs();
+
+            } else {
+
+              this.alert.warning(
+                res?.message || 'Failed to delete FAQ.'
+              );
+
+            }
+
+          },
+
+          error: (err) => {
+
+            this.spinner.hide();
+
+            console.error('Delete FAQ error:', err);
+
+            this.alert.error(
+              err?.error?.message || 'Failed to delete FAQ.'
+            );
+
+          }
+
+        });
+
+    });
+
+  }
+
+  //====================================================
+  // Clear Form
+  //====================================================
+
+  clear(): void {
+
+    this.faq = this.getEmptyModel();
+
+    this.isEdit = false;
+
+    this.submitted = false;
+
+  }
+
+  //====================================================
+  // Pagination
+  //====================================================
+
+  changePage(page: number): void {
 
     this.page = page;
 
-
-
-
-
-
   }
 
-
-
-
-
-
-
-
-
-  changePageSize(size: number) {
-
-
-
+  changePageSize(size: number): void {
 
     this.pageSize = size;
 
-
-
-
-
-
-
     this.page = 1;
 
-
-
-
-
-
   }
-
-
-
-
-
 
 }

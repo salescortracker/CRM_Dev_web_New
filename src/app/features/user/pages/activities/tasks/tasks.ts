@@ -1,9 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../../../../../environments/environment';
+import { ApiResponse } from '../../../../../core/authentication/services/auth.service';
 import { Pagination } from '../../../../../shared/pagination/pagination';
 import { Alertservice } from '../../../../../core/services/alertservice';
 import { Spinnerservice } from '../../../../../core/services/spinnerservice';
+import { nullIfEmpty } from '../activities.util';
 
 @Component({
   selector: 'app-tasks',
@@ -12,323 +16,31 @@ import { Spinnerservice } from '../../../../../core/services/spinnerservice';
   templateUrl: './tasks.html',
   styleUrl: './tasks.css',
 })
-export class Tasks {
+export class Tasks implements OnInit {
+
+  private baseUrl = environment.apiUrl;
+
   submitted = false;
   isEdit = false;
 
   page = 1;
   pageSize = 5;
-  totalRecords = 0;
   searchText = '';
 
   tasks: any[] = [];
 
-  task: any = {
-
-    taskId: 0,
-    taskTitle: '',
-    taskType: '',
-    relatedTo: '',
-    customer: '',
-    contactPerson: '',
-    assignedTo: '',
-    startDate: '',
-    dueDate: '',
-    priority: '',
-    progress: 0,
-    reminder: '',
-    status: '',
-    description: '',
-    isActive: true
-
-  };
+  task: any = this.getEmptyModel();
 
   constructor(
-
+    private http: HttpClient,
     private alert: Alertservice,
     private spinner: Spinnerservice,
     private cd: ChangeDetectorRef
-
   ) { }
 
-  ngOnInit(): void {
+  getEmptyModel() {
 
-    this.loadTasks();
-
-  }
-
-  loadTasks() {
-
-    this.spinner.show();
-
-    setTimeout(() => {
-
-      this.tasks = [
-
-        {
-          taskId: 1,
-          taskTitle: 'CRM Follow Up',
-          taskType: 'Follow Up',
-          relatedTo: 'Lead',
-          customer: 'ABC Technologies',
-          contactPerson: 'Rahul Sharma',
-          assignedTo: 'Sales Executive',
-          startDate: '2026-07-29',
-          dueDate: '2026-07-30',
-          priority: 'High',
-          progress: 20,
-          reminder: '30 Minutes Before',
-          status: 'Pending',
-          description: 'Follow up with customer regarding CRM proposal.',
-          isActive: true
-        },
-
-        {
-          taskId: 2,
-          taskTitle: 'Send Proposal',
-          taskType: 'Proposal',
-          relatedTo: 'Opportunity',
-          customer: 'XYZ Solutions',
-          contactPerson: 'Priya Reddy',
-          assignedTo: 'Sales Manager',
-          startDate: '2026-07-29',
-          dueDate: '2026-07-31',
-          priority: 'Medium',
-          progress: 55,
-          reminder: '1 Hour Before',
-          status: 'In Progress',
-          description: 'Prepare and send proposal document.',
-          isActive: true
-        },
-
-        {
-          taskId: 3,
-          taskTitle: 'Product Demo',
-          taskType: 'Demo',
-          relatedTo: 'Account',
-          customer: 'Future Vision',
-          contactPerson: 'Arjun Kumar',
-          assignedTo: 'CRM Executive',
-          startDate: '2026-07-30',
-          dueDate: '2026-08-02',
-          priority: 'High',
-          progress: 100,
-          reminder: '15 Minutes Before',
-          status: 'Completed',
-          description: 'Completed online CRM demo.',
-          isActive: true
-        },
-
-        {
-          taskId: 4,
-          taskTitle: 'Contract Review',
-          taskType: 'Documentation',
-          relatedTo: 'Order',
-          customer: 'Global InfoTech',
-          contactPerson: 'Sneha Patel',
-          assignedTo: 'Legal Team',
-          startDate: '2026-08-01',
-          dueDate: '2026-08-04',
-          priority: 'Low',
-          progress: 40,
-          reminder: '1 Day Before',
-          status: 'Pending',
-          description: 'Review customer agreement.',
-          isActive: true
-        },
-
-        {
-          taskId: 5,
-          taskTitle: 'Requirement Discussion',
-          taskType: 'Meeting',
-          relatedTo: 'Contact',
-          customer: 'NextGen Pvt Ltd',
-          contactPerson: 'Kiran Verma',
-          assignedTo: 'Business Analyst',
-          startDate: '2026-08-02',
-          dueDate: '2026-08-06',
-          priority: 'Medium',
-          progress: 60,
-          reminder: '30 Minutes Before',
-          status: 'On Hold',
-          description: 'Requirement gathering discussion.',
-          isActive: true
-        }
-
-      ];
-
-      this.tasks.sort((a, b) => b.taskId - a.taskId);
-
-      this.totalRecords = this.tasks.length;
-
-      this.spinner.hide();
-
-      this.cd.detectChanges();
-
-    }, 500);
-
-  }
-
-  saveTask() {
-
-    this.submitted = true;
-
-    if (
-
-      !this.task.taskTitle ||
-      !this.task.taskType ||
-      !this.task.assignedTo ||
-      !this.task.startDate ||
-      !this.task.dueDate ||
-      !this.task.priority ||
-      !this.task.status
-
-    ) {
-
-      return;
-
-    }
-
-    this.spinner.show();
-
-    setTimeout(() => {
-
-      if (!this.isEdit) {
-
-        const newTask = {
-
-          ...this.task,
-
-          taskId: this.tasks.length
-            ? Math.max(...this.tasks.map(x => x.taskId)) + 1
-            : 1
-
-        };
-
-        this.tasks.unshift(newTask);
-
-      }
-
-      else {
-
-        const index = this.tasks.findIndex(
-
-          x => x.taskId === this.task.taskId
-
-        );
-
-        if (index !== -1) {
-
-          this.tasks[index] = {
-
-            ...this.task
-
-          };
-
-        }
-
-      }
-
-      // Refresh table immediately
-
-      this.tasks = [...this.tasks];
-
-      this.totalRecords = this.tasks.length;
-
-      this.page = 1;
-
-      const message = this.isEdit
-
-        ? 'Task updated successfully.'
-
-        : 'Task created successfully.';
-
-      this.clear();
-
-      this.spinner.hide();
-
-      this.cd.detectChanges();
-
-      this.alert.success(message);
-
-    }, 500);
-
-  }
-  edit(id: number) {
-
-    this.spinner.show();
-
-    setTimeout(() => {
-
-      const selected = this.tasks.find(
-        x => x.taskId === id
-      );
-
-      if (selected) {
-
-        this.task = {
-          ...selected
-        };
-
-        this.isEdit = true;
-
-        this.submitted = false;
-
-        this.cd.detectChanges();
-
-      }
-
-      this.spinner.hide();
-
-    }, 300);
-
-  }
-
-  delete(id: number) {
-
-    this.alert.deleteConfirm().then(result => {
-
-      if (result.isConfirmed) {
-
-        this.spinner.show();
-
-        setTimeout(() => {
-
-          this.tasks = this.tasks.filter(
-            x => x.taskId !== id
-          );
-
-          this.totalRecords = this.tasks.length;
-
-          if (
-            this.page > 1 &&
-            this.pagedTasks.length === 0
-          ) {
-            this.page--;
-          }
-
-          // Refresh table immediately
-          this.tasks = [...this.tasks];
-
-          this.spinner.hide();
-
-          this.cd.detectChanges();
-
-          this.alert.success(
-            'Task deleted successfully.'
-          );
-
-        }, 500);
-
-      }
-
-    });
-
-  }
-
-  clear() {
-
-    this.task = {
+    return {
 
       taskId: 0,
       taskTitle: '',
@@ -348,6 +60,301 @@ export class Tasks {
 
     };
 
+  }
+
+  ngOnInit(): void {
+
+    this.loadTasks();
+
+  }
+
+  //====================================================
+  // Load
+  //====================================================
+
+  loadTasks(): void {
+
+    this.spinner.show();
+
+    this.http
+      .get<ApiResponse<any[]>>(`${this.baseUrl}/Admin/getallactivitytasks`)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.spinner.hide();
+
+          if (res?.success) {
+
+            this.tasks = res.data || [];
+
+          } else {
+
+            this.tasks = [];
+
+            this.alert.warning(res?.message || 'No Tasks found.');
+
+          }
+
+          this.cd.detectChanges();
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Load tasks error:', err);
+
+          this.tasks = [];
+
+          this.alert.error(err?.error?.message || 'Failed to load Tasks.');
+
+          this.cd.detectChanges();
+
+        }
+
+      });
+
+  }
+
+  //====================================================
+  // Save (Create / Update)
+  //====================================================
+
+  saveTask(): void {
+
+    this.submitted = true;
+
+    if (
+      !this.task.taskTitle?.trim() ||
+      !this.task.taskType ||
+      !this.task.assignedTo?.trim() ||
+      !this.task.startDate ||
+      !this.task.dueDate ||
+      !this.task.priority ||
+      !this.task.status
+    ) {
+      return;
+    }
+
+    if (this.task.dueDate < this.task.startDate) {
+      this.alert.warning('Due Date cannot be earlier than Start Date.');
+      return;
+    }
+
+    const progress = Number(this.task.progress ?? 0);
+
+    if (isNaN(progress) || progress < 0 || progress > 100) {
+      this.alert.warning('Progress must be between 0 and 100.');
+      return;
+    }
+
+    const payload = {
+
+      taskId: this.task.taskId,
+      taskTitle: this.task.taskTitle.trim(),
+      taskType: this.task.taskType,
+      relatedTo: nullIfEmpty(this.task.relatedTo),
+      customer: nullIfEmpty(this.task.customer),
+      contactPerson: nullIfEmpty(this.task.contactPerson),
+      assignedTo: this.task.assignedTo.trim(),
+      startDate: this.task.startDate,
+      dueDate: this.task.dueDate,
+      priority: this.task.priority,
+      progress: progress,
+      reminder: nullIfEmpty(this.task.reminder),
+      status: this.task.status,
+      description: nullIfEmpty(this.task.description),
+      isActive: !!this.task.isActive
+
+    };
+
+    const url = this.isEdit
+      ? `${this.baseUrl}/Admin/updateactivitytask`
+      : `${this.baseUrl}/Admin/createactivitytask`;
+
+    const failMessage = this.isEdit
+      ? 'Failed to update Task.'
+      : 'Failed to create Task.';
+
+    this.spinner.show();
+
+    this.http
+      .post<ApiResponse>(url, payload)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.spinner.hide();
+
+          if (res?.success) {
+
+            this.alert.success(res.message);
+
+            this.clear();
+
+            this.page = 1;
+
+            this.loadTasks();
+
+          } else {
+
+            this.alert.warning(res?.message || failMessage);
+
+          }
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Save task error:', err);
+
+          this.alert.error(err?.error?.message || failMessage);
+
+        }
+
+      });
+
+  }
+
+  //====================================================
+  // Edit
+  //====================================================
+
+  edit(id: number): void {
+
+    this.spinner.show();
+
+    this.http
+      .get<ApiResponse<any>>(`${this.baseUrl}/Admin/getbyactivitytask/${id}`)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.spinner.hide();
+
+          if (res?.success && res.data) {
+
+            const data = res.data;
+
+            this.task = {
+
+              taskId: data.taskId,
+              taskTitle: data.taskTitle || '',
+              taskType: data.taskType || '',
+              relatedTo: data.relatedTo || '',
+              customer: data.customer || '',
+              contactPerson: data.contactPerson || '',
+              assignedTo: data.assignedTo || '',
+              startDate: data.startDate || '',
+              dueDate: data.dueDate || '',
+              priority: data.priority || '',
+              progress: data.progress ?? 0,
+              reminder: data.reminder || '',
+              status: data.status || '',
+              description: data.description || '',
+              isActive: !!data.isActive
+
+            };
+
+            this.isEdit = true;
+
+            this.submitted = false;
+
+            this.cd.detectChanges();
+
+          } else {
+
+            this.alert.warning(res?.message || 'Task not found.');
+
+          }
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Get task error:', err);
+
+          this.alert.error(err?.error?.message || 'Failed to load Task.');
+
+        }
+
+      });
+
+  }
+
+  //====================================================
+  // Delete
+  //====================================================
+
+  delete(id: number): void {
+
+    this.alert.deleteConfirm().then(result => {
+
+      if (!result.isConfirmed) return;
+
+      this.spinner.show();
+
+      this.http
+        .post<ApiResponse>(`${this.baseUrl}/Admin/deleteactivitytask/${id}`, {})
+        .subscribe({
+
+          next: (res: any) => {
+
+            this.spinner.hide();
+
+            if (res?.success) {
+
+              this.alert.success(res.message);
+
+              // Editing the record that was just deleted - reset the form
+              if (this.task.taskId === id) {
+                this.clear();
+              }
+
+              if (this.page > 1 && this.pagedTasks.length === 1) {
+                this.page = this.page - 1;
+              }
+
+              this.loadTasks();
+
+            } else {
+
+              this.alert.warning(res?.message || 'Failed to delete Task.');
+
+            }
+
+          },
+
+          error: (err) => {
+
+            this.spinner.hide();
+
+            console.error('Delete task error:', err);
+
+            this.alert.error(err?.error?.message || 'Failed to delete Task.');
+
+          }
+
+        });
+
+    });
+
+  }
+
+  //====================================================
+  // Clear
+  //====================================================
+
+  clear(): void {
+
+    this.task = this.getEmptyModel();
+
     this.isEdit = false;
 
     this.submitted = false;
@@ -356,43 +363,27 @@ export class Tasks {
 
   }
 
+  //====================================================
+  // Search / Pagination
+  //====================================================
+
   get filteredTasks() {
+
+    const search = this.searchText.toLowerCase();
 
     return this.tasks.filter(x =>
 
-      x.taskTitle
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
+      (x.taskTitle || '').toLowerCase().includes(search) ||
 
-      ||
+      (x.taskType || '').toLowerCase().includes(search) ||
 
-      x.taskType
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
+      (x.customer || '').toLowerCase().includes(search) ||
 
-      ||
+      (x.assignedTo || '').toLowerCase().includes(search) ||
 
-      x.customer
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
+      (x.priority || '').toLowerCase().includes(search) ||
 
-      ||
-
-      x.assignedTo
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
-
-      ||
-
-      x.priority
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
-
-      ||
-
-      x.status
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
+      (x.status || '').toLowerCase().includes(search)
 
     );
 
@@ -402,13 +393,7 @@ export class Tasks {
 
     const start = (this.page - 1) * this.pageSize;
 
-    return this.filteredTasks.slice(
-
-      start,
-
-      start + this.pageSize
-
-    );
+    return this.filteredTasks.slice(start, start + this.pageSize);
 
   }
 
@@ -425,6 +410,5 @@ export class Tasks {
     this.page = 1;
 
   }
-
 
 }

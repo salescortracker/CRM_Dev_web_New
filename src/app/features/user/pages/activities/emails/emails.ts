@@ -1,328 +1,46 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../../../../../environments/environment';
+import { ApiResponse } from '../../../../../core/authentication/services/auth.service';
 import { Pagination } from '../../../../../shared/pagination/pagination';
 import { Alertservice } from '../../../../../core/services/alertservice';
 import { Spinnerservice } from '../../../../../core/services/spinnerservice';
+import { isValidEmailList, nullIfEmpty } from '../activities.util';
 
 @Component({
   selector: 'app-emails',
   standalone: true,
-  imports: [CommonModule,FormsModule,Pagination],
+  imports: [CommonModule, FormsModule, Pagination],
   templateUrl: './emails.html',
   styleUrl: './emails.css',
 })
-export class Emails {
+export class Emails implements OnInit {
+
+  private baseUrl = environment.apiUrl;
+
   submitted = false;
   isEdit = false;
 
   page = 1;
   pageSize = 5;
-  totalRecords = 0;
   searchText = '';
 
   emails: any[] = [];
 
-  email: any = {
-
-    emailId: 0,
-    emailSubject: '',
-    emailType: '',
-    relatedTo: '',
-    customer: '',
-    contactPerson: '',
-    toEmail: '',
-    cc: '',
-    assignedTo: '',
-    priority: '',
-    sentDate: '',
-    status: '',
-    message: '',
-    isActive: true
-
-  };
+  email: any = this.getEmptyModel();
 
   constructor(
-
+    private http: HttpClient,
     private alert: Alertservice,
     private spinner: Spinnerservice,
     private cd: ChangeDetectorRef
-
   ) { }
 
-  ngOnInit(): void {
+  getEmptyModel() {
 
-    this.loadEmails();
-
-  }
-
-  loadEmails() {
-
-    this.spinner.show();
-
-    setTimeout(() => {
-
-      this.emails = [
-
-        {
-          emailId: 1,
-          emailSubject: 'CRM Product Proposal',
-          emailType: 'Proposal Email',
-          relatedTo: 'Opportunity',
-          customer: 'ABC Technologies',
-          contactPerson: 'Rahul Sharma',
-          toEmail: 'rahul@abctech.com',
-          cc: 'manager@abctech.com',
-          assignedTo: 'Sales Executive',
-          priority: 'High',
-          sentDate: '2026-07-30',
-          status: 'Sent',
-          message: 'CRM proposal has been shared successfully.',
-          isActive: true
-        },
-
-        {
-          emailId: 2,
-          emailSubject: 'Quotation Follow-up',
-          emailType: 'Follow-up Email',
-          relatedTo: 'Quotation',
-          customer: 'XYZ Solutions',
-          contactPerson: 'Priya Reddy',
-          toEmail: 'priya@xyzsolutions.com',
-          cc: '',
-          assignedTo: 'Business Executive',
-          priority: 'Medium',
-          sentDate: '2026-07-31',
-          status: 'Delivered',
-          message: 'Follow-up regarding quotation approval.',
-          isActive: true
-        },
-
-        {
-          emailId: 3,
-          emailSubject: 'Demo Invitation',
-          emailType: 'Sales Email',
-          relatedTo: 'Lead',
-          customer: 'Future Vision',
-          contactPerson: 'Arjun Kumar',
-          toEmail: 'arjun@futurevision.com',
-          cc: '',
-          assignedTo: 'Sales Manager',
-          priority: 'High',
-          sentDate: '2026-08-01',
-          status: 'Opened',
-          message: 'Invitation sent for CRM product demo.',
-          isActive: true
-        },
-
-        {
-          emailId: 4,
-          emailSubject: 'Support Response',
-          emailType: 'Support Email',
-          relatedTo: 'Account',
-          customer: 'Global InfoTech',
-          contactPerson: 'Sneha Patel',
-          toEmail: 'sneha@globalinfo.com',
-          cc: 'support@company.com',
-          assignedTo: 'Support Engineer',
-          priority: 'Low',
-          sentDate: '2026-08-02',
-          status: 'Sent',
-          message: 'Issue resolved and response sent.',
-          isActive: true
-        },
-
-        {
-          emailId: 5,
-          emailSubject: 'Contract Reminder',
-          emailType: 'Reminder Email',
-          relatedTo: 'Order',
-          customer: 'NextGen Pvt Ltd',
-          contactPerson: 'Kiran Verma',
-          toEmail: 'kiran@nextgen.com',
-          cc: '',
-          assignedTo: 'Account Manager',
-          priority: 'Medium',
-          sentDate: '2026-08-03',
-          status: 'Scheduled',
-          message: 'Reminder regarding contract renewal.',
-          isActive: true
-        }
-
-      ];
-
-      this.emails.sort((a, b) => b.emailId - a.emailId);
-
-      this.totalRecords = this.emails.length;
-
-      this.spinner.hide();
-
-      this.cd.detectChanges();
-
-    }, 500);
-
-  }
-
-  saveEmail() {
-
-    this.submitted = true;
-
-    if (
-
-      !this.email.emailSubject ||
-      !this.email.emailType ||
-      !this.email.toEmail ||
-      !this.email.assignedTo ||
-      !this.email.sentDate ||
-      !this.email.status
-
-    ) {
-
-      return;
-
-    }
-
-    this.spinner.show();
-
-    setTimeout(() => {
-
-      if (!this.isEdit) {
-
-        const newEmail = {
-
-          ...this.email,
-
-          emailId: this.emails.length
-            ? Math.max(...this.emails.map(x => x.emailId)) + 1
-            : 1
-
-        };
-
-        this.emails.unshift(newEmail);
-
-      }
-
-      else {
-
-        const index = this.emails.findIndex(
-
-          x => x.emailId === this.email.emailId
-
-        );
-
-        if (index !== -1) {
-
-          this.emails[index] = {
-
-            ...this.email
-
-          };
-
-        }
-
-      }
-
-      // Refresh table immediately
-
-      this.emails = [...this.emails];
-
-      this.totalRecords = this.emails.length;
-
-      this.page = 1;
-
-      const message = this.isEdit
-        ? 'Email updated successfully.'
-        : 'Email created successfully.';
-
-      this.clear();
-
-      this.spinner.hide();
-
-      this.cd.detectChanges();
-
-      this.alert.success(message);
-
-    }, 500);
-
-  }
-    edit(id: number) {
-
-    this.spinner.show();
-
-    setTimeout(() => {
-
-      const selected = this.emails.find(
-        x => x.emailId === id
-      );
-
-      if (selected) {
-
-        this.email = {
-          ...selected
-        };
-
-        this.isEdit = true;
-
-        this.submitted = false;
-
-        this.cd.detectChanges();
-
-      }
-
-      this.spinner.hide();
-
-    }, 300);
-
-  }
-
-  delete(id: number) {
-
-    this.alert.deleteConfirm().then(result => {
-
-      if (result.isConfirmed) {
-
-        this.spinner.show();
-
-        setTimeout(() => {
-
-          this.emails = this.emails.filter(
-            x => x.emailId !== id
-          );
-
-          this.totalRecords = this.emails.length;
-
-          if (
-            this.page > 1 &&
-            this.pagedEmails.length === 0
-          ) {
-
-            this.page--;
-
-          }
-
-          // Refresh table immediately
-
-          this.emails = [...this.emails];
-
-          this.spinner.hide();
-
-          this.cd.detectChanges();
-
-          this.alert.success(
-            'Email deleted successfully.'
-          );
-
-        }, 500);
-
-      }
-
-    });
-
-  }
-
-  clear() {
-
-    this.email = {
+    return {
 
       emailId: 0,
       emailSubject: '',
@@ -341,6 +59,296 @@ export class Emails {
 
     };
 
+  }
+
+  ngOnInit(): void {
+
+    this.loadEmails();
+
+  }
+
+  //====================================================
+  // Load
+  //====================================================
+
+  loadEmails(): void {
+
+    this.spinner.show();
+
+    this.http
+      .get<ApiResponse<any[]>>(`${this.baseUrl}/Admin/getallactivityemails`)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.spinner.hide();
+
+          if (res?.success) {
+
+            this.emails = res.data || [];
+
+          } else {
+
+            this.emails = [];
+
+            this.alert.warning(res?.message || 'No Emails found.');
+
+          }
+
+          this.cd.detectChanges();
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Load emails error:', err);
+
+          this.emails = [];
+
+          this.alert.error(err?.error?.message || 'Failed to load Emails.');
+
+          this.cd.detectChanges();
+
+        }
+
+      });
+
+  }
+
+  //====================================================
+  // Save (Create / Update)
+  //====================================================
+
+  saveEmail(): void {
+
+    this.submitted = true;
+
+    if (
+      !this.email.emailSubject?.trim() ||
+      !this.email.emailType ||
+      !this.email.toEmail?.trim() ||
+      !this.email.assignedTo?.trim() ||
+      !this.email.sentDate ||
+      !this.email.status
+    ) {
+      return;
+    }
+
+    if (!isValidEmailList(this.email.toEmail)) {
+      this.alert.warning('To Email is not a valid email address.');
+      return;
+    }
+
+    if (this.email.cc?.trim() && !isValidEmailList(this.email.cc)) {
+      this.alert.warning('CC is not a valid email address.');
+      return;
+    }
+
+    const payload = {
+
+      emailId: this.email.emailId,
+      emailSubject: this.email.emailSubject.trim(),
+      emailType: this.email.emailType,
+      relatedTo: nullIfEmpty(this.email.relatedTo),
+      customer: nullIfEmpty(this.email.customer),
+      contactPerson: nullIfEmpty(this.email.contactPerson),
+      toEmail: this.email.toEmail.trim(),
+      cc: nullIfEmpty(this.email.cc),
+      assignedTo: this.email.assignedTo.trim(),
+      priority: nullIfEmpty(this.email.priority),
+      sentDate: this.email.sentDate,
+      status: this.email.status,
+      message: nullIfEmpty(this.email.message),
+      isActive: !!this.email.isActive
+
+    };
+
+    const url = this.isEdit
+      ? `${this.baseUrl}/Admin/updateactivityemail`
+      : `${this.baseUrl}/Admin/createactivityemail`;
+
+    const failMessage = this.isEdit
+      ? 'Failed to update Email.'
+      : 'Failed to create Email.';
+
+    this.spinner.show();
+
+    this.http
+      .post<ApiResponse>(url, payload)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.spinner.hide();
+
+          if (res?.success) {
+
+            this.alert.success(res.message);
+
+            this.clear();
+
+            this.page = 1;
+
+            this.loadEmails();
+
+          } else {
+
+            this.alert.warning(res?.message || failMessage);
+
+          }
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Save email error:', err);
+
+          this.alert.error(err?.error?.message || failMessage);
+
+        }
+
+      });
+
+  }
+
+  //====================================================
+  // Edit
+  //====================================================
+
+  edit(id: number): void {
+
+    this.spinner.show();
+
+    this.http
+      .get<ApiResponse<any>>(`${this.baseUrl}/Admin/getbyactivityemail/${id}`)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.spinner.hide();
+
+          if (res?.success && res.data) {
+
+            const data = res.data;
+
+            this.email = {
+
+              emailId: data.emailId,
+              emailSubject: data.emailSubject || '',
+              emailType: data.emailType || '',
+              relatedTo: data.relatedTo || '',
+              customer: data.customer || '',
+              contactPerson: data.contactPerson || '',
+              toEmail: data.toEmail || '',
+              cc: data.cc || '',
+              assignedTo: data.assignedTo || '',
+              priority: data.priority || '',
+              sentDate: data.sentDate || '',
+              status: data.status || '',
+              message: data.message || '',
+              isActive: !!data.isActive
+
+            };
+
+            this.isEdit = true;
+
+            this.submitted = false;
+
+            this.cd.detectChanges();
+
+          } else {
+
+            this.alert.warning(res?.message || 'Email not found.');
+
+          }
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Get email error:', err);
+
+          this.alert.error(err?.error?.message || 'Failed to load Email.');
+
+        }
+
+      });
+
+  }
+
+  //====================================================
+  // Delete
+  //====================================================
+
+  delete(id: number): void {
+
+    this.alert.deleteConfirm().then(result => {
+
+      if (!result.isConfirmed) return;
+
+      this.spinner.show();
+
+      this.http
+        .post<ApiResponse>(`${this.baseUrl}/Admin/deleteactivityemail/${id}`, {})
+        .subscribe({
+
+          next: (res: any) => {
+
+            this.spinner.hide();
+
+            if (res?.success) {
+
+              this.alert.success(res.message);
+
+              // Editing the record that was just deleted - reset the form
+              if (this.email.emailId === id) {
+                this.clear();
+              }
+
+              if (this.page > 1 && this.pagedEmails.length === 1) {
+                this.page = this.page - 1;
+              }
+
+              this.loadEmails();
+
+            } else {
+
+              this.alert.warning(res?.message || 'Failed to delete Email.');
+
+            }
+
+          },
+
+          error: (err) => {
+
+            this.spinner.hide();
+
+            console.error('Delete email error:', err);
+
+            this.alert.error(err?.error?.message || 'Failed to delete Email.');
+
+          }
+
+        });
+
+    });
+
+  }
+
+  //====================================================
+  // Clear
+  //====================================================
+
+  clear(): void {
+
+    this.email = this.getEmptyModel();
+
     this.isEdit = false;
 
     this.submitted = false;
@@ -349,55 +357,31 @@ export class Emails {
 
   }
 
+  //====================================================
+  // Search / Pagination
+  //====================================================
+
   get filteredEmails() {
+
+    const search = this.searchText.toLowerCase();
 
     return this.emails.filter(x =>
 
-      x.emailSubject
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
+      (x.emailSubject || '').toLowerCase().includes(search) ||
 
-      ||
+      (x.customer || '').toLowerCase().includes(search) ||
 
-      x.customer
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
+      (x.contactPerson || '').toLowerCase().includes(search) ||
 
-      ||
+      (x.toEmail || '').toLowerCase().includes(search) ||
 
-      x.contactPerson
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
+      (x.assignedTo || '').toLowerCase().includes(search) ||
 
-      ||
+      (x.emailType || '').toLowerCase().includes(search) ||
 
-      x.toEmail
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
+      (x.priority || '').toLowerCase().includes(search) ||
 
-      ||
-
-      x.assignedTo
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
-
-      ||
-
-      x.emailType
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
-
-      ||
-
-      x.priority
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
-
-      ||
-
-      x.status
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
+      (x.status || '').toLowerCase().includes(search)
 
     );
 
@@ -407,13 +391,7 @@ export class Emails {
 
     const start = (this.page - 1) * this.pageSize;
 
-    return this.filteredEmails.slice(
-
-      start,
-
-      start + this.pageSize
-
-    );
+    return this.filteredEmails.slice(start, start + this.pageSize);
 
   }
 
@@ -430,6 +408,5 @@ export class Emails {
     this.page = 1;
 
   }
-
 
 }

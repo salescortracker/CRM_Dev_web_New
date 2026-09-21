@@ -104,8 +104,6 @@ export class Company {
 
     if (
       !this.company.companyName ||
-      !this.company.planStartDate ||
-      !this.company.expiryDate ||
       !this.company.companyCode
     ) {
 

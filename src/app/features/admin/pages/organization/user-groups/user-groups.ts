@@ -1,468 +1,287 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component } from '@angular/core';
-import { Pagination } from '../../../../../shared/pagination/pagination';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../../../environments/environment';
+import { ApiResponse } from '../../../../../core/authentication/services/auth.service';
+import { Pagination } from '../../../../../shared/pagination/pagination';
 import { Alertservice } from '../../../../../core/services/alertservice';
 import { Spinnerservice } from '../../../../../core/services/spinnerservice';
 
 @Component({
   selector: 'app-user-groups',
   standalone: true,
-  imports: [CommonModule,FormsModule,Pagination],
+  imports: [CommonModule, FormsModule, Pagination],
   templateUrl: './user-groups.html',
   styleUrl: './user-groups.css',
 })
-export class UserGroups {
-    submitted = false;
-  isEdit = false;
+export class UserGroups implements OnInit {
 
-  page = 1;
-  pageSize = 5;
-  totalRecords = 0;
-
-  searchText = '';
-
-  userGroups: any[] = [];
-
-  userGroup: any = {
-
-    groupId: 0,
-
-    groupName: '',
-    groupCode: '',
-    groupType: '',
-
-    department: '',
-    team: '',
-    reportingManager: '',
-
-    defaultRole: '',
-
-    userLimit: 0,
-
-    priority: 'Medium',
-
-    status: '',
-
-    description: '',
-
-    isActive: true
-
-  };
+  private baseUrl = environment.apiUrl;
 
   constructor(
+    private http: HttpClient,
     private alert: Alertservice,
     private spinner: Spinnerservice,
     private cd: ChangeDetectorRef
   ) { }
 
-  ngOnInit(): void {
+  //====================================================
+  // Screen Variables
+  //====================================================
 
-    this.loadUserGroups();
+  submitted = false;
+  isEdit = false;
 
-  }
+  page = 1;
+  pageSize = 5;
+  searchText = '';
 
-  loadUserGroups() {
+  //====================================================
+  // Static Options
+  //====================================================
 
-    this.spinner.show();
+  groupTypes = [
+    'Administration', 'Sales', 'Marketing', 'Human Resources',
+    'Finance', 'Customer Support', 'IT', 'Operations'
+  ];
 
-    setTimeout(() => {
+  teams = [
+    'Team Alpha', 'Team Bravo', 'Team Charlie', 'Team Delta', 'Team Omega'
+  ];
 
-      this.userGroups = [
+  reportingManagers = [
+    'Rahul Sharma', 'Priya Reddy', 'Arjun Kumar', 'Sneha Patel', 'Kiran Verma'
+  ];
 
-        {
-          groupId: 1,
+  defaultRoles = [
+    'Administrator', 'Manager', 'Team Lead', 'Executive', 'Employee', 'Viewer'
+  ];
 
-          groupName: 'Sales Managers',
+  //====================================================
+  // Dropdown Data (from backend)
+  //====================================================
 
-          groupCode: 'UG001',
+  departments: any[] = [];
+  priorities: any[] = [];
 
-          groupType: 'Sales',
+  //====================================================
+  // User Groups List
+  //====================================================
 
-          department: 'Sales',
+  userGroups: any[] = [];
 
-          team: 'Team Alpha',
+  //====================================================
+  // Form Model
+  //====================================================
 
-          reportingManager: 'Rahul Sharma',
+  userGroup: any = this.getEmptyModel();
 
-          defaultRole: 'Manager',
+  getEmptyModel() {
 
-          userLimit: 25,
+    return {
 
-          priority: 'High',
-
-          status: 'Active',
-
-          description: 'Sales management user group.',
-
-          isActive: true
-
-        },
-
-        {
-          groupId: 2,
-
-          groupName: 'HR Executives',
-
-          groupCode: 'UG002',
-
-          groupType: 'Human Resources',
-
-          department: 'Human Resources',
-
-          team: 'Team Bravo',
-
-          reportingManager: 'Priya Reddy',
-
-          defaultRole: 'Executive',
-
-          userLimit: 15,
-
-          priority: 'Medium',
-
-          status: 'Active',
-
-          description: 'HR executive group.',
-
-          isActive: true
-
-        },
-
-        {
-          groupId: 3,
-
-          groupName: 'IT Administrators',
-
-          groupCode: 'UG003',
-
-          groupType: 'IT',
-
-          department: 'IT',
-
-          team: 'Team Charlie',
-
-          reportingManager: 'Arjun Kumar',
-
-          defaultRole: 'Administrator',
-
-          userLimit: 10,
-
-          priority: 'High',
-
-          status: 'Active',
-
-          description: 'System administrators group.',
-
-          isActive: true
-
-        },
-                {
-          groupId: 4,
-
-          groupName: 'Finance Team',
-
-          groupCode: 'UG004',
-
-          groupType: 'Finance',
-
-          department: 'Finance',
-
-          team: 'Team Delta',
-
-          reportingManager: 'Sneha Patel',
-
-          defaultRole: 'Team Lead',
-
-          userLimit: 12,
-
-          priority: 'Medium',
-
-          status: 'Active',
-
-          description: 'Finance department user group.',
-
-          isActive: true
-
-        },
-
-        {
-          groupId: 5,
-
-          groupName: 'Customer Support',
-
-          groupCode: 'UG005',
-
-          groupType: 'Customer Support',
-
-          department: 'Customer Support',
-
-          team: 'Team Omega',
-
-          reportingManager: 'Kiran Verma',
-
-          defaultRole: 'Executive',
-
-          userLimit: 30,
-
-          priority: 'Low',
-
-          status: 'Inactive',
-
-          description: 'Customer support executives group.',
-
-          isActive: false
-
-        }
-
-      ];
-
-      this.userGroups.sort(
-        (a, b) => b.groupId - a.groupId
-      );
-
-      this.totalRecords = this.userGroups.length;
-
-      this.spinner.hide();
-
-      this.cd.detectChanges();
-
-    }, 500);
-
-  }
-    saveUserGroup() {
-
-    this.submitted = true;
-
-    if (
-      !this.userGroup.groupName ||
-      !this.userGroup.groupCode ||
-      !this.userGroup.groupType ||
-      !this.userGroup.defaultRole ||
-      !this.userGroup.status
-    ) {
-      return;
-    }
-
-    this.spinner.show();
-
-    setTimeout(() => {
-
-      if (!this.isEdit) {
-
-        const newGroup = {
-
-          ...this.userGroup,
-
-          groupId: this.userGroups.length
-            ? Math.max(...this.userGroups.map(x => x.groupId)) + 1
-            : 1
-
-        };
-
-        this.userGroups.unshift(newGroup);
-
-      } else {
-
-        const index = this.userGroups.findIndex(
-          x => x.groupId === this.userGroup.groupId
-        );
-
-        if (index !== -1) {
-
-          this.userGroups[index] = {
-
-            ...this.userGroup
-
-          };
-
-        }
-
-      }
-
-      this.userGroups = [...this.userGroups];
-
-      this.totalRecords = this.userGroups.length;
-
-      this.page = 1;
-
-      const isUpdate = this.isEdit;
-
-      this.clear();
-
-      this.spinner.hide();
-
-      this.cd.detectChanges();
-
-      this.alert.success(
-        isUpdate
-          ? 'User Group updated successfully.'
-          : 'User Group created successfully.'
-      );
-
-    }, 500);
-
-  }
-
-  edit(id: number) {
-
-    this.spinner.show();
-
-    setTimeout(() => {
-
-      const selected = this.userGroups.find(
-        x => x.groupId === id
-      );
-
-      if (selected) {
-
-        this.userGroup = {
-
-          ...selected
-
-        };
-
-        this.isEdit = true;
-
-        this.submitted = false;
-
-        this.cd.detectChanges();
-
-      }
-
-      this.spinner.hide();
-
-    }, 300);
-
-  }
-
-  delete(id: number) {
-
-    this.alert.deleteConfirm().then(result => {
-
-      if (result.isConfirmed) {
-
-        this.spinner.show();
-
-        setTimeout(() => {
-
-          this.userGroups = this.userGroups.filter(
-            x => x.groupId !== id
-          );
-
-          this.totalRecords = this.userGroups.length;
-
-          if (
-            this.page > 1 &&
-            this.pagedUserGroups.length === 0
-          ) {
-
-            this.page--;
-
-          }
-
-          this.userGroups = [...this.userGroups];
-
-          this.spinner.hide();
-
-          this.cd.detectChanges();
-
-          this.alert.success(
-            'User Group deleted successfully.'
-          );
-
-        }, 500);
-
-      }
-
-    });
-
-  }
-
-  clear() {
-
-    this.userGroup = {
-
-      groupId: 0,
+      userGroupId: 0,
 
       groupName: '',
       groupCode: '',
       groupType: '',
 
-      department: '',
+      departmentId: null,
       team: '',
       reportingManager: '',
 
       defaultRole: '',
 
-      userLimit: 0,
+      userLimit: null,
 
-      priority: 'Medium',
+      priorityId: null,
 
-      status: '',
+      status: null,
 
-      description: '',
-
-      isActive: true
+      description: ''
 
     };
 
-    this.isEdit = false;
+  }
 
-    this.submitted = false;
+  //====================================================
+  // Lifecycle
+  //====================================================
 
-    this.cd.detectChanges();
+  ngOnInit(): void {
+
+    this.loadDepartments();
+
+    this.loadPriorities();
+
+    this.loadUserGroups();
 
   }
 
+  //====================================================
+  // Load Dropdown Data
+  //====================================================
+
+  loadDepartments(): void {
+
+    this.http
+      .get<ApiResponse<any[]>>(`${this.baseUrl}/Master/getalldepartment`)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.departments = (res?.data || []).filter(
+            (x: any) => x.status !== false
+          );
+
+          this.cd.detectChanges();
+
+        },
+
+        error: (err) => {
+
+          console.error('Error loading departments:', err);
+
+          this.departments = [];
+
+        }
+
+      });
+
+  }
+
+  loadPriorities(): void {
+
+    this.http
+      .get<ApiResponse<any[]>>(`${this.baseUrl}/Master/getallpriority`)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.priorities = (res?.data || []).filter(
+            (x: any) => x.isActive !== false
+          );
+
+          this.cd.detectChanges();
+
+        },
+
+        error: (err) => {
+
+          console.error('Error loading priorities:', err);
+
+          this.priorities = [];
+
+        }
+
+      });
+
+  }
+
+  //====================================================
+  // Load User Groups
+  //====================================================
+
+  loadUserGroups(): void {
+
+    this.spinner.show();
+
+    this.http
+      .get<ApiResponse<any[]>>(`${this.baseUrl}/Admin/getallusergroup`)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.spinner.hide();
+
+          if (res?.success) {
+
+            this.userGroups = res.data || [];
+
+          } else {
+
+            this.userGroups = [];
+
+            this.alert.warning(
+              res?.message || 'No User Group records found.'
+            );
+
+          }
+
+          this.cd.detectChanges();
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Error loading user groups:', err);
+
+          this.userGroups = [];
+
+          this.alert.error(
+            err?.error?.message || 'Failed to load user groups.'
+          );
+
+          this.cd.detectChanges();
+
+        }
+
+      });
+
+  }
+
+  //====================================================
+  // Lookup Helpers (Display Names)
+  //====================================================
+
+  getDepartmentName(id: any): string {
+
+    if (id === null || id === undefined || id === '') return '-';
+
+    const item = this.departments.find(
+      x => x.departmentId === Number(id)
+    );
+
+    return item ? item.departmentName : '-';
+
+  }
+
+  getPriorityName(id: any): string {
+
+    if (id === null || id === undefined || id === '') return '-';
+
+    const item = this.priorities.find(
+      x => x.priorityId === Number(id)
+    );
+
+    return item ? item.priorityName : '-';
+
+  }
+
+  //====================================================
+  // Filtered User Groups
+  //====================================================
+
   get filteredUserGroups() {
+
+    const search = this.searchText.trim().toLowerCase();
+
+    if (!search) return this.userGroups;
 
     return this.userGroups.filter(x =>
 
-      x.groupName
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
+      (x.groupName || '').toLowerCase().includes(search) ||
+      (x.groupCode || '').toLowerCase().includes(search) ||
+      (x.groupType || '').toLowerCase().includes(search) ||
+      (x.team || '').toLowerCase().includes(search) ||
+      (x.reportingManager || '').toLowerCase().includes(search) ||
+      (x.defaultRole || '').toLowerCase().includes(search) ||
+      this.getDepartmentName(x.departmentId).toLowerCase().includes(search)
 
-      ||
-
-      x.groupCode
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
-
-      ||
-
-      x.groupType
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
-
-      ||
-
-      x.department
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
-
-      ||
-
-      x.team
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
-
-      ||
-
-      x.reportingManager
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
-
-      ||
-
-      x.defaultRole
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
-
-      ||
-
-      x.status
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase()));
+    );
 
   }
 
@@ -470,26 +289,356 @@ export class UserGroups {
 
     const start = (this.page - 1) * this.pageSize;
 
-    return this.filteredUserGroups.slice(
-      start,
-      start + this.pageSize
-    );
+    return this.filteredUserGroups.slice(start, start + this.pageSize);
 
   }
 
-  changePage(page: number) {
+  //====================================================
+  // Save / Update
+  //====================================================
+
+  saveUserGroup(): void {
+
+    this.submitted = true;
+
+    if (
+      !this.userGroup.groupName || !this.userGroup.groupName.trim() ||
+      !this.userGroup.groupCode || !this.userGroup.groupCode.trim() ||
+      !this.userGroup.groupType ||
+      !this.userGroup.defaultRole ||
+      this.userGroup.status === null
+    ) {
+
+      this.alert.warning('Please fill all required fields.');
+
+      return;
+
+    }
+
+    if (
+      this.userGroup.userLimit !== null &&
+      this.userGroup.userLimit !== '' &&
+      Number(this.userGroup.userLimit) < 0
+    ) {
+
+      this.alert.warning('User Limit cannot be negative.');
+
+      return;
+
+    }
+
+    const payload = {
+
+      userGroupId: this.isEdit ? this.userGroup.userGroupId : 0,
+
+      groupName: this.userGroup.groupName.trim(),
+      groupCode: this.userGroup.groupCode.trim(),
+
+      groupType: this.userGroup.groupType
+        ? this.userGroup.groupType.trim()
+        : null,
+
+      departmentId: this.userGroup.departmentId
+        ? Number(this.userGroup.departmentId)
+        : null,
+
+      team: this.userGroup.team
+        ? this.userGroup.team.trim()
+        : null,
+
+      reportingManager: this.userGroup.reportingManager
+        ? this.userGroup.reportingManager.trim()
+        : null,
+
+      defaultRole: this.userGroup.defaultRole
+        ? this.userGroup.defaultRole.trim()
+        : null,
+
+      userLimit:
+        this.userGroup.userLimit !== null &&
+          this.userGroup.userLimit !== ''
+          ? Number(this.userGroup.userLimit)
+          : null,
+
+      priorityId: this.userGroup.priorityId
+        ? Number(this.userGroup.priorityId)
+        : null,
+
+      status: !!this.userGroup.status,
+
+      description: this.userGroup.description
+        ? this.userGroup.description.trim()
+        : null
+
+    };
+
+    this.spinner.show();
+
+    if (this.isEdit) {
+
+      this.http
+        .post<ApiResponse>(
+          `${this.baseUrl}/Admin/updateusergroup`,
+          payload
+        )
+        .subscribe({
+
+          next: (res: any) => {
+
+            this.spinner.hide();
+
+            if (res?.success) {
+
+              this.alert.success(
+                res.message || 'User Group updated successfully.'
+              );
+
+              this.clear();
+
+              this.loadUserGroups();
+
+            } else {
+
+              this.alert.warning(
+                res?.message || 'Failed to update user group.'
+              );
+
+            }
+
+          },
+
+          error: (err) => {
+
+            this.spinner.hide();
+
+            console.error('Update user group error:', err);
+
+            this.alert.error(
+              err?.error?.message || 'Failed to update user group.'
+            );
+
+          }
+
+        });
+
+    } else {
+
+      this.http
+        .post<ApiResponse>(
+          `${this.baseUrl}/Admin/createusergroup`,
+          payload
+        )
+        .subscribe({
+
+          next: (res: any) => {
+
+            this.spinner.hide();
+
+            if (res?.success) {
+
+              this.alert.success(
+                res.message || 'User Group created successfully.'
+              );
+
+              this.clear();
+
+              this.loadUserGroups();
+
+            } else {
+
+              this.alert.warning(
+                res?.message || 'Failed to create user group.'
+              );
+
+            }
+
+          },
+
+          error: (err) => {
+
+            this.spinner.hide();
+
+            console.error('Create user group error:', err);
+
+            this.alert.error(
+              err?.error?.message || 'Failed to create user group.'
+            );
+
+          }
+
+        });
+
+    }
+
+  }
+
+  //====================================================
+  // Edit
+  //====================================================
+
+  edit(id: number): void {
+
+    this.spinner.show();
+
+    this.http
+      .get<ApiResponse<any>>(`${this.baseUrl}/Admin/getbyusergroup/${id}`)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.spinner.hide();
+
+          if (res?.success && res.data) {
+
+            const data = res.data;
+
+            this.userGroup = {
+
+              userGroupId: data.userGroupId,
+
+              groupName: data.groupName || '',
+              groupCode: data.groupCode || '',
+              groupType: data.groupType || '',
+
+              departmentId: data.departmentId ?? null,
+              team: data.team || '',
+              reportingManager: data.reportingManager || '',
+
+              defaultRole: data.defaultRole || '',
+
+              userLimit: data.userLimit ?? null,
+
+              priorityId: data.priorityId ?? null,
+
+              status: data.status === true,
+
+              description: data.description || ''
+
+            };
+
+            this.isEdit = true;
+
+            this.submitted = false;
+
+            this.cd.detectChanges();
+
+          } else {
+
+            this.alert.warning(res?.message || 'User Group not found.');
+
+          }
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Get user group error:', err);
+
+          this.alert.error(
+            err?.error?.message || 'Failed to load user group.'
+          );
+
+        }
+
+      });
+
+  }
+
+  //====================================================
+  // Delete
+  //====================================================
+
+  delete(id: number): void {
+
+    this.alert.deleteConfirm().then(result => {
+
+      if (!result.isConfirmed) return;
+
+      this.spinner.show();
+
+      this.http
+        .post<ApiResponse>(
+          `${this.baseUrl}/Admin/deleteusergroup/${id}`,
+          {}
+        )
+        .subscribe({
+
+          next: (res: any) => {
+
+            this.spinner.hide();
+
+            if (res?.success) {
+
+              this.alert.success(
+                res.message || 'User Group deleted successfully.'
+              );
+
+              if (this.page > 1 && this.pagedUserGroups.length === 1) {
+                this.page = this.page - 1;
+              }
+
+              this.loadUserGroups();
+
+            } else {
+
+              this.alert.warning(
+                res?.message || 'Failed to delete user group.'
+              );
+
+            }
+
+          },
+
+          error: (err) => {
+
+            this.spinner.hide();
+
+            console.error('Delete user group error:', err);
+
+            this.alert.error(
+              err?.error?.message || 'Failed to delete user group.'
+            );
+
+          }
+
+        });
+
+    });
+
+  }
+
+  //====================================================
+  // Clear Form
+  //====================================================
+
+  clear(): void {
+
+    this.userGroup = this.getEmptyModel();
+
+    this.isEdit = false;
+
+    this.submitted = false;
+
+  }
+
+  //====================================================
+  // Pagination
+  //====================================================
+
+  changePage(page: number): void {
 
     this.page = page;
 
   }
 
-  changePageSize(size: number) {
+  changePageSize(size: number): void {
 
     this.pageSize = size;
 
     this.page = 1;
 
   }
-
 
 }

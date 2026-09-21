@@ -1,8 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Alertservice } from '../../../../core/services/alertservice';
 import { Spinnerservice } from '../../../../core/services/spinnerservice';
+import { AuthService } from '../../../../core/authentication/services/auth.service';
+import { ControlsystemService } from '../../services/controlsystem-service';
 
 @Component({
   selector: 'app-teams',
@@ -11,18 +13,36 @@ import { Spinnerservice } from '../../../../core/services/spinnerservice';
   templateUrl: './teams.html',
   styleUrl: './teams.css',
 })
-export class Teams {
+export class Teams implements OnInit {
   constructor(
 
     private alert: Alertservice,
 
     private spinner: Spinnerservice,
 
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+
+    private authService: AuthService,
+
+    private controlService: ControlsystemService
 
   ) { }
 
 
+
+  ngOnInit(): void {
+
+    this.loadCompanies();
+
+    this.loadRegions();
+
+    this.loadDepartments();
+
+    this.loadAdministrators();
+
+    this.loadTeams();
+
+  }
 
 
 
@@ -43,112 +63,213 @@ export class Teams {
 
 
 
+  // ==============================
+  // Company / Region Dropdowns
+  // ==============================
+
+  companies: any[] = [];
+
+  regions: any[] = [];
 
 
-  teams: any[] = [
+  loadCompanies(): void {
+
+    this.authService
+      .getCompanies()
+      .subscribe({
+
+        next: (response) => {
+
+          this.companies = (response.data || []).filter(
+            (x: any) => x.isActive !== false
+          );
+
+        },
+
+        error: (err) => {
+
+          console.error(err);
+
+        }
+      });
+
+  }
 
 
-    {
+  loadRegions(): void {
 
-      id: 1,
+    this.authService
+      .getRegions()
+      .subscribe({
 
-      teamName: 'Sales Team',
+        next: (response) => {
 
-      teamCode: 'TEAM001',
+          this.regions = (response.data || []).filter(
+            (x: any) => x.isActive !== false
+          );
 
-      department: 'Sales',
+        },
 
-      teamLead: 'John Smith',
+        error: (err) => {
 
-      description: 'Handles enterprise sales activities',
+          console.error(err);
 
-      members: [
+        }
+      });
 
-        'John Smith',
-
-        'Sarah Wilson'
-
-      ],
-
-      createdDate: '20-Jul-2026',
-
-      status: 'Active',
-
-      isDefault: true
+  }
 
 
-    },
+  get formRegions(): any[] {
 
-
-
-    {
-
-      id: 2,
-
-      teamName: 'Development Team',
-
-      teamCode: 'TEAM002',
-
-      department: 'IT',
-
-      teamLead: 'David Brown',
-
-      description: 'Responsible for CRM development',
-
-      members: [
-
-        'David Brown',
-
-        'Michael Johnson'
-
-      ],
-
-      createdDate: '18-Jul-2026',
-
-      status: 'Active',
-
-      isDefault: false
-
-
-    },
-
-
-
-    {
-
-      id: 3,
-
-      teamName: 'HR Team',
-
-      teamCode: 'TEAM003',
-
-      department: 'HR',
-
-      teamLead: 'Sarah Wilson',
-
-      description: 'Handles employee operations',
-
-      members: [
-
-        'Sarah Wilson'
-
-      ],
-
-      createdDate: '10-Jul-2026',
-
-      status: 'Inactive',
-
-      isDefault: false
-
-
+    if (!this.model.companyId) {
+      return [];
     }
 
+    return this.regions.filter(
+      r => r.companyId === Number(this.model.companyId)
+    );
 
-  ];
+  }
+
+
+  onFormCompanyChange(): void {
+
+    this.model.regionId = '';
+
+  }
+
+
+
+  // ==============================
+  // Department / Team Lead / Members
+  // ==============================
+
+  departments: any[] = [];
+
+  administrators: any[] = [];
+
+
+  loadDepartments(): void {
+
+    this.controlService
+      .getDepartments()
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.departments = (res?.data || []).filter(
+            (x: any) => x.status === true || x.status === 'Active'
+          );
+
+          this.cd.detectChanges();
+
+        },
+
+        error: (err) => {
+
+          console.error('Error loading departments:', err);
+
+          this.departments = [];
+
+        }
+
+      });
+
+  }
+
+
+  loadAdministrators(): void {
+
+    this.controlService
+      .getCompanyAdministrators()
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.administrators = (res?.data || []).filter(
+            (x: any) => x.status === true
+          );
+
+          this.cd.detectChanges();
+
+        },
+
+        error: (err) => {
+
+          console.error('Error loading users:', err);
+
+          this.administrators = [];
+
+        }
+
+      });
+
+  }
 
 
 
 
+  teams: any[] = [];
+
+
+  loadTeams(): void {
+
+    this.spinner.show();
+
+    this.authService
+      .getTeams()
+      .subscribe({
+
+        next: (response: any) => {
+
+          this.spinner.hide();
+
+          this.teams = this.mapTeams(response.data);
+
+          this.cd.detectChanges();
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error(err);
+
+          this.alert.error(
+            err?.error?.message || 'Failed to load teams.'
+          );
+
+        }
+      });
+
+  }
+
+
+  private mapTeams(data: any[] | undefined): any[] {
+
+    return (data || []).map((x: any) => ({
+
+      id: x.teamId,
+      teamName: x.teamName,
+      teamCode: x.teamCode,
+      companyId: x.companyId,
+      regionId: x.regionId,
+      departmentId: x.departmentId,
+      department: x.departmentName || '',
+      teamLeadId: x.teamLeadId,
+      teamLead: x.teamLeadName || '',
+      description: x.description || '',
+      members: x.memberNames || [],
+      memberIds: x.memberIds || [],
+      createdDate: '-',
+      status: x.status ? 'Active' : 'Inactive',
+      isDefault: x.isDefault
+
+    }));
+
+  }
 
 
 
@@ -156,56 +277,26 @@ export class Teams {
   model: any = this.emptyModel();
 
 
-
-
-
-
   emptyModel() {
-
 
     return {
 
-
       id: 0,
-
       teamName: '',
-
       teamCode: '',
-
-      department: 'Sales',
-
-      teamLead: '',
-
+      companyId: '',
+      regionId: '',
+      departmentId: '',
+      teamLeadId: '',
       description: '',
-
-      members: [],
-
-      membersList: {
-
-        john: false,
-
-        sarah: false,
-
-        david: false,
-
-        michael: false
-
-      },
-
+      memberSelection: {} as { [id: number]: boolean },
       createdDate: '',
-
       status: 'Active',
-
       isDefault: false
-
 
     };
 
-
   }
-
-
-
 
 
 
@@ -215,49 +306,30 @@ export class Teams {
 
   get activeTeams() {
 
-
     return this.teams.filter(
-
       x => x.status === 'Active'
-
     ).length;
 
-
   }
-
 
 
   get inactiveTeams() {
 
-
     return this.teams.filter(
-
       x => x.status === 'Inactive'
-
     ).length;
 
-
   }
-
 
 
   get totalMembers() {
 
-
     return this.teams.reduce(
-
       (total, item) => total + item.members.length,
-
       0
-
     );
 
-
   }
-
-
-
-
 
 
 
@@ -267,33 +339,22 @@ export class Teams {
 
   get filteredTeams() {
 
-
     return this.teams.filter(item => {
-
 
       let search =
 
-
         item.teamName
-
           .toLowerCase()
-
           .includes(this.searchText.toLowerCase())
 
         ||
 
-        item.teamLead
-
+        (item.teamLead || '')
           .toLowerCase()
-
           .includes(this.searchText.toLowerCase());
 
 
-
-
-
       let department =
-
 
         this.departmentFilter == ''
 
@@ -302,11 +363,7 @@ export class Teams {
         item.department === this.departmentFilter;
 
 
-
-
-
       let status =
-
 
         this.statusFilter == ''
 
@@ -315,55 +372,25 @@ export class Teams {
         item.status === this.statusFilter;
 
 
-
-
-
       return search && department && status;
-
 
     });
 
-
   }
-
-
-
 
 
 
 
   refresh() {
 
-
-    this.spinner.show();
-
-
-    setTimeout(() => {
-
-
-      this.spinner.hide();
-
-
-      this.alert.success(
-
-        'Teams refreshed successfully.'
-
-      );
-
-
-    }, 500);
-
+    this.loadTeams();
 
   }
 
 
 
 
-
-
-
   openAddModal() {
-
 
     this.isEdit = false;
 
@@ -373,17 +400,12 @@ export class Teams {
 
     this.showModal = true;
 
-
   }
 
 
 
 
-
-
-
   closeModal() {
-
 
     this.showModal = false;
 
@@ -393,287 +415,192 @@ export class Teams {
 
     this.editId = 0;
 
-
   }
-
-
-
 
 
 
 
   saveTeam() {
 
-
-
     if (!this.model.teamName.trim()) {
 
-
       this.alert.warning(
-
         'Team Name is required.'
-
       );
 
-
       return;
-
 
     }
 
 
+    if (!this.model.companyId) {
 
+      this.alert.warning(
+        'Company is required.'
+      );
+
+      return;
+
+    }
 
 
     this.spinner.show();
 
 
-
-    setTimeout(() => {
-
-
-
-      let selectedMembers: string[] = [];
+    const memberIds: number[] = Object.keys(this.model.memberSelection)
+      .filter(key => this.model.memberSelection[+key])
+      .map(key => +key);
 
 
+    const payload = {
 
-      Object.keys(this.model.membersList)
+      teamId: this.isEdit ? this.editId : 0,
 
-        .forEach(key => {
+      companyId: +this.model.companyId,
 
+      regionId: this.model.regionId ? +this.model.regionId : null,
 
-          if (this.model.membersList[key]) {
+      departmentId: this.model.departmentId ? +this.model.departmentId : null,
 
+      teamLeadId: this.model.teamLeadId ? +this.model.teamLeadId : null,
 
-            selectedMembers.push(key);
+      teamName: this.model.teamName.trim(),
 
+      description: this.model.description,
 
-          }
+      status: this.model.status === 'Active',
 
+      isDefault: this.model.isDefault,
 
-        });
+      memberIds: memberIds
 
-
-
-
-
-      if (this.isEdit) {
-
-
-
-        let index = this.teams.findIndex(
-
-          x => x.id === this.editId
-
-        );
+    };
 
 
+    const request$ = this.isEdit
 
-        if (index != -1) {
+      ? this.authService.updateTeam(payload)
 
-
-
-          this.teams[index] = {
-
-            ...this.model,
-
-            members: selectedMembers,
-
-            id: this.editId
-
-          };
+      : this.authService.createTeam(payload);
 
 
-        }
+    request$.subscribe({
 
+      next: (res: any) => {
 
+        this.spinner.hide();
 
-        this.alert.success(
+        this.alert.success(res.message);
 
-          'Team updated successfully.'
+        this.loadTeams();
 
-        );
+        this.closeModal();
 
+        this.cd.detectChanges();
 
+      },
+
+      error: (err) => {
+
+        this.spinner.hide();
+
+        this.alert.error(err?.error?.message || 'Failed to save team.');
 
       }
 
-      else {
-
-
-        this.model.id = new Date().getTime();
-
-
-        this.model.members = selectedMembers;
-
-
-        this.model.createdDate = '27-Jul-2026';
-
-
-
-        this.teams.unshift({
-
-          ...this.model
-
-        });
-
-
-
-        this.alert.success(
-
-          'Team created successfully.'
-
-        );
-
-
-      }
-
-
-
-
-
-      this.spinner.hide();
-
-
-      this.closeModal();
-
-
-      this.cd.detectChanges();
-
-
-
-    }, 500);
-
-
+    });
 
   }
-
-
-
-
-
 
 
 
 
   edit(item: any) {
 
-
-
     this.isEdit = true;
-
 
     this.editId = item.id;
 
+    const memberSelection: { [id: number]: boolean } = {};
+
+    (item.memberIds || []).forEach((id: number) => {
+      memberSelection[id] = true;
+    });
 
     this.model = {
 
-
-      ...item,
-
-
-      membersList: {
-
-        john: false,
-
-        sarah: false,
-
-        david: false,
-
-        michael: false
-
-      }
-
+      id: item.id,
+      teamName: item.teamName,
+      teamCode: item.teamCode,
+      companyId: item.companyId || '',
+      regionId: item.regionId || '',
+      departmentId: item.departmentId || '',
+      teamLeadId: item.teamLeadId || '',
+      description: item.description,
+      memberSelection: memberSelection,
+      status: item.status,
+      isDefault: item.isDefault
 
     };
 
-
-
     this.showModal = true;
 
-
   }
-
-
-
-
-
 
 
 
 
   delete(id: number) {
 
-
-
     this.alert.deleteConfirm()
 
       .then(result => {
 
-
         if (result.isConfirmed) {
-
-
 
           this.spinner.show();
 
+          this.authService
+            .deleteTeam(id)
+            .subscribe({
 
+              next: (res: any) => {
 
-          setTimeout(() => {
+                this.spinner.hide();
 
+                this.alert.success(res.message);
 
-            this.teams = this.teams.filter(
+                this.loadTeams();
 
-              x => x.id !== id
+                this.cd.detectChanges();
 
-            );
+              },
 
+              error: (err) => {
 
+                this.spinner.hide();
 
-            this.spinner.hide();
+                this.alert.error(err?.error?.message || 'Failed to delete team.');
 
-
-
-            this.alert.success(
-
-              'Team deleted successfully.'
-
-            );
-
-
-
-            this.cd.detectChanges();
-
-
-
-          }, 500);
-
-
+              }
+            });
 
         }
 
-
-
       });
-
 
   }
 
 
 
 
-
-
-
   clearFilters() {
-
 
     this.searchText = '';
 
     this.departmentFilter = '';
 
     this.statusFilter = '';
-
 
   }
 }

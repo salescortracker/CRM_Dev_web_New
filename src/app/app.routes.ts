@@ -14,6 +14,18 @@ export const routes: Routes = [
         .then(m => m.ForgotPassword)
   },
   {
+    path: 'verify-otp',
+    loadComponent: () =>
+      import('./features/auth/verify-otp/verify-otp')
+        .then(m => m.VerifyOtp)
+  },
+  {
+    path: 'reset-password',
+    loadComponent: () =>
+      import('./features/auth/reset-password/reset-password')
+        .then(m => m.ResetPassword)
+  },
+  {
     path: '',
     canActivate: [authGuard],
     loadComponent: () => import('./layouts/admin-layout/admin-layout').then(m => m.AdminLayout),
@@ -767,6 +779,11 @@ export const routes: Routes = [
         path: 'profile',
         loadComponent: () => import('./features/user/pages/profile/profile/profile')
           .then(m => m.Profile)
+      },
+      {
+        path: 'change-password',
+        loadComponent: () => import('./features/auth/change-password/change-password')
+          .then(m => m.ChangePassword)
       },
       {
         path: 'sessions',

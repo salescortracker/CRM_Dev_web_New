@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Pagination } from '../../../../shared/pagination/pagination';
 import { Alertservice } from '../../../../core/services/alertservice';
 import { Spinnerservice } from '../../../../core/services/spinnerservice';
+import { ControlsystemService } from '../../services/controlsystem-service';
 
 @Component({
   selector: 'app-coupons-discounts',
@@ -12,10 +13,12 @@ import { Spinnerservice } from '../../../../core/services/spinnerservice';
   templateUrl: './coupons-discounts.html',
   styleUrl: './coupons-discounts.css',
 })
-export class CouponsDiscounts {
+export class CouponsDiscounts implements OnInit {
   constructor(
     private alert: Alertservice,
-    private spinner: Spinnerservice
+    private spinner: Spinnerservice,
+    private controlService: ControlsystemService,
+    private cdr: ChangeDetectorRef
   ) { }
 
 
@@ -64,6 +67,8 @@ export class CouponsDiscounts {
 
   coupons: any[] = [];
 
+  plans: any[] = [];
+
 
 
 
@@ -71,10 +76,31 @@ export class CouponsDiscounts {
 
     this.resetForm();
 
-    this.loadStaticData();
+    this.loadPlans();
+
+    this.loadCoupons();
 
   }
 
+
+  // ==========================================
+  // Load Plans (API)
+  // ==========================================
+
+  loadPlans(): void {
+
+    this.controlService.getPlans().subscribe({
+      next: (res: any) => {
+        this.plans = res?.data || [];
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error loading plans:', err);
+        this.plans = [];
+      }
+    });
+
+  }
 
 
 
@@ -120,7 +146,7 @@ export class CouponsDiscounts {
       usedCount: 0,
 
 
-      applicablePlan: 'All Plans',
+      planId: null,
 
 
       startDate: '',
@@ -140,125 +166,64 @@ export class CouponsDiscounts {
 
 
 
-
-
   // ==========================================
-  // Static Data
+  // Load Coupons (API)
   // ==========================================
 
 
-  loadStaticData(): void {
+  loadCoupons(): void {
 
+    this.spinner.show();
 
+    this.controlService.getCoupons().subscribe({
 
-    this.coupons = [
+      next: (res: any) => {
 
+        this.spinner.hide();
 
-      {
+        if (res.success) {
 
+          this.coupons = (res.data || []).map((x: any) => ({
+            couponId: x.couponId,
+            couponCode: x.couponCode,
+            couponName: x.couponName,
+            description: x.description,
+            discountType: x.discountType,
+            discountValue: x.discountValue,
+            minimumAmount: x.minimumAmount,
+            maximumDiscount: x.maximumDiscount,
+            usageLimit: x.usageLimit,
+            usedCount: x.usedCount,
+            planId: x.planId,
+            applicablePlan: x.planName || 'All Plans',
+            startDate: x.startDate ? x.startDate.slice(0, 10) : '',
+            expiryDate: x.expiryDate ? x.expiryDate.slice(0, 10) : '',
+            status: x.status
+          }));
 
-        couponId: 1,
+          this.cdr.detectChanges();
 
+        } else {
 
-        couponCode: 'WELCOME20',
+          this.alert.warning(res.message);
 
-
-        couponName: 'Welcome Offer',
-
-
-        description: 'New customer discount',
-
-
-        discountType: 'Percentage',
-
-
-        discountValue: 20,
-
-
-        minimumAmount: 5000,
-
-
-        maximumDiscount: 2000,
-
-
-        usageLimit: 100,
-
-
-        usedCount: 45,
-
-
-        applicablePlan: 'All Plans',
-
-
-        startDate: '2026-07-01',
-
-
-        expiryDate: '2026-12-31',
-
-
-        status: 'Active'
-
+        }
 
       },
 
+      error: (err) => {
 
+        this.spinner.hide();
 
-      {
+        console.error('Error loading coupons:', err);
 
-
-        couponId: 2,
-
-
-        couponCode: 'SAVE500',
-
-
-        couponName: 'Festival Discount',
-
-
-        description: 'Fixed amount discount',
-
-
-        discountType: 'Fixed Amount',
-
-
-        discountValue: 500,
-
-
-        minimumAmount: 3000,
-
-
-        maximumDiscount: 500,
-
-
-        usageLimit: 50,
-
-
-        usedCount: 50,
-
-
-        applicablePlan: 'Professional Plan',
-
-
-        startDate: '2026-06-01',
-
-
-        expiryDate: '2026-07-15',
-
-
-        status: 'InActive'
-
+        this.alert.error(err?.error?.message || 'Unable to load coupons.');
 
       }
 
-
-    ];
-
-
+    });
 
   }
-
-
-
 
 
 
@@ -289,80 +254,62 @@ export class CouponsDiscounts {
 
     }
 
-
+    const dto = {
+      couponId: this.isEdit ? this.coupon.couponId : 0,
+      couponCode: this.coupon.couponCode,
+      couponName: this.coupon.couponName,
+      description: this.coupon.description,
+      discountType: this.coupon.discountType,
+      discountValue: this.coupon.discountValue,
+      minimumAmount: this.coupon.minimumAmount,
+      maximumDiscount: this.coupon.maximumDiscount,
+      usageLimit: this.coupon.usageLimit,
+      usedCount: this.coupon.usedCount,
+      planId: this.coupon.planId,
+      startDate: this.coupon.startDate || null,
+      expiryDate: this.coupon.expiryDate || null,
+      status: this.coupon.status
+    };
 
     this.spinner.show();
 
+    const request = this.isEdit
+      ? this.controlService.updateCoupon(dto)
+      : this.controlService.createCoupon(dto);
 
+    request.subscribe({
 
-    setTimeout(() => {
+      next: (res: any) => {
 
+        this.spinner.hide();
 
-      if (this.isEdit) {
+        if (res.success) {
 
+          this.loadCoupons();
 
+          this.alert.success(res.message);
 
-        const index =
-          this.coupons.findIndex(
-            x => x.couponId === this.coupon.couponId
-          );
+          this.clear();
 
+        } else {
 
-
-        if (index > -1) {
-
-
-          this.coupons[index] =
-          {
-            ...this.coupon
-          };
-
+          this.alert.warning(res.message);
 
         }
 
+      },
 
+      error: (err) => {
 
-        this.alert.success(
-          'Coupon updated successfully.'
-        );
+        this.spinner.hide();
 
+        console.error(err);
 
-
-      }
-      else {
-
-
-        this.coupon.couponId =
-          new Date().getTime();
-
-
-
-        this.coupons.unshift(
-          {
-            ...this.coupon
-          }
-        );
-
-
-
-        this.alert.success(
-          'Coupon created successfully.'
-        );
-
+        this.alert.error(err?.error?.message || 'Unable to save coupon.');
 
       }
 
-
-
-      this.spinner.hide();
-
-
-      this.clear();
-
-
-
-    }, 500);
-
+    });
 
 
   }
@@ -468,18 +415,39 @@ export class CouponsDiscounts {
 
         }
 
+        this.spinner.show();
 
+        this.controlService.deleteCoupon(id).subscribe({
 
-        this.coupons =
-          this.coupons.filter(
-            x => x.couponId !== id
-          );
+          next: (res: any) => {
 
+            this.spinner.hide();
 
+            if (res.success) {
 
-        this.alert.success(
-          'Coupon deleted successfully.'
-        );
+              this.loadCoupons();
+
+              this.alert.success(res.message);
+
+            } else {
+
+              this.alert.warning(res.message);
+
+            }
+
+          },
+
+          error: (err) => {
+
+            this.spinner.hide();
+
+            console.error(err);
+
+            this.alert.error(err?.error?.message || 'Unable to delete coupon.');
+
+          }
+
+        });
 
 
 
@@ -551,7 +519,6 @@ export class CouponsDiscounts {
 
 
   }
-
 
 
 
@@ -690,7 +657,6 @@ export class CouponsDiscounts {
 
 
   }
-
 
 
 

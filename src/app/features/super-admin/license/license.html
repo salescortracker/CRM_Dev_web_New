@@ -16,133 +16,151 @@
                     <label>License Name <span class="text-danger">*</span></label>
                     <input type="text"
                            class="form-control"
-                           placeholder="Enterprise License">
+                           placeholder="Enterprise License"
+                           [(ngModel)]="license.licenseName">
+                    <div class="text-danger mt-1" *ngIf="submitted && !license.licenseName">
+                        License Name is required.
+                    </div>
                 </div>
 
                 <div class="col-md-4 mb-3">
                     <label>License Code <span class="text-danger">*</span></label>
                     <input type="text"
                            class="form-control"
-                           placeholder="ENT-2026-001">
+                           placeholder="ENT-2026-001"
+                           [(ngModel)]="license.licenseCode">
+                    <div class="text-danger mt-1" *ngIf="submitted && !license.licenseCode">
+                        License Code is required.
+                    </div>
                 </div>
 
                 <div class="col-md-4 mb-3">
-                    <label>Company</label>
-                    <select class="form-select">
-                        <option>ABC Technologies</option>
-                        <option>XYZ Solutions</option>
-                        <option>Demo Company</option>
+                    <label>Company <span class="text-danger">*</span></label>
+                    <select class="form-select" [(ngModel)]="license.companyId">
+                        <option [ngValue]="null">Select Company</option>
+                        <option *ngFor="let c of companies" [ngValue]="c.companyId">{{ c.companyName }}</option>
                     </select>
+                    <div class="text-danger mt-1" *ngIf="submitted && !license.companyId">
+                        Company is required.
+                    </div>
                 </div>
 
                 <div class="col-md-4 mb-3">
-                    <label>License Type</label>
-                    <select class="form-select">
-                        <option>Trial</option>
-                        <option>Professional</option>
-                        <option>Enterprise</option>
-                        <option>Unlimited</option>
+                    <label>License Type <span class="text-danger">*</span></label>
+                    <select class="form-select" [(ngModel)]="license.licenseTypeId">
+                        <option [ngValue]="null">Select License Type</option>
+                        <option *ngFor="let lt of licenseTypes" [ngValue]="lt.licenseId">{{ lt.licenseName }}</option>
                     </select>
+                    <div class="text-danger mt-1" *ngIf="submitted && !license.licenseTypeId">
+                        License Type is required.
+                    </div>
                 </div>
 
                 <div class="col-md-4 mb-3">
                     <label>Maximum Users</label>
                     <input type="number"
+                           min="0"
                            class="form-control"
-                           value="100">
+                           placeholder="100"
+                           [(ngModel)]="license.maximumUsers">
                 </div>
 
                 <div class="col-md-4 mb-3">
                     <label>Storage Limit (GB)</label>
                     <input type="number"
+                           min="0"
                            class="form-control"
-                           value="500">
+                           placeholder="500"
+                           [(ngModel)]="license.storageLimitGb">
                 </div>
 
                 <div class="col-md-3 mb-3">
                     <label>License Start Date</label>
                     <input type="date"
-                           class="form-control">
+                           class="form-control"
+                           [(ngModel)]="license.licenseStartDate">
                 </div>
 
                 <div class="col-md-3 mb-3">
                     <label>License Expiry Date</label>
                     <input type="date"
-                           class="form-control">
+                           class="form-control"
+                           [(ngModel)]="license.licenseExpiryDate">
                 </div>
 
                 <div class="col-md-3 mb-3">
                     <label>API Calls / Month</label>
                     <input type="number"
+                           min="0"
                            class="form-control"
-                           value="100000">
+                           placeholder="100000"
+                           [(ngModel)]="license.apicallsPerMonth">
                 </div>
 
                 <div class="col-md-3 mb-3">
                     <label>Support Level</label>
-                    <select class="form-select">
-                        <option>Standard</option>
-                        <option>Priority</option>
-                        <option>Premium</option>
+                    <select class="form-select" [(ngModel)]="license.supportLevel">
+                        <option value="">Select Support Level</option>
+                        <option *ngFor="let sl of supportLevels" [value]="sl">{{ sl }}</option>
                     </select>
                 </div>
 
                 <div class="col-md-3">
                     <label>
-                        <input type="checkbox" checked>
+                        <input type="checkbox" [(ngModel)]="license.crmmodule">
                         CRM Module
                     </label>
                 </div>
 
                 <div class="col-md-3">
                     <label>
-                        <input type="checkbox" checked>
+                        <input type="checkbox" [(ngModel)]="license.salesModule">
                         Sales Module
                     </label>
                 </div>
 
                 <div class="col-md-3">
                     <label>
-                        <input type="checkbox" checked>
+                        <input type="checkbox" [(ngModel)]="license.marketingModule">
                         Marketing Module
                     </label>
                 </div>
 
                 <div class="col-md-3">
                     <label>
-                        <input type="checkbox" checked>
+                        <input type="checkbox" [(ngModel)]="license.supportModule">
                         Support Module
                     </label>
                 </div>
 
                 <div class="col-md-3 mt-3">
                     <label>
-                        <input type="checkbox" checked>
+                        <input type="checkbox" [(ngModel)]="license.apiaccess">
                         API Access
                     </label>
                 </div>
 
                 <div class="col-md-3 mt-3">
                     <label>
-                        <input type="checkbox" checked>
+                        <input type="checkbox" [(ngModel)]="license.mobileApp">
                         Mobile App
                     </label>
                 </div>
 
                 <div class="col-md-3 mt-3">
                     <label>
-                        <input type="checkbox" checked>
+                        <input type="checkbox" [(ngModel)]="license.activeLicense">
                         Active License
                     </label>
                 </div>
 
             </div>
 
-            <button class="btn btn-danger me-2">Save</button>
+            <button class="btn btn-danger me-2" (click)="saveLicense()">
+                {{ isEdit ? 'Update' : 'Save' }}
+            </button>
 
-            <button class="btn btn-warning me-2">Update</button>
-
-            <button class="btn btn-secondary">Clear</button>
+            <button class="btn btn-secondary" (click)="clear()">Clear</button>
 
         </div>
 
@@ -154,84 +172,88 @@
 
         <div class="col-md-4">
             <input class="form-control"
-                   placeholder="Search License...">
+                   placeholder="Search License..."
+                   [(ngModel)]="searchText">
         </div>
 
         <div class="col-md-4">
-            <select class="form-select">
-                <option>All License Types</option>
-                <option>Trial</option>
-                <option>Professional</option>
-                <option>Enterprise</option>
+            <select class="form-select" [(ngModel)]="licenseTypeFilter">
+                <option [ngValue]="null">All License Types</option>
+                <option *ngFor="let lt of licenseTypes" [ngValue]="lt.licenseId">{{ lt.licenseName }}</option>
             </select>
         </div>
 
     </div>
 
-    <table class="table table-bordered table-hover">
+    <div class="table-responsive">
 
-        <thead class="table-danger">
+        <table class="table table-bordered table-hover">
 
-            <tr>
+            <thead class="table-danger">
 
-                <th>#</th>
-                <th>License</th>
-                <th>Company</th>
-                <th>Type</th>
-                <th>Users</th>
-                <th>Storage</th>
-                <th>Expiry</th>
-                <th>Status</th>
-                <th width="190">Action</th>
+                <tr>
 
-            </tr>
+                    <th width="60">#</th>
+                    <th>License</th>
+                    <th>Company</th>
+                    <th>Type</th>
+                    <th>Users</th>
+                    <th>Storage</th>
+                    <th>Expiry</th>
+                    <th>Status</th>
+                    <th width="140">Action</th>
 
-        </thead>
+                </tr>
 
-        <tbody>
+            </thead>
 
-            <tr>
+            <tbody>
 
-                <td>1</td>
-                <td>Enterprise License</td>
-                <td>ABC Technologies</td>
-                <td>Enterprise</td>
-                <td>100</td>
-                <td>500 GB</td>
-                <td>31-Dec-2027</td>
-                <td><span class="badge bg-success">Active</span></td>
+                <tr *ngIf="pagedLicenses.length == 0">
 
-                <td>
-                    <button class="btn btn-warning btn-sm me-1">Edit</button>
-                    <button class="btn btn-info btn-sm me-1">Renew</button>
-                    <button class="btn btn-danger btn-sm">Revoke</button>
-                </td>
+                    <td colspan="9" class="text-center text-muted">
+                        No License Records Found
+                    </td>
 
-            </tr>
+                </tr>
 
-            <tr>
+                <tr *ngFor="let item of pagedLicenses; let i = index">
 
-                <td>2</td>
-                <td>Professional License</td>
-                <td>XYZ Solutions</td>
-                <td>Professional</td>
-                <td>50</td>
-                <td>200 GB</td>
-                <td>30-Jun-2027</td>
-                <td><span class="badge bg-warning text-dark">Expiring Soon</span></td>
+                    <td>{{ ((page - 1) * pageSize) + i + 1 }}</td>
 
-                <td>
-                    <button class="btn btn-warning btn-sm me-1">Edit</button>
-                    <button class="btn btn-info btn-sm me-1">Renew</button>
-                    <button class="btn btn-danger btn-sm">Revoke</button>
-                </td>
+                    <td>{{ item.licenseName }}</td>
 
-            </tr>
+                    <td>{{ getCompanyName(item.companyId) }}</td>
 
-        </tbody>
+                    <td>{{ getLicenseTypeName(item.licenseTypeId) }}</td>
 
-    </table>
+                    <td>{{ item.maximumUsers ?? '-' }}</td>
 
-  
+                    <td>{{ item.storageLimitGb !== null ? item.storageLimitGb + ' GB' : '-' }}</td>
+
+                    <td>{{ item.licenseExpiryDate ? (item.licenseExpiryDate | date:'dd-MMM-yyyy') : '-' }}</td>
+
+                    <td>
+                        <span class="badge" [ngClass]="getLicenseStatus(item).badgeClass">
+                            {{ getLicenseStatus(item).label }}
+                        </span>
+                    </td>
+
+                    <td>
+                        <button class="btn btn-warning btn-sm me-1" (click)="edit(item.licenseManagementId)">Edit</button>
+                        <button class="btn btn-danger btn-sm" (click)="delete(item.licenseManagementId)">Delete</button>
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <app-pagination [page]="page" [pageSize]="pageSize" [totalRecords]="filteredLicenses.length"
+        (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)">
+    </app-pagination>
 
 </div>

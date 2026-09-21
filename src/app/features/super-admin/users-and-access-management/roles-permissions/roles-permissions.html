@@ -135,24 +135,6 @@
 
 
 
-        <div class="stat-card">
-
-
-            <span>
-                Assigned Users
-            </span>
-
-
-            <h2>
-                {{assignedUsers}}
-            </h2>
-
-
-        </div>
-
-
-
-
     </div>
 
 
@@ -305,13 +287,19 @@
 
 
                     <th>
-                        Access Level
+                        Company
                     </th>
 
 
 
                     <th>
-                        Users
+                        Region
+                    </th>
+
+
+
+                    <th>
+                        Access Level
                     </th>
 
 
@@ -427,6 +415,28 @@
 
 
 
+                    <!-- Company -->
+
+
+                    <td>
+
+                        {{item.companyName || 'N/A'}}
+
+                    </td>
+
+
+
+                    <!-- Region -->
+
+
+                    <td>
+
+                        {{item.regionName || 'N/A'}}
+
+                    </td>
+
+
+
                     <!-- Access Level -->
 
 
@@ -449,27 +459,6 @@
 
 
 
-
-
-
-
-                    <!-- Users -->
-
-
-                    <td>
-
-
-                        <span class="count-badge">
-
-
-                            {{item.userCount}}
-
-
-                        </span>
-
-
-
-                    </td>
 
 
 
@@ -783,28 +772,6 @@
 
 
 
-                <!-- User Count -->
-
-
-                <div>
-
-
-                    <label>
-
-                        Assigned Users
-
-                    </label>
-
-
-
-                    <input type="number" placeholder="Enter user count" [(ngModel)]="model.userCount">
-
-
-                </div>
-
-
-
-
                 <!-- Company -->
 
 
@@ -819,7 +786,7 @@
 
 
 
-                    <select [(ngModel)]="model.companyId">
+                    <select [(ngModel)]="model.companyId" (ngModelChange)="onFormCompanyChange()">
 
 
 
@@ -874,7 +841,7 @@
 
 
 
-                        <option *ngFor="let item of regions" [value]="item.regionId">
+                        <option *ngFor="let item of formRegions" [value]="item.regionId">
 
                             {{item.regionName}}
 

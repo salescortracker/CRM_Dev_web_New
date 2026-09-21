@@ -513,6 +513,22 @@
   background: linear-gradient(135deg, #e11d48, #9f1239);
 }
 
+.hero-slate {
+  background: linear-gradient(135deg, #64748b, #334155);
+}
+
+.hero-blue {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+}
+
+.hero-purple {
+  background: linear-gradient(135deg, #a855f7, #7e22ce);
+}
+
+.hero-rose {
+  background: linear-gradient(135deg, #e11d48, #9f1239);
+}
+
 .hero-blob {
   position: absolute;
   border-radius: 50%;

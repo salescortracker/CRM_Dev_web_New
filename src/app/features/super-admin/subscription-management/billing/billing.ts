@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Pagination } from '../../../../shared/pagination/pagination';
 import { Alertservice } from '../../../../core/services/alertservice';
 import { Spinnerservice } from '../../../../core/services/spinnerservice';
+import { ControlsystemService } from '../../services/controlsystem-service';
 
 @Component({
   selector: 'app-billing',
@@ -12,7 +13,7 @@ import { Spinnerservice } from '../../../../core/services/spinnerservice';
   templateUrl: './billing.html',
   styleUrl: './billing.css',
 })
-export class Billing {
+export class Billing implements OnInit {
   // Search & Filters
 searchText = '';
 statusFilter = '';
@@ -32,7 +33,9 @@ submitted = false;
 isEdit = false;
   constructor(
     private alert: Alertservice,
-    private spinner: Spinnerservice
+    private spinner: Spinnerservice,
+    private controlService: ControlsystemService,
+    private cdr: ChangeDetectorRef
   ) { }
 
 
@@ -41,10 +44,68 @@ isEdit = false;
 
   billingList: any[] = [];
 
+  companies: any[] = [];
+
+  plans: any[] = [];
+
   ngOnInit(): void {
 
     this.resetForm();
-    this.loadStaticData();
+    this.loadCompanies();
+    this.loadPlans();
+    this.loadBillings();
+
+  }
+
+  // ============================================
+  // Load Dropdown Data
+  // ============================================
+
+  loadCompanies(): void {
+
+    this.controlService.getOrganizations().subscribe({
+      next: (res: any) => {
+        this.companies = res?.data || [];
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error loading companies:', err);
+        this.companies = [];
+      }
+    });
+
+  }
+
+  loadPlans(): void {
+
+    this.controlService.getPlans().subscribe({
+      next: (res: any) => {
+        this.plans = res?.data || [];
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error loading plans:', err);
+        this.plans = [];
+      }
+    });
+
+  }
+
+  onCompanyChange(organizationId: any): void {
+
+    const company = this.companies.find(c => c.organizationId === Number(organizationId));
+
+    this.billing.organizationId = Number(organizationId);
+    this.billing.companyName = company ? company.organizationName : '';
+
+  }
+
+  onPlanChange(planId: any): void {
+
+    const plan = this.plans.find(p => p.planId === Number(planId));
+
+    this.billing.planId = Number(planId);
+    this.billing.planName = plan ? plan.planName : '';
 
   }
 
@@ -58,11 +119,15 @@ isEdit = false;
 
       billingId: 0,
 
-      billNumber: 'BILL-1001',
+      billNumber: 'BILL-' + Date.now(),
+
+      organizationId: null,
 
       companyName: '',
 
-      planName: 'Professional',
+      planId: null,
+
+      planName: '',
 
       billingDate: new Date().toISOString().substring(0, 10),
 
@@ -89,65 +154,61 @@ isEdit = false;
   }
 
   // ============================================
-  // Load Static Records
+  // Load Records (API)
   // ============================================
 
-  loadStaticData(): void {
+  loadBillings(): void {
 
-    this.billingList = [
+    this.spinner.show();
 
-      {
-        billingId: 1,
-        billNumber: 'BILL-1001',
-        companyName: 'ABC Technologies',
-        planName: 'Professional',
-        billingDate: '2026-07-01',
-        dueDate: '2026-07-10',
-        amount: 12000,
-        tax: 18,
-        discount: 500,
-        totalAmount: 13660,
-        paymentStatus: 'Paid',
-        paymentMethod: 'UPI',
-        billingAddress: 'Hyderabad',
-        notes: 'Monthly Subscription'
+    this.controlService.getBillings().subscribe({
+
+      next: (res: any) => {
+
+        this.spinner.hide();
+
+        if (res.success) {
+
+          this.billingList = (res.data || []).map((x: any) => ({
+            billingId: x.billingId,
+            billNumber: x.billNumber,
+            organizationId: x.organizationId,
+            companyName: x.organizationName,
+            planId: x.planId,
+            planName: x.planName,
+            billingDate: (x.billingDate || '').slice(0, 10),
+            dueDate: (x.dueDate || '').slice(0, 10),
+            amount: x.amount,
+            tax: x.tax,
+            discount: x.discount,
+            totalAmount: x.totalAmount,
+            paymentStatus: x.paymentStatus,
+            paymentMethod: x.paymentMethod,
+            billingAddress: x.billingAddress,
+            notes: x.notes
+          }));
+
+          this.cdr.detectChanges();
+
+        } else {
+
+          this.alert.warning(res.message);
+
+        }
+
       },
 
-      {
-        billingId: 2,
-        billNumber: 'BILL-1002',
-        companyName: 'XYZ Solutions',
-        planName: 'Enterprise',
-        billingDate: '2026-07-05',
-        dueDate: '2026-07-15',
-        amount: 25000,
-        tax: 18,
-        discount: 1000,
-        totalAmount: 28500,
-        paymentStatus: 'Pending',
-        paymentMethod: 'Credit Card',
-        billingAddress: 'Bangalore',
-        notes: 'Yearly Subscription'
-      },
+      error: (err) => {
 
-      {
-        billingId: 3,
-        billNumber: 'BILL-1003',
-        companyName: 'Nova Tech',
-        planName: 'Starter',
-        billingDate: '2026-07-08',
-        dueDate: '2026-07-20',
-        amount: 6000,
-        tax: 18,
-        discount: 0,
-        totalAmount: 7080,
-        paymentStatus: 'Overdue',
-        paymentMethod: 'Bank Transfer',
-        billingAddress: 'Chennai',
-        notes: 'Renewal'
+        this.spinner.hide();
+
+        console.error('Error loading billings:', err);
+
+        this.alert.error(err?.error?.message || 'Unable to load billing records.');
+
       }
 
-    ];
+    });
 
   }
 
@@ -157,56 +218,7 @@ isEdit = false;
 
   save(): void {
 
-    this.submitted = true;
-
-    if (
-      !this.billing.companyName ||
-      !this.billing.billNumber
-    ) {
-
-      this.alert.warning('Please fill mandatory fields.');
-      return;
-
-    }
-
-    this.spinner.show();
-
-    setTimeout(() => {
-
-      if (this.isEdit) {
-
-        const index = this.billingList.findIndex(
-          x => x.billingId === this.billing.billingId
-        );
-
-        if (index > -1) {
-
-          this.billingList[index] = {
-            ...this.billing
-          };
-
-        }
-
-        this.alert.success('Billing updated successfully.');
-
-      }
-      else {
-
-        this.billing.billingId = new Date().getTime();
-
-        this.billingList.unshift({
-          ...this.billing
-        });
-
-        this.alert.success('Billing created successfully.');
-
-      }
-
-      this.spinner.hide();
-
-      this.clear();
-
-    }, 500);
+    this.saveBilling();
 
   }
   // ============================================
@@ -284,16 +296,37 @@ Status : ${data.paymentStatus}`
 
       this.spinner.show();
 
-      setTimeout(() => {
+      this.controlService.deleteBilling(id).subscribe({
 
-        this.billingList =
-          this.billingList.filter(x => x.billingId !== id);
+        next: (res: any) => {
 
-        this.spinner.hide();
+          this.spinner.hide();
 
-        this.alert.success('Billing deleted successfully.');
+          if (res.success) {
 
-      }, 500);
+            this.loadBillings();
+
+            this.alert.success(res.message);
+
+          } else {
+
+            this.alert.warning(res.message);
+
+          }
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error(err);
+
+          this.alert.error(err?.error?.message || 'Unable to delete billing record.');
+
+        }
+
+      });
 
     });
 
@@ -311,9 +344,54 @@ Status : ${data.paymentStatus}`
       return;
     }
 
-    data.paymentStatus = 'Paid';
+    this.spinner.show();
 
-    this.alert.success('Payment marked as Paid.');
+    this.controlService.updateBilling({
+      billingId: data.billingId,
+      billNumber: data.billNumber,
+      organizationId: data.organizationId,
+      planId: data.planId,
+      billingDate: data.billingDate,
+      dueDate: data.dueDate,
+      amount: data.amount,
+      tax: data.tax,
+      discount: data.discount,
+      totalAmount: data.totalAmount,
+      paymentStatus: 'Paid',
+      paymentMethod: data.paymentMethod,
+      billingAddress: data.billingAddress,
+      notes: data.notes
+    }).subscribe({
+
+      next: (res: any) => {
+
+        this.spinner.hide();
+
+        if (res.success) {
+
+          this.loadBillings();
+
+          this.alert.success('Payment marked as Paid.');
+
+        } else {
+
+          this.alert.warning(res.message);
+
+        }
+
+      },
+
+      error: (err) => {
+
+        this.spinner.hide();
+
+        console.error(err);
+
+        this.alert.error(err?.error?.message || 'Unable to update billing record.');
+
+      }
+
+    });
 
   }
 
@@ -323,15 +401,9 @@ Status : ${data.paymentStatus}`
 
   refresh(): void {
 
-    this.spinner.show();
+    this.loadBillings();
 
-    setTimeout(() => {
-
-      this.spinner.hide();
-
-      this.alert.success('Billing data refreshed.');
-
-    }, 500);
+    this.alert.success('Billing data refreshed.');
 
   }
 
@@ -371,7 +443,7 @@ get filteredBilling(): any[] {
       x.planName?.toLowerCase().includes(search);
 
     const matchesStatus =
-      !this.statusFilter ||
+      !this.statusFilter || this.statusFilter === 'All' ||
       x.paymentStatus === this.statusFilter;
 
     const matchesCompany =
@@ -379,11 +451,11 @@ get filteredBilling(): any[] {
       x.companyName === this.companyFilter;
 
     const matchesCycle =
-      !this.cycleFilter ||
+      !this.cycleFilter || this.cycleFilter === 'All' ||
       x.billingCycle === this.cycleFilter;
 
     const matchesMethod =
-      !this.paymentMethodFilter ||
+      !this.paymentMethodFilter || this.paymentMethodFilter === 'All' ||
       x.paymentMethod === this.paymentMethodFilter;
 
     return matchesSearch &&
@@ -501,8 +573,8 @@ saveBilling(): void {
   this.submitted = true;
 
   if (
-    !this.billing.companyName ||
-    !this.billing.planName ||
+    !this.billing.organizationId ||
+    !this.billing.planId ||
     !this.billing.billNumber
   ) {
 
@@ -511,44 +583,62 @@ saveBilling(): void {
 
   }
 
+  const dto = {
+    billingId: this.isEdit ? this.billing.billingId : 0,
+    billNumber: this.billing.billNumber,
+    organizationId: this.billing.organizationId,
+    planId: this.billing.planId,
+    billingDate: this.billing.billingDate,
+    dueDate: this.billing.dueDate,
+    amount: this.billing.amount,
+    tax: this.billing.tax,
+    discount: this.billing.discount,
+    totalAmount: this.billing.totalAmount,
+    paymentStatus: this.billing.paymentStatus,
+    paymentMethod: this.billing.paymentMethod,
+    billingAddress: this.billing.billingAddress,
+    notes: this.billing.notes
+  };
+
   this.spinner.show();
 
-  setTimeout(() => {
+  const request = this.isEdit
+    ? this.controlService.updateBilling(dto)
+    : this.controlService.createBilling(dto);
 
-    if (this.isEdit) {
+  request.subscribe({
 
-      const index = this.billingList.findIndex(
-        x => x.billingId === this.billing.billingId
-      );
+    next: (res: any) => {
 
-      if (index > -1) {
+      this.spinner.hide();
 
-        this.billingList[index] = {
-          ...this.billing
-        };
+      if (res.success) {
+
+        this.loadBillings();
+
+        this.alert.success(res.message);
+
+        this.clear();
+
+      } else {
+
+        this.alert.warning(res.message);
 
       }
 
-      this.alert.success('Billing updated successfully.');
+    },
 
-    }
-    else {
+    error: (err) => {
 
-      this.billing.billingId = new Date().getTime();
+      this.spinner.hide();
 
-      this.billingList.unshift({
-        ...this.billing
-      });
+      console.error(err);
 
-      this.alert.success('Billing added successfully.');
+      this.alert.error(err?.error?.message || 'Unable to save billing record.');
 
     }
 
-    this.spinner.hide();
-
-    this.clear();
-
-  }, 500);
+  });
 
 }
 

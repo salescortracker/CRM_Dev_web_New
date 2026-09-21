@@ -135,14 +135,7 @@
                     <select class="form-select" [(ngModel)]="ticket.category">
 
                         <option value="">Select Category</option>
-                        <option>Technical Issue</option>
-                        <option>Billing</option>
-                        <option>Product Support</option>
-                        <option>Login Issue</option>
-                        <option>Bug Report</option>
-                        <option>Feature Request</option>
-                        <option>Complaint</option>
-                        <option>General Inquiry</option>
+                        <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
 
                     </select>
 
@@ -168,10 +161,7 @@
                     <select class="form-select" [(ngModel)]="ticket.priority">
 
                         <option value="">Select Priority</option>
-                        <option>Low</option>
-                        <option>Medium</option>
-                        <option>High</option>
-                        <option>Critical</option>
+                        <option *ngFor="let p of priorities" [value]="p">{{ p }}</option>
 
                     </select>
 
@@ -197,11 +187,7 @@
                     <select class="form-select" [(ngModel)]="ticket.status">
 
                         <option value="">Select Status</option>
-                        <option>Open</option>
-                        <option>In Progress</option>
-                        <option>Waiting for Customer</option>
-                        <option>Resolved</option>
-                        <option>Closed</option>
+                        <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
 
                     </select>
 
@@ -239,12 +225,7 @@
                     <select class="form-select" [(ngModel)]="ticket.source">
 
                         <option value="">Select Source</option>
-                        <option>Web</option>
-                        <option>Email</option>
-                        <option>Phone</option>
-                        <option>WhatsApp</option>
-                        <option>Live Chat</option>
-                        <option>Mobile App</option>
+                        <option *ngFor="let s of sources" [value]="s">{{ s }}</option>
 
                     </select>
 
@@ -262,12 +243,7 @@
                     <select class="form-select" [(ngModel)]="ticket.relatedModule">
 
                         <option value="">Select Module</option>
-                        <option>Customer</option>
-                        <option>Lead</option>
-                        <option>Deal</option>
-                        <option>Order</option>
-                        <option>Invoice</option>
-                        <option>Product</option>
+                        <option *ngFor="let m of relatedModules" [value]="m">{{ m }}</option>
 
                     </select>
 
@@ -315,23 +291,6 @@
                         [(ngModel)]="ticket.resolutionNotes">
 
                     </textarea>
-
-                </div>
-
-                <!-- Active -->
-                <div class="col-md-2 mb-3 d-flex align-items-end">
-
-                    <div class="form-check">
-
-                        <input id="ticketActive" type="checkbox" class="form-check-input" [(ngModel)]="ticket.isActive">
-
-                        <label for="ticketActive" class="form-check-label ms-2">
-
-                            Active
-
-                        </label>
-
-                    </div>
 
                 </div>
 
@@ -518,7 +477,7 @@
 
                             <td>
 
-                                {{ item.dueDate }}
+                                {{ item.dueDate ? (item.dueDate | date:'dd-MMM-yyyy') : '-' }}
 
                             </td>
 

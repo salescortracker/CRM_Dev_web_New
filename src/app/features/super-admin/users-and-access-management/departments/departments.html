@@ -173,6 +173,14 @@
                     </th>
 
                     <th>
+                        Company
+                    </th>
+
+                    <th>
+                        Region
+                    </th>
+
+                    <th>
                         Status
                     </th>
 
@@ -231,6 +239,16 @@
 
 
                     <td>
+                        {{ item.companyName || 'N/A' }}
+                    </td>
+
+
+                    <td>
+                        {{ item.regionName || 'N/A' }}
+                    </td>
+
+
+                    <td>
 
                         <span
                             class="status"
@@ -277,7 +295,7 @@
                     *ngIf="filteredDepartments.length === 0">
 
                     <td
-                        colspan="4"
+                        colspan="6"
                         style="text-align:center; padding:30px;">
 
                         No departments found.
@@ -367,6 +385,64 @@
                         type="text"
                         placeholder="Example: IT001"
                         [(ngModel)]="model.departmentCode">
+
+                </div>
+
+
+                <!-- Company -->
+
+                <div>
+
+                    <label>
+                        Company
+                    </label>
+
+                    <select
+                        [(ngModel)]="model.companyId"
+                        (ngModelChange)="onCompanyChange()">
+
+                        <option [ngValue]="null">
+                            Select Company
+                        </option>
+
+                        <option
+                            *ngFor="let company of companies"
+                            [ngValue]="company.companyId">
+
+                            {{ company.companyName }}
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Region (depends on Company) -->
+
+                <div>
+
+                    <label>
+                        Region
+                    </label>
+
+                    <select
+                        [(ngModel)]="model.regionId"
+                        [disabled]="!model.companyId">
+
+                        <option [ngValue]="null">
+                            Select Region
+                        </option>
+
+                        <option
+                            *ngFor="let region of companyRegions"
+                            [ngValue]="region.regionId">
+
+                            {{ region.regionName }}
+
+                        </option>
+
+                    </select>
 
                 </div>
 

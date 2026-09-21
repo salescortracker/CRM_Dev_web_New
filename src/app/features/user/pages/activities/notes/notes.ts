@@ -1,321 +1,48 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../../../../../environments/environment';
+import { ApiResponse } from '../../../../../core/authentication/services/auth.service';
 import { Pagination } from '../../../../../shared/pagination/pagination';
 import { Alertservice } from '../../../../../core/services/alertservice';
 import { Spinnerservice } from '../../../../../core/services/spinnerservice';
+import { nullIfEmpty } from '../activities.util';
 
 @Component({
   selector: 'app-notes',
   standalone: true,
-  imports: [CommonModule,FormsModule,Pagination],
+  imports: [CommonModule, FormsModule, Pagination],
   templateUrl: './notes.html',
   styleUrl: './notes.css',
 })
-export class Notes {
-   submitted = false;
+export class Notes implements OnInit {
+
+  private baseUrl = environment.apiUrl;
+
+  submitted = false;
   isEdit = false;
 
   page = 1;
   pageSize = 5;
-  totalRecords = 0;
   searchText = '';
 
   notes: any[] = [];
 
-  note: any = {
-
-    noteId: 0,
-    noteTitle: '',
-    category: '',
-    relatedTo: '',
-    customer: '',
-    contactPerson: '',
-    assignedTo: '',
-    priority: '',
-    createdDate: '',
-    reminderDate: '',
-    status: '',
-    description: '',
-    isActive: true
-
-  };
+  note: any = this.getEmptyModel();
 
   constructor(
-
+    private http: HttpClient,
     private alert: Alertservice,
     private spinner: Spinnerservice,
     private cd: ChangeDetectorRef
-
   ) { }
 
-  ngOnInit(): void {
-
-    this.loadNotes();
-
-  }
-
-  loadNotes() {
-
-    this.spinner.show();
-
-    setTimeout(() => {
-
-      this.notes = [
-
-        {
-          noteId: 1,
-          noteTitle: 'CRM Requirement Discussion',
-          category: 'Meeting Notes',
-          relatedTo: 'Opportunity',
-          customer: 'ABC Technologies',
-          contactPerson: 'Rahul Sharma',
-          assignedTo: 'Sales Executive',
-          priority: 'High',
-          createdDate: '2026-07-30',
-          reminderDate: '2026-08-02',
-          status: 'Open',
-          description: 'Customer discussed CRM workflow requirements.',
-          isActive: true
-        },
-
-        {
-          noteId: 2,
-          noteTitle: 'Quotation Follow-up',
-          category: 'Follow-up Notes',
-          relatedTo: 'Quotation',
-          customer: 'XYZ Solutions',
-          contactPerson: 'Priya Reddy',
-          assignedTo: 'Business Executive',
-          priority: 'Medium',
-          createdDate: '2026-07-31',
-          reminderDate: '2026-08-03',
-          status: 'Completed',
-          description: 'Quotation approved by customer.',
-          isActive: true
-        },
-
-        {
-          noteId: 3,
-          noteTitle: 'Demo Feedback',
-          category: 'Sales Notes',
-          relatedTo: 'Lead',
-          customer: 'Future Vision',
-          contactPerson: 'Arjun Kumar',
-          assignedTo: 'Sales Manager',
-          priority: 'High',
-          createdDate: '2026-08-01',
-          reminderDate: '2026-08-05',
-          status: 'In Progress',
-          description: 'Customer requested additional demo session.',
-          isActive: true
-        },
-
-        {
-          noteId: 4,
-          noteTitle: 'Support Resolution',
-          category: 'Support Notes',
-          relatedTo: 'Account',
-          customer: 'Global InfoTech',
-          contactPerson: 'Sneha Patel',
-          assignedTo: 'Support Engineer',
-          priority: 'Low',
-          createdDate: '2026-08-02',
-          reminderDate: '',
-          status: 'Completed',
-          description: 'Support ticket resolved successfully.',
-          isActive: true
-        },
-
-        {
-          noteId: 5,
-          noteTitle: 'Renewal Reminder',
-          category: 'Customer Notes',
-          relatedTo: 'Order',
-          customer: 'NextGen Pvt Ltd',
-          contactPerson: 'Kiran Verma',
-          assignedTo: 'Account Manager',
-          priority: 'Medium',
-          createdDate: '2026-08-03',
-          reminderDate: '2026-08-10',
-          status: 'Open',
-          description: 'Follow-up before contract renewal.',
-          isActive: true
-        }
-
-      ];
-
-      this.notes.sort((a, b) => b.noteId - a.noteId);
-
-      this.totalRecords = this.notes.length;
-
-      this.spinner.hide();
-
-      this.cd.detectChanges();
-
-    }, 500);
-
-  }
-
-  saveNote() {
-
-    this.submitted = true;
-
-    if (
-
-      !this.note.noteTitle ||
-      !this.note.category ||
-      !this.note.assignedTo ||
-      !this.note.createdDate ||
-      !this.note.status
-
-    ) {
-
-      return;
-
-    }
-
-    this.spinner.show();
-
-    setTimeout(() => {
-
-      if (!this.isEdit) {
-
-        const newNote = {
-
-          ...this.note,
-
-          noteId: this.notes.length
-            ? Math.max(...this.notes.map(x => x.noteId)) + 1
-            : 1
-
-        };
-
-        this.notes.unshift(newNote);
-
-      }
-
-      else {
-
-        const index = this.notes.findIndex(
-
-          x => x.noteId === this.note.noteId
-
-        );
-
-        if (index !== -1) {
-
-          this.notes[index] = {
-
-            ...this.note
-
-          };
-
-        }
-
-      }
-
-      // Refresh table immediately
-
-      this.notes = [...this.notes];
-
-      this.totalRecords = this.notes.length;
-
-      this.page = 1;
-
-      const message = this.isEdit
-        ? 'Note updated successfully.'
-        : 'Note created successfully.';
-
-      this.clear();
-
-      this.spinner.hide();
-
-      this.cd.detectChanges();
-
-      this.alert.success(message);
-
-    }, 500);
-
-  }
-    edit(id: number) {
-
-    this.spinner.show();
-
-    setTimeout(() => {
-
-      const selected = this.notes.find(
-        x => x.noteId === id
-      );
-
-      if (selected) {
-
-        this.note = {
-          ...selected
-        };
-
-        this.isEdit = true;
-
-        this.submitted = false;
-
-        this.cd.detectChanges();
-
-      }
-
-      this.spinner.hide();
-
-    }, 300);
-
-  }
-
-  delete(id: number) {
-
-    this.alert.deleteConfirm().then(result => {
-
-      if (result.isConfirmed) {
-
-        this.spinner.show();
-
-        setTimeout(() => {
-
-          this.notes = this.notes.filter(
-            x => x.noteId !== id
-          );
-
-          this.totalRecords = this.notes.length;
-
-          if (
-            this.page > 1 &&
-            this.pagedNotes.length === 0
-          ) {
-
-            this.page--;
-
-          }
-
-          // Refresh table immediately
-
-          this.notes = [...this.notes];
-
-          this.spinner.hide();
-
-          this.cd.detectChanges();
-
-          this.alert.success(
-            'Note deleted successfully.'
-          );
-
-        }, 500);
-
-      }
-
-    });
-
-  }
-
-  clear() {
-
-    this.note = {
+  // "noteDate" is the user-entered date shown as "Created Date" on the form;
+  // it is separate from the audit CreatedDate stamped by the API.
+  getEmptyModel() {
+
+    return {
 
       noteId: 0,
       noteTitle: '',
@@ -325,13 +52,290 @@ export class Notes {
       contactPerson: '',
       assignedTo: '',
       priority: '',
-      createdDate: '',
+      noteDate: '',
       reminderDate: '',
       status: '',
       description: '',
       isActive: true
 
     };
+
+  }
+
+  ngOnInit(): void {
+
+    this.loadNotes();
+
+  }
+
+  //====================================================
+  // Load
+  //====================================================
+
+  loadNotes(): void {
+
+    this.spinner.show();
+
+    this.http
+      .get<ApiResponse<any[]>>(`${this.baseUrl}/Admin/getallactivitynotes`)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.spinner.hide();
+
+          if (res?.success) {
+
+            this.notes = res.data || [];
+
+          } else {
+
+            this.notes = [];
+
+            this.alert.warning(res?.message || 'No Notes found.');
+
+          }
+
+          this.cd.detectChanges();
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Load notes error:', err);
+
+          this.notes = [];
+
+          this.alert.error(err?.error?.message || 'Failed to load Notes.');
+
+          this.cd.detectChanges();
+
+        }
+
+      });
+
+  }
+
+  //====================================================
+  // Save (Create / Update)
+  //====================================================
+
+  saveNote(): void {
+
+    this.submitted = true;
+
+    if (
+      !this.note.noteTitle?.trim() ||
+      !this.note.category ||
+      !this.note.assignedTo?.trim() ||
+      !this.note.noteDate ||
+      !this.note.status
+    ) {
+      return;
+    }
+
+    const payload = {
+
+      noteId: this.note.noteId,
+      noteTitle: this.note.noteTitle.trim(),
+      category: this.note.category,
+      relatedTo: nullIfEmpty(this.note.relatedTo),
+      customer: nullIfEmpty(this.note.customer),
+      contactPerson: nullIfEmpty(this.note.contactPerson),
+      assignedTo: this.note.assignedTo.trim(),
+      priority: nullIfEmpty(this.note.priority),
+      noteDate: this.note.noteDate,
+      reminderDate: this.note.reminderDate || null,
+      status: this.note.status,
+      description: nullIfEmpty(this.note.description),
+      isActive: !!this.note.isActive
+
+    };
+
+    const url = this.isEdit
+      ? `${this.baseUrl}/Admin/updateactivitynote`
+      : `${this.baseUrl}/Admin/createactivitynote`;
+
+    const failMessage = this.isEdit
+      ? 'Failed to update Note.'
+      : 'Failed to create Note.';
+
+    this.spinner.show();
+
+    this.http
+      .post<ApiResponse>(url, payload)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.spinner.hide();
+
+          if (res?.success) {
+
+            this.alert.success(res.message);
+
+            this.clear();
+
+            this.page = 1;
+
+            this.loadNotes();
+
+          } else {
+
+            this.alert.warning(res?.message || failMessage);
+
+          }
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Save note error:', err);
+
+          this.alert.error(err?.error?.message || failMessage);
+
+        }
+
+      });
+
+  }
+
+  //====================================================
+  // Edit
+  //====================================================
+
+  edit(id: number): void {
+
+    this.spinner.show();
+
+    this.http
+      .get<ApiResponse<any>>(`${this.baseUrl}/Admin/getbyactivitynote/${id}`)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.spinner.hide();
+
+          if (res?.success && res.data) {
+
+            const data = res.data;
+
+            this.note = {
+
+              noteId: data.noteId,
+              noteTitle: data.noteTitle || '',
+              category: data.category || '',
+              relatedTo: data.relatedTo || '',
+              customer: data.customer || '',
+              contactPerson: data.contactPerson || '',
+              assignedTo: data.assignedTo || '',
+              priority: data.priority || '',
+              noteDate: data.noteDate || '',
+              reminderDate: data.reminderDate || '',
+              status: data.status || '',
+              description: data.description || '',
+              isActive: !!data.isActive
+
+            };
+
+            this.isEdit = true;
+
+            this.submitted = false;
+
+            this.cd.detectChanges();
+
+          } else {
+
+            this.alert.warning(res?.message || 'Note not found.');
+
+          }
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Get note error:', err);
+
+          this.alert.error(err?.error?.message || 'Failed to load Note.');
+
+        }
+
+      });
+
+  }
+
+  //====================================================
+  // Delete
+  //====================================================
+
+  delete(id: number): void {
+
+    this.alert.deleteConfirm().then(result => {
+
+      if (!result.isConfirmed) return;
+
+      this.spinner.show();
+
+      this.http
+        .post<ApiResponse>(`${this.baseUrl}/Admin/deleteactivitynote/${id}`, {})
+        .subscribe({
+
+          next: (res: any) => {
+
+            this.spinner.hide();
+
+            if (res?.success) {
+
+              this.alert.success(res.message);
+
+              // Editing the record that was just deleted - reset the form
+              if (this.note.noteId === id) {
+                this.clear();
+              }
+
+              if (this.page > 1 && this.pagedNotes.length === 1) {
+                this.page = this.page - 1;
+              }
+
+              this.loadNotes();
+
+            } else {
+
+              this.alert.warning(res?.message || 'Failed to delete Note.');
+
+            }
+
+          },
+
+          error: (err) => {
+
+            this.spinner.hide();
+
+            console.error('Delete note error:', err);
+
+            this.alert.error(err?.error?.message || 'Failed to delete Note.');
+
+          }
+
+        });
+
+    });
+
+  }
+
+  //====================================================
+  // Clear
+  //====================================================
+
+  clear(): void {
+
+    this.note = this.getEmptyModel();
 
     this.isEdit = false;
 
@@ -341,49 +345,29 @@ export class Notes {
 
   }
 
+  //====================================================
+  // Search / Pagination
+  //====================================================
+
   get filteredNotes() {
+
+    const search = this.searchText.toLowerCase();
 
     return this.notes.filter(x =>
 
-      x.noteTitle
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
+      (x.noteTitle || '').toLowerCase().includes(search) ||
 
-      ||
+      (x.customer || '').toLowerCase().includes(search) ||
 
-      x.customer
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
+      (x.contactPerson || '').toLowerCase().includes(search) ||
 
-      ||
+      (x.assignedTo || '').toLowerCase().includes(search) ||
 
-      x.contactPerson
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
+      (x.category || '').toLowerCase().includes(search) ||
 
-      ||
+      (x.priority || '').toLowerCase().includes(search) ||
 
-      x.assignedTo
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
-
-      ||
-
-      x.category
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
-
-      ||
-
-      x.priority
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
-
-      ||
-
-      x.status
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
+      (x.status || '').toLowerCase().includes(search)
 
     );
 
@@ -393,13 +377,7 @@ export class Notes {
 
     const start = (this.page - 1) * this.pageSize;
 
-    return this.filteredNotes.slice(
-
-      start,
-
-      start + this.pageSize
-
-    );
+    return this.filteredNotes.slice(start, start + this.pageSize);
 
   }
 
@@ -416,6 +394,5 @@ export class Notes {
     this.page = 1;
 
   }
-
 
 }

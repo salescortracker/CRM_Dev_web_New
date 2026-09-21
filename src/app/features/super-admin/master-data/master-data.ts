@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { MasterDataService } from './master-data.service';
 import { AuthService } from '../../../core/authentication/services/auth.service';
+import { Alertservice } from '../../../core/services/alertservice';
 
 interface MasterType {
   name: string;
@@ -32,6 +33,7 @@ export class MasterData implements  OnInit {
   constructor(
     private authService: AuthService,
     private masterDataService: MasterDataService,
+    private alert: Alertservice,
     private cd: ChangeDetectorRef
   ) { }
 
@@ -344,13 +346,15 @@ export class MasterData implements  OnInit {
 
         this.closeForm();
 
+        this.alert.success('Country saved successfully.');
+
       },
 
       error: (err) => {
 
         console.error('Error saving country:', err);
 
-        window.alert('Failed to save country.');
+        this.alert.error('Failed to save country.');
 
       }
 
@@ -442,13 +446,15 @@ export class MasterData implements  OnInit {
 
         this.closeForm();
 
+        this.alert.success('State saved successfully.');
+
       },
 
       error: (err) => {
 
         console.error('Error saving state:', err);
 
-        window.alert('Failed to save state.');
+        this.alert.error('Failed to save state.');
 
       }
 
@@ -528,13 +534,15 @@ export class MasterData implements  OnInit {
 
         this.closeForm();
 
+        this.alert.success('Industry saved successfully.');
+
       },
 
       error: (err) => {
 
         console.error('Error saving industry:', err);
 
-        window.alert('Failed to save industry.');
+        this.alert.error('Failed to save industry.');
 
       }
 
@@ -614,13 +622,15 @@ export class MasterData implements  OnInit {
 
         this.closeForm();
 
+        this.alert.success('Currency saved successfully.');
+
       },
 
       error: (err) => {
 
         console.error('Error saving currency:', err);
 
-        window.alert('Failed to save currency.');
+        this.alert.error('Failed to save currency.');
 
       }
 
@@ -700,13 +710,15 @@ export class MasterData implements  OnInit {
 
         this.closeForm();
 
+        this.alert.success('Priority saved successfully.');
+
       },
 
       error: (err) => {
 
         console.error('Error saving priority:', err);
 
-        window.alert('Failed to save priority.');
+        this.alert.error('Failed to save priority.');
 
       }
 
@@ -786,13 +798,15 @@ export class MasterData implements  OnInit {
 
         this.closeForm();
 
+        this.alert.success('Lead Status saved successfully.');
+
       },
 
       error: (err) => {
 
         console.error('Error saving lead status:', err);
 
-        window.alert('Failed to save lead status.');
+        this.alert.error('Failed to save lead status.');
 
       }
 
@@ -872,13 +886,15 @@ export class MasterData implements  OnInit {
 
         this.closeForm();
 
+        this.alert.success('Lead Source saved successfully.');
+
       },
 
       error: (err) => {
 
         console.error('Error saving lead source:', err);
 
-        window.alert('Failed to save lead source.');
+        this.alert.error('Failed to save lead source.');
 
       }
 
@@ -958,13 +974,15 @@ export class MasterData implements  OnInit {
 
         this.closeForm();
 
+        this.alert.success('Billing Cycle saved successfully.');
+
       },
 
       error: (err) => {
 
         console.error('Error saving billing cycle:', err);
 
-        window.alert('Failed to save billing cycle.');
+        this.alert.error('Failed to save billing cycle.');
 
       }
 
@@ -1044,13 +1062,15 @@ export class MasterData implements  OnInit {
 
         this.closeForm();
 
+        this.alert.success('Contact Type saved successfully.');
+
       },
 
       error: (err) => {
 
         console.error('Error saving contact type:', err);
 
-        window.alert('Failed to save contact type.');
+        this.alert.error('Failed to save contact type.');
 
       }
 
@@ -1130,13 +1150,15 @@ export class MasterData implements  OnInit {
 
         this.closeForm();
 
+        this.alert.success('Relationship saved successfully.');
+
       },
 
       error: (err) => {
 
         console.error('Error saving relationship:', err);
 
-        window.alert('Failed to save relationship.');
+        this.alert.error('Failed to save relationship.');
 
       }
 
@@ -1216,13 +1238,15 @@ export class MasterData implements  OnInit {
 
         this.closeForm();
 
+        this.alert.success('Company Type saved successfully.');
+
       },
 
       error: (err) => {
 
         console.error('Error saving company type:', err);
 
-        window.alert('Failed to save company type.');
+        this.alert.error('Failed to save company type.');
 
       }
 
@@ -1302,13 +1326,15 @@ export class MasterData implements  OnInit {
 
         this.closeForm();
 
+        this.alert.success('Lead Type saved successfully.');
+
       },
 
       error: (err) => {
 
         console.error('Error saving lead type:', err);
 
-        window.alert('Failed to save lead type.');
+        this.alert.error('Failed to save lead type.');
 
       }
 
@@ -1388,13 +1414,15 @@ export class MasterData implements  OnInit {
 
         this.closeForm();
 
+        this.alert.success('License saved successfully.');
+
       },
 
       error: (err) => {
 
         console.error('Error saving license:', err);
 
-        window.alert('Failed to save license.');
+        this.alert.error('Failed to save license.');
 
       }
 
@@ -1474,13 +1502,15 @@ export class MasterData implements  OnInit {
 
         this.closeForm();
 
+        this.alert.success('Payment Method saved successfully.');
+
       },
 
       error: (err) => {
 
         console.error('Error saving payment method:', err);
 
-        window.alert('Failed to save payment method.');
+        this.alert.error('Failed to save payment method.');
 
       }
 
@@ -1560,13 +1590,15 @@ export class MasterData implements  OnInit {
 
         this.closeForm();
 
+        this.alert.success('Discount Type saved successfully.');
+
       },
 
       error: (err) => {
 
         console.error('Error saving discount type:', err);
 
-        window.alert('Failed to save discount type.');
+        this.alert.error('Failed to save discount type.');
 
       }
 
@@ -1646,13 +1678,15 @@ export class MasterData implements  OnInit {
 
         this.closeForm();
 
+        this.alert.success('Meeting Purpose saved successfully.');
+
       },
 
       error: (err) => {
 
         console.error('Error saving meeting purpose:', err);
 
-        window.alert('Failed to save meeting purpose.');
+        this.alert.error('Failed to save meeting purpose.');
 
       }
 
@@ -1732,13 +1766,15 @@ export class MasterData implements  OnInit {
 
         this.closeForm();
 
+        this.alert.success('Call Purpose saved successfully.');
+
       },
 
       error: (err) => {
 
         console.error('Error saving call purpose:', err);
 
-        window.alert('Failed to save call purpose.');
+        this.alert.error('Failed to save call purpose.');
 
       }
 
@@ -1818,13 +1854,15 @@ export class MasterData implements  OnInit {
 
         this.closeForm();
 
+        this.alert.success('Call Outcome saved successfully.');
+
       },
 
       error: (err) => {
 
         console.error('Error saving call outcome:', err);
 
-        window.alert('Failed to save call outcome.');
+        this.alert.error('Failed to save call outcome.');
 
       }
 
@@ -2279,453 +2317,489 @@ export class MasterData implements  OnInit {
 
   deleteItem(item: MasterDataItem): void {
 
-    const confirmed = window.confirm(
-      `Are you sure you want to delete ${item.name}?`
-    );
+    this.alert.deleteConfirm().then((result) => {
 
-    if (!confirmed) {
-      return;
-    }
+      if (!result.isConfirmed) {
+        return;
+      }
 
-    if (this.selectedMasterType === 'Country') {
+      if (this.selectedMasterType === 'Country') {
 
-      this.masterDataService.delete('countries', item.id).subscribe({
+        this.masterDataService.delete('countries', item.id).subscribe({
 
-        next: () => {
+          next: () => {
 
-          this.loadCountries();
+            this.loadCountries();
 
-        },
+            this.alert.success('Country deleted successfully.');
 
-        error: (err) => {
+          },
 
-          console.error('Error deleting country:', err);
+          error: (err) => {
 
-          window.alert('Failed to delete country.');
+            console.error('Error deleting country:', err);
 
-        }
+            this.alert.error('Failed to delete country.');
 
-      });
+          }
 
-      return;
+        });
 
-    }
+        return;
 
-    if (this.selectedMasterType === 'State') {
+      }
 
-      this.masterDataService.delete('states', item.id).subscribe({
+      if (this.selectedMasterType === 'State') {
 
-        next: () => {
+        this.masterDataService.delete('states', item.id).subscribe({
 
-          this.loadStates();
+          next: () => {
 
-        },
+            this.loadStates();
 
-        error: (err) => {
+            this.alert.success('State deleted successfully.');
 
-          console.error('Error deleting state:', err);
+          },
 
-          window.alert('Failed to delete state.');
+          error: (err) => {
 
-        }
+            console.error('Error deleting state:', err);
 
-      });
+            this.alert.error('Failed to delete state.');
 
-      return;
+          }
 
-    }
+        });
 
-    if (this.selectedMasterType === 'Industry') {
+        return;
 
-      this.masterDataService.delete('industries', item.id).subscribe({
+      }
 
-        next: () => {
+      if (this.selectedMasterType === 'Industry') {
 
-          this.loadIndustries();
+        this.masterDataService.delete('industries', item.id).subscribe({
 
-        },
+          next: () => {
 
-        error: (err) => {
+            this.loadIndustries();
 
-          console.error('Error deleting industry:', err);
+            this.alert.success('Industry deleted successfully.');
 
-          window.alert('Failed to delete industry.');
+          },
 
-        }
+          error: (err) => {
 
-      });
+            console.error('Error deleting industry:', err);
 
-      return;
+            this.alert.error('Failed to delete industry.');
 
-    }
+          }
 
-    if (this.selectedMasterType === 'Currency') {
+        });
 
-      this.masterDataService.delete('currencies', item.id).subscribe({
+        return;
 
-        next: () => {
+      }
 
-          this.loadCurrencies();
+      if (this.selectedMasterType === 'Currency') {
 
-        },
+        this.masterDataService.delete('currencies', item.id).subscribe({
 
-        error: (err) => {
+          next: () => {
 
-          console.error('Error deleting currency:', err);
+            this.loadCurrencies();
 
-          window.alert('Failed to delete currency.');
+            this.alert.success('Currency deleted successfully.');
 
-        }
+          },
 
-      });
+          error: (err) => {
 
-      return;
+            console.error('Error deleting currency:', err);
 
-    }
+            this.alert.error('Failed to delete currency.');
 
-    if (this.selectedMasterType === 'Priority') {
+          }
 
-      this.masterDataService.delete('priorities', item.id).subscribe({
+        });
 
-        next: () => {
+        return;
 
-          this.loadPriorities();
+      }
 
-        },
+      if (this.selectedMasterType === 'Priority') {
 
-        error: (err) => {
+        this.masterDataService.delete('priorities', item.id).subscribe({
 
-          console.error('Error deleting priority:', err);
+          next: () => {
 
-          window.alert('Failed to delete priority.');
+            this.loadPriorities();
 
-        }
+            this.alert.success('Priority deleted successfully.');
 
-      });
+          },
 
-      return;
+          error: (err) => {
 
-    }
+            console.error('Error deleting priority:', err);
 
-    if (this.selectedMasterType === 'Lead Status') {
+            this.alert.error('Failed to delete priority.');
 
-      this.masterDataService.delete('leadStatuses', item.id).subscribe({
+          }
 
-        next: () => {
+        });
 
-          this.loadLeadStatuses();
+        return;
 
-        },
+      }
 
-        error: (err) => {
+      if (this.selectedMasterType === 'Lead Status') {
 
-          console.error('Error deleting lead status:', err);
+        this.masterDataService.delete('leadStatuses', item.id).subscribe({
 
-          window.alert('Failed to delete lead status.');
+          next: () => {
 
-        }
+            this.loadLeadStatuses();
 
-      });
+            this.alert.success('Lead Status deleted successfully.');
 
-      return;
+          },
 
-    }
+          error: (err) => {
 
-    if (this.selectedMasterType === 'Lead Source') {
+            console.error('Error deleting lead status:', err);
 
-      this.masterDataService.delete('leadSources', item.id).subscribe({
+            this.alert.error('Failed to delete lead status.');
 
-        next: () => {
+          }
 
-          this.loadLeadSources();
+        });
 
-        },
+        return;
 
-        error: (err) => {
+      }
 
-          console.error('Error deleting lead source:', err);
+      if (this.selectedMasterType === 'Lead Source') {
 
-          window.alert('Failed to delete lead source.');
+        this.masterDataService.delete('leadSources', item.id).subscribe({
 
-        }
+          next: () => {
 
-      });
+            this.loadLeadSources();
 
-      return;
+            this.alert.success('Lead Source deleted successfully.');
 
-    }
+          },
 
-    if (this.selectedMasterType === 'Billing Cycle') {
+          error: (err) => {
 
-      this.masterDataService.delete('billingCycles', item.id).subscribe({
+            console.error('Error deleting lead source:', err);
 
-        next: () => {
+            this.alert.error('Failed to delete lead source.');
 
-          this.loadBillingCycles();
+          }
 
-        },
+        });
 
-        error: (err) => {
+        return;
 
-          console.error('Error deleting billing cycle:', err);
+      }
 
-          window.alert('Failed to delete billing cycle.');
+      if (this.selectedMasterType === 'Billing Cycle') {
 
-        }
+        this.masterDataService.delete('billingCycles', item.id).subscribe({
 
-      });
+          next: () => {
 
-      return;
+            this.loadBillingCycles();
 
-    }
+            this.alert.success('Billing Cycle deleted successfully.');
 
-    if (this.selectedMasterType === 'Contact Type') {
+          },
 
-      this.masterDataService.delete('contactTypes', item.id).subscribe({
+          error: (err) => {
 
-        next: () => {
+            console.error('Error deleting billing cycle:', err);
 
-          this.loadContactTypes();
+            this.alert.error('Failed to delete billing cycle.');
 
-        },
+          }
 
-        error: (err) => {
+        });
 
-          console.error('Error deleting contact type:', err);
+        return;
 
-          window.alert('Failed to delete contact type.');
+      }
 
-        }
+      if (this.selectedMasterType === 'Contact Type') {
 
-      });
+        this.masterDataService.delete('contactTypes', item.id).subscribe({
 
-      return;
+          next: () => {
 
-    }
+            this.loadContactTypes();
 
-    if (this.selectedMasterType === 'Relationship') {
+            this.alert.success('Contact Type deleted successfully.');
 
-      this.masterDataService.delete('relationships', item.id).subscribe({
+          },
 
-        next: () => {
+          error: (err) => {
 
-          this.loadRelationships();
+            console.error('Error deleting contact type:', err);
 
-        },
+            this.alert.error('Failed to delete contact type.');
 
-        error: (err) => {
+          }
 
-          console.error('Error deleting relationship:', err);
+        });
 
-          window.alert('Failed to delete relationship.');
+        return;
 
-        }
+      }
 
-      });
+      if (this.selectedMasterType === 'Relationship') {
 
-      return;
+        this.masterDataService.delete('relationships', item.id).subscribe({
 
-    }
+          next: () => {
 
-    if (this.selectedMasterType === 'Company Type') {
+            this.loadRelationships();
 
-      this.masterDataService.delete('companyTypes', item.id).subscribe({
+            this.alert.success('Relationship deleted successfully.');
 
-        next: () => {
+          },
 
-          this.loadCompanyTypes();
+          error: (err) => {
 
-        },
+            console.error('Error deleting relationship:', err);
 
-        error: (err) => {
+            this.alert.error('Failed to delete relationship.');
 
-          console.error('Error deleting company type:', err);
+          }
 
-          window.alert('Failed to delete company type.');
+        });
 
-        }
+        return;
 
-      });
+      }
 
-      return;
+      if (this.selectedMasterType === 'Company Type') {
 
-    }
+        this.masterDataService.delete('companyTypes', item.id).subscribe({
 
-    if (this.selectedMasterType === 'Lead Type') {
+          next: () => {
 
-      this.masterDataService.delete('leadTypes', item.id).subscribe({
+            this.loadCompanyTypes();
 
-        next: () => {
+            this.alert.success('Company Type deleted successfully.');
 
-          this.loadLeadTypes();
+          },
 
-        },
+          error: (err) => {
 
-        error: (err) => {
+            console.error('Error deleting company type:', err);
 
-          console.error('Error deleting lead type:', err);
+            this.alert.error('Failed to delete company type.');
 
-          window.alert('Failed to delete lead type.');
+          }
 
-        }
+        });
 
-      });
+        return;
 
-      return;
+      }
 
-    }
+      if (this.selectedMasterType === 'Lead Type') {
 
-    if (this.selectedMasterType === 'License') {
+        this.masterDataService.delete('leadTypes', item.id).subscribe({
 
-      this.masterDataService.delete('licenses', item.id).subscribe({
+          next: () => {
 
-        next: () => {
+            this.loadLeadTypes();
 
-          this.loadLicenses();
+            this.alert.success('Lead Type deleted successfully.');
 
-        },
+          },
 
-        error: (err) => {
+          error: (err) => {
 
-          console.error('Error deleting license:', err);
+            console.error('Error deleting lead type:', err);
 
-          window.alert('Failed to delete license.');
+            this.alert.error('Failed to delete lead type.');
 
-        }
+          }
 
-      });
+        });
 
-      return;
+        return;
 
-    }
+      }
 
-    if (this.selectedMasterType === 'Payment Method') {
+      if (this.selectedMasterType === 'License') {
 
-      this.masterDataService.delete('paymentMethods', item.id).subscribe({
+        this.masterDataService.delete('licenses', item.id).subscribe({
 
-        next: () => {
+          next: () => {
 
-          this.loadPaymentMethods();
+            this.loadLicenses();
 
-        },
+            this.alert.success('License deleted successfully.');
 
-        error: (err) => {
+          },
 
-          console.error('Error deleting payment method:', err);
+          error: (err) => {
 
-          window.alert('Failed to delete payment method.');
+            console.error('Error deleting license:', err);
 
-        }
+            this.alert.error('Failed to delete license.');
 
-      });
+          }
 
-      return;
+        });
 
-    }
+        return;
 
-    if (this.selectedMasterType === 'Discount Type') {
+      }
 
-      this.masterDataService.delete('discountTypes', item.id).subscribe({
+      if (this.selectedMasterType === 'Payment Method') {
 
-        next: () => {
+        this.masterDataService.delete('paymentMethods', item.id).subscribe({
 
-          this.loadDiscountTypes();
+          next: () => {
 
-        },
+            this.loadPaymentMethods();
 
-        error: (err) => {
+            this.alert.success('Payment Method deleted successfully.');
 
-          console.error('Error deleting discount type:', err);
+          },
 
-          window.alert('Failed to delete discount type.');
+          error: (err) => {
 
-        }
+            console.error('Error deleting payment method:', err);
 
-      });
+            this.alert.error('Failed to delete payment method.');
 
-      return;
+          }
 
-    }
+        });
 
-    if (this.selectedMasterType === 'Meeting Purpose') {
+        return;
 
-      this.masterDataService.delete('meetingPurposes', item.id).subscribe({
+      }
 
-        next: () => {
+      if (this.selectedMasterType === 'Discount Type') {
 
-          this.loadMeetingPurposes();
+        this.masterDataService.delete('discountTypes', item.id).subscribe({
 
-        },
+          next: () => {
 
-        error: (err) => {
+            this.loadDiscountTypes();
 
-          console.error('Error deleting meeting purpose:', err);
+            this.alert.success('Discount Type deleted successfully.');
 
-          window.alert('Failed to delete meeting purpose.');
+          },
 
-        }
+          error: (err) => {
 
-      });
+            console.error('Error deleting discount type:', err);
 
-      return;
+            this.alert.error('Failed to delete discount type.');
 
-    }
+          }
 
-    if (this.selectedMasterType === 'Call Purpose') {
+        });
 
-      this.masterDataService.delete('callPurposes', item.id).subscribe({
+        return;
 
-        next: () => {
+      }
 
-          this.loadCallPurposes();
+      if (this.selectedMasterType === 'Meeting Purpose') {
 
-        },
+        this.masterDataService.delete('meetingPurposes', item.id).subscribe({
 
-        error: (err) => {
+          next: () => {
 
-          console.error('Error deleting call purpose:', err);
+            this.loadMeetingPurposes();
 
-          window.alert('Failed to delete call purpose.');
+            this.alert.success('Meeting Purpose deleted successfully.');
 
-        }
+          },
 
-      });
+          error: (err) => {
 
-      return;
+            console.error('Error deleting meeting purpose:', err);
 
-    }
+            this.alert.error('Failed to delete meeting purpose.');
 
-    if (this.selectedMasterType === 'Call Outcome') {
+          }
 
-      this.masterDataService.delete('callOutcomes', item.id).subscribe({
+        });
 
-        next: () => {
+        return;
 
-          this.loadCallOutcomes();
+      }
 
-        },
+      if (this.selectedMasterType === 'Call Purpose') {
 
-        error: (err) => {
+        this.masterDataService.delete('callPurposes', item.id).subscribe({
 
-          console.error('Error deleting call outcome:', err);
+          next: () => {
 
-          window.alert('Failed to delete call outcome.');
+            this.loadCallPurposes();
 
-        }
+            this.alert.success('Call Purpose deleted successfully.');
 
-      });
+          },
 
-      return;
+          error: (err) => {
 
-    }
+            console.error('Error deleting call purpose:', err);
 
-    this.masterData = this.masterData.filter(
-      x => x.id !== item.id
-    );
+            this.alert.error('Failed to delete call purpose.');
 
-    this.allMasterData[this.selectedMasterType] = this.masterData;
+          }
 
-    this.filterData();
+        });
+
+        return;
+
+      }
+
+      if (this.selectedMasterType === 'Call Outcome') {
+
+        this.masterDataService.delete('callOutcomes', item.id).subscribe({
+
+          next: () => {
+
+            this.loadCallOutcomes();
+
+            this.alert.success('Call Outcome deleted successfully.');
+
+          },
+
+          error: (err) => {
+
+            console.error('Error deleting call outcome:', err);
+
+            this.alert.error('Failed to delete call outcome.');
+
+          }
+
+        });
+
+        return;
+
+      }
+
+      this.masterData = this.masterData.filter(
+        x => x.id !== item.id
+      );
+
+      this.allMasterData[this.selectedMasterType] = this.masterData;
+
+      this.filterData();
+
+    });
 
   }
 
@@ -2736,19 +2810,19 @@ export class MasterData implements  OnInit {
 
   saveItem(): void {
 
-    if (!this.formData.code.trim()) {
+    // if (!this.formData.code.trim()) {
 
-      window.alert(
-        `${this.selectedMasterType} code is required.`
-      );
+    //   window.alert(
+    //     `${this.selectedMasterType} code is required.`
+    //   );
 
-      return;
+    //   return;
 
-    }
+    // }
 
     if (!this.formData.name.trim()) {
 
-      window.alert(
+      this.alert.warning(
         `${this.selectedMasterType} name is required.`
       );
 
@@ -2758,7 +2832,7 @@ export class MasterData implements  OnInit {
 
     if (!this.formData.company) {
 
-      window.alert('Company is required.');
+      this.alert.warning('Company is required.');
 
       return;
 
@@ -2766,7 +2840,7 @@ export class MasterData implements  OnInit {
 
     if (!this.formData.region) {
 
-      window.alert('Region is required.');
+      this.alert.warning('Region is required.');
 
       return;
 
@@ -2784,7 +2858,7 @@ export class MasterData implements  OnInit {
 
       if (!this.selectedCountryId) {
 
-        window.alert('Country is required.');
+        this.alert.warning('Country is required.');
 
         return;
 

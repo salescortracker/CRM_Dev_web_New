@@ -699,6 +699,65 @@ placeholder="POL001"
 
 
 
+<!-- COMPANY -->
+
+
+<div>
+
+
+<label>
+Company
+</label>
+
+
+<select
+
+[(ngModel)]="model.companyId" (ngModelChange)="onFormCompanyChange()">
+
+<option value="">
+-- Select Company --
+</option>
+
+<option *ngFor="let item of companies" [value]="item.companyId">
+{{item.companyName}}
+</option>
+
+</select>
+
+
+</div>
+
+
+
+<!-- REGION -->
+
+
+<div>
+
+
+<label>
+Region
+</label>
+
+
+<select
+
+[(ngModel)]="model.regionId">
+
+<option value="">
+-- Select Region --
+</option>
+
+<option *ngFor="let item of formRegions" [value]="item.regionId">
+{{item.regionName}}
+</option>
+
+</select>
+
+
+</div>
+
+
 
 
 
@@ -758,31 +817,16 @@ Department
 
 <select
 
-[(ngModel)]="model.department">
+[(ngModel)]="model.departmentId">
 
 
-<option>
+<option [ngValue]="null">
 All Departments
 </option>
 
 
-<option>
-Sales
-</option>
-
-
-<option>
-Marketing
-</option>
-
-
-<option>
-IT
-</option>
-
-
-<option>
-HR
+<option *ngFor="let item of departments" [ngValue]="item.departmentId">
+{{item.departmentName}}
 </option>
 
 

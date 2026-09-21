@@ -368,6 +368,53 @@
 
 
 
+                <!-- COMPANY -->
+
+                <div>
+
+                    <label>
+                        Company
+                    </label>
+
+                    <select [(ngModel)]="model.companyId" (ngModelChange)="onFormCompanyChange()">
+
+                        <option value="">
+                            -- Select Company --
+                        </option>
+
+                        <option *ngFor="let item of companies" [value]="item.companyId">
+                            {{item.companyName}}
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- REGION -->
+
+                <div>
+
+                    <label>
+                        Region
+                    </label>
+
+                    <select [(ngModel)]="model.regionId">
+
+                        <option value="">
+                            -- Select Region --
+                        </option>
+
+                        <option *ngFor="let item of formRegions" [value]="item.regionId">
+                            {{item.regionName}}
+                        </option>
+
+                    </select>
+
+                </div>
+
+
 
                 <!-- DEPARTMENT -->
 
@@ -377,31 +424,16 @@
                         Department
                     </label>
 
-                    <select [(ngModel)]="model.department">
+                    <select [(ngModel)]="model.departmentId">
 
 
-                        <option>
-                            Sales
+                        <option value="">
+                            -- Select Department --
                         </option>
 
 
-                        <option>
-                            Marketing
-                        </option>
-
-
-                        <option>
-                            IT
-                        </option>
-
-
-                        <option>
-                            HR
-                        </option>
-
-
-                        <option>
-                            Finance
+                        <option *ngFor="let item of departments" [value]="item.departmentId">
+                            {{item.departmentName}}
                         </option>
 
 
@@ -420,26 +452,16 @@
                         Team Lead
                     </label>
 
-                    <select [(ngModel)]="model.teamLead">
+                    <select [(ngModel)]="model.teamLeadId">
 
 
-                        <option>
-                            John Smith
+                        <option value="">
+                            -- Select Team Lead --
                         </option>
 
 
-                        <option>
-                            Sarah Wilson
-                        </option>
-
-
-                        <option>
-                            David Brown
-                        </option>
-
-
-                        <option>
-                            Michael Johnson
+                        <option *ngFor="let item of administrators" [value]="item.administratorId">
+                            {{item.firstName}} {{item.lastName}}
                         </option>
 
 
@@ -484,45 +506,12 @@
                     <div class="member-selection">
 
 
-                        <label>
+                        <label *ngFor="let item of administrators">
 
-                            <input type="checkbox" value="John Smith" [(ngModel)]="model.membersList.john">
-
-
-                            John Smith
-
-                        </label>
+                            <input type="checkbox" [(ngModel)]="model.memberSelection[item.administratorId]">
 
 
-
-                        <label>
-
-                            <input type="checkbox" value="Sarah Wilson" [(ngModel)]="model.membersList.sarah">
-
-
-                            Sarah Wilson
-
-                        </label>
-
-
-
-                        <label>
-
-                            <input type="checkbox" value="David Brown" [(ngModel)]="model.membersList.david">
-
-
-                            David Brown
-
-                        </label>
-
-
-
-                        <label>
-
-                            <input type="checkbox" value="Michael Johnson" [(ngModel)]="model.membersList.michael">
-
-
-                            Michael Johnson
+                            {{item.firstName}} {{item.lastName}}
 
                         </label>
 

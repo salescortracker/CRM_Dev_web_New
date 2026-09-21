@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Pagination } from '../../../../shared/pagination/pagination';
 import { Alertservice } from '../../../../core/services/alertservice';
 import { Spinnerservice } from '../../../../core/services/spinnerservice';
+import { ControlsystemService } from '../../services/controlsystem-service';
 
 declare var bootstrap: any;
 
@@ -14,7 +15,7 @@ declare var bootstrap: any;
   templateUrl: './payment-tracking.html',
   styleUrl: './payment-tracking.css',
 })
-export class PaymentTracking {
+export class PaymentTracking implements OnInit {
   // Statistics
   totalRevenue = 0;
   refundPayments = 0;
@@ -23,9 +24,12 @@ export class PaymentTracking {
   methodFilter = 'All';
   fromDate = '';
   toDate = '';
+
   constructor(
     private alert: Alertservice,
-    private spinner: Spinnerservice
+    private spinner: Spinnerservice,
+    private controlService: ControlsystemService,
+    private cdr: ChangeDetectorRef
   ) { }
 
   //==========================================
@@ -80,159 +84,65 @@ export class PaymentTracking {
 
     this.loadPayments();
 
-    this.calculateStatistics();
-
   }
 
   //==========================================
-  // Load Static Data
+  // Load Payments (API)
   //==========================================
 
   loadPayments(): void {
 
-    this.payments = [
+    this.spinner.show();
 
-      {
-        paymentId: 1,
-        companyName: 'ABC Technologies',
-        plan: 'Professional',
-        invoiceNo: 'INV-1001',
-        transactionId: 'TXN875421',
-        amount: 12000,
-        paymentMethod: 'UPI',
-        gateway: 'Razorpay',
-        status: 'Success',
-        paymentDate: '20-Jul-2026',
-        nextRenewal: '20-Jul-2027'
+    this.controlService.getPaymentTrackings().subscribe({
+
+      next: (res: any) => {
+
+        this.spinner.hide();
+
+        if (res.success) {
+
+          this.payments = (res.data || []).map((x: any) => ({
+            paymentId: x.paymentId,
+            organizationId: x.organizationId,
+            companyName: x.organizationName,
+            planId: x.planId,
+            plan: x.planName,
+            invoiceNo: x.invoiceNo,
+            transactionId: x.transactionId,
+            amount: x.amount,
+            paymentMethod: x.paymentMethod,
+            gateway: x.gateway,
+            status: x.status,
+            paymentDate: (x.paymentDate || '').slice(0, 10),
+            nextRenewal: x.nextRenewal ? x.nextRenewal.slice(0, 10) : '-',
+            refundAmount: x.refundAmount,
+            refundReason: x.refundReason
+          }));
+
+          this.calculateStatistics();
+
+          this.cdr.detectChanges();
+
+        } else {
+
+          this.alert.warning(res.message);
+
+        }
+
       },
 
-      {
-        paymentId: 2,
-        companyName: 'Sky Solutions',
-        plan: 'Enterprise',
-        invoiceNo: 'INV-1002',
-        transactionId: 'TXN875422',
-        amount: 45000,
-        paymentMethod: 'Credit Card',
-        gateway: 'Stripe',
-        status: 'Pending',
-        paymentDate: '22-Jul-2026',
-        nextRenewal: '22-Jul-2027'
-      },
+      error: (err) => {
 
-      {
-        paymentId: 3,
-        companyName: 'NextGen Pvt Ltd',
-        plan: 'Starter',
-        invoiceNo: 'INV-1003',
-        transactionId: 'TXN875423',
-        amount: 5000,
-        paymentMethod: 'Net Banking',
-        gateway: 'PayU',
-        status: 'Failed',
-        paymentDate: '23-Jul-2026',
-        nextRenewal: '-'
-      },
+        this.spinner.hide();
 
-      {
-        paymentId: 4,
-        companyName: 'Global Soft',
-        plan: 'Professional',
-        invoiceNo: 'INV-1004',
-        transactionId: 'TXN875424',
-        amount: 18000,
-        paymentMethod: 'Debit Card',
-        gateway: 'Stripe',
-        status: 'Success',
-        paymentDate: '24-Jul-2026',
-        nextRenewal: '24-Jul-2027'
-      },
+        console.error('Error loading payments:', err);
 
-      {
-        paymentId: 5,
-        companyName: 'Cloud Vision',
-        plan: 'Enterprise',
-        invoiceNo: 'INV-1005',
-        transactionId: 'TXN875425',
-        amount: 60000,
-        paymentMethod: 'UPI',
-        gateway: 'Razorpay',
-        status: 'Success',
-        paymentDate: '24-Jul-2026',
-        nextRenewal: '24-Jul-2027'
-      },
+        this.alert.error(err?.error?.message || 'Unable to load payments.');
 
-      {
-        paymentId: 6,
-        companyName: 'Bright Tech',
-        plan: 'Starter',
-        invoiceNo: 'INV-1006',
-        transactionId: 'TXN875426',
-        amount: 8000,
-        paymentMethod: 'Cash',
-        gateway: 'Offline',
-        status: 'Pending',
-        paymentDate: '25-Jul-2026',
-        nextRenewal: '-'
-      },
-
-      {
-        paymentId: 7,
-        companyName: 'Vertex Systems',
-        plan: 'Professional',
-        invoiceNo: 'INV-1007',
-        transactionId: 'TXN875427',
-        amount: 22000,
-        paymentMethod: 'Credit Card',
-        gateway: 'Stripe',
-        status: 'Success',
-        paymentDate: '25-Jul-2026',
-        nextRenewal: '25-Jul-2027'
-      },
-
-      {
-        paymentId: 8,
-        companyName: 'Fusion IT',
-        plan: 'Enterprise',
-        invoiceNo: 'INV-1008',
-        transactionId: 'TXN875428',
-        amount: 55000,
-        paymentMethod: 'UPI',
-        gateway: 'Razorpay',
-        status: 'Success',
-        paymentDate: '26-Jul-2026',
-        nextRenewal: '26-Jul-2027'
-      },
-
-      {
-        paymentId: 9,
-        companyName: 'Code Matrix',
-        plan: 'Professional',
-        invoiceNo: 'INV-1009',
-        transactionId: 'TXN875429',
-        amount: 16000,
-        paymentMethod: 'Debit Card',
-        gateway: 'PayU',
-        status: 'Failed',
-        paymentDate: '27-Jul-2026',
-        nextRenewal: '-'
-      },
-
-      {
-        paymentId: 10,
-        companyName: 'Prime Software',
-        plan: 'Starter',
-        invoiceNo: 'INV-1010',
-        transactionId: 'TXN875430',
-        amount: 9000,
-        paymentMethod: 'Net Banking',
-        gateway: 'PayU',
-        status: 'Success',
-        paymentDate: '28-Jul-2026',
-        nextRenewal: '28-Jul-2027'
       }
 
-    ];
+    });
 
   }
   //==========================================
@@ -272,7 +182,10 @@ this.refundPayments =
         .filter(x => x.status === 'Pending')
         .reduce((sum, item) => sum + item.amount, 0);
 
-    this.refundAmount = 0;
+    this.refundAmount =
+      this.payments
+        .filter(x => x.status === 'Refunded')
+        .reduce((sum, item) => sum + (item.refundAmount || item.amount), 0);
 
   }
 
@@ -292,13 +205,13 @@ this.refundPayments =
 
       data = data.filter(x =>
 
-        x.companyName.toLowerCase().includes(search) ||
+        x.companyName?.toLowerCase().includes(search) ||
 
-        x.invoiceNo.toLowerCase().includes(search) ||
+        x.invoiceNo?.toLowerCase().includes(search) ||
 
-        x.transactionId.toLowerCase().includes(search) ||
+        x.transactionId?.toLowerCase().includes(search) ||
 
-        x.plan.toLowerCase().includes(search)
+        x.plan?.toLowerCase().includes(search)
 
       );
 
@@ -382,19 +295,11 @@ if (this.toDate) {
 
   refresh(): void {
 
-    this.spinner.show();
+    this.loadPayments();
 
-    setTimeout(() => {
-
-      this.calculateStatistics();
-
-      this.spinner.hide();
-
-      this.alert.success(
-        'Payment data refreshed successfully.'
-      );
-
-    }, 500);
+    this.alert.success(
+      'Payment data refreshed successfully.'
+    );
 
   }
 
@@ -419,32 +324,17 @@ view(payment: any): void {
 
   refund(payment: any): void {
 
-    this.alert.confirm(
-      'Refund Payment?',
-      `Refund payment for ${payment.companyName}?`
-    ).then(result => {
+    this.selectedPayment = payment;
 
-      if (!result.isConfirmed) {
-        return;
-      }
+    this.refundAmountValue = payment.amount;
 
-      this.spinner.show();
+    this.refundReason = '';
 
-      setTimeout(() => {
+    const modal = new bootstrap.Modal(
+      document.getElementById('refundModal')
+    );
 
-        payment.status = 'Refunded';
-
-        this.refundAmount += payment.amount;
-
-        this.calculateStatistics();
-
-        this.spinner.hide();
-
-        this.alert.success('Payment refunded successfully.');
-
-      }, 700);
-
-    });
+    modal.show();
 
   }
 
@@ -462,19 +352,37 @@ view(payment: any): void {
 
       this.spinner.show();
 
-      setTimeout(() => {
+      this.controlService.deletePaymentTracking(paymentId).subscribe({
 
-        this.payments = this.payments.filter(
-          x => x.paymentId !== paymentId
-        );
+        next: (res: any) => {
 
-        this.calculateStatistics();
+          this.spinner.hide();
 
-        this.spinner.hide();
+          if (res.success) {
 
-        this.alert.success('Payment deleted successfully.');
+            this.loadPayments();
 
-      }, 600);
+            this.alert.success(res.message);
+
+          } else {
+
+            this.alert.warning(res.message);
+
+          }
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error(err);
+
+          this.alert.error(err?.error?.message || 'Unable to delete payment.');
+
+        }
+
+      });
 
     });
 
@@ -536,19 +444,49 @@ view(payment: any): void {
 
     this.spinner.show();
 
-    setTimeout(() => {
+    this.controlService.updatePaymentTracking({
+      paymentId: payment.paymentId,
+      organizationId: payment.organizationId,
+      planId: payment.planId,
+      invoiceNo: payment.invoiceNo,
+      transactionId: payment.transactionId,
+      amount: payment.amount,
+      paymentMethod: payment.paymentMethod,
+      gateway: payment.gateway,
+      status: 'Success',
+      paymentDate: payment.paymentDate,
+      nextRenewal: payment.nextRenewal === '-' ? null : payment.nextRenewal
+    }).subscribe({
 
-      payment.status = 'Success';
+      next: (res: any) => {
 
-      this.calculateStatistics();
+        this.spinner.hide();
 
-      this.spinner.hide();
+        if (res.success) {
 
-      this.alert.success(
-        'Payment retried successfully.'
-      );
+          this.loadPayments();
 
-    }, 800);
+          this.alert.success('Payment retried successfully.');
+
+        } else {
+
+          this.alert.warning(res.message);
+
+        }
+
+      },
+
+      error: (err) => {
+
+        this.spinner.hide();
+
+        console.error(err);
+
+        this.alert.error(err?.error?.message || 'Unable to retry payment.');
+
+      }
+
+    });
 
   }
 
@@ -625,11 +563,47 @@ exportPdf(): void {
 
 confirmRefund(): void {
 
-  if (!this.selectedPayment) {
+  if (!this.selectedPayment?.paymentId) {
     return;
   }
 
-  this.refund(this.selectedPayment);
+  this.spinner.show();
+
+  this.controlService.refundPaymentTracking(
+    this.selectedPayment.paymentId,
+    this.refundAmountValue,
+    this.refundReason
+  ).subscribe({
+
+    next: (res: any) => {
+
+      this.spinner.hide();
+
+      if (res.success) {
+
+        this.loadPayments();
+
+        this.alert.success('Payment refunded successfully.');
+
+      } else {
+
+        this.alert.warning(res.message);
+
+      }
+
+    },
+
+    error: (err) => {
+
+      this.spinner.hide();
+
+      console.error(err);
+
+      this.alert.error(err?.error?.message || 'Unable to refund payment.');
+
+    }
+
+  });
 
 }
 

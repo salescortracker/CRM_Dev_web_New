@@ -49,32 +49,13 @@
 
                 <div class="col-md-4 mb-3">
                     <label>Contact</label>
-                    <input class="form-control" [(ngModel)]="company.companyContact" type="number">
+                    <input class="form-control" [(ngModel)]="company.companyContact" type="text"
+                        inputmode="numeric" pattern="[0-9]*">
                 </div>
 
                 <div class="col-md-6 mb-3">
                     <label>Address</label>
                     <textarea class="form-control" [(ngModel)]="company.companyAddress"></textarea>
-                </div>
-
-                <div class="col-md-3 mb-3">
-                    <label>Plan Start<span class="text-danger">*</span></label>
-                    <input type="date" class="form-control" [(ngModel)]="company.planStartDate">
-                    <div class="text-danger mt-1" *ngIf="submitted && !company.planStartDate">
-
-                        Plan Start Date is required.
-
-                    </div>
-                </div>
-
-                <div class="col-md-3 mb-3">
-                    <label>Expiry Date<span class="text-danger">*</span></label>
-                    <input type="date" class="form-control" [(ngModel)]="company.expiryDate">
-                    <div class="text-danger mt-1" *ngIf="submitted && !company.expiryDate">
-
-                        Expiry Date is required.
-
-                    </div>
                 </div>
 
                 <div class="col-md-3">

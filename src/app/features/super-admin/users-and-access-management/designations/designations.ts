@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Alertservice } from '../../../../core/services/alertservice';
 import { Spinnerservice } from '../../../../core/services/spinnerservice';
 import { ControlsystemService } from '../../services/controlsystem-service';
+import { AuthService } from '../../../../core/authentication/services/auth.service';
 
 @Component({
   selector: 'app-designations',
@@ -20,7 +21,8 @@ export class Designations {
     private spinner: Spinnerservice,
 
     private cd: ChangeDetectorRef,
-    private controlsystemService: ControlsystemService
+    private controlsystemService: ControlsystemService,
+    private authService: AuthService
 
   ) { }
 
@@ -67,6 +69,20 @@ export class Designations {
   departments: any[] = [];
 
 
+  // ==============================
+  // Company / Region Dropdown Data
+  // ==============================
+
+  // Active companies from the database.
+  companies: any[] = [];
+
+  // All active regions from the database.
+  regions: any[] = [];
+
+  // Active regions of the company selected in the form.
+  companyRegions: any[] = [];
+
+
 
 
 
@@ -83,9 +99,9 @@ export class Designations {
 
       designationId: 0,
 
-      companyId: 0,
+      companyId: null as number | null,
 
-      regionId: 0,
+      regionId: null as number | null,
 
       departmentId: null,
 
@@ -108,9 +124,99 @@ export class Designations {
 
   ngOnInit(): void {
 
+    this.loadCompanies();
+
+    this.loadRegions();
+
     this.loadDepartments();
 
     this.loadDesignations();
+
+  }
+
+
+  // ==============================
+  // Company / Region Dropdowns
+  // ==============================
+
+  loadCompanies(): void {
+
+    this.authService.getCompanies().subscribe({
+
+      next: (res: any) => {
+
+        this.companies = (res?.data || []).filter(
+          (x: any) => x.isActive !== false
+        );
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error loading companies:', err);
+
+        this.companies = [];
+
+      }
+
+    });
+
+  }
+
+
+  loadRegions(): void {
+
+    this.authService.getRegions().subscribe({
+
+      next: (res: any) => {
+
+        this.regions = (res?.data || []).filter(
+          (x: any) => x.isActive !== false
+        );
+
+        // Regions may arrive after the edit modal opened.
+        this.updateCompanyRegions();
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error loading regions:', err);
+
+        this.regions = [];
+
+        this.companyRegions = [];
+
+      }
+
+    });
+
+  }
+
+
+  // Only the regions that belong to the selected company.
+  updateCompanyRegions(): void {
+
+    const companyId = Number(this.model.companyId);
+
+    this.companyRegions = companyId
+      ? this.regions.filter(
+          (r: any) => Number(r.companyId) === companyId
+        )
+      : [];
+
+  }
+
+
+  onCompanyChange(): void {
+
+    this.model.regionId = null;
+
+    this.updateCompanyRegions();
 
   }
 
@@ -289,13 +395,23 @@ export class Designations {
         (item.description || '')
           .toLowerCase();
 
+      const companyName =
+        (item.companyName || '')
+          .toLowerCase();
+
+      const regionName =
+        (item.regionName || '')
+          .toLowerCase();
+
 
       const matchesSearch =
         !search ||
         designationName.includes(search) ||
         designationCode.includes(search) ||
         departmentName.includes(search) ||
-        description.includes(search);
+        description.includes(search) ||
+        companyName.includes(search) ||
+        regionName.includes(search);
 
 
       const matchesStatus =
@@ -333,6 +449,8 @@ export class Designations {
 
     this.model = this.emptyModel();
 
+    this.updateCompanyRegions();
+
     this.showModal = true;
 
   }
@@ -347,6 +465,8 @@ export class Designations {
     this.showModal = false;
 
     this.model = this.emptyModel();
+
+    this.updateCompanyRegions();
 
     this.isEdit = false;
 
@@ -400,6 +520,28 @@ export class Designations {
 
       this.alert.warning(
         'Please select a Department.'
+      );
+
+      return;
+
+    }
+
+
+    if (!this.model.companyId) {
+
+      this.alert.warning(
+        'Please select a Company.'
+      );
+
+      return;
+
+    }
+
+
+    if (!this.model.regionId) {
+
+      this.alert.warning(
+        'Please select a Region.'
       );
 
       return;
@@ -613,11 +755,13 @@ export class Designations {
               designationId:
                 data.designationId || 0,
 
+              // 0 (legacy records saved without a company)
+              // -> nothing selected
               companyId:
-                data.companyId || 0,
+                data.companyId || null,
 
               regionId:
-                data.regionId || 0,
+                data.regionId || null,
 
               departmentId:
                 data.departmentId || null,
@@ -636,6 +780,8 @@ export class Designations {
                 data.status === 'Active'
 
             };
+
+            this.updateCompanyRegions();
 
 
             this.showModal = true;

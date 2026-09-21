@@ -1,6 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../../../../../environments/environment';
+import { ApiResponse } from '../../../../../core/authentication/services/auth.service';
 import { Pagination } from '../../../../../shared/pagination/pagination';
 import { Alertservice } from '../../../../../core/services/alertservice';
 import { Spinnerservice } from '../../../../../core/services/spinnerservice';
@@ -12,7 +15,10 @@ import { Spinnerservice } from '../../../../../core/services/spinnerservice';
   templateUrl: './document-categories.html',
   styleUrl: './document-categories.css',
 })
-export class DocumentCategories {
+export class DocumentCategories implements OnInit {
+
+  private baseUrl = environment.apiUrl;
+
   submitted = false;
 
   isEdit = false;
@@ -21,49 +27,42 @@ export class DocumentCategories {
 
   pageSize = 5;
 
-  totalRecords = 0;
-
   searchText = '';
-
-
 
   documentCategories: any[] = [];
 
-
-
-  documentCategory: any = {
-
-    documentCategoryId: 0,
-
-    categoryName: '',
-
-    categoryCode: '',
-
-    parentCategory: '',
-
-    allowedFileTypes: '',
-
-    retentionPeriod: null,
-
-    description: '',
-
-    isActive: true
-
-  };
-
-
+  documentCategory: any = this.getEmptyModel();
 
   constructor(
-
+    private http: HttpClient,
     private alert: Alertservice,
-
     private spinner: Spinnerservice,
-
     private cd: ChangeDetectorRef
-
   ) { }
 
+  getEmptyModel() {
 
+    return {
+
+      documentCategoryId: 0,
+
+      categoryName: '',
+
+      categoryCode: '',
+
+      parentCategoryId: null,
+
+      allowedFileTypes: '',
+
+      retentionPeriod: null,
+
+      description: '',
+
+      isActive: true
+
+    };
+
+  }
 
   ngOnInit(): void {
 
@@ -71,518 +70,374 @@ export class DocumentCategories {
 
   }
 
+  //====================================================
+  // Parent Category options - every category except the one being edited
+  //====================================================
 
+  get parentCategoryOptions() {
 
+    return this.documentCategories.filter(
+      x => x.documentCategoryId !== this.documentCategory.documentCategoryId
+    );
 
+  }
 
-  loadDocumentCategories() {
+  //====================================================
+  // Load
+  //====================================================
+
+  loadDocumentCategories(): void {
 
     this.spinner.show();
 
-    setTimeout(() => {
+    this.http
+      .get<ApiResponse<any[]>>(`${this.baseUrl}/Admin/getalldocumentcategories`)
+      .subscribe({
 
-      this.documentCategories = [
+        next: (res: any) => {
 
-        {
+          this.spinner.hide();
 
-          documentCategoryId: 1,
+          if (res?.success) {
 
-          categoryName: 'HR Documents',
+            this.documentCategories = res.data || [];
 
-          categoryCode: 'HR001',
+          } else {
 
-          parentCategory: '',
+            this.documentCategories = [];
 
-          allowedFileTypes: 'PDF, DOCX',
+            this.alert.warning(
+              res?.message || 'No Document Categories found.'
+            );
 
-          retentionPeriod: 365,
+          }
 
-          description: 'Employee HR related documents.',
-
-          isActive: true
-
-        },
-
-
-
-        {
-
-          documentCategoryId: 2,
-
-          categoryName: 'Finance Documents',
-
-          categoryCode: 'FIN001',
-
-          parentCategory: '',
-
-          allowedFileTypes: 'PDF, XLSX',
-
-          retentionPeriod: 730,
-
-          description: 'Financial and accounting documents.',
-
-          isActive: true
+          this.cd.detectChanges();
 
         },
 
+        error: (err) => {
 
+          this.spinner.hide();
 
-        {
+          console.error('Load document categories error:', err);
 
-          documentCategoryId: 3,
+          this.documentCategories = [];
 
-          categoryName: 'Customer Contracts',
+          this.alert.error(
+            err?.error?.message || 'Failed to load Document Categories.'
+          );
 
-          categoryCode: 'CUS001',
-
-          parentCategory: 'Legal Documents',
-
-          allowedFileTypes: 'PDF',
-
-          retentionPeriod: 1095,
-
-          description: 'Customer agreements and contracts.',
-
-          isActive: true
-
-        },
-                {
-
-          documentCategoryId: 4,
-
-          categoryName: 'Marketing Assets',
-
-          categoryCode: 'MKT001',
-
-          parentCategory: '',
-
-          allowedFileTypes: 'JPG, PNG, MP4',
-
-          retentionPeriod: 180,
-
-          description: 'Marketing images, videos and promotional files.',
-
-          isActive: true
-
-        },
-
-
-
-        {
-
-          documentCategoryId: 5,
-
-          categoryName: 'Employee Certificates',
-
-          categoryCode: 'EMP001',
-
-          parentCategory: 'HR Documents',
-
-          allowedFileTypes: 'PDF, JPG',
-
-          retentionPeriod: 365,
-
-          description: 'Employee education and certification documents.',
-
-          isActive: false
+          this.cd.detectChanges();
 
         }
 
-      ];
-
-
-
-      this.documentCategories.sort(
-
-        (a, b) => b.documentCategoryId - a.documentCategoryId
-
-      );
-
-
-
-      this.totalRecords = this.documentCategories.length;
-
-
-
-      this.spinner.hide();
-
-
-
-      this.cd.detectChanges();
-
-
-
-    }, 500);
+      });
 
   }
-    saveDocumentCategory() {
+
+  //====================================================
+  // Save (Create / Update)
+  //====================================================
+
+  saveDocumentCategory(): void {
 
     this.submitted = true;
 
     if (
-      !this.documentCategory.categoryName ||
-      !this.documentCategory.categoryCode ||
-      !this.documentCategory.allowedFileTypes
+      !this.documentCategory.categoryName?.trim() ||
+      !this.documentCategory.categoryCode?.trim() ||
+      !this.documentCategory.allowedFileTypes?.trim()
     ) {
       return;
     }
 
-    this.spinner.show();
+    if (
+      this.documentCategory.retentionPeriod !== null &&
+      this.documentCategory.retentionPeriod !== '' &&
+      Number(this.documentCategory.retentionPeriod) < 0
+    ) {
+      this.alert.warning('Retention Period cannot be negative.');
+      return;
+    }
 
-    setTimeout(() => {
+    const payload = {
 
-      if (!this.isEdit) {
+      documentCategoryId: this.documentCategory.documentCategoryId,
 
-        const newCategory = {
+      categoryName: this.documentCategory.categoryName.trim(),
 
-          ...this.documentCategory,
+      categoryCode: this.documentCategory.categoryCode.trim(),
 
-          documentCategoryId: this.documentCategories.length
-            ? Math.max(...this.documentCategories.map(x => x.documentCategoryId)) + 1
-            : 1
+      parentCategoryId: this.documentCategory.parentCategoryId
+        ? Number(this.documentCategory.parentCategoryId)
+        : null,
 
-        };
+      allowedFileTypes: this.documentCategory.allowedFileTypes.trim(),
 
-        this.documentCategories.unshift(newCategory);
+      retentionPeriod:
+        this.documentCategory.retentionPeriod !== null &&
+        this.documentCategory.retentionPeriod !== ''
+          ? Number(this.documentCategory.retentionPeriod)
+          : null,
 
-      } else {
+      description: this.documentCategory.description
+        ? this.documentCategory.description.trim()
+        : null,
 
-        const index = this.documentCategories.findIndex(
-          x => x.documentCategoryId === this.documentCategory.documentCategoryId
-        );
-
-        if (index !== -1) {
-
-          this.documentCategories[index] = {
-
-            ...this.documentCategory
-
-          };
-
-        }
-
-      }
-
-
-      this.documentCategories = [...this.documentCategories];
-
-      this.totalRecords = this.documentCategories.length;
-
-      this.page = 1;
-
-
-      const isUpdate = this.isEdit;
-
-
-      this.clear();
-
-
-      this.spinner.hide();
-
-
-      this.cd.detectChanges();
-
-
-      this.alert.success(
-
-        isUpdate
-          ? 'Document Category updated successfully.'
-          : 'Document Category created successfully.'
-
-      );
-
-
-    }, 500);
-
-  }
-
-
-
-
-
-
-
-  edit(id: number) {
-
-    this.spinner.show();
-
-
-    setTimeout(() => {
-
-
-      const selected = this.documentCategories.find(
-
-        x => x.documentCategoryId === id
-
-      );
-
-
-      if (selected) {
-
-
-        this.documentCategory = {
-
-          ...selected
-
-        };
-
-
-        this.isEdit = true;
-
-        this.submitted = false;
-
-
-        this.cd.detectChanges();
-
-
-      }
-
-
-      this.spinner.hide();
-
-
-    }, 300);
-
-
-  }
-
-
-
-
-
-
-
-  delete(id: number) {
-
-
-    this.alert.deleteConfirm().then(result => {
-
-
-      if (result.isConfirmed) {
-
-
-        this.spinner.show();
-
-
-        setTimeout(() => {
-
-
-          this.documentCategories = this.documentCategories.filter(
-
-            x => x.documentCategoryId !== id
-
-          );
-
-
-
-          this.totalRecords = this.documentCategories.length;
-
-
-
-          if (
-
-            this.page > 1 &&
-
-            this.pagedDocumentCategories.length === 0
-
-          ) {
-
-            this.page--;
-
-          }
-
-
-
-          this.documentCategories = [...this.documentCategories];
-
-
-
-          this.spinner.hide();
-
-
-
-          this.cd.detectChanges();
-
-
-
-          this.alert.success(
-
-            'Document Category deleted successfully.'
-
-          );
-
-
-
-        }, 500);
-
-
-
-      }
-
-
-    });
-
-
-  }
-
-
-
-
-
-
-
-  clear() {
-
-
-    this.documentCategory = {
-
-
-      documentCategoryId: 0,
-
-
-      categoryName: '',
-
-
-      categoryCode: '',
-
-
-      parentCategory: '',
-
-
-      allowedFileTypes: '',
-
-
-      retentionPeriod: null,
-
-
-      description: '',
-
-
-      isActive: true
-
+      isActive: !!this.documentCategory.isActive
 
     };
 
+    const url = this.isEdit
+      ? `${this.baseUrl}/Admin/updatedocumentcategory`
+      : `${this.baseUrl}/Admin/createdocumentcategory`;
 
+    const failMessage = this.isEdit
+      ? 'Failed to update Document Category.'
+      : 'Failed to create Document Category.';
+
+    this.spinner.show();
+
+    this.http
+      .post<ApiResponse>(url, payload)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.spinner.hide();
+
+          if (res?.success) {
+
+            this.alert.success(res.message);
+
+            this.clear();
+
+            this.page = 1;
+
+            this.loadDocumentCategories();
+
+          } else {
+
+            this.alert.warning(res?.message || failMessage);
+
+          }
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Save document category error:', err);
+
+          this.alert.error(err?.error?.message || failMessage);
+
+        }
+
+      });
+
+  }
+
+  //====================================================
+  // Edit
+  //====================================================
+
+  edit(id: number): void {
+
+    this.spinner.show();
+
+    this.http
+      .get<ApiResponse<any>>(`${this.baseUrl}/Admin/getbydocumentcategory/${id}`)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.spinner.hide();
+
+          if (res?.success && res.data) {
+
+            const data = res.data;
+
+            this.documentCategory = {
+
+              documentCategoryId: data.documentCategoryId,
+
+              categoryName: data.categoryName || '',
+
+              categoryCode: data.categoryCode || '',
+
+              parentCategoryId: data.parentCategoryId ?? null,
+
+              allowedFileTypes: data.allowedFileTypes || '',
+
+              retentionPeriod: data.retentionPeriod ?? null,
+
+              description: data.description || '',
+
+              isActive: !!data.isActive
+
+            };
+
+            this.isEdit = true;
+
+            this.submitted = false;
+
+            this.cd.detectChanges();
+
+          } else {
+
+            this.alert.warning(
+              res?.message || 'Document Category not found.'
+            );
+
+          }
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Get document category error:', err);
+
+          this.alert.error(
+            err?.error?.message || 'Failed to load Document Category.'
+          );
+
+        }
+
+      });
+
+  }
+
+  //====================================================
+  // Delete
+  //====================================================
+
+  delete(id: number): void {
+
+    this.alert.deleteConfirm().then(result => {
+
+      if (!result.isConfirmed) return;
+
+      this.spinner.show();
+
+      this.http
+        .post<ApiResponse>(
+          `${this.baseUrl}/Admin/deletedocumentcategory/${id}`,
+          {}
+        )
+        .subscribe({
+
+          next: (res: any) => {
+
+            this.spinner.hide();
+
+            if (res?.success) {
+
+              this.alert.success(res.message);
+
+              // Editing the record that was just deleted - reset the form
+              if (this.documentCategory.documentCategoryId === id) {
+                this.clear();
+              }
+
+              if (this.page > 1 && this.pagedDocumentCategories.length === 1) {
+                this.page = this.page - 1;
+              }
+
+              this.loadDocumentCategories();
+
+            } else {
+
+              this.alert.warning(
+                res?.message || 'Failed to delete Document Category.'
+              );
+
+            }
+
+          },
+
+          error: (err) => {
+
+            this.spinner.hide();
+
+            console.error('Delete document category error:', err);
+
+            this.alert.error(
+              err?.error?.message || 'Failed to delete Document Category.'
+            );
+
+          }
+
+        });
+
+    });
+
+  }
+
+  //====================================================
+  // Clear
+  //====================================================
+
+  clear(): void {
+
+    this.documentCategory = this.getEmptyModel();
 
     this.submitted = false;
 
-
     this.isEdit = false;
-
 
     this.cd.detectChanges();
 
-
   }
 
-
-
-
-
-
+  //====================================================
+  // Search / Pagination
+  //====================================================
 
   get filteredDocumentCategories() {
 
+    const search = this.searchText.toLowerCase();
 
     return this.documentCategories.filter(x =>
 
+      (x.categoryName || '').toLowerCase().includes(search) ||
 
+      (x.categoryCode || '').toLowerCase().includes(search) ||
 
-      x.categoryName.toLowerCase().includes(
+      (x.parentCategory || '').toLowerCase().includes(search) ||
 
-        this.searchText.toLowerCase()
-
-      )
-
-      ||
-
-      x.categoryCode.toLowerCase().includes(
-
-        this.searchText.toLowerCase()
-
-      )
-
-      ||
-
-      x.parentCategory.toLowerCase().includes(
-
-        this.searchText.toLowerCase()
-
-      )
-
-      ||
-
-      x.allowedFileTypes.toLowerCase().includes(
-
-        this.searchText.toLowerCase()
-
-      )
-
-
+      (x.allowedFileTypes || '').toLowerCase().includes(search)
 
     );
 
-
   }
-
-
-
-
-
-
 
   get pagedDocumentCategories() {
 
-
     const start = (this.page - 1) * this.pageSize;
 
-
     return this.filteredDocumentCategories.slice(
-
-
       start,
-
-
       start + this.pageSize
-
-
     );
 
-
   }
-
-
-
-
-
-
 
   changePage(page: number) {
 
-
     this.page = page;
 
-
   }
-
-
-
-
-
-
 
   changePageSize(size: number) {
 
-
     this.pageSize = size;
-
 
     this.page = 1;
 
-
   }
-
-
 
 }

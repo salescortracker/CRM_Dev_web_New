@@ -50,14 +50,10 @@ export class AdminLayout {
 
   get isConsoleRole(): boolean {
 
-    const role = this.normalizeRole(this.authService.getCurrentUser()?.role);
+    const layout = this.authService.getUserLayout();
 
-    return role === 'admin' || role === 'super admin';
+    return layout === 'admin' || layout === 'super admin';
 
-  }
-
-  private normalizeRole(role: string | undefined): string {
-    return (role || '').replace(/[-_]/g, ' ').trim().toLowerCase();
   }
 
   onConsoleSidebarToggle(collapsed: boolean): void {

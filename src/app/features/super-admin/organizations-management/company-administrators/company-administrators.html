@@ -168,15 +168,43 @@
 
                         Username
 
-                        <span class="text-danger">*</span>
+                        <span class="text-danger" *ngIf="isEdit">*</span>
 
                     </label>
 
-                    <input class="form-control" [(ngModel)]="admin.username">
+                    <input class="form-control" [(ngModel)]="admin.username" [disabled]="!isEdit"
+                        [placeholder]="isEdit ? '' : 'Auto-generated'">
 
-                    <div class="text-danger mt-1" *ngIf="submitted && !admin.username">
+                    <div class="text-danger mt-1" *ngIf="submitted && isEdit && !admin.username">
 
                         Username is required.
+
+                    </div>
+
+                </div>
+
+                <!-- Password (generated automatically; view-only) -->
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+
+                        Password
+
+                    </label>
+
+                    <div class="input-group">
+
+                        <input class="form-control" [type]="showPassword ? 'text' : 'password'"
+                            [value]="isEdit ? (admin.password || '') : ''" readonly autocomplete="off"
+                            [placeholder]="isEdit ? (admin.password ? '' : 'Not available') : 'Auto-generated'">
+
+                        <button type="button" class="btn btn-outline-secondary" [disabled]="!isEdit || !admin.password"
+                            (click)="showPassword = !showPassword">
+
+                            {{showPassword ? 'Hide' : 'Show'}}
+
+                        </button>
 
                     </div>
 
@@ -272,7 +300,13 @@
 
                     </label>
 
-                    <input class="form-control" placeholder="e.g. Company Administrator" [(ngModel)]="admin.roleName">
+                    <select class="form-select" [(ngModel)]="admin.roleName">
+
+                        <option value="">Select Role</option>
+
+                        <option *ngFor="let r of formRoles" [value]="r">{{r}}</option>
+
+                    </select>
 
                 </div>
 

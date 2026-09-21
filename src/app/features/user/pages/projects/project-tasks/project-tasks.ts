@@ -1,411 +1,319 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../../../environments/environment';
+import { ApiResponse } from '../../../../../core/authentication/services/auth.service';
 import { Pagination } from '../../../../../shared/pagination/pagination';
 import { Alertservice } from '../../../../../core/services/alertservice';
 import { Spinnerservice } from '../../../../../core/services/spinnerservice';
 
 @Component({
   selector: 'app-project-tasks',
-  standalone:true,
-  imports: [CommonModule,FormsModule,Pagination],
+  standalone: true,
+  imports: [CommonModule, FormsModule, Pagination],
   templateUrl: './project-tasks.html',
   styleUrl: './project-tasks.css',
 })
-export class ProjectTasks {
+export class ProjectTasks implements OnInit {
+
+  private baseUrl = environment.apiUrl;
+
+  constructor(
+    private http: HttpClient,
+    private alert: Alertservice,
+    private spinner: Spinnerservice,
+    private cd: ChangeDetectorRef
+  ) { }
+
+  //====================================================
+  // Screen Variables
+  //====================================================
+
   submitted = false;
   isEdit = false;
 
   page = 1;
   pageSize = 5;
-  totalRecords = 0;
   searchText = '';
+
+  //====================================================
+  // Static Options
+  //====================================================
+
+  statuses = ['Open', 'In Progress', 'Review', 'Completed', 'Cancelled'];
+
+  //====================================================
+  // Dropdown Data (from backend)
+  //====================================================
+
+  projects: any[] = [];
+  milestones: any[] = [];
+  priorities: any[] = [];
+
+  //====================================================
+  // Tasks List
+  //====================================================
 
   tasks: any[] = [];
 
-  task: any = {
+  //====================================================
+  // Form Model
+  //====================================================
 
-    taskId: 0,
-    taskName: '',
-    project: '',
-    milestone: '',
-    assignedTo: '',
-    priority: '',
-    status: '',
-    startDate: '',
-    dueDate: '',
-    estimatedHours: '',
-    actualHours: '',
-    completion: 0,
-    tags: '',
-    description: '',
-    isActive: true
+  task: any = this.getEmptyModel();
 
-  };
+  getEmptyModel() {
 
-  constructor(
+    return {
 
-    private alert: Alertservice,
-    private spinner: Spinnerservice,
-    private cd: ChangeDetectorRef
+      taskId: 0,
 
-  ) { }
+      taskName: '',
+      projectId: null,
+      milestoneId: null,
+
+      assignedTo: '',
+      priorityId: null,
+
+      status: '',
+
+      startDate: '',
+      dueDate: '',
+
+      estimatedHours: null,
+      actualHours: null,
+
+      completionPercentage: 0,
+
+      tags: '',
+      description: ''
+
+    };
+
+  }
+
+  //====================================================
+  // Lifecycle
+  //====================================================
 
   ngOnInit(): void {
+
+    this.loadProjects();
+
+    this.loadMilestones();
+
+    this.loadPriorities();
 
     this.loadTasks();
 
   }
 
-  loadTasks() {
+  //====================================================
+  // Load Dropdown Data
+  //====================================================
 
-    this.spinner.show();
+  loadProjects(): void {
 
-    setTimeout(() => {
+    this.http
+      .get<ApiResponse<any[]>>(`${this.baseUrl}/Admin/getallprojects`)
+      .subscribe({
 
-      this.tasks = [
+        next: (res: any) => {
 
-        {
-
-          taskId: 1,
-          taskName: 'Requirement Analysis',
-          project: 'CRM Implementation',
-          milestone: 'Requirement Gathering',
-          assignedTo: 'Rahul Sharma',
-          priority: 'High',
-          status: 'Completed',
-          startDate: '2026-08-01',
-          dueDate: '2026-08-05',
-          estimatedHours: 24,
-          actualHours: 22,
-          completion: 100,
-          tags: 'Analysis,Client',
-          description: 'Gather business requirements from client.',
-          isActive: true
-
-        },
-
-        {
-
-          taskId: 2,
-          taskName: 'Database Tables',
-          project: 'ERP Integration',
-          milestone: 'Database Design',
-          assignedTo: 'Anil Kumar',
-          priority: 'Critical',
-          status: 'In Progress',
-          startDate: '2026-08-06',
-          dueDate: '2026-08-14',
-          estimatedHours: 40,
-          actualHours: 18,
-          completion: 45,
-          tags: 'SQL,Database',
-          description: 'Create database schema and tables.',
-          isActive: true
-
-        },
-
-        {
-
-          taskId: 3,
-          taskName: 'Dashboard UI',
-          project: 'Support Portal',
-          milestone: 'UI Development',
-          assignedTo: 'Priya Reddy',
-          priority: 'Medium',
-          status: 'Review',
-          startDate: '2026-08-10',
-          dueDate: '2026-08-20',
-          estimatedHours: 32,
-          actualHours: 28,
-          completion: 85,
-          tags: 'Angular,Bootstrap',
-          description: 'Develop dashboard UI screens.',
-          isActive: true
-
-        },
-
-        {
-
-          taskId: 4,
-          taskName: 'API Testing',
-          project: 'Data Migration',
-          milestone: 'System Testing',
-          assignedTo: 'Kiran Kumar',
-          priority: 'High',
-          status: 'Open',
-          startDate: '2026-08-15',
-          dueDate: '2026-08-25',
-          estimatedHours: 20,
-          actualHours: 0,
-          completion: 10,
-          tags: 'API,Testing',
-          description: 'Test all migration APIs.',
-          isActive: true
-
-        },
-
-        {
-
-          taskId: 5,
-          taskName: 'Production Deployment',
-          project: 'Internal HR Portal',
-          milestone: 'Go Live',
-          assignedTo: 'Sandeep',
-          priority: 'Low',
-          status: 'Cancelled',
-          startDate: '2026-08-18',
-          dueDate: '2026-08-30',
-          estimatedHours: 12,
-          actualHours: 0,
-          completion: 0,
-          tags: 'Deployment',
-          description: 'Deploy application to production.',
-          isActive: true
-
-        }
-
-      ];
-
-      this.tasks.sort((a, b) => b.taskId - a.taskId);
-
-      this.totalRecords = this.tasks.length;
-
-      this.spinner.hide();
-
-      this.cd.detectChanges();
-
-    }, 500);
-
-  }
-
-  saveTask() {
-
-    this.submitted = true;
-
-    if (
-
-      !this.task.taskName ||
-      !this.task.project ||
-      !this.task.status
-
-    ) {
-
-      return;
-
-    }
-
-    this.spinner.show();
-
-    setTimeout(() => {
-
-      if (!this.isEdit) {
-
-        const nextId = this.tasks.length
-          ? Math.max(...this.tasks.map(x => x.taskId)) + 1
-          : 1;
-
-        const newTask = {
-
-          ...this.task,
-
-          taskId: nextId
-
-        };
-
-        this.tasks.unshift(newTask);
-
-      }
-
-      else {
-
-        const index = this.tasks.findIndex(
-
-          x => x.taskId === this.task.taskId
-
-        );
-
-        if (index !== -1) {
-
-          this.tasks[index] = {
-
-            ...this.task
-
-          };
-
-        }
-
-      }
-
-      this.tasks = [...this.tasks];
-
-      this.totalRecords = this.tasks.length;
-
-      this.page = 1;
-
-      const message = this.isEdit
-
-        ? 'Project task updated successfully.'
-
-        : 'Project task created successfully.';
-
-      this.clear();
-
-      this.spinner.hide();
-
-      this.cd.detectChanges();
-
-      this.alert.success(message);
-
-    }, 500);
-
-  }
-    edit(id: number) {
-
-    this.spinner.show();
-
-    setTimeout(() => {
-
-      const selected = this.tasks.find(
-        x => x.taskId === id
-      );
-
-      if (selected) {
-
-        this.task = {
-          ...selected
-        };
-
-        this.isEdit = true;
-
-        this.submitted = false;
-
-        this.cd.detectChanges();
-
-      }
-
-      this.spinner.hide();
-
-    }, 300);
-
-  }
-
-  delete(id: number) {
-
-    this.alert.deleteConfirm().then(result => {
-
-      if (result.isConfirmed) {
-
-        this.spinner.show();
-
-        setTimeout(() => {
-
-          this.tasks = this.tasks.filter(
-            x => x.taskId !== id
-          );
-
-          this.totalRecords = this.tasks.length;
-
-          if (
-            this.page > 1 &&
-            this.pagedTasks.length === 0
-          ) {
-
-            this.page--;
-
-          }
-
-          this.tasks = [...this.tasks];
-
-          this.spinner.hide();
+          this.projects = res?.data || [];
 
           this.cd.detectChanges();
 
-          this.alert.success(
-            'Project task deleted successfully.'
+        },
+
+        error: (err) => {
+
+          console.error('Error loading projects:', err);
+
+          this.projects = [];
+
+        }
+
+      });
+
+  }
+
+  loadMilestones(): void {
+
+    this.http
+      .get<ApiResponse<any[]>>(`${this.baseUrl}/Admin/getallprojectmilestones`)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.milestones = res?.data || [];
+
+          this.cd.detectChanges();
+
+        },
+
+        error: (err) => {
+
+          console.error('Error loading milestones:', err);
+
+          this.milestones = [];
+
+        }
+
+      });
+
+  }
+
+  loadPriorities(): void {
+
+    this.http
+      .get<ApiResponse<any[]>>(`${this.baseUrl}/Master/getallpriority`)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.priorities = (res?.data || []).filter(
+            (x: any) => x.isActive !== false
           );
 
-        }, 500);
+          this.cd.detectChanges();
 
-      }
+        },
 
-    });
+        error: (err) => {
+
+          console.error('Error loading priorities:', err);
+
+          this.priorities = [];
+
+        }
+
+      });
+
+  }
+
+  //====================================================
+  // Load Tasks
+  //====================================================
+
+  loadTasks(): void {
+
+    this.spinner.show();
+
+    this.http
+      .get<ApiResponse<any[]>>(`${this.baseUrl}/Admin/getallprojecttasks`)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.spinner.hide();
+
+          if (res?.success) {
+
+            this.tasks = res.data || [];
+
+          } else {
+
+            this.tasks = [];
+
+            this.alert.warning(
+              res?.message || 'No Task records found.'
+            );
+
+          }
+
+          this.cd.detectChanges();
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Error loading tasks:', err);
+
+          this.tasks = [];
+
+          this.alert.error(
+            err?.error?.message || 'Failed to load tasks.'
+          );
+
+          this.cd.detectChanges();
+
+        }
+
+      });
 
   }
 
-  clear() {
+  //====================================================
+  // Lookup Helpers (Display Names)
+  //====================================================
 
-    this.task = {
+  getProjectName(id: any): string {
 
-      taskId: 0,
-      taskName: '',
-      project: '',
-      milestone: '',
-      assignedTo: '',
-      priority: '',
-      status: '',
-      startDate: '',
-      dueDate: '',
-      estimatedHours: '',
-      actualHours: '',
-      completion: 0,
-      tags: '',
-      description: '',
-      isActive: true
+    if (id === null || id === undefined || id === '') return '-';
 
-    };
+    const item = this.projects.find(x => x.projectId === Number(id));
 
-    this.isEdit = false;
-
-    this.submitted = false;
-
-    this.cd.detectChanges();
+    return item ? item.projectName : '-';
 
   }
+
+  getMilestoneName(id: any): string {
+
+    if (id === null || id === undefined || id === '') return '-';
+
+    const item = this.milestones.find(x => x.milestoneId === Number(id));
+
+    return item ? item.milestoneName : '-';
+
+  }
+
+  getPriorityName(id: any): string {
+
+    if (id === null || id === undefined || id === '') return '-';
+
+    const item = this.priorities.find(x => x.priorityId === Number(id));
+
+    return item ? item.priorityName : '-';
+
+  }
+
+  //====================================================
+  // Cascading Milestones (best-effort by matching Project name)
+  //====================================================
+
+  get formMilestones(): any[] {
+
+    if (!this.task.projectId) return this.milestones;
+
+    const projectName = this.getProjectName(this.task.projectId);
+
+    return this.milestones.filter(
+      x => x.project === projectName
+    );
+
+  }
+
+  //====================================================
+  // Filtered Tasks
+  //====================================================
 
   get filteredTasks() {
 
+    const search = this.searchText.trim().toLowerCase();
+
+    if (!search) return this.tasks;
+
     return this.tasks.filter(x =>
 
-      x.taskName
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
-
-      ||
-
-      x.project
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
-
-      ||
-
-      x.milestone
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
-
-      ||
-
-      x.assignedTo
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
-
-      ||
-
-      x.priority
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
-
-      ||
-
-      x.status
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
-
-      ||
-
-      x.tags
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase())
+      (x.taskName || '').toLowerCase().includes(search) ||
+      (x.assignedTo || '').toLowerCase().includes(search) ||
+      (x.status || '').toLowerCase().includes(search) ||
+      (x.tags || '').toLowerCase().includes(search) ||
+      this.getProjectName(x.projectId).toLowerCase().includes(search)
 
     );
 
@@ -415,29 +323,406 @@ export class ProjectTasks {
 
     const start = (this.page - 1) * this.pageSize;
 
-    return this.filteredTasks.slice(
-
-      start,
-
-      start + this.pageSize
-
-    );
+    return this.filteredTasks.slice(start, start + this.pageSize);
 
   }
 
-  changePage(page: number) {
+  //====================================================
+  // Save / Update
+  //====================================================
+
+  saveTask(): void {
+
+    this.submitted = true;
+
+    if (
+      !this.task.taskName || !this.task.taskName.trim() ||
+      !this.task.projectId ||
+      !this.task.assignedTo || !this.task.assignedTo.trim() ||
+      !this.task.priorityId ||
+      !this.task.status
+    ) {
+
+      this.alert.warning('Please fill all required fields.');
+
+      return;
+
+    }
+
+    if (
+      Number(this.task.completionPercentage) < 0 ||
+      Number(this.task.completionPercentage) > 100
+    ) {
+
+      this.alert.warning('Completion Percentage must be between 0 and 100.');
+
+      return;
+
+    }
+
+    if (
+      this.task.estimatedHours !== null &&
+      this.task.estimatedHours !== '' &&
+      Number(this.task.estimatedHours) < 0
+    ) {
+
+      this.alert.warning('Estimated Hours cannot be negative.');
+
+      return;
+
+    }
+
+    if (
+      this.task.actualHours !== null &&
+      this.task.actualHours !== '' &&
+      Number(this.task.actualHours) < 0
+    ) {
+
+      this.alert.warning('Actual Hours cannot be negative.');
+
+      return;
+
+    }
+
+    if (
+      this.task.estimatedHours !== null &&
+      this.task.estimatedHours !== '' &&
+      this.task.actualHours !== null &&
+      this.task.actualHours !== '' &&
+      Number(this.task.actualHours) > Number(this.task.estimatedHours)
+    ) {
+
+      this.alert.warning('Actual Hours cannot exceed Estimated Hours.');
+
+      return;
+
+    }
+
+    if (
+      this.task.startDate &&
+      this.task.dueDate &&
+      this.task.startDate > this.task.dueDate
+    ) {
+
+      this.alert.warning('Start Date cannot be after Due Date.');
+
+      return;
+
+    }
+
+    const payload = {
+
+      taskId: this.isEdit ? this.task.taskId : 0,
+
+      taskName: this.task.taskName.trim(),
+      projectId: Number(this.task.projectId),
+
+      milestoneId: this.task.milestoneId
+        ? Number(this.task.milestoneId)
+        : null,
+
+      assignedTo: this.task.assignedTo.trim(),
+      priorityId: Number(this.task.priorityId),
+
+      status: this.task.status.trim(),
+
+      startDate: this.task.startDate || null,
+      dueDate: this.task.dueDate || null,
+
+      estimatedHours:
+        this.task.estimatedHours !== null && this.task.estimatedHours !== ''
+          ? Number(this.task.estimatedHours)
+          : null,
+
+      actualHours:
+        this.task.actualHours !== null && this.task.actualHours !== ''
+          ? Number(this.task.actualHours)
+          : null,
+
+      completionPercentage: Number(this.task.completionPercentage) || 0,
+
+      tags: this.task.tags ? this.task.tags.trim() : null,
+
+      description: this.task.description
+        ? this.task.description.trim()
+        : null
+
+    };
+
+    this.spinner.show();
+
+    if (this.isEdit) {
+
+      this.http
+        .post<ApiResponse>(
+          `${this.baseUrl}/Admin/updateprojecttask`,
+          payload
+        )
+        .subscribe({
+
+          next: (res: any) => {
+
+            this.spinner.hide();
+
+            if (res?.success) {
+
+              this.alert.success(
+                res.message || 'Project task updated successfully.'
+              );
+
+              this.clear();
+
+              this.loadTasks();
+
+            } else {
+
+              this.alert.warning(
+                res?.message || 'Failed to update project task.'
+              );
+
+            }
+
+          },
+
+          error: (err) => {
+
+            this.spinner.hide();
+
+            console.error('Update project task error:', err);
+
+            this.alert.error(
+              err?.error?.message || 'Failed to update project task.'
+            );
+
+          }
+
+        });
+
+    } else {
+
+      this.http
+        .post<ApiResponse>(
+          `${this.baseUrl}/Admin/createprojecttask`,
+          payload
+        )
+        .subscribe({
+
+          next: (res: any) => {
+
+            this.spinner.hide();
+
+            if (res?.success) {
+
+              this.alert.success(
+                res.message || 'Project task created successfully.'
+              );
+
+              this.clear();
+
+              this.loadTasks();
+
+            } else {
+
+              this.alert.warning(
+                res?.message || 'Failed to create project task.'
+              );
+
+            }
+
+          },
+
+          error: (err) => {
+
+            this.spinner.hide();
+
+            console.error('Create project task error:', err);
+
+            this.alert.error(
+              err?.error?.message || 'Failed to create project task.'
+            );
+
+          }
+
+        });
+
+    }
+
+  }
+
+  //====================================================
+  // Edit
+  //====================================================
+
+  edit(id: number): void {
+
+    this.spinner.show();
+
+    this.http
+      .get<ApiResponse<any>>(`${this.baseUrl}/Admin/getbyprojecttask/${id}`)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.spinner.hide();
+
+          if (res?.success && res.data) {
+
+            const data = res.data;
+
+            this.task = {
+
+              taskId: data.taskId,
+
+              taskName: data.taskName || '',
+              projectId: data.projectId ?? null,
+              milestoneId: data.milestoneId ?? null,
+
+              assignedTo: data.assignedTo || '',
+              priorityId: data.priorityId ?? null,
+
+              status: data.status || '',
+
+              startDate: data.startDate
+                ? data.startDate.substring(0, 10)
+                : '',
+
+              dueDate: data.dueDate
+                ? data.dueDate.substring(0, 10)
+                : '',
+
+              estimatedHours: data.estimatedHours ?? null,
+              actualHours: data.actualHours ?? null,
+
+              completionPercentage: data.completionPercentage ?? 0,
+
+              tags: data.tags || '',
+              description: data.description || ''
+
+            };
+
+            this.isEdit = true;
+
+            this.submitted = false;
+
+            this.cd.detectChanges();
+
+          } else {
+
+            this.alert.warning(res?.message || 'Project task not found.');
+
+          }
+
+        },
+
+        error: (err) => {
+
+          this.spinner.hide();
+
+          console.error('Get project task error:', err);
+
+          this.alert.error(
+            err?.error?.message || 'Failed to load project task.'
+          );
+
+        }
+
+      });
+
+  }
+
+  //====================================================
+  // Delete
+  //====================================================
+
+  delete(id: number): void {
+
+    this.alert.deleteConfirm().then(result => {
+
+      if (!result.isConfirmed) return;
+
+      this.spinner.show();
+
+      this.http
+        .post<ApiResponse>(
+          `${this.baseUrl}/Admin/deleteprojecttask/${id}`,
+          {}
+        )
+        .subscribe({
+
+          next: (res: any) => {
+
+            this.spinner.hide();
+
+            if (res?.success) {
+
+              this.alert.success(
+                res.message || 'Project task deleted successfully.'
+              );
+
+              if (this.page > 1 && this.pagedTasks.length === 1) {
+                this.page = this.page - 1;
+              }
+
+              this.loadTasks();
+
+            } else {
+
+              this.alert.warning(
+                res?.message || 'Failed to delete project task.'
+              );
+
+            }
+
+          },
+
+          error: (err) => {
+
+            this.spinner.hide();
+
+            console.error('Delete project task error:', err);
+
+            this.alert.error(
+              err?.error?.message || 'Failed to delete project task.'
+            );
+
+          }
+
+        });
+
+    });
+
+  }
+
+  //====================================================
+  // Clear Form
+  //====================================================
+
+  clear(): void {
+
+    this.task = this.getEmptyModel();
+
+    this.isEdit = false;
+
+    this.submitted = false;
+
+  }
+
+  //====================================================
+  // Pagination
+  //====================================================
+
+  changePage(page: number): void {
 
     this.page = page;
 
   }
 
-  changePageSize(size: number) {
+  changePageSize(size: number): void {
 
     this.pageSize = size;
 
     this.page = 1;
 
   }
-
 
 }
