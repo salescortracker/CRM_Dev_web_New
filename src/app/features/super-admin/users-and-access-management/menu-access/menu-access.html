@@ -18,7 +18,32 @@
       <div class="card">
         <h2>Menu List</h2>
 
-        <div class="menu-item" *ngFor="let menu of menus" [class.active]="selectedMenu?.menuId === menu.menuId"
+        <div class="menu-search">
+
+          <i class="fas fa-search"></i>
+
+          <input
+            type="text"
+            placeholder="Search menu, URL or type..."
+            [(ngModel)]="searchText"
+            (ngModelChange)="onSearchChange()" />
+
+          <button
+            *ngIf="searchText"
+            type="button"
+            class="clear-search"
+            title="Clear"
+            (click)="clearSearch()">
+            <i class="fas fa-times"></i>
+          </button>
+
+        </div>
+
+        <div class="menu-empty" *ngIf="filteredMenus.length === 0">
+          No menus found.
+        </div>
+
+        <div class="menu-item" *ngFor="let menu of pagedMenus" [class.active]="selectedMenu?.menuId === menu.menuId"
           (click)="selectMenu(menu)">
 
           <div class="menu-left">
@@ -41,6 +66,36 @@
 
           <div class="status-pill" [class.on]="menu.isActive" [class.off]="!menu.isActive">
             {{menu.isActive ? 'On' : 'Off'}}
+          </div>
+
+        </div>
+
+        <div class="menu-pagination" *ngIf="filteredMenus.length > 0">
+
+          <span class="range">
+            {{ rangeStart }}–{{ rangeEnd }} of {{ filteredMenus.length }}
+          </span>
+
+          <div class="pager">
+
+            <button
+              type="button"
+              [disabled]="currentPage <= 1"
+              (click)="goToPage(currentPage - 1)">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+
+            <span class="page-info">
+              {{ currentPage > totalPages ? totalPages : currentPage }} / {{ totalPages }}
+            </span>
+
+            <button
+              type="button"
+              [disabled]="currentPage >= totalPages"
+              (click)="goToPage(currentPage + 1)">
+              <i class="fas fa-chevron-right"></i>
+            </button>
+
           </div>
 
         </div>

@@ -313,7 +313,7 @@
     1.55fr
     .8fr
     1fr
-    45px;
+    84px;
   align-items: center;
   border-bottom: 1px solid #f0f2f5;
 }
@@ -491,6 +491,12 @@
   font-size: 9px;
   color: #475467;
   white-space: nowrap;
+}
+
+.row-action {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
 }
 
 .row-action button {

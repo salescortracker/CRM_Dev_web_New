@@ -1,156 +1,39 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { CompanyInformationDto, CompanyService } from '../services/company.service';
+import { LeadService } from '../services/lead.service';
+import { AuthService } from '../../../core/authentication/services/auth.service';
+import { Alertservice } from '../../../core/services/alertservice';
+
 @Component({
   selector: 'app-company-create',
-  imports: [CommonModule,FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './company-create.html',
   styleUrl: './company-create.css',
 })
-export class CompanyCreate {
-  
-  /* =========================================================
-     FORM MODEL
-  ========================================================= */
-
-  company = {
-
-    // ---------------------------------------------------------
-    // COMPANY INFORMATION
-    // ---------------------------------------------------------
-
-    companyName: '',
-    legalName: '',
-    industry: '',
-    companyType: '',
-    website: '',
-    phone: '',
-    email: '',
-    employees: '',
-    annualRevenue: '',
-    description: '',
-
-    // ---------------------------------------------------------
-    // ADDRESS
-    // ---------------------------------------------------------
-
-    address: {
-
-      addressLine1: '',
-      addressLine2: '',
-      city: '',
-      state: '',
-      country: 'India',
-      postalCode: ''
-
-    },
-
-    // ---------------------------------------------------------
-    // REGISTRATION / SOCIAL
-    // ---------------------------------------------------------
-
-    linkedin: '',
-    gstNumber: '',
-    panNumber: '',
-
-    // ---------------------------------------------------------
-    // PRIMARY CONTACT
-    // ---------------------------------------------------------
-
-    primaryContactName: '',
-    primaryContactDesignation: '',
-    primaryContactEmail: '',
-    primaryContactPhone: ''
-
-  };
-
+export class CompanyCreate implements OnInit {
 
   /* =========================================================
-     DROPDOWN DATA
+     FORM MODEL (flat CompanyInformationDto)
   ========================================================= */
 
-  industries: string[] = [
+  company: Partial<CompanyInformationDto> = this.emptyCompany();
 
-    'Technology',
-    'Information Technology',
-    'Software',
-    'Manufacturing',
-    'Healthcare',
-    'Finance',
-    'Banking',
-    'Insurance',
-    'Retail',
-    'Education',
-    'Real Estate',
-    'Construction',
-    'Telecommunications',
-    'Logistics',
-    'Consulting',
-    'Marketing',
-    'Automotive',
-    'Pharmaceutical',
-    'Hospitality',
-    'Other'
+  /* =========================================================
+     DROPDOWN DATA (from the API)
+  ========================================================= */
 
-  ];
+  industries: { industryId: number; industryName: string }[] = [];
+  companyTypes: { companyTypeId: number; companyTypeName: string }[] = [];
+  countries: { countryId: number; countryName: string }[] = [];
+  states: { stateId: number; countryId: number; stateName: string }[] = [];
 
+  companyStatuses: string[] = ['Active', 'Inactive'];
 
-  companyTypes: string[] = [
-
-    'Private Limited',
-    'Public Limited',
-    'Partnership',
-    'LLP',
-    'Proprietorship',
-    'Startup',
-    'Government',
-    'Non-Profit',
-    'Other'
-
-  ];
-
-
-  countries: string[] = [
-
-    'India',
-    'United States',
-    'United Kingdom',
-    'Canada',
-    'Australia',
-    'Singapore',
-    'United Arab Emirates',
-    'Germany',
-    'France',
-    'Japan',
-    'Other'
-
-  ];
-
-
-  states: string[] = [
-
-    'Andhra Pradesh',
-    'Telangana',
-    'Karnataka',
-    'Tamil Nadu',
-    'Maharashtra',
-    'Delhi',
-    'Gujarat',
-    'Kerala',
-    'West Bengal',
-    'Rajasthan',
-    'Odisha',
-    'Punjab',
-    'Haryana',
-    'Uttar Pradesh',
-    'Other'
-
-  ];
-
-
+  // Stored as free text by the API.
   employeeRanges: string[] = [
-
     '1 - 10',
     '11 - 50',
     '51 - 200',
@@ -158,25 +41,15 @@ export class CompanyCreate {
     '501 - 1000',
     '1001 - 5000',
     '5000+'
-
   ];
-
-
-  revenueRanges: string[] = [
-
-    'Below ₹10 Lakhs',
-    '₹10 Lakhs - ₹1 Crore',
-    '₹1 Crore - ₹10 Crores',
-    '₹10 Crores - ₹50 Crores',
-    '₹50 Crores - ₹100 Crores',
-    '₹100 Crores+'
-
-  ];
-
 
   /* =========================================================
      UI STATE
   ========================================================= */
+
+  isEdit = false;
+
+  companyInformationId = 0;
 
   submitted = false;
 
@@ -184,15 +57,175 @@ export class CompanyCreate {
 
   currentSection = 'basic';
 
+  // Organisation of the logged-in user (tenant CompanyId / RegionId on create).
+  private orgCompanyId: number | null = null;
+  private orgRegionId: number | null = null;
 
-  /* =========================================================
-     CONSTRUCTOR
-  ========================================================= */
+  private currentUserName = '';
 
   constructor(
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute,
+    private companyService: CompanyService,
+    private leadService: LeadService,
+    private authService: AuthService,
+    private alert: Alertservice,
+    private cd: ChangeDetectorRef
   ) {}
 
+  /* =========================================================
+     INIT
+  ========================================================= */
+
+  ngOnInit(): void {
+
+    const user = this.authService.getCurrentUser();
+
+    this.currentUserName = user?.fullName || user?.userName || '';
+
+    const id = Number(this.route.snapshot.queryParamMap.get('id'));
+
+    if (id > 0) {
+      this.isEdit = true;
+      this.companyInformationId = id;
+    } else {
+      this.company.companyOwner = this.currentUserName;
+    }
+
+    this.loadDropdowns();
+    this.loadOrganisation();
+
+    if (this.isEdit) {
+      this.loadCompany();
+    }
+  }
+
+  private emptyCompany(): Partial<CompanyInformationDto> {
+    return {
+      companyInformationId: 0,
+      companyName: '',
+      legalCompanyName: '',
+      industryId: 0,
+      companyTypeId: 0,
+      companyOwner: '',
+      companyStatus: 'Active',
+      website: '',
+      companyPhone: '',
+      companyEmail: '',
+      companyDescription: '',
+      addressLine1: '',
+      addressLine2: '',
+      city: '',
+      stateId: 0,
+      countryId: 0,
+      postalCode: '',
+      numberOfEmployees: null,
+      annualRevenue: null,
+      gstnumber: '',
+      pannumber: '',
+      cinregistrationNumber: '',
+      linkedInCompanyUrl: '',
+      primaryContactName: '',
+      primaryContactDesignation: '',
+      primaryContactEmail: '',
+      primaryContactPhone: '',
+      isActive: true
+    };
+  }
+
+  /* =========================================================
+     LOOKUPS
+  ========================================================= */
+
+  private loadDropdowns(): void {
+
+    this.leadService.getIndustries().subscribe({
+      next: res => { this.industries = res?.data || []; this.cd.detectChanges(); },
+      error: () => this.alert.error('Failed to load industries.')
+    });
+
+    this.companyService.getCompanyTypes().subscribe({
+      next: res => { this.companyTypes = res?.data || []; this.cd.detectChanges(); },
+      error: () => this.alert.error('Failed to load company types.')
+    });
+
+    this.leadService.getCountries().subscribe({
+      next: res => { this.countries = res?.data || []; this.cd.detectChanges(); },
+      error: () => this.alert.error('Failed to load countries.')
+    });
+  }
+
+  private loadStates(countryId: number | null | undefined): void {
+
+    if (!countryId) {
+      this.states = [];
+      return;
+    }
+
+    this.leadService.getStates(countryId).subscribe({
+      next: res => { this.states = res?.data || []; this.cd.detectChanges(); },
+      error: () => this.alert.error('Failed to load states.')
+    });
+  }
+
+  onCountryChange(): void {
+
+    this.company.stateId = 0;
+
+    this.loadStates(this.company.countryId);
+  }
+
+  private loadOrganisation(): void {
+
+    const userId = this.leadService.getCurrentUserId();
+
+    if (!userId) {
+      return;
+    }
+
+    this.leadService.getUserById(userId).subscribe({
+
+      next: res => {
+
+        if (res?.success && res.data) {
+          this.orgCompanyId = res.data.companyId ?? null;
+          this.orgRegionId = res.data.regionId ?? null;
+        }
+      },
+
+      error: err => console.error('Error loading logged-in user org details:', err)
+    });
+  }
+
+  /* =========================================================
+     GET COMPANY BY ID (edit)
+  ========================================================= */
+
+  private loadCompany(): void {
+
+    this.companyService.getCompanyById(this.companyInformationId).subscribe({
+
+      next: res => {
+
+        if (!res?.success || !res.data) {
+          this.alert.error(res?.message || 'Company not found.');
+          this.router.navigate(['/company-list']);
+          return;
+        }
+
+        this.company = { ...res.data };
+
+        this.loadStates(this.company.countryId);
+
+        this.cd.detectChanges();
+      },
+
+      error: err => {
+        this.alert.error(err?.error?.message || 'Failed to load company.');
+        this.router.navigate(['/company-list']);
+      }
+    });
+  }
 
   /* =========================================================
      SECTION NAVIGATION
@@ -204,322 +237,14 @@ export class CompanyCreate {
 
     setTimeout(() => {
 
-      const element =
-        document.getElementById(section);
+      const element = document.getElementById(section);
 
       if (element) {
-
-        element.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
-
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
 
     }, 50);
-
   }
-
-
-  /* =========================================================
-     CREATE COMPANY
-  ========================================================= */
-
-  createCompany(): void {
-
-    this.submitted = true;
-
-    if (!this.isFormValid()) {
-
-      this.currentSection = 'basic';
-
-      return;
-
-    }
-
-    this.isSaving = true;
-
-
-    const companyId =
-      this.generateCompanyId();
-
-
-    const newCompany = {
-
-      id: companyId,
-
-      name: this.company.companyName,
-
-      legalName: this.company.legalName,
-
-      industry: this.company.industry,
-
-      companyType: this.company.companyType,
-
-      website: this.company.website,
-
-      phone: this.company.phone,
-
-      email: this.company.email,
-
-      employees: this.company.employees,
-
-      annualRevenue: this.company.annualRevenue,
-
-      description: this.company.description,
-
-
-      // -------------------------------------------------------
-      // ADDRESS
-      // -------------------------------------------------------
-
-      address: {
-
-        addressLine1:
-          this.company.address.addressLine1,
-
-        addressLine2:
-          this.company.address.addressLine2,
-
-        city:
-          this.company.address.city,
-
-        state:
-          this.company.address.state,
-
-        country:
-          this.company.address.country,
-
-        postalCode:
-          this.company.address.postalCode
-
-      },
-
-
-      // -------------------------------------------------------
-      // REGISTRATION
-      // -------------------------------------------------------
-
-      linkedin:
-        this.company.linkedin,
-
-      gstNumber:
-        this.company.gstNumber,
-
-      panNumber:
-        this.company.panNumber,
-
-
-      // -------------------------------------------------------
-      // PRIMARY CONTACT
-      // -------------------------------------------------------
-
-      primaryContact: {
-
-        name:
-          this.company.primaryContactName,
-
-        designation:
-          this.company.primaryContactDesignation,
-
-        email:
-          this.company.primaryContactEmail,
-
-        phone:
-          this.company.primaryContactPhone
-
-      },
-
-
-      // -------------------------------------------------------
-      // CRM INFORMATION
-      // -------------------------------------------------------
-
-      contacts: 0,
-
-      status: 'Prospect',
-
-      color: 'blue',
-
-      initials:
-        this.getCompanyInitials(),
-
-      createdAt:
-        new Date().toISOString()
-
-    };
-
-
-    console.log(
-      'CORCRM COMPANY CREATED:',
-      newCompany
-    );
-
-
-    /* =========================================================
-       STATIC STORAGE
-       Later replace this with CompanyService API.
-    ========================================================= */
-
-    localStorage.setItem(
-      'corcrm_new_company',
-      JSON.stringify(newCompany)
-    );
-
-
-    localStorage.setItem(
-      'corcrm_last_company_id',
-      companyId
-    );
-
-
-    /* =========================================================
-       REDIRECT TO COMPANY DETAILS
-    ========================================================= */
-
-    setTimeout(() => {
-
-      this.isSaving = false;
-
-      this.router.navigate([
-        '/crm/company-details',
-        companyId
-      ]);
-
-    }, 500);
-
-  }
-
-
-  /* =========================================================
-     SAVE & CREATE ANOTHER
-  ========================================================= */
-
-  saveAndCreateAnother(): void {
-
-    this.submitted = true;
-
-    if (!this.isFormValid()) {
-
-      return;
-
-    }
-
-    this.isSaving = true;
-
-
-    const companyId =
-      this.generateCompanyId();
-
-
-    const newCompany = {
-
-      id: companyId,
-
-      name: this.company.companyName,
-
-      legalName: this.company.legalName,
-
-      industry: this.company.industry,
-
-      companyType: this.company.companyType,
-
-      website: this.company.website,
-
-      phone: this.company.phone,
-
-      email: this.company.email,
-
-      employees: this.company.employees,
-
-      annualRevenue: this.company.annualRevenue,
-
-      description: this.company.description,
-
-      address: {
-
-        addressLine1:
-          this.company.address.addressLine1,
-
-        addressLine2:
-          this.company.address.addressLine2,
-
-        city:
-          this.company.address.city,
-
-        state:
-          this.company.address.state,
-
-        country:
-          this.company.address.country,
-
-        postalCode:
-          this.company.address.postalCode
-
-      },
-
-      linkedin:
-        this.company.linkedin,
-
-      gstNumber:
-        this.company.gstNumber,
-
-      panNumber:
-        this.company.panNumber,
-
-      primaryContact: {
-
-        name:
-          this.company.primaryContactName,
-
-        designation:
-          this.company.primaryContactDesignation,
-
-        email:
-          this.company.primaryContactEmail,
-
-        phone:
-          this.company.primaryContactPhone
-
-      },
-
-      contacts: 0,
-
-      status: 'Prospect',
-
-      color: 'blue',
-
-      initials:
-        this.getCompanyInitials(),
-
-      createdAt:
-        new Date().toISOString()
-
-    };
-
-
-    console.log(
-      'COMPANY CREATED:',
-      newCompany
-    );
-
-
-    localStorage.setItem(
-      'corcrm_new_company',
-      JSON.stringify(newCompany)
-    );
-
-
-    setTimeout(() => {
-
-      this.isSaving = false;
-
-      this.resetForm();
-
-    }, 500);
-
-  }
-
 
   /* =========================================================
      VALIDATION
@@ -528,265 +253,133 @@ export class CompanyCreate {
   isFormValid(): boolean {
 
     return !!(
-
       this.company.companyName?.trim() &&
-
-      this.company.industry &&
-
-      this.company.companyType &&
-
-      this.company.address.city?.trim() &&
-
-      this.company.address.country
-
+      this.company.industryId &&
+      this.company.companyTypeId &&
+      this.company.companyOwner?.trim() &&
+      this.company.companyStatus &&
+      this.company.city?.trim() &&
+      this.company.countryId &&
+      this.company.stateId &&
+      this.isValidEmail(this.company.companyEmail || '') &&
+      this.isValidEmail(this.company.primaryContactEmail || '')
     );
-
   }
 
-
-  /* =========================================================
-     REQUIRED FIELD ERROR
-  ========================================================= */
-
-  isRequiredInvalid(
-    value: string
-  ): boolean {
-
-    return (
-      this.submitted &&
-      !value?.trim()
-    );
-
+  isRequiredInvalid(value: string | null | undefined): boolean {
+    return this.submitted && !value?.trim();
   }
 
-
-  /* =========================================================
-     EMAIL VALIDATION
-  ========================================================= */
-
-  isValidEmail(
-    email: string
-  ): boolean {
+  isValidEmail(email: string): boolean {
 
     if (!email) {
-
       return true;
-
     }
 
-    const pattern =
-      /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    return pattern.test(email);
-
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }
-
-
-  /* =========================================================
-     PHONE VALIDATION
-  ========================================================= */
-
-  isValidPhone(
-    phone: string
-  ): boolean {
-
-    if (!phone) {
-
-      return true;
-
-    }
-
-    const cleaned =
-      phone.replace(/\D/g, '');
-
-    return cleaned.length >= 10;
-
-  }
-
-
-  /* =========================================================
-     WEBSITE NORMALIZATION
-  ========================================================= */
 
   normalizeWebsite(): void {
 
-    if (
+    const site = this.company.website;
 
-      this.company.website &&
-
-      !this.company.website
-        .startsWith('http://') &&
-
-      !this.company.website
-        .startsWith('https://')
-
-    ) {
-
-      this.company.website =
-        'https://' +
-        this.company.website;
-
+    if (site && !site.startsWith('http://') && !site.startsWith('https://')) {
+      this.company.website = 'https://' + site;
     }
-
   }
 
-
   /* =========================================================
-     COMPANY INITIALS
+     SAVE (create / update)
   ========================================================= */
 
-  getCompanyInitials(): string {
+  // createAnother: stay on the page with a blank form (create mode only).
+  saveCompany(createAnother = false): void {
 
-    const name =
-      this.company.companyName?.trim();
-
-    if (!name) {
-
-      return 'CO';
-
+    if (this.isSaving) {
+      return;
     }
 
+    this.submitted = true;
 
-    const words =
-      name
-        .split(' ')
-        .filter(
-          word => word.length > 0
-        );
-
-
-    if (words.length === 1) {
-
-      return words[0]
-        .substring(0, 2)
-        .toUpperCase();
-
+    if (!this.isFormValid()) {
+      this.currentSection = 'basic';
+      this.alert.warning('Please fill all required fields correctly.');
+      return;
     }
 
+    // Create uses the logged-in user's organisation; edit keeps the record's own.
+    if (!this.isEdit && (!this.orgCompanyId || !this.orgRegionId)) {
+      this.alert.error('Could not determine your company/region. Please try again.');
+      return;
+    }
 
-    return (
+    const payload: Partial<CompanyInformationDto> = {
+      ...this.company,
+      companyInformationId: this.isEdit ? this.companyInformationId : 0,
+      companyId: this.isEdit ? this.company.companyId : this.orgCompanyId!,
+      regionId: this.isEdit ? this.company.regionId : this.orgRegionId!,
+      isActive: this.company.companyStatus === 'Active'
+    };
 
-      words[0].charAt(0) +
+    this.isSaving = true;
 
-      words[1].charAt(0)
+    const request = this.isEdit
+      ? this.companyService.updateCompany(payload)
+      : this.companyService.createCompany(payload);
 
-    ).toUpperCase();
+    request.subscribe({
 
+      next: res => {
+
+        this.isSaving = false;
+
+        if (!res?.success) {
+          this.alert.error(res?.message || 'Failed to save company.');
+          this.cd.detectChanges();
+          return;
+        }
+
+        this.alert.success(res.message || 'Company saved successfully.').then(() => {
+
+          if (createAnother && !this.isEdit) {
+            this.resetForm();
+            this.cd.detectChanges();
+          } else {
+            this.router.navigate(['/company-list']);
+          }
+        });
+      },
+
+      error: err => {
+
+        this.isSaving = false;
+
+        this.alert.error(err?.error?.message || 'Failed to save company.');
+
+        this.cd.detectChanges();
+      }
+    });
   }
 
-
-  /* =========================================================
-     COMPANY ID
-  ========================================================= */
-
-  private generateCompanyId(): string {
-
-    const number =
-      Math.floor(
-        1000 +
-        Math.random() * 9000
-      );
-
-    return `COMP-${number}`;
-
+  saveAndCreateAnother(): void {
+    this.saveCompany(true);
   }
 
-
   /* =========================================================
-     CANCEL
+     NAVIGATION / RESET
   ========================================================= */
 
   cancel(): void {
-
-    this.router.navigate([
-      '/crm/companies'
-    ]);
-
+    this.router.navigate(['/company-list']);
   }
-
-
-  /* =========================================================
-     BACK TO COMPANY LIST
-  ========================================================= */
-
-  backToCompanies(): void {
-
-    this.router.navigate([
-      '/crm/companies'
-    ]);
-
-  }
-
-
-  /* =========================================================
-     OPEN LAST COMPANY
-  ========================================================= */
-
-  openCompanyDetails(): void {
-
-    const companyId =
-      localStorage.getItem(
-        'corcrm_last_company_id'
-      );
-
-
-    if (companyId) {
-
-      this.router.navigate([
-        '/crm/company-details',
-        companyId
-      ]);
-
-    }
-
-  }
-
-
-  /* =========================================================
-     RESET FORM
-  ========================================================= */
 
   resetForm(): void {
 
-    this.company = {
+    this.company = this.emptyCompany();
+    this.company.companyOwner = this.currentUserName;
 
-      companyName: '',
-      legalName: '',
-      industry: '',
-      companyType: '',
-      website: '',
-      phone: '',
-      email: '',
-      employees: '',
-      annualRevenue: '',
-      description: '',
-
-      address: {
-
-        addressLine1: '',
-        addressLine2: '',
-        city: '',
-        state: '',
-        country: 'India',
-        postalCode: ''
-
-      },
-
-      linkedin: '',
-      gstNumber: '',
-      panNumber: '',
-
-      primaryContactName: '',
-      primaryContactDesignation: '',
-      primaryContactEmail: '',
-      primaryContactPhone: ''
-
-    };
-
-
+    this.states = [];
     this.submitted = false;
-
     this.currentSection = 'basic';
-
   }
 }

@@ -37,10 +37,10 @@
       <button
         class="btn-secondary"
         type="button"
-        (click)="exportContacts()">
+        (click)="loadContacts()">
 
-        <i class="fa-solid fa-download"></i>
-        Export
+        <i class="fa-solid fa-rotate-right"></i>
+        Refresh
 
       </button>
 
@@ -96,12 +96,12 @@
     <div class="summary-card">
 
       <div class="summary-icon orange">
-        <i class="fa-solid fa-bullseye"></i>
+        <i class="fa-solid fa-user-slash"></i>
       </div>
 
       <div>
-        <span>Prospects</span>
-        <strong>{{ prospects }}</strong>
+        <span>Inactive Contacts</span>
+        <strong>{{ inactiveContacts }}</strong>
       </div>
 
     </div>
@@ -110,12 +110,12 @@
     <div class="summary-card">
 
       <div class="summary-icon purple">
-        <i class="fa-solid fa-user-plus"></i>
+        <i class="fa-solid fa-building"></i>
       </div>
 
       <div>
-        <span>Leads Created</span>
-        <strong>{{ convertedLeads }}</strong>
+        <span>Companies</span>
+        <strong>{{ companyCount }}</strong>
       </div>
 
     </div>
@@ -166,10 +166,6 @@
 
       <option value="Active">
         Active
-      </option>
-
-      <option value="Prospect">
-        Prospect
       </option>
 
       <option value="Inactive">
@@ -233,7 +229,7 @@
         <div>Designation</div>
         <div>Contact Information</div>
         <div>Status</div>
-        <div>Owner</div>
+        <div>Type</div>
         <div></div>
 
       </div>
@@ -244,7 +240,7 @@
       <div
         class="table-row"
         *ngFor="let contact of filteredContacts"
-        (click)="openContact()">
+        (click)="openContact(contact)">
 
 
         <!-- CONTACT -->
@@ -253,20 +249,20 @@
 
           <div
             class="contact-avatar"
-            [ngClass]="contact.color">
+            [ngClass]="getAvatarColor(contact)">
 
-            {{ contact.initials }}
+            {{ getInitials(getContactName(contact)) }}
 
           </div>
 
           <div>
 
             <strong>
-              {{ contact.name }}
+              {{ contact.salutation }} {{ getContactName(contact) }}
             </strong>
 
             <span>
-              {{ contact.id }}
+              {{ contact.contactNumber }}
             </span>
 
           </div>
@@ -281,7 +277,7 @@
           <i class="fa-solid fa-building"></i>
 
           <span>
-            {{ contact.company }}
+            {{ contact.companyName || '—' }}
           </span>
 
         </div>
@@ -292,7 +288,7 @@
         <div class="designation-cell">
 
           <strong>
-            {{ contact.designation }}
+            {{ contact.designation || '—' }}
           </strong>
 
           <span>
@@ -308,7 +304,7 @@
 
           <span>
             <i class="fa-regular fa-envelope"></i>
-            {{ contact.email }}
+            {{ contact.businessEmail }}
           </span>
 
           <span>
@@ -325,27 +321,27 @@
 
           <span
             class="status"
-            [ngClass]="contact.status.toLowerCase()">
+            [ngClass]="getStatus(contact).toLowerCase()">
 
             <span class="status-dot"></span>
 
-            {{ contact.status }}
+            {{ getStatus(contact) }}
 
           </span>
 
         </div>
 
 
-        <!-- OWNER -->
+        <!-- TYPE / RELATIONSHIP -->
 
-        <div class="owner-cell">
+        <div class="designation-cell">
 
-          <div class="owner-avatar">
-            {{ contact.ownerInitials }}
-          </div>
+          <strong>
+            {{ contact.contactTypeName || '—' }}
+          </strong>
 
           <span>
-            {{ contact.owner }}
+            {{ contact.relationshipName }}
           </span>
 
         </div>
@@ -357,9 +353,19 @@
 
           <button
             type="button"
-            (click)="openContact(); $event.stopPropagation()">
+            title="Edit"
+            (click)="editContact(contact); $event.stopPropagation()">
 
-            <i class="fa-solid fa-chevron-right"></i>
+            <i class="fa-solid fa-pen"></i>
+
+          </button>
+
+          <button
+            type="button"
+            title="Delete"
+            (click)="deleteContact(contact); $event.stopPropagation()">
+
+            <i class="fa-solid fa-trash"></i>
 
           </button>
 
@@ -368,11 +374,18 @@
       </div>
 
 
+      <!-- LOADING -->
+
+      <div class="empty-state" *ngIf="isLoading">
+        <p>Loading contacts...</p>
+      </div>
+
+
       <!-- EMPTY -->
 
       <div
         class="empty-state"
-        *ngIf="filteredContacts.length === 0">
+        *ngIf="!isLoading && filteredContacts.length === 0">
 
         <div class="empty-icon">
 

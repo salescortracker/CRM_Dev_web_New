@@ -66,6 +66,74 @@ export class MenuAccess {
   selectedMenu!: Menu;
 
   isNew = false;
+
+  // ================= SEARCH / PAGINATION (Menu List) =================
+
+  searchText = '';
+
+  pageSize = 8;
+
+  currentPage = 1;
+
+  get filteredMenus(): Menu[] {
+
+    const search = this.searchText.trim().toLowerCase();
+
+    if (!search) {
+      return this.menus;
+    }
+
+    return this.menus.filter(menu =>
+      [menu.menuName, menu.url, menu.menuType]
+        .some(v => (v || '').toLowerCase().includes(search))
+    );
+  }
+
+  get totalPages(): number {
+    return Math.max(1, Math.ceil(this.filteredMenus.length / this.pageSize));
+  }
+
+  get pagedMenus(): Menu[] {
+
+    // Clamp in case the list shrank (search, delete, reload).
+    const page = Math.min(this.currentPage, this.totalPages);
+
+    const start = (page - 1) * this.pageSize;
+
+    return this.filteredMenus.slice(start, start + this.pageSize);
+  }
+
+  get rangeStart(): number {
+    return this.filteredMenus.length === 0
+      ? 0
+      : (Math.min(this.currentPage, this.totalPages) - 1) * this.pageSize + 1;
+  }
+
+  get rangeEnd(): number {
+    return Math.min(
+      Math.min(this.currentPage, this.totalPages) * this.pageSize,
+      this.filteredMenus.length
+    );
+  }
+
+  onSearchChange(): void {
+    this.currentPage = 1;
+  }
+
+  clearSearch(): void {
+    this.searchText = '';
+    this.currentPage = 1;
+  }
+
+  goToPage(page: number): void {
+
+    if (page < 1 || page > this.totalPages) {
+      return;
+    }
+
+    this.currentPage = page;
+  }
+
 constructor(
   private authService: AuthService,
   private alert: Alertservice
@@ -87,6 +155,8 @@ loadMenus(): void {
       next: (response) => {
 
         this.menus = response.data;
+
+        this.currentPage = Math.min(this.currentPage, this.totalPages);
 
         if (this.menus.length > 0) {
 

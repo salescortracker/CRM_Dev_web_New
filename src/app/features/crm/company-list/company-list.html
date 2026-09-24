@@ -37,11 +37,11 @@
       <button
         class="btn-secondary"
         type="button"
-        (click)="exportCompanies()">
+        (click)="loadCompanies()">
 
-        <i class="fa-solid fa-download"></i>
+        <i class="fa-solid fa-rotate-right"></i>
 
-        Export
+        Refresh
 
       </button>
 
@@ -84,12 +84,12 @@
     <div class="summary-card">
 
       <div class="summary-icon green">
-        <i class="fa-solid fa-user-group"></i>
+        <i class="fa-solid fa-circle-check"></i>
       </div>
 
       <div>
-        <span>Total Contacts</span>
-        <strong>{{ totalContacts }}</strong>
+        <span>Active Companies</span>
+        <strong>{{ activeCompanies }}</strong>
       </div>
 
     </div>
@@ -98,12 +98,12 @@
     <div class="summary-card">
 
       <div class="summary-icon orange">
-        <i class="fa-solid fa-bullseye"></i>
+        <i class="fa-solid fa-circle-pause"></i>
       </div>
 
       <div>
-        <span>Active Prospects</span>
-        <strong>{{ activeProspects }}</strong>
+        <span>Inactive Companies</span>
+        <strong>{{ inactiveCompanies }}</strong>
       </div>
 
     </div>
@@ -112,12 +112,12 @@
     <div class="summary-card">
 
       <div class="summary-icon purple">
-        <i class="fa-solid fa-user-plus"></i>
+        <i class="fa-solid fa-layer-group"></i>
       </div>
 
       <div>
-        <span>Converted Leads</span>
-        <strong>{{ convertedLeads }}</strong>
+        <span>Industries</span>
+        <strong>{{ industries.length }}</strong>
       </div>
 
     </div>
@@ -146,11 +146,9 @@
     <select [(ngModel)]="industryFilter">
 
       <option value="">All Industries</option>
-      <option value="Technology">Technology</option>
-      <option value="Finance">Finance</option>
-      <option value="Healthcare">Healthcare</option>
-      <option value="Manufacturing">Manufacturing</option>
-      <option value="Retail">Retail</option>
+      <option *ngFor="let industry of industries" [value]="industry">
+        {{ industry }}
+      </option>
 
     </select>
 
@@ -159,7 +157,6 @@
 
       <option value="">All Status</option>
       <option value="Active">Active</option>
-      <option value="Prospect">Prospect</option>
       <option value="Inactive">Inactive</option>
 
     </select>
@@ -219,7 +216,7 @@
         <div>Company</div>
         <div>Industry</div>
         <div>Location</div>
-        <div>Contacts</div>
+        <div>Type</div>
         <div>Status</div>
         <div>Owner</div>
         <div></div>
@@ -232,7 +229,7 @@
       <div
         class="table-row"
         *ngFor="let company of filteredCompanies"
-        (click)="openCompany()">
+        (click)="openCompany(company)">
 
 
         <!-- COMPANY -->
@@ -241,20 +238,20 @@
 
           <div
             class="company-avatar"
-            [ngClass]="company.color">
+            [ngClass]="getAvatarColor(company)">
 
-            {{ company.initials }}
+            {{ getInitials(company.companyName) }}
 
           </div>
 
           <div>
 
             <strong>
-              {{ company.name }}
+              {{ company.companyName }}
             </strong>
 
             <span>
-              {{ company.id }}
+              #{{ company.companyInformationId }}
             </span>
 
           </div>
@@ -268,7 +265,7 @@
 
           <i class="fa-solid fa-layer-group"></i>
 
-          {{ company.industry }}
+          {{ company.industryName || '—' }}
 
         </div>
 
@@ -280,23 +277,19 @@
           <i class="fa-solid fa-location-dot"></i>
 
           <span>
-            {{ company.city }}, {{ company.country }}
+            {{ company.city }}<ng-container *ngIf="company.countryName">, {{ company.countryName }}</ng-container>
           </span>
 
         </div>
 
 
-        <!-- CONTACTS -->
+        <!-- TYPE -->
 
         <div class="contacts-cell">
 
           <strong>
-            {{ company.contacts }}
+            {{ company.companyTypeName || '—' }}
           </strong>
-
-          <span>
-            contacts
-          </span>
 
         </div>
 
@@ -307,11 +300,11 @@
 
           <span
             class="status"
-            [ngClass]="company.status.toLowerCase()">
+            [ngClass]="(company.companyStatus || '').toLowerCase()">
 
             <span class="status-dot"></span>
 
-            {{ company.status }}
+            {{ company.companyStatus }}
 
           </span>
 
@@ -323,11 +316,11 @@
         <div class="owner-cell">
 
           <div class="owner-avatar">
-            {{ company.ownerInitials }}
+            {{ getInitials(company.companyOwner) }}
           </div>
 
           <span>
-            {{ company.owner }}
+            {{ company.companyOwner }}
           </span>
 
         </div>
@@ -339,9 +332,19 @@
 
           <button
             type="button"
-            (click)="openCompany(); $event.stopPropagation()">
+            title="Edit"
+            (click)="editCompany(company); $event.stopPropagation()">
 
-            <i class="fa-solid fa-chevron-right"></i>
+            <i class="fa-solid fa-pen"></i>
+
+          </button>
+
+          <button
+            type="button"
+            title="Delete"
+            (click)="deleteCompany(company); $event.stopPropagation()">
+
+            <i class="fa-solid fa-trash"></i>
 
           </button>
 
@@ -350,11 +353,18 @@
       </div>
 
 
+      <!-- LOADING -->
+
+      <div class="empty-state" *ngIf="isLoading">
+        <p>Loading companies...</p>
+      </div>
+
+
       <!-- EMPTY -->
 
       <div
         class="empty-state"
-        *ngIf="filteredCompanies.length === 0">
+        *ngIf="!isLoading && filteredCompanies.length === 0">
 
         <div class="empty-icon">
 

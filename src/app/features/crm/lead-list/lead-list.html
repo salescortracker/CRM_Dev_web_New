@@ -20,24 +20,28 @@
         </div>
 
         <div class="header-actions">
-          <button class="btn-icon">
-            <i class="bi bi-download"></i>
+          <button class="btn-icon" type="button" (click)="refreshLeads()" title="Refresh">
+            <i class="bi bi-arrow-clockwise"></i>
           </button>
 
-          <button class="btn-secondary">
-            <i class="bi bi-upload"></i>
-            Import
+          <button
+            *ngIf="selectedLeads.length > 0"
+            class="btn-secondary"
+            type="button"
+            (click)="bulkDelete()">
+            <i class="bi bi-trash"></i>
+            Delete ({{ selectedLeads.length }})
           </button>
 
-     <button
-  type="button"
-  class="btn-primary"
-  (click)="createLead()">
+          <button
+            type="button"
+            class="btn-primary"
+            (click)="createLead()">
 
-  <i class="bi bi-plus-lg"></i>
-  New Lead
+            <i class="bi bi-plus-lg"></i>
+            New Lead
 
-</button>
+          </button>
         </div>
       </div>
 
@@ -61,14 +65,7 @@
         </div>
       </div>
 
-      <div class="kpi-value">1,284</div>
-
-      <div class="kpi-footer">
-        <span class="growth positive">
-          <i class="bi bi-arrow-up"></i> 12.8%
-        </span>
-        <span>vs last month</span>
-      </div>
+      <div class="kpi-value">{{ totalLeads }}</div>
 
     </div>
 
@@ -83,14 +80,7 @@
         </div>
       </div>
 
-      <div class="kpi-value">286</div>
-
-      <div class="kpi-footer">
-        <span class="growth positive">
-          <i class="bi bi-arrow-up"></i> 8.4%
-        </span>
-        <span>this month</span>
-      </div>
+      <div class="kpi-value">{{ newLeads }}</div>
 
     </div>
 
@@ -105,14 +95,7 @@
         </div>
       </div>
 
-      <div class="kpi-value">428</div>
-
-      <div class="kpi-footer">
-        <span class="growth positive">
-          <i class="bi bi-arrow-up"></i> 15.2%
-        </span>
-        <span>conversion</span>
-      </div>
+      <div class="kpi-value">{{ qualifiedLeads }}</div>
 
     </div>
 
@@ -127,14 +110,7 @@
         </div>
       </div>
 
-      <div class="kpi-value">24.6%</div>
-
-      <div class="kpi-footer">
-        <span class="growth positive">
-          <i class="bi bi-arrow-up"></i> 3.6%
-        </span>
-        <span>vs last month</span>
-      </div>
+      <div class="kpi-value">{{ conversionRate }}%</div>
 
     </div>
 
@@ -158,9 +134,9 @@
           <input
             type="text"
             placeholder="Search leads, companies or email..."
+            [(ngModel)]="searchText"
+            (ngModelChange)="applyFilters()"
           />
-
-          <span class="search-shortcut">⌘ K</span>
 
         </div>
 
@@ -169,24 +145,36 @@
 
       <div class="toolbar-right">
 
-        <button class="filter-btn">
-          <i class="bi bi-funnel"></i>
-          Filter
-          <span class="filter-count">2</span>
-        </button>
+        <select
+          class="filter-btn"
+          [(ngModel)]="selectedStatus"
+          (ngModelChange)="applyFilters()">
 
-        <button class="filter-btn">
-          <i class="bi bi-calendar3"></i>
-          Date
-        </button>
+          <option value="All">Status: All</option>
 
-        <button class="view-btn active">
-          <i class="bi bi-list"></i>
-        </button>
+          <option
+            *ngFor="let status of leadStatuses"
+            [value]="status">
+            {{ status }}
+          </option>
 
-        <button class="view-btn">
-          <i class="bi bi-grid"></i>
-        </button>
+        </select>
+
+        <select
+          *ngIf="owners.length > 0"
+          class="filter-btn"
+          [(ngModel)]="selectedOwner"
+          (ngModelChange)="applyFilters()">
+
+          <option value="All">Owner: All</option>
+
+          <option
+            *ngFor="let owner of owners"
+            [value]="owner">
+            {{ owner }}
+          </option>
+
+        </select>
 
       </div>
 
@@ -194,21 +182,21 @@
 
 
     <!-- ACTIVE FILTERS -->
-    <div class="active-filters">
+    <div class="active-filters" *ngIf="hasActiveFilters">
 
       <span class="filter-label">Filters:</span>
 
-      <span class="filter-chip">
-        Status: All
-        <i class="bi bi-x"></i>
+      <span class="filter-chip" *ngIf="selectedStatus !== 'All'">
+        Status: {{ selectedStatus }}
+        <i class="bi bi-x" (click)="clearStatus()"></i>
       </span>
 
-      <span class="filter-chip">
-        Owner: All
-        <i class="bi bi-x"></i>
+      <span class="filter-chip" *ngIf="selectedOwner !== 'All'">
+        Owner: {{ selectedOwner }}
+        <i class="bi bi-x" (click)="clearOwner()"></i>
       </span>
 
-      <button class="clear-filter">
+      <button class="clear-filter" type="button" (click)="resetFilters()">
         Clear all
       </button>
 
@@ -227,7 +215,10 @@
           <tr>
 
             <th class="check-column">
-              <input type="checkbox">
+              <input
+                type="checkbox"
+                [checked]="allSelected"
+                (change)="toggleAllSelection($event)">
             </th>
 
             <th>LEAD</th>
@@ -244,7 +235,7 @@
 
             <th>OWNER</th>
 
-            <th>LAST ACTIVITY</th>
+            <th>CREATED</th>
 
             <th></th>
 
@@ -255,11 +246,25 @@
 
         <tbody>
 
-          <!-- ROW 1 -->
-          <tr>
+          <tr *ngIf="isLoading">
+            <td colspan="10" style="text-align:center; padding:24px;">
+              Loading leads...
+            </td>
+          </tr>
+
+          <tr *ngIf="!isLoading && filteredLeads.length === 0">
+            <td colspan="10" style="text-align:center; padding:24px;">
+              No leads found.
+            </td>
+          </tr>
+
+          <tr *ngFor="let lead of pagedLeads">
 
             <td>
-              <input type="checkbox">
+              <input
+                type="checkbox"
+                [checked]="isSelected(lead.leadId)"
+                (change)="toggleSelection(lead.leadId, $event)">
             </td>
 
 
@@ -267,22 +272,18 @@
 
               <div class="lead-info">
 
-                <div class="lead-avatar avatar-blue">
-                  AR
+                <div class="lead-avatar" [ngClass]="getAvatarClass(lead)">
+                  {{ getInitials(getLeadName(lead)) }}
                 </div>
 
                 <div>
 
-                <a
-  class="lead-name"
-  (click)="openLead()">
-
-  Arjun Reddy
-
-</a>
+                  <a class="lead-name" (click)="openLead(lead)">
+                    {{ lead.salutation ? lead.salutation + ' ' : '' }}{{ getLeadName(lead) }}
+                  </a>
 
                   <span class="lead-id">
-                    #LD-10284
+                    #{{ lead.leadNumber }}
                   </span>
 
                 </div>
@@ -296,9 +297,9 @@
 
               <div class="company-info">
 
-                <strong>TechNova Solutions</strong>
+                <strong>{{ lead.companyName }}</strong>
 
-                <span>Technology</span>
+                <span>{{ lead.industryName || '—' }}</span>
 
               </div>
 
@@ -309,12 +310,12 @@
 
               <div class="contact-info">
 
-                <span>
-                  arjun@technova.com
-                </span>
+                <span>{{ lead.email }}</span>
 
-                <span>
-                  +91 98765 43210
+                <span>{{ lead.phone || lead.mobile || '—' }}</span>
+
+                <span *ngIf="lead.preferredContactMethod">
+                  Prefers: {{ lead.preferredContactMethod }}
                 </span>
 
               </div>
@@ -324,9 +325,9 @@
 
             <td>
 
-              <span class="status qualified">
+              <span class="status" [ngClass]="getStatusClass(lead.leadStatus)">
                 <span></span>
-                Qualified
+                {{ lead.leadStatus }}
               </span>
 
             </td>
@@ -336,8 +337,8 @@
 
               <div class="score">
 
-                <div class="score-circle high">
-                  92
+                <div class="score-circle" [ngClass]="getScoreClass(lead.leadScore)">
+                  {{ lead.leadScore ?? '—' }}
                 </div>
 
               </div>
@@ -347,7 +348,7 @@
 
             <td>
               <span class="source">
-                Website
+                {{ lead.leadSourceName || '—' }}
               </span>
             </td>
 
@@ -357,10 +358,10 @@
               <div class="owner">
 
                 <div class="owner-avatar">
-                  SK
+                  {{ getInitials(lead.leadOwnerName || '') || '—' }}
                 </div>
 
-                <span>Sanjay Kumar</span>
+                <span>{{ lead.leadOwnerName || 'Unassigned' }}</span>
 
               </div>
 
@@ -371,550 +372,30 @@
 
               <div class="activity">
 
-                <strong>Today</strong>
-                <span>10:42 AM</span>
+                <strong>{{ lead.createdAt | date: 'mediumDate' }}</strong>
+                <span>{{ lead.createdAt | date: 'shortTime' }}</span>
 
               </div>
 
             </td>
 
 
-            <td>
+            <td style="white-space:nowrap;">
 
-              <button class="row-action">
-                <i class="bi bi-three-dots-vertical"></i>
+              <button
+                class="row-action"
+                type="button"
+                title="Edit"
+                (click)="editLead(lead)">
+                <i class="bi bi-pencil"></i>
               </button>
 
-            </td>
-
-          </tr>
-
-
-          <!-- ROW 2 -->
-          <tr>
-
-            <td>
-              <input type="checkbox">
-            </td>
-
-
-            <td>
-
-              <div class="lead-info">
-
-                <div class="lead-avatar avatar-purple">
-                  PS
-                </div>
-
-                <div>
-
-                <a
-  class="lead-name"
-  (click)="openLead()">
-
-  Priya Sharma
-
-</a>
-
-                  <span class="lead-id">
-                    #LD-10283
-                  </span>
-
-                </div>
-
-              </div>
-
-            </td>
-
-
-            <td>
-
-              <div class="company-info">
-
-                <strong>CloudMatrix Pvt Ltd</strong>
-
-                <span>IT Services</span>
-
-              </div>
-
-            </td>
-
-
-            <td>
-
-              <div class="contact-info">
-
-                <span>
-                  priya@cloudmatrix.in
-                </span>
-
-                <span>
-                  +91 99887 66554
-                </span>
-
-              </div>
-
-            </td>
-
-
-            <td>
-
-              <span class="status contacted">
-                <span></span>
-                Contacted
-              </span>
-
-            </td>
-
-
-            <td>
-
-              <div class="score">
-
-                <div class="score-circle medium">
-                  76
-                </div>
-
-              </div>
-
-            </td>
-
-
-            <td>
-              <span class="source">
-                LinkedIn
-              </span>
-            </td>
-
-
-            <td>
-
-              <div class="owner">
-
-                <div class="owner-avatar owner-purple">
-                  AM
-                </div>
-
-                <span>Anil Mehta</span>
-
-              </div>
-
-            </td>
-
-
-            <td>
-
-              <div class="activity">
-
-                <strong>Yesterday</strong>
-                <span>04:18 PM</span>
-
-              </div>
-
-            </td>
-
-
-            <td>
-
-              <button class="row-action">
-                <i class="bi bi-three-dots-vertical"></i>
-              </button>
-
-            </td>
-
-          </tr>
-
-
-          <!-- ROW 3 -->
-          <tr>
-
-            <td>
-              <input type="checkbox">
-            </td>
-
-
-            <td>
-
-              <div class="lead-info">
-
-                <div class="lead-avatar avatar-green">
-                  VK
-                </div>
-
-                <div>
-
-               <a
-  class="lead-name"
-  (click)="openLead()">
-
-  Vikram Kumar
-
-</a>
-
-                  <span class="lead-id">
-                    #LD-10282
-                  </span>
-
-                </div>
-
-              </div>
-
-            </td>
-
-
-            <td>
-
-              <div class="company-info">
-
-                <strong>FinEdge Technologies</strong>
-
-                <span>FinTech</span>
-
-              </div>
-
-            </td>
-
-
-            <td>
-
-              <div class="contact-info">
-
-                <span>
-                  vikram@finedge.com
-                </span>
-
-                <span>
-                  +91 91234 56789
-                </span>
-
-              </div>
-
-            </td>
-
-
-            <td>
-
-              <span class="status new">
-                <span></span>
-                New
-              </span>
-
-            </td>
-
-
-            <td>
-
-              <div class="score">
-
-                <div class="score-circle medium">
-                  68
-                </div>
-
-              </div>
-
-            </td>
-
-
-            <td>
-              <span class="source">
-                Campaign
-              </span>
-            </td>
-
-
-            <td>
-
-              <div class="owner">
-
-                <div class="owner-avatar owner-green">
-                  RM
-                </div>
-
-                <span>Rahul Menon</span>
-
-              </div>
-
-            </td>
-
-
-            <td>
-
-              <div class="activity">
-
-                <strong>Aug 18</strong>
-                <span>11:25 AM</span>
-
-              </div>
-
-            </td>
-
-
-            <td>
-
-              <button class="row-action">
-                <i class="bi bi-three-dots-vertical"></i>
-              </button>
-
-            </td>
-
-          </tr>
-
-
-          <!-- ROW 4 -->
-          <tr>
-
-            <td>
-              <input type="checkbox">
-            </td>
-
-
-            <td>
-
-              <div class="lead-info">
-
-                <div class="lead-avatar avatar-orange">
-                  NS
-                </div>
-
-                <div>
-
-                  <a class="lead-name">
-                    Neha Singh
-                  </a>
-
-                  <span class="lead-id">
-                    #LD-10281
-                  </span>
-
-                </div>
-
-              </div>
-
-            </td>
-
-
-            <td>
-
-              <div class="company-info">
-
-                <strong>BrightWorks India</strong>
-
-                <span>Manufacturing</span>
-
-              </div>
-
-            </td>
-
-
-            <td>
-
-              <div class="contact-info">
-
-                <span>
-                  neha@brightworks.in
-                </span>
-
-                <span>
-                  +91 90012 34567
-                </span>
-
-              </div>
-
-            </td>
-
-
-            <td>
-
-              <span class="status nurturing">
-                <span></span>
-                Nurturing
-              </span>
-
-            </td>
-
-
-            <td>
-
-              <div class="score">
-
-                <div class="score-circle low">
-                  54
-                </div>
-
-              </div>
-
-            </td>
-
-
-            <td>
-              <span class="source">
-                Referral
-              </span>
-            </td>
-
-
-            <td>
-
-              <div class="owner">
-
-                <div class="owner-avatar owner-orange">
-                  RS
-                </div>
-
-                <span>Ravi Sharma</span>
-
-              </div>
-
-            </td>
-
-
-            <td>
-
-              <div class="activity">
-
-                <strong>Aug 17</strong>
-                <span>02:40 PM</span>
-
-              </div>
-
-            </td>
-
-
-            <td>
-
-              <button class="row-action">
-                <i class="bi bi-three-dots-vertical"></i>
-              </button>
-
-            </td>
-
-          </tr>
-
-
-          <!-- ROW 5 -->
-          <tr>
-
-            <td>
-              <input type="checkbox">
-            </td>
-
-
-            <td>
-
-              <div class="lead-info">
-
-                <div class="lead-avatar avatar-red">
-                  RS
-                </div>
-
-                <div>
-
-                  <a class="lead-name">
-                    Rohan Shah
-                  </a>
-
-                  <span class="lead-id">
-                    #LD-10280
-                  </span>
-
-                </div>
-
-              </div>
-
-            </td>
-
-
-            <td>
-
-              <div class="company-info">
-
-                <strong>Vertex Global</strong>
-
-                <span>Consulting</span>
-
-              </div>
-
-            </td>
-
-
-            <td>
-
-              <div class="contact-info">
-
-                <span>
-                  rohan@vertexglobal.com
-                </span>
-
-                <span>
-                  +91 98876 54321
-                </span>
-
-              </div>
-
-            </td>
-
-
-            <td>
-
-              <span class="status lost">
-                <span></span>
-                Lost
-              </span>
-
-            </td>
-
-
-            <td>
-
-              <div class="score">
-
-                <div class="score-circle low">
-                  32
-                </div>
-
-              </div>
-
-            </td>
-
-
-            <td>
-              <span class="source">
-                Cold Call
-              </span>
-            </td>
-
-
-            <td>
-
-              <div class="owner">
-
-                <div class="owner-avatar owner-red">
-                  VK
-                </div>
-
-                <span>Vivek Kumar</span>
-
-              </div>
-
-            </td>
-
-
-            <td>
-
-              <div class="activity">
-
-                <strong>Aug 15</strong>
-                <span>09:30 AM</span>
-
-              </div>
-
-            </td>
-
-
-            <td>
-
-              <button class="row-action">
-                <i class="bi bi-three-dots-vertical"></i>
+              <button
+                class="row-action"
+                type="button"
+                title="Delete"
+                (click)="deleteLead(lead)">
+                <i class="bi bi-trash"></i>
               </button>
 
             </td>
@@ -934,35 +415,35 @@
     <div class="table-footer">
 
       <div class="results-info">
-        Showing <strong>1–5</strong> of <strong>1,284</strong> leads
+        Showing <strong>{{ rangeStart }}–{{ rangeEnd }}</strong>
+        of <strong>{{ filteredLeads.length }}</strong> leads
       </div>
 
 
       <div class="pagination">
 
-        <button class="page-btn disabled">
+        <button
+          class="page-btn"
+          type="button"
+          [class.disabled]="currentPage === 1"
+          (click)="goToPage(currentPage - 1)">
           <i class="bi bi-chevron-left"></i>
         </button>
 
-        <button class="page-number active">
-          1
+        <button
+          *ngFor="let page of pageNumbers"
+          class="page-number"
+          type="button"
+          [class.active]="page === currentPage"
+          (click)="goToPage(page)">
+          {{ page }}
         </button>
 
-        <button class="page-number">
-          2
-        </button>
-
-        <button class="page-number">
-          3
-        </button>
-
-        <span class="pagination-dots">...</span>
-
-        <button class="page-number">
-          257
-        </button>
-
-        <button class="page-btn">
+        <button
+          class="page-btn"
+          type="button"
+          [class.disabled]="currentPage === totalPages"
+          (click)="goToPage(currentPage + 1)">
           <i class="bi bi-chevron-right"></i>
         </button>
 

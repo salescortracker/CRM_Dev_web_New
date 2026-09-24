@@ -18,7 +18,7 @@
 
         <i class="fa-solid fa-chevron-right"></i>
 
-        <strong>Create Company</strong>
+        <strong>{{ isEdit ? 'Edit Company' : 'Create Company' }}</strong>
 
       </div>
 
@@ -34,10 +34,12 @@
 
         <div>
 
-          <h1>Create Company</h1>
+          <h1>{{ isEdit ? 'Edit Company' : 'Create Company' }}</h1>
 
           <p>
-            Add a new company to your CORCRM prospect database.
+            {{ isEdit
+                ? 'Update this company in your CORCRM database.'
+                : 'Add a new company to your CORCRM prospect database.' }}
           </p>
 
         </div>
@@ -65,7 +67,7 @@
         type="button"
         class="btn-primary"
         [disabled]="isSaving"
-        (click)="createCompany()">
+        (click)="saveCompany()">
 
         <i
           class="fa-solid"
@@ -76,7 +78,7 @@
           ">
         </i>
 
-        {{ isSaving ? 'Saving...' : 'Create Company' }}
+        {{ isSaving ? 'Saving...' : (isEdit ? 'Update Company' : 'Create Company') }}
 
       </button>
 
@@ -338,7 +340,7 @@
 
             <input
               type="text"
-              [(ngModel)]="company.legalName"
+              [(ngModel)]="company.legalCompanyName"
               name="legalName"
               placeholder="Registered legal name">
 
@@ -358,21 +360,21 @@
             </label>
 
             <select
-              [(ngModel)]="company.industry"
+              [(ngModel)]="company.industryId"
               name="industry"
               [class.invalid]="
-                submitted && !company.industry
+                submitted && !company.industryId
               ">
 
-              <option value="">
+              <option [ngValue]="0">
                 Select industry
               </option>
 
               <option
                 *ngFor="let industry of industries"
-                [value]="industry">
+                [ngValue]="industry.industryId">
 
-                {{ industry }}
+                {{ industry.industryName }}
 
               </option>
 
@@ -381,7 +383,7 @@
             <small
               class="error"
               *ngIf="
-                submitted && !company.industry
+                submitted && !company.industryId
               ">
 
               Industry is required.
@@ -404,21 +406,21 @@
             </label>
 
             <select
-              [(ngModel)]="company.companyType"
+              [(ngModel)]="company.companyTypeId"
               name="companyType"
               [class.invalid]="
-                submitted && !company.companyType
+                submitted && !company.companyTypeId
               ">
 
-              <option value="">
+              <option [ngValue]="0">
                 Select company type
               </option>
 
               <option
                 *ngFor="let type of companyTypes"
-                [value]="type">
+                [ngValue]="type.companyTypeId">
 
-                {{ type }}
+                {{ type.companyTypeName }}
 
               </option>
 
@@ -427,12 +429,75 @@
             <small
               class="error"
               *ngIf="
-                submitted && !company.companyType
+                submitted && !company.companyTypeId
               ">
 
               Company type is required.
 
             </small>
+
+          </div>
+
+
+          <!-- COMPANY OWNER -->
+
+          <div class="form-group">
+
+            <label>
+
+              Company Owner
+
+              <span>*</span>
+
+            </label>
+
+            <input
+              type="text"
+              [(ngModel)]="company.companyOwner"
+              name="companyOwner"
+              placeholder="Owner name"
+              [class.invalid]="
+                isRequiredInvalid(company.companyOwner)
+              ">
+
+            <small
+              class="error"
+              *ngIf="
+                isRequiredInvalid(company.companyOwner)
+              ">
+
+              Company owner is required.
+
+            </small>
+
+          </div>
+
+
+          <!-- COMPANY STATUS -->
+
+          <div class="form-group">
+
+            <label>
+
+              Company Status
+
+              <span>*</span>
+
+            </label>
+
+            <select
+              [(ngModel)]="company.companyStatus"
+              name="companyStatus">
+
+              <option
+                *ngFor="let status of companyStatuses"
+                [ngValue]="status">
+
+                {{ status }}
+
+              </option>
+
+            </select>
 
           </div>
 
@@ -475,7 +540,7 @@
 
               <input
                 type="text"
-                [(ngModel)]="company.phone"
+                [(ngModel)]="company.companyPhone"
                 name="phone"
                 placeholder="+91 98765 43210">
 
@@ -498,7 +563,7 @@
 
               <input
                 type="email"
-                [(ngModel)]="company.email"
+                [(ngModel)]="company.companyEmail"
                 name="email"
                 placeholder="info@example.com">
 
@@ -507,8 +572,8 @@
             <small
               class="error"
               *ngIf="
-                company.email &&
-                !isValidEmail(company.email)
+                company.companyEmail &&
+                !isValidEmail(company.companyEmail)
               ">
 
               Enter a valid email address.
@@ -528,7 +593,7 @@
 
             <textarea
               rows="4"
-              [(ngModel)]="company.description"
+              [(ngModel)]="company.companyDescription"
               name="description"
               placeholder="Brief description about the company...">
             </textarea>
@@ -586,7 +651,7 @@
 
               <input
                 type="text"
-                [(ngModel)]="company.address.addressLine1"
+                [(ngModel)]="company.addressLine1"
                 name="addressLine1"
                 placeholder="Building / Street / Area">
 
@@ -605,7 +670,7 @@
 
             <input
               type="text"
-              [(ngModel)]="company.address.addressLine2"
+              [(ngModel)]="company.addressLine2"
               name="addressLine2"
               placeholder="Landmark / Suite / Floor">
 
@@ -626,19 +691,19 @@
 
             <input
               type="text"
-              [(ngModel)]="company.address.city"
+              [(ngModel)]="company.city"
               name="city"
               placeholder="e.g. Hyderabad"
               [class.invalid]="
                 submitted &&
-                !company.address.city
+                !company.city
               ">
 
             <small
               class="error"
               *ngIf="
                 submitted &&
-                !company.address.city
+                !company.city
               ">
 
               City is required.
@@ -653,26 +718,44 @@
           <div class="form-group">
 
             <label>
+
               State
+
+              <span>*</span>
+
             </label>
 
             <select
-              [(ngModel)]="company.address.state"
-              name="state">
+              [(ngModel)]="company.stateId"
+              name="state"
+              [disabled]="!company.countryId"
+              [class.invalid]="
+                submitted && !company.stateId
+              ">
 
-              <option value="">
+              <option [ngValue]="0">
                 Select state
               </option>
 
               <option
                 *ngFor="let state of states"
-                [value]="state">
+                [ngValue]="state.stateId">
 
-                {{ state }}
+                {{ state.stateName }}
 
               </option>
 
             </select>
+
+            <small
+              class="error"
+              *ngIf="
+                submitted && !company.stateId
+              ">
+
+              State is required.
+
+            </small>
 
           </div>
 
@@ -690,18 +773,36 @@
             </label>
 
             <select
-              [(ngModel)]="company.address.country"
-              name="country">
+              [(ngModel)]="company.countryId"
+              (ngModelChange)="onCountryChange()"
+              name="country"
+              [class.invalid]="
+                submitted && !company.countryId
+              ">
+
+              <option [ngValue]="0">
+                Select country
+              </option>
 
               <option
                 *ngFor="let country of countries"
-                [value]="country">
+                [ngValue]="country.countryId">
 
-                {{ country }}
+                {{ country.countryName }}
 
               </option>
 
             </select>
+
+            <small
+              class="error"
+              *ngIf="
+                submitted && !company.countryId
+              ">
+
+              Country is required.
+
+            </small>
 
           </div>
 
@@ -716,7 +817,7 @@
 
             <input
               type="text"
-              [(ngModel)]="company.address.postalCode"
+              [(ngModel)]="company.postalCode"
               name="postalCode"
               placeholder="500001">
 
@@ -768,16 +869,16 @@
             </label>
 
             <select
-              [(ngModel)]="company.employees"
+              [(ngModel)]="company.numberOfEmployees"
               name="employees">
 
-              <option value="">
+              <option [ngValue]="null">
                 Select employee range
               </option>
 
               <option
                 *ngFor="let range of employeeRanges"
-                [value]="range">
+                [ngValue]="range">
 
                 {{ range }}
 
@@ -793,26 +894,15 @@
           <div class="form-group">
 
             <label>
-              Annual Revenue
+              Annual Revenue (₹)
             </label>
 
-            <select
+            <input
+              type="number"
+              min="0"
               [(ngModel)]="company.annualRevenue"
-              name="annualRevenue">
-
-              <option value="">
-                Select revenue range
-              </option>
-
-              <option
-                *ngFor="let revenue of revenueRanges"
-                [value]="revenue">
-
-                {{ revenue }}
-
-              </option>
-
-            </select>
+              name="annualRevenue"
+              placeholder="e.g. 10000000">
 
           </div>
 
@@ -867,7 +957,7 @@
 
               <input
                 type="text"
-                [(ngModel)]="company.gstNumber"
+                [(ngModel)]="company.gstnumber"
                 name="gstNumber"
                 placeholder="GSTIN">
 
@@ -890,9 +980,32 @@
 
               <input
                 type="text"
-                [(ngModel)]="company.panNumber"
+                [(ngModel)]="company.pannumber"
                 name="panNumber"
                 placeholder="PAN Number">
+
+            </div>
+
+          </div>
+
+
+          <!-- CIN -->
+
+          <div class="form-group full">
+
+            <label>
+              CIN Registration Number
+            </label>
+
+            <div class="input-wrapper">
+
+              <i class="fa-solid fa-file-invoice"></i>
+
+              <input
+                type="text"
+                [(ngModel)]="company.cinregistrationNumber"
+                name="cinregistrationNumber"
+                placeholder="Corporate Identification Number">
 
             </div>
 
@@ -913,7 +1026,7 @@
 
               <input
                 type="text"
-                [(ngModel)]="company.linkedin"
+                [(ngModel)]="company.linkedInCompanyUrl"
                 name="linkedin"
                 placeholder="https://linkedin.com/company/example">
 
@@ -1067,6 +1180,7 @@
         <div class="bottom-right">
 
           <button
+            *ngIf="!isEdit"
             type="button"
             class="btn-outline"
             [disabled]="isSaving"
@@ -1083,7 +1197,7 @@
             type="button"
             class="btn-primary"
             [disabled]="isSaving"
-            (click)="createCompany()">
+            (click)="saveCompany()">
 
             <i
               class="fa-solid"
@@ -1094,7 +1208,7 @@
               ">
             </i>
 
-            {{ isSaving ? 'Creating...' : 'Create Company' }}
+            {{ isSaving ? 'Saving...' : (isEdit ? 'Update Company' : 'Create Company') }}
 
           </button>
 

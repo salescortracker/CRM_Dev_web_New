@@ -1,254 +1,205 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ContactDto, ContactService } from '../services/contact.service';
+import { Alertservice } from '../../../core/services/alertservice';
+
 @Component({
   selector: 'app-contact-list',
- imports: [
+  imports: [
     CommonModule,
     FormsModule
   ],
   templateUrl: './contact-list.html',
   styleUrl: './contact-list.css',
 })
-export class ContactList {
-   searchText = '';
+export class ContactList implements OnInit {
+
+  searchText = '';
   companyFilter = '';
   statusFilter = '';
 
-  contacts = [
+  contacts: ContactDto[] = [];
 
-    {
-      id: 'CON-1001',
-      name: 'Rajesh Kumar',
-      initials: 'RK',
-      color: 'blue',
-      company: 'ABC Technologies',
-      designation: 'Chief Executive Officer',
-      department: 'Management',
-      email: 'rajesh@abctech.com',
-      phone: '+91 98765 43210',
-      status: 'Active',
-      owner: 'Arjun Rao',
-      ownerInitials: 'AR'
-    },
+  isLoading = false;
 
-    {
-      id: 'CON-1002',
-      name: 'Priya Sharma',
-      initials: 'PS',
-      color: 'purple',
-      company: 'ABC Technologies',
-      designation: 'HR Director',
-      department: 'Human Resources',
-      email: 'priya@abctech.com',
-      phone: '+91 98765 44321',
-      status: 'Prospect',
-      owner: 'Arjun Rao',
-      ownerInitials: 'AR'
-    },
+  private readonly avatarColors = ['blue', 'green', 'purple', 'orange', 'red'];
 
-    {
-      id: 'CON-1003',
-      name: 'Rahul Mehta',
-      initials: 'RM',
-      color: 'green',
-      company: 'Finova Solutions',
-      designation: 'Sales Director',
-      department: 'Sales',
-      email: 'rahul@finova.com',
-      phone: '+91 99887 66554',
-      status: 'Active',
-      owner: 'Sneha Rao',
-      ownerInitials: 'SR'
-    },
+  constructor(
+    private router: Router,
+    private contactService: ContactService,
+    private alert: Alertservice,
+    private cd: ChangeDetectorRef
+  ) {}
 
-    {
-      id: 'CON-1004',
-      name: 'Anita Reddy',
-      initials: 'AR',
-      color: 'orange',
-      company: 'Medicare Systems',
-      designation: 'Operations Manager',
-      department: 'Operations',
-      email: 'anita@medicare.com',
-      phone: '+91 99881 22110',
-      status: 'Prospect',
-      owner: 'Arjun Rao',
-      ownerInitials: 'AR'
-    },
+  ngOnInit(): void {
+    this.loadContacts();
+  }
 
-    {
-      id: 'CON-1005',
-      name: 'Vikram Singh',
-      initials: 'VS',
-      color: 'red',
-      company: 'TechNova Labs',
-      designation: 'CTO',
-      department: 'Technology',
-      email: 'vikram@technova.com',
-      phone: '+91 98770 11122',
-      status: 'Inactive',
-      owner: 'Kiran Kumar',
-      ownerInitials: 'KK'
-    }
+  // ================= GET ALL =================
 
-  ];
+  loadContacts(): void {
 
+    this.isLoading = true;
 
-  companies = [
-    'ABC Technologies',
-    'Finova Solutions',
-    'Medicare Systems',
-    'TechNova Labs'
-  ];
+    this.contactService.getContacts().subscribe({
 
+      next: (res) => {
 
-  get filteredContacts() {
+        this.contacts = res?.success && res.data ? res.data : [];
 
-    const search = this.searchText
-      .trim()
-      .toLowerCase();
+        this.isLoading = false;
+
+        this.cd.detectChanges();
+      },
+
+      error: (err) => {
+
+        this.isLoading = false;
+
+        this.alert.error(err?.error?.message || 'Failed to load contacts.');
+
+        this.cd.detectChanges();
+      }
+    });
+  }
+
+  // ================= FILTERS =================
+
+  get companies(): string[] {
+
+    const names = this.contacts
+      .map(x => x.companyName)
+      .filter((x): x is string => !!x);
+
+    return Array.from(new Set(names)).sort();
+  }
+
+  get filteredContacts(): ContactDto[] {
+
+    const search = this.searchText.trim().toLowerCase();
 
     return this.contacts.filter(contact => {
 
       const matchesSearch =
         !search ||
-        contact.name.toLowerCase().includes(search) ||
-        contact.company.toLowerCase().includes(search) ||
-        contact.designation.toLowerCase().includes(search) ||
-        contact.email.toLowerCase().includes(search) ||
-        contact.phone.toLowerCase().includes(search);
+        [
+          this.getContactName(contact),
+          contact.contactNumber,
+          contact.companyName,
+          contact.designation,
+          contact.department,
+          contact.businessEmail,
+          contact.phone,
+          contact.alternatePhone
+        ].some(v => (v || '').toLowerCase().includes(search));
 
       const matchesCompany =
         !this.companyFilter ||
-        contact.company === this.companyFilter;
+        contact.companyName === this.companyFilter;
 
       const matchesStatus =
         !this.statusFilter ||
-        contact.status === this.statusFilter;
+        this.getStatus(contact) === this.statusFilter;
 
-      return (
-        matchesSearch &&
-        matchesCompany &&
-        matchesStatus
-      );
-
+      return matchesSearch && matchesCompany && matchesStatus;
     });
-
   }
 
-
-  get activeContacts() {
-
-    return this.contacts.filter(
-      x => x.status === 'Active'
-    ).length;
-
-  }
-
-
-  get prospects() {
-
-    return this.contacts.filter(
-      x => x.status === 'Prospect'
-    ).length;
-
-  }
-
-
-  get convertedLeads() {
-
-    return 3;
-
-  }
-
-
-  createContact() {
-
-    this.router.navigate([
-      'contact-create'
-    ]);
-
-  }
-
-
-  openContact() {
-
-    this.router.navigate([
-      '/contact-details',
-     
-    ]);
-
-  }
-
-
-  clearFilters() {
-
+  clearFilters(): void {
     this.searchText = '';
     this.companyFilter = '';
     this.statusFilter = '';
-
   }
 
+  // ================= SUMMARY =================
 
-  exportContacts() {
+  get activeContacts(): number {
+    return this.contacts.filter(x => x.isActive).length;
+  }
 
-    const headers = [
-      'Contact',
-      'Company',
-      'Designation',
-      'Email',
-      'Phone',
-      'Status',
-      'Owner'
-    ];
+  get inactiveContacts(): number {
+    return this.contacts.filter(x => !x.isActive).length;
+  }
 
-    const rows = this.contacts.map(x => [
-      x.name,
-      x.company,
-      x.designation,
-      x.email,
-      x.phone,
-      x.status,
-      x.owner
-    ]);
+  get companyCount(): number {
+    return this.companies.length;
+  }
 
-    const csv = [
-      headers.join(','),
-      ...rows.map(row =>
-        row.map(value =>
-          `"${value}"`
-        ).join(',')
-      )
-    ].join('\n');
+  // ================= DISPLAY HELPERS =================
 
-    const blob = new Blob(
-      [csv],
-      {
-        type: 'text/csv;charset=utf-8;'
+  getContactName(contact: ContactDto): string {
+    return `${contact.firstName || ''} ${contact.lastName || ''}`.trim();
+  }
+
+  getStatus(contact: ContactDto): string {
+    return contact.isActive ? 'Active' : 'Inactive';
+  }
+
+  getInitials(value: string): string {
+
+    const words = (value || '').trim().split(/\s+/).filter(w => w.length > 0);
+
+    if (words.length === 0) {
+      return '';
+    }
+
+    if (words.length === 1) {
+      return words[0].substring(0, 2).toUpperCase();
+    }
+
+    return (words[0].charAt(0) + words[words.length - 1].charAt(0)).toUpperCase();
+  }
+
+  getAvatarColor(contact: ContactDto): string {
+    return this.avatarColors[contact.contactInformationId % this.avatarColors.length];
+  }
+
+  // ================= NAVIGATION =================
+
+  createContact(): void {
+    this.router.navigate(['/contact-create']);
+  }
+
+  editContact(contact: ContactDto): void {
+    this.router.navigate(['/contact-create'], {
+      queryParams: { id: contact.contactInformationId }
+    });
+  }
+
+  openContact(contact: ContactDto): void {
+    this.router.navigate(['/contact-details'], {
+      queryParams: { id: contact.contactInformationId }
+    });
+  }
+
+  // ================= DELETE =================
+
+  deleteContact(contact: ContactDto): void {
+
+    this.alert.deleteConfirm().then(result => {
+
+      if (!result.isConfirmed) {
+        return;
       }
-    );
 
-    const url =
-      window.URL.createObjectURL(blob);
+      this.contactService.deleteContact(contact.contactInformationId).subscribe({
 
-    const link =
-      document.createElement('a');
+        next: (res) => {
 
-    link.href = url;
+          if (res?.success) {
+            this.alert.success(res.message || 'Contact deleted successfully.');
+            this.loadContacts();
+          } else {
+            this.alert.error(res?.message || 'Failed to delete contact.');
+          }
+        },
 
-    link.download =
-      'CORCRM-Contacts.csv';
-
-    link.click();
-
-    window.URL.revokeObjectURL(url);
-
+        error: (err) => {
+          this.alert.error(err?.error?.message || 'Failed to delete contact.');
+        }
+      });
+    });
   }
-
-
-  constructor(
-    private router: Router
-  ) {}
 }

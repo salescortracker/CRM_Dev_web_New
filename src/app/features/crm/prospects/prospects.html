@@ -190,9 +190,9 @@
 
         <div
           class="company-avatar"
-          [ngClass]="company.color">
+          [ngClass]="getColor(company.companyInformationId)">
 
-          {{ company.initials }}
+          {{ getInitials(company.companyName) }}
 
         </div>
 
@@ -202,11 +202,11 @@
           <div class="company-title">
 
             <strong>
-              {{ company.name }}
+              {{ company.companyName }}
             </strong>
 
             <span class="company-id">
-              {{ company.id }}
+              #{{ company.companyInformationId }}
             </span>
 
           </div>
@@ -215,15 +215,15 @@
 
             <span>
               <i class="fa-solid fa-industry"></i>
-              {{ company.industry }}
+              {{ company.industryName || '—' }}
             </span>
 
             <span>
               <i class="fa-solid fa-location-dot"></i>
-              {{ company.city }}, {{ company.country }}
+              {{ company.city }}<ng-container *ngIf="company.countryName">, {{ company.countryName }}</ng-container>
             </span>
 
-            <span>
+            <span *ngIf="company.website">
               <i class="fa-solid fa-globe"></i>
               {{ company.website }}
             </span>
@@ -236,7 +236,7 @@
         <div class="company-contacts">
 
           <div class="contact-count">
-            {{ company.contacts }}
+            {{ getContactCount(company) }}
           </div>
 
           <span>
@@ -257,7 +257,7 @@
 
       <div
         class="empty-state"
-        *ngIf="filteredCompanies.length === 0">
+        *ngIf="!isLoading && filteredCompanies.length === 0">
 
         <div class="empty-icon">
           <i class="fa-solid fa-building"></i>
@@ -329,9 +329,9 @@
 
         <div
           class="contact-avatar"
-          [ngClass]="contact.color">
+          [ngClass]="getColor(contact.contactInformationId)">
 
-          {{ contact.initials }}
+          {{ getInitials(getContactName(contact)) }}
 
         </div>
 
@@ -341,7 +341,7 @@
           <div class="contact-title">
 
             <strong>
-              {{ contact.name }}
+              {{ getContactName(contact) }}
             </strong>
 
             <span>
@@ -354,7 +354,7 @@
 
             <i class="fa-solid fa-building"></i>
 
-            {{ contact.company }}
+            {{ contact.companyName || '—' }}
 
           </div>
 
@@ -365,7 +365,7 @@
 
           <span>
             <i class="fa-regular fa-envelope"></i>
-            {{ contact.email }}
+            {{ contact.businessEmail }}
           </span>
 
           <span>
@@ -387,7 +387,7 @@
 
       <div
         class="empty-state"
-        *ngIf="filteredContacts.length === 0">
+        *ngIf="!isLoading && filteredContacts.length === 0">
 
         <div class="empty-icon">
           <i class="fa-solid fa-user"></i>

@@ -16,7 +16,7 @@
 
         <i class="fa-solid fa-chevron-right"></i>
 
-        <strong>New Contact</strong>
+        <strong>{{ isEdit ? 'Edit Contact' : 'New Contact' }}</strong>
 
       </div>
 
@@ -31,10 +31,12 @@
 
         <div>
 
-          <h1>Create Contact</h1>
+          <h1>{{ isEdit ? 'Edit Contact' : 'Create Contact' }}</h1>
 
           <p>
-            Add a new business contact and associate them with a company.
+            {{ isEdit
+                ? 'Update this business contact.'
+                : 'Add a new business contact and associate them with a company.' }}
           </p>
 
         </div>
@@ -58,11 +60,12 @@
       <button
         class="btn-primary"
         type="button"
+        [disabled]="isSaving"
         (click)="saveContact()">
 
         <i class="fa-solid fa-check"></i>
 
-        Save Contact
+        {{ isSaving ? 'Saving...' : (isEdit ? 'Update Contact' : 'Save Contact') }}
 
       </button>
 
@@ -105,11 +108,29 @@
 
         <div class="form-group">
 
+          <label>Salutation *</label>
+
+          <select [(ngModel)]="contact.salutation">
+
+            <option
+              *ngFor="let s of salutations"
+              [ngValue]="s">
+              {{ s }}
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="form-group">
+
           <label>First Name *</label>
 
           <input
             type="text"
             [(ngModel)]="contact.firstName"
+            [class.invalid]="isRequiredInvalid(contact.firstName)"
             placeholder="Enter first name" />
 
         </div>
@@ -117,7 +138,7 @@
 
         <div class="form-group">
 
-          <label>Last Name *</label>
+          <label>Last Name</label>
 
           <input
             type="text"
@@ -187,17 +208,18 @@
           <label>Company *</label>
 
           <select
-            [(ngModel)]="contact.company">
+            [(ngModel)]="contact.companyInformationId"
+            [class.invalid]="submitted && !contact.companyInformationId">
 
-            <option value="">
+            <option [ngValue]="0">
               Select Company
             </option>
 
             <option
               *ngFor="let company of companies"
-              [value]="company">
+              [ngValue]="company.companyInformationId">
 
-              {{ company }}
+              {{ company.companyName }}
 
             </option>
 
@@ -211,12 +233,15 @@
           <label>Contact Type</label>
 
           <select
-            [(ngModel)]="contact.contactType">
+            [(ngModel)]="contact.contactTypeId">
 
-            <option>Decision Maker</option>
-            <option>Influencer</option>
-            <option>End User</option>
-            <option>Other</option>
+            <option [ngValue]="null">Select contact type</option>
+
+            <option
+              *ngFor="let type of contactTypes"
+              [ngValue]="type.contactTypeId">
+              {{ type.contactTypeName }}
+            </option>
 
           </select>
 
@@ -228,12 +253,15 @@
           <label>Relationship</label>
 
           <select
-            [(ngModel)]="contact.relationship">
+            [(ngModel)]="contact.relationshipId">
 
-            <option>Prospect</option>
-            <option>Customer</option>
-            <option>Partner</option>
-            <option>Vendor</option>
+            <option [ngValue]="null">Select relationship</option>
+
+            <option
+              *ngFor="let rel of relationships"
+              [ngValue]="rel.relationshipId">
+              {{ rel.relationshipName }}
+            </option>
 
           </select>
 
@@ -277,7 +305,11 @@
 
           <input
             type="email"
-            [(ngModel)]="contact.email"
+            [(ngModel)]="contact.businessEmail"
+            [class.invalid]="
+              (submitted && !contact.businessEmail) ||
+              !isValidEmail(contact.businessEmail || '')
+            "
             placeholder="name@company.com" />
 
         </div>
@@ -290,6 +322,7 @@
           <input
             type="text"
             [(ngModel)]="contact.phone"
+            [class.invalid]="isRequiredInvalid(contact.phone)"
             placeholder="+91 XXXXX XXXXX" />
 
         </div>
@@ -390,10 +423,19 @@
 
           <label>State</label>
 
-          <input
-            type="text"
-            [(ngModel)]="contact.state"
-            placeholder="State" />
+          <select
+            [(ngModel)]="contact.stateId"
+            [disabled]="!contact.countryId">
+
+            <option [ngValue]="null">Select state</option>
+
+            <option
+              *ngFor="let state of states"
+              [ngValue]="state.stateId">
+              {{ state.stateName }}
+            </option>
+
+          </select>
 
         </div>
 
@@ -402,10 +444,19 @@
 
           <label>Country</label>
 
-          <input
-            type="text"
-            [(ngModel)]="contact.country"
-            placeholder="Country" />
+          <select
+            [(ngModel)]="contact.countryId"
+            (ngModelChange)="onCountryChange()">
+
+            <option [ngValue]="null">Select country</option>
+
+            <option
+              *ngFor="let country of countries"
+              [ngValue]="country.countryId">
+              {{ country.countryName }}
+            </option>
+
+          </select>
 
         </div>
 
@@ -447,6 +498,18 @@
           </p>
 
         </div>
+
+      </div>
+
+
+      <div class="form-group" *ngIf="isEdit">
+
+        <label>Status</label>
+
+        <select [(ngModel)]="contact.isActive">
+          <option [ngValue]="true">Active</option>
+          <option [ngValue]="false">Inactive</option>
+        </select>
 
       </div>
 

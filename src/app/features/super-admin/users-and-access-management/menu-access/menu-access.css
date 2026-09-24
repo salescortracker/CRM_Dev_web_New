@@ -109,6 +109,132 @@ MENU LIST
 
 }
 
+.menu-search{
+
+    position:relative;
+    display:flex;
+    align-items:center;
+
+    margin-bottom:16px;
+
+}
+
+.menu-search > i{
+
+    position:absolute;
+    left:14px;
+
+    color:#98a2b3;
+    font-size:13px;
+
+}
+
+.menu-search input{
+
+    width:100%;
+    height:44px;
+
+    padding:0 38px 0 38px;
+
+    border:1px solid #ececec;
+    border-radius:12px;
+
+    font-size:14px;
+
+    outline:none;
+
+}
+
+.menu-search input:focus{
+
+    border-color:#dc1e4a;
+
+}
+
+.clear-search{
+
+    position:absolute;
+    right:8px;
+
+    width:28px;
+    height:28px;
+
+    border:0;
+    border-radius:8px;
+
+    background:transparent;
+    color:#98a2b3;
+
+    cursor:pointer;
+
+}
+
+.clear-search:hover{
+
+    background:#f2f4f7;
+
+}
+
+.menu-empty{
+
+    padding:24px 0;
+
+    text-align:center;
+    color:#98a2b3;
+    font-size:14px;
+
+}
+
+.menu-pagination{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    margin-top:4px;
+
+    font-size:13px;
+    color:#667085;
+
+}
+
+.menu-pagination .pager{
+
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+}
+
+.menu-pagination .pager button{
+
+    width:32px;
+    height:32px;
+
+    border:1px solid #ececec;
+    border-radius:8px;
+
+    background:#fff;
+    color:#344054;
+
+    cursor:pointer;
+
+}
+
+.menu-pagination .pager button:hover:not(:disabled){
+
+    border-color:#dc1e4a;
+    color:#dc1e4a;
+
+}
+
+.menu-pagination .pager button:disabled{
+
+    opacity:.4;
+    cursor:not-allowed;
+
+}
+
 .menu-item{
 
     display:flex;

@@ -1,39 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { LeadDto, LeadService } from '../services/lead.service';
+import { Alertservice } from '../../../core/services/alertservice';
 
-interface Lead {
-  id: number;
-  name: string;
-  email: string;
-  phone: string;
-
-  company: string;
-  industry: string;
-
-  contact: string;
-  contactEmail: string;
-
-  source: string;
-
-  status:
-    | 'New'
-    | 'Contacted'
-    | 'Qualified'
-    | 'Proposal'
-    | 'Negotiation'
-    | 'Lost';
-
-  rating:
-    | 'Hot'
-    | 'Warm'
-    | 'Cold';
-
-  owner: string;
-
-  createdDate: string;
-}
 @Component({
   selector: 'app-lead-list',
   imports: [
@@ -43,8 +14,19 @@ interface Lead {
   templateUrl: './lead-list.html',
   styleUrl: './lead-list.css',
 })
-export class LeadList {
-    // =========================================================
+export class LeadList implements OnInit {
+
+  // =========================================================
+  // DATA
+  // =========================================================
+
+  leads: LeadDto[] = [];
+
+  filteredLeads: LeadDto[] = [];
+
+  isLoading: boolean = false;
+
+  // =========================================================
   // SEARCH / FILTER
   // =========================================================
 
@@ -52,17 +34,16 @@ export class LeadList {
 
   selectedStatus: string = 'All';
 
-  selectedRating: string = 'All';
-
   selectedOwner: string = 'All';
 
-
-  // =========================================================
-  // VIEW
-  // =========================================================
-
-  isCardView: boolean = false;
-
+  leadStatuses: string[] = [
+    'New',
+    'Contacted',
+    'Qualified',
+    'Nurturing',
+    'Unqualified',
+    'Lost'
+  ];
 
   // =========================================================
   // SELECTION
@@ -72,436 +53,231 @@ export class LeadList {
 
   allSelected: boolean = false;
 
-
   // =========================================================
-  // LEADS
+  // PAGINATION
   // =========================================================
 
-  leads: Lead[] = [
-
-    {
-      id: 1,
-      name: 'Ravi Kumar',
-      email: 'ravi.kumar@abctech.com',
-      phone: '+91 98765 43210',
-
-      company: 'ABC Technologies',
-      industry: 'IT Services',
-
-      contact: 'Ravi Kumar',
-      contactEmail: 'ravi.kumar@abctech.com',
-
-      source: 'Website',
-
-      status: 'New',
-
-      rating: 'Hot',
-
-      owner: 'Admin',
-
-      createdDate: '18 Aug 2026'
-    },
-
-
-    {
-      id: 2,
-      name: 'Suresh Reddy',
-      email: 'suresh@xyzsolutions.com',
-      phone: '+91 99887 66554',
-
-      company: 'XYZ Solutions',
-      industry: 'Software',
-
-      contact: 'Suresh Reddy',
-      contactEmail: 'suresh@xyzsolutions.com',
-
-      source: 'Referral',
-
-      status: 'Contacted',
-
-      rating: 'Warm',
-
-      owner: 'John Smith',
-
-      createdDate: '17 Aug 2026'
-    },
-
-
-    {
-      id: 3,
-      name: 'Priya Sharma',
-      email: 'priya@techsolutions.com',
-      phone: '+91 98761 23456',
-
-      company: 'Tech Solutions',
-      industry: 'Technology',
-
-      contact: 'Priya Sharma',
-      contactEmail: 'priya@techsolutions.com',
-
-      source: 'Campaign',
-
-      status: 'Qualified',
-
-      rating: 'Hot',
-
-      owner: 'Admin',
-
-      createdDate: '16 Aug 2026'
-    },
-
-
-    {
-      id: 4,
-      name: 'Arun Kumar',
-      email: 'arun@globalsystems.com',
-      phone: '+91 91234 56789',
-
-      company: 'Global Systems',
-      industry: 'Enterprise',
-
-      contact: 'Arun Kumar',
-      contactEmail: 'arun@globalsystems.com',
-
-      source: 'LinkedIn',
-
-      status: 'Proposal',
-
-      rating: 'Hot',
-
-      owner: 'David Wilson',
-
-      createdDate: '15 Aug 2026'
-    },
-
-
-    {
-      id: 5,
-      name: 'Meena Rani',
-      email: 'meena@smartbusiness.com',
-      phone: '+91 90123 45678',
-
-      company: 'Smart Business Pvt Ltd',
-      industry: 'Consulting',
-
-      contact: 'Meena Rani',
-      contactEmail: 'meena@smartbusiness.com',
-
-      source: 'Google Ads',
-
-      status: 'Negotiation',
-
-      rating: 'Warm',
-
-      owner: 'John Smith',
-
-      createdDate: '14 Aug 2026'
-    },
-
-
-    {
-      id: 6,
-      name: 'Kiran Rao',
-      email: 'kiran@innovatech.com',
-      phone: '+91 93456 78901',
-
-      company: 'Innovatech',
-      industry: 'Technology',
-
-      contact: 'Kiran Rao',
-      contactEmail: 'kiran@innovatech.com',
-
-      source: 'Website',
-
-      status: 'New',
-
-      rating: 'Cold',
-
-      owner: 'Admin',
-
-      createdDate: '13 Aug 2026'
-    },
-
-
-    {
-      id: 7,
-      name: 'Vikram Singh',
-      email: 'vikram@nextgen.com',
-      phone: '+91 98876 54321',
-
-      company: 'NextGen Systems',
-      industry: 'IT Services',
-
-      contact: 'Vikram Singh',
-      contactEmail: 'vikram@nextgen.com',
-
-      source: 'Referral',
-
-      status: 'Contacted',
-
-      rating: 'Warm',
-
-      owner: 'David Wilson',
-
-      createdDate: '12 Aug 2026'
-    },
-
-
-    {
-      id: 8,
-      name: 'Anjali Patel',
-      email: 'anjali@digitalworld.com',
-      phone: '+91 97654 32109',
-
-      company: 'Digital World',
-      industry: 'Digital Marketing',
-
-      contact: 'Anjali Patel',
-      contactEmail: 'anjali@digitalworld.com',
-
-      source: 'Campaign',
-
-      status: 'Qualified',
-
-      rating: 'Hot',
-
-      owner: 'John Smith',
-
-      createdDate: '11 Aug 2026'
-    },
-
-
-    {
-      id: 9,
-      name: 'Rajesh Verma',
-      email: 'rajesh@enterprise.com',
-      phone: '+91 96543 21098',
-
-      company: 'Enterprise Corp',
-      industry: 'Manufacturing',
-
-      contact: 'Rajesh Verma',
-      contactEmail: 'rajesh@enterprise.com',
-
-      source: 'Trade Show',
-
-      status: 'Lost',
-
-      rating: 'Cold',
-
-      owner: 'Admin',
-
-      createdDate: '10 Aug 2026'
-    },
-
-
-    {
-      id: 10,
-      name: 'Sneha Reddy',
-      email: 'sneha@futuretech.com',
-      phone: '+91 95432 10987',
-
-      company: 'FutureTech',
-      industry: 'Software',
-
-      contact: 'Sneha Reddy',
-      contactEmail: 'sneha@futuretech.com',
-
-      source: 'Website',
-
-      status: 'New',
-
-      rating: 'Warm',
-
-      owner: 'David Wilson',
-
-      createdDate: '09 Aug 2026'
-    }
-
+  pageSize: number = 10;
+
+  currentPage: number = 1;
+
+  private readonly avatarClasses = [
+    'avatar-blue',
+    'avatar-purple',
+    'avatar-green',
+    'avatar-orange',
+    'avatar-red'
   ];
 
-
-  // =========================================================
-  // FILTERED DATA
-  // =========================================================
-
-  filteredLeads: Lead[] = [];
-
-
   constructor(
-    private router: Router
+    private router: Router,
+    private leadService: LeadService,
+    private alert: Alertservice,
+    private cd: ChangeDetectorRef
   ) {}
 
-
-  // =========================================================
-  // INIT
-  // =========================================================
-
   ngOnInit(): void {
-
-    this.filteredLeads = [...this.leads];
-
+    this.loadLeads();
   }
 
+  // =========================================================
+  // GET ALL LEADS
+  // =========================================================
+
+  loadLeads(): void {
+
+    this.isLoading = true;
+
+    this.leadService.getLeads().subscribe({
+
+      next: (res) => {
+
+        this.leads = res?.success && res.data ? res.data : [];
+
+        this.isLoading = false;
+
+        this.applyFilters();
+
+        this.cd.detectChanges();
+      },
+
+      error: (err) => {
+
+        this.isLoading = false;
+
+        this.alert.error(
+          err?.error?.message || 'Failed to load leads.'
+        );
+
+        this.cd.detectChanges();
+      }
+    });
+  }
+
+  refreshLeads(): void {
+
+    this.searchText = '';
+    this.selectedStatus = 'All';
+    this.selectedOwner = 'All';
+
+    this.loadLeads();
+  }
 
   // =========================================================
   // SUMMARY
   // =========================================================
 
   get totalLeads(): number {
-
     return this.leads.length;
-
   }
-
 
   get newLeads(): number {
-
-    return this.leads.filter(
-      x => x.status === 'New'
-    ).length;
-
+    return this.countByStatus('New');
   }
-
 
   get contactedLeads(): number {
-
-    return this.leads.filter(
-      x => x.status === 'Contacted'
-    ).length;
-
+    return this.countByStatus('Contacted');
   }
-
 
   get qualifiedLeads(): number {
-
-    return this.leads.filter(
-      x => x.status === 'Qualified'
-    ).length;
-
+    return this.countByStatus('Qualified');
   }
 
+  get conversionRate(): number {
 
-  get hotLeads(): number {
+    if (this.leads.length === 0) {
+      return 0;
+    }
 
-    return this.leads.filter(
-      x => x.rating === 'Hot'
-    ).length;
-
+    return Math.round(
+      (this.qualifiedLeads / this.leads.length) * 1000
+    ) / 10;
   }
 
+  private countByStatus(status: string): number {
+    return this.leads.filter(x => x.leadStatus === status).length;
+  }
 
   // =========================================================
   // SEARCH / FILTER
   // =========================================================
 
+  get owners(): string[] {
+
+    const names = this.leads
+      .map(x => x.leadOwnerName)
+      .filter((x): x is string => !!x);
+
+    return Array.from(new Set(names)).sort();
+  }
+
+  get hasActiveFilters(): boolean {
+    return (
+      !!this.searchText.trim() ||
+      this.selectedStatus !== 'All' ||
+      this.selectedOwner !== 'All'
+    );
+  }
+
   applyFilters(): void {
 
-    const search = this.searchText
-      .trim()
-      .toLowerCase();
-
+    const search = this.searchText.trim().toLowerCase();
 
     this.filteredLeads = this.leads.filter(lead => {
 
       const matchesSearch =
         !search ||
-
-        lead.name
-          .toLowerCase()
-          .includes(search) ||
-
-        lead.email
-          .toLowerCase()
-          .includes(search) ||
-
-        lead.phone
-          .toLowerCase()
-          .includes(search) ||
-
-        lead.company
-          .toLowerCase()
-          .includes(search) ||
-
-        lead.contact
-          .toLowerCase()
-          .includes(search);
-
+        [
+          this.getLeadName(lead),
+          lead.leadNumber,
+          lead.email,
+          lead.phone,
+          lead.mobile,
+          lead.companyName
+        ].some(v => (v || '').toLowerCase().includes(search));
 
       const matchesStatus =
         this.selectedStatus === 'All' ||
-        lead.status === this.selectedStatus;
-
-
-      const matchesRating =
-        this.selectedRating === 'All' ||
-        lead.rating === this.selectedRating;
-
+        lead.leadStatus === this.selectedStatus;
 
       const matchesOwner =
         this.selectedOwner === 'All' ||
-        lead.owner === this.selectedOwner;
+        lead.leadOwnerName === this.selectedOwner;
 
-
-      return (
-        matchesSearch &&
-        matchesStatus &&
-        matchesRating &&
-        matchesOwner
-      );
-
+      return matchesSearch && matchesStatus && matchesOwner;
     });
 
+    this.currentPage = 1;
 
     this.clearSelection();
-
   }
 
-
-  // =========================================================
-  // CLEAR SEARCH
-  // =========================================================
-
-  clearSearch(): void {
-
-    this.searchText = '';
-
+  clearStatus(): void {
+    this.selectedStatus = 'All';
     this.applyFilters();
-
   }
 
-
-  // =========================================================
-  // RESET FILTER
-  // =========================================================
+  clearOwner(): void {
+    this.selectedOwner = 'All';
+    this.applyFilters();
+  }
 
   resetFilters(): void {
 
     this.searchText = '';
-
     this.selectedStatus = 'All';
-
-    this.selectedRating = 'All';
-
     this.selectedOwner = 'All';
 
-    this.filteredLeads = [...this.leads];
-
-    this.clearSelection();
-
+    this.applyFilters();
   }
 
+  // =========================================================
+  // PAGINATION
+  // =========================================================
+
+  get totalPages(): number {
+    return Math.max(1, Math.ceil(this.filteredLeads.length / this.pageSize));
+  }
+
+  get pagedLeads(): LeadDto[] {
+
+    const start = (this.currentPage - 1) * this.pageSize;
+
+    return this.filteredLeads.slice(start, start + this.pageSize);
+  }
+
+  get pageNumbers(): number[] {
+    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+  }
+
+  get rangeStart(): number {
+    return this.filteredLeads.length === 0
+      ? 0
+      : (this.currentPage - 1) * this.pageSize + 1;
+  }
+
+  get rangeEnd(): number {
+    return Math.min(this.currentPage * this.pageSize, this.filteredLeads.length);
+  }
+
+  goToPage(page: number): void {
+
+    if (page < 1 || page > this.totalPages) {
+      return;
+    }
+
+    this.currentPage = page;
+
+    this.clearSelection();
+  }
 
   // =========================================================
-  // REFRESH
+  // DISPLAY HELPERS
   // =========================================================
 
- 
-
-
-  // =========================================================
-  // INITIALS
-  // =========================================================
+  getLeadName(lead: LeadDto): string {
+    return `${lead.firstName || ''} ${lead.lastName || ''}`.trim();
+  }
 
   getInitials(value: string): string {
 
@@ -509,189 +285,119 @@ export class LeadList {
       return '';
     }
 
-    const words = value.trim().split(' ');
+    const words = value.trim().split(/\s+/);
 
     if (words.length === 1) {
-
-      return words[0]
-        .substring(0, 2)
-        .toUpperCase();
-
+      return words[0].substring(0, 2).toUpperCase();
     }
 
     return (
       words[0].charAt(0) +
       words[words.length - 1].charAt(0)
     ).toUpperCase();
-
   }
 
+  getAvatarClass(lead: LeadDto): string {
+    return this.avatarClasses[lead.leadId % this.avatarClasses.length];
+  }
 
-  // =========================================================
-  // STATUS CLASS
-  // =========================================================
-
+  // CSS modifier for the status pill (.status.new / .contacted / ...)
   getStatusClass(status: string): string {
-
-    switch (status) {
-
-      case 'New':
-        return 'status-new';
-
-      case 'Contacted':
-        return 'status-contacted';
-
-      case 'Qualified':
-        return 'status-qualified';
-
-      case 'Proposal':
-        return 'status-proposal';
-
-      case 'Negotiation':
-        return 'status-negotiation';
-
-      case 'Lost':
-        return 'status-lost';
-
-      default:
-        return '';
-
-    }
-
+    return (status || '').toLowerCase();
   }
 
+  getScoreClass(score?: number | null): string {
 
-  // =========================================================
-  // RATING CLASS
-  // =========================================================
+    const value = score ?? 0;
 
-  getRatingClass(rating: string): string {
-
-    switch (rating) {
-
-      case 'Hot':
-        return 'rating-hot';
-
-      case 'Warm':
-        return 'rating-warm';
-
-      case 'Cold':
-        return 'rating-cold';
-
-      default:
-        return '';
-
+    if (value >= 80) {
+      return 'high';
     }
 
+    return value >= 60 ? 'medium' : 'low';
   }
-
 
   // =========================================================
   // SELECT
   // =========================================================
 
-  toggleSelection(
-    id: number,
-    event: Event
-  ): void {
+  toggleSelection(id: number, event: Event): void {
 
-    const checkbox =
-      event.target as HTMLInputElement;
-
+    const checkbox = event.target as HTMLInputElement;
 
     if (checkbox.checked) {
 
       if (!this.selectedLeads.includes(id)) {
-
         this.selectedLeads.push(id);
-
       }
 
     } else {
 
-      this.selectedLeads =
-        this.selectedLeads.filter(
-          x => x !== id
-        );
-
+      this.selectedLeads = this.selectedLeads.filter(x => x !== id);
     }
 
-
     this.updateSelectAll();
-
   }
-
-
-  // =========================================================
-  // SELECT ALL
-  // =========================================================
 
   toggleAllSelection(event: Event): void {
 
-    const checkbox =
-      event.target as HTMLInputElement;
+    const checkbox = event.target as HTMLInputElement;
 
-
-    if (checkbox.checked) {
-
-      this.selectedLeads =
-        this.filteredLeads.map(
-          x => x.id
-        );
-
-    } else {
-
-      this.selectedLeads = [];
-
-    }
-
+    this.selectedLeads = checkbox.checked
+      ? this.pagedLeads.map(x => x.leadId)
+      : [];
 
     this.allSelected = checkbox.checked;
-
   }
-
-
-  // =========================================================
-  // UPDATE SELECT ALL
-  // =========================================================
 
   updateSelectAll(): void {
 
     this.allSelected =
-      this.filteredLeads.length > 0 &&
-      this.selectedLeads.length ===
-      this.filteredLeads.length;
-
+      this.pagedLeads.length > 0 &&
+      this.selectedLeads.length === this.pagedLeads.length;
   }
-
-
-  // =========================================================
-  // IS SELECTED
-  // =========================================================
 
   isSelected(id: number): boolean {
-
     return this.selectedLeads.includes(id);
-
   }
-
-
-  // =========================================================
-  // CLEAR SELECTION
-  // =========================================================
 
   clearSelection(): void {
 
     this.selectedLeads = [];
 
     this.allSelected = false;
-
   }
 
+  // =========================================================
+  // DELETE LEAD
+  // =========================================================
 
-  // =========================================================
-  // BULK DELETE
-  // =========================================================
+  deleteLead(lead: LeadDto): void {
+
+    this.alert.deleteConfirm().then(result => {
+
+      if (!result.isConfirmed) {
+        return;
+      }
+
+      this.leadService.deleteLead(lead.leadId).subscribe({
+
+        next: (res) => {
+
+          if (res?.success) {
+            this.alert.success(res.message || 'Lead deleted successfully.');
+            this.loadLeads();
+          } else {
+            this.alert.error(res?.message || 'Failed to delete lead.');
+          }
+        },
+
+        error: (err) => {
+          this.alert.error(err?.error?.message || 'Failed to delete lead.');
+        }
+      });
+    });
+  }
 
   bulkDelete(): void {
 
@@ -699,130 +405,71 @@ export class LeadList {
       return;
     }
 
+    const ids = [...this.selectedLeads];
 
-    this.leads = this.leads.filter(
-      lead =>
-        !this.selectedLeads.includes(lead.id)
-    );
+    this.alert
+      .confirm(`Delete ${ids.length} selected lead(s)?`)
+      .then(result => {
 
+        if (!result.isConfirmed) {
+          return;
+        }
 
-    this.clearSelection();
+        let pending = ids.length;
+        let failed = 0;
 
-    this.applyFilters();
+        ids.forEach(id => {
 
+          this.leadService.deleteLead(id).subscribe({
+
+            next: (res) => {
+              if (!res?.success) {
+                failed++;
+              }
+              this.onBulkDeleteDone(--pending, failed);
+            },
+
+            error: () => {
+              failed++;
+              this.onBulkDeleteDone(--pending, failed);
+            }
+          });
+        });
+      });
   }
 
+  private onBulkDeleteDone(pending: number, failed: number): void {
 
-  // =========================================================
-  // DELETE LEAD
-  // =========================================================
+    if (pending > 0) {
+      return;
+    }
 
-  deleteLead(lead: Lead): void {
+    if (failed > 0) {
+      this.alert.warning(`${failed} lead(s) could not be deleted.`);
+    } else {
+      this.alert.success('Selected leads deleted successfully.');
+    }
 
-    this.leads = this.leads.filter(
-      x => x.id !== lead.id
-    );
-
-
-    this.applyFilters();
-
+    this.loadLeads();
   }
 
-
   // =========================================================
-  // VIEW LEAD
-  // =========================================================
-
-  viewLead(lead: Lead): void {
-
-    this.router.navigate([
-      '/leads-details'
-    ]);
-
-  }
-  
-
-
-  // =========================================================
-  // EDIT LEAD
-  // =========================================================
-
-  editLead(lead: Lead): void {
-
-    this.router.navigate([
-      '/leads-create',
-      'edit',
-      lead.id
-    ]);
-
-  }
-
-
-  // =========================================================
-  // CREATE LEAD
+  // NAVIGATION
   // =========================================================
 
   createLead(): void {
-  this.router.navigate(['/leads-create']);
-}
-  openLead(): void {
-
-    this.router.navigate([
-      '/leads-details'
-      
-    ]);
-
-  }
-viewLeadDetails(lead: Lead): void {
-
-  this.router.navigate([
-    '/lead-details',
-    lead.id
-  ]);
-
-}
-loadLeads(): void {
-
-  this.filteredLeads = [...this.leads];
-
-  this.clearSelection();
-
-}
-refreshLeads(): void {
-
-  this.searchText = '';
-
-  this.selectedStatus = 'All';
-
-  this.selectedRating = 'All';
-
-  this.selectedOwner = 'All';
-
-  this.loadLeads();
-
-}
-
-
-  // =========================================================
-  // CALL LEAD
-  // =========================================================
-
-  callLead(lead: Lead): void {
-
-    window.location.href =
-      'tel:' + lead.phone;
-
+    this.router.navigate(['/leads-create']);
   }
 
+  editLead(lead: LeadDto): void {
+    this.router.navigate(['/leads-create'], {
+      queryParams: { id: lead.leadId }
+    });
+  }
 
-  // =========================================================
-  // CARD / TABLE VIEW
-  // =========================================================
-
-  toggleView(): void {
-
-    this.isCardView =
-      !this.isCardView;
-
+  openLead(lead: LeadDto): void {
+    this.router.navigate(['/leads-details'], {
+      queryParams: { id: lead.leadId }
+    });
   }
 }

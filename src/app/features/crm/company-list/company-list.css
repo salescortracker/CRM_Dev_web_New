@@ -604,7 +604,7 @@
     90px
     105px
     130px
-    48px;
+    84px;
 
   align-items: center;
 
@@ -974,6 +974,8 @@
 .row-action {
   display: flex;
   justify-content: flex-end;
+
+  gap: 6px;
 }
 
 .row-action button {
@@ -1092,7 +1094,7 @@
       80px
       100px
       120px
-      45px;
+      84px;
   }
 }
 

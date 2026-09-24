@@ -10,23 +10,23 @@
         <i class="bi bi-chevron-right"></i>
         <span>Leads</span>
         <i class="bi bi-chevron-right"></i>
-        <strong>New Lead</strong>
+        <strong>{{ isEdit ? 'Edit Lead' : 'New Lead' }}</strong>
       </div>
 
-      <h1>Create New Lead</h1>
-      <p>Create and manage a new sales prospect.</p>
+      <h1>{{ isEdit ? 'Edit Lead' : 'Create New Lead' }}</h1>
+      <p>{{ isEdit ? 'Update this sales prospect.' : 'Create and manage a new sales prospect.' }}</p>
     </div>
 
     <div class="header-actions">
 
-      <button class="btn-secondary" (click)="cancel()">
+      <button class="btn-secondary" type="button" (click)="cancel()">
         <i class="bi bi-x-lg"></i>
         Cancel
       </button>
 
-      <button class="btn-primary" (click)="createLead()">
+      <button class="btn-primary" type="button" [disabled]="isSaving" (click)="saveLead()">
         <i class="bi bi-check2"></i>
-        Create Lead
+        {{ isEdit ? 'Update Lead' : 'Create Lead' }}
       </button>
 
     </div>
@@ -64,6 +64,16 @@
         <div class="form-grid">
 
           <div class="form-group">
+            <label>Salutation</label>
+
+            <select [(ngModel)]="lead.salutation">
+              <option [ngValue]="null">Select</option>
+              <option *ngFor="let s of salutations" [ngValue]="s">{{ s }}</option>
+            </select>
+          </div>
+
+
+          <div class="form-group">
             <label>First Name <span>*</span></label>
 
             <input
@@ -84,15 +94,31 @@
 
 
           <div class="form-group">
+            <label>Job Title</label>
+
+            <input
+              type="text"
+              [(ngModel)]="lead.jobTitle"
+              placeholder="e.g. Head of Operations">
+          </div>
+
+
+          <div class="form-group">
 
             <label>Lead Owner</label>
 
-            <select [(ngModel)]="lead.owner">
+            <select [(ngModel)]="lead.leadOwnerId">
+
+              <option [ngValue]="null">Unassigned</option>
+
+              <option *ngIf="currentUserId" [ngValue]="currentUserId">
+                {{ currentUserName || ('User #' + currentUserId) }}
+              </option>
 
               <option
-                *ngFor="let owner of owners"
-                [value]="owner">
-                {{ owner }}
+                *ngIf="lead.leadOwnerId && lead.leadOwnerId !== currentUserId"
+                [ngValue]="lead.leadOwnerId">
+                {{ lead.leadOwnerName || ('User #' + lead.leadOwnerId) }}
               </option>
 
             </select>
@@ -138,14 +164,53 @@
 
           <div class="form-group">
 
-            <label>Lead Source</label>
+            <label>Mobile</label>
 
-            <select [(ngModel)]="lead.source">
+            <div class="input-icon">
+
+              <i class="bi bi-phone"></i>
+
+              <input
+                type="text"
+                [(ngModel)]="lead.mobile"
+                placeholder="+91 98765 43210">
+
+            </div>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>Lead Type <span>*</span></label>
+
+            <select [(ngModel)]="lead.leadTypeId">
+
+              <option [ngValue]="0">Select lead type</option>
+
+              <option
+                *ngFor="let type of leadTypes"
+                [ngValue]="type.leadTypeId">
+                {{ type.leadTypeName }}
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>Lead Source <span>*</span></label>
+
+            <select [(ngModel)]="lead.leadSourceId">
+
+              <option [ngValue]="0">Select lead source</option>
 
               <option
                 *ngFor="let source of leadSources"
-                [value]="source">
-                {{ source }}
+                [ngValue]="source.leadSourceId">
+                {{ source.leadSourceName }}
               </option>
 
             </select>
@@ -157,12 +222,31 @@
 
             <label>Lead Status</label>
 
-            <select [(ngModel)]="lead.status">
+            <select [(ngModel)]="lead.leadStatus">
 
               <option
                 *ngFor="let status of leadStatuses"
-                [value]="status">
+                [ngValue]="status">
                 {{ status }}
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>Lead Rating</label>
+
+            <select [(ngModel)]="lead.leadRating">
+
+              <option [ngValue]="null">Select rating</option>
+
+              <option
+                *ngFor="let rating of leadRatings"
+                [ngValue]="rating">
+                {{ rating }}
               </option>
 
             </select>
@@ -178,7 +262,7 @@
 
               <input
                 type="number"
-                [(ngModel)]="lead.score"
+                [(ngModel)]="lead.leadScore"
                 min="0"
                 max="100">
 
@@ -191,14 +275,16 @@
 
           <div class="form-group">
 
-            <label>Industry</label>
+            <label>Preferred Contact Method</label>
 
-            <select [(ngModel)]="lead.industry">
+            <select [(ngModel)]="lead.preferredContactMethod">
+
+              <option [ngValue]="null">Select method</option>
 
               <option
-                *ngFor="let industry of industries"
-                [value]="industry">
-                {{ industry }}
+                *ngFor="let method of contactMethods"
+                [ngValue]="method">
+                {{ method }}
               </option>
 
             </select>
@@ -264,12 +350,14 @@
 
             <label>Industry</label>
 
-            <select [(ngModel)]="lead.companyIndustry">
+            <select [(ngModel)]="lead.industryId">
+
+              <option [ngValue]="null">Select industry</option>
 
               <option
                 *ngFor="let industry of industries"
-                [value]="industry">
-                {{ industry }}
+                [ngValue]="industry.industryId">
+                {{ industry.industryName }}
               </option>
 
             </select>
@@ -283,13 +371,46 @@
 
             <select [(ngModel)]="lead.companySize">
 
+              <option [ngValue]="null">Select size</option>
+
               <option
                 *ngFor="let size of companySizes"
-                [value]="size">
+                [ngValue]="size">
                 {{ size }}
               </option>
 
             </select>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>Annual Revenue</label>
+
+            <div class="input-icon">
+
+              <span class="currency">₹</span>
+
+              <input
+                type="number"
+                min="0"
+                [(ngModel)]="lead.annualRevenue"
+                placeholder="10000000">
+
+            </div>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>Street Address</label>
+
+            <input
+              type="text"
+              [(ngModel)]="lead.streetAddress"
+              placeholder="Street address">
 
           </div>
 
@@ -310,15 +431,50 @@
 
             <label>Country</label>
 
-            <select [(ngModel)]="lead.country">
+            <select
+              [(ngModel)]="lead.countryId"
+              (ngModelChange)="onCountryChange()">
+
+              <option [ngValue]="null">Select country</option>
 
               <option
                 *ngFor="let country of countries"
-                [value]="country">
-                {{ country }}
+                [ngValue]="country.countryId">
+                {{ country.countryName }}
               </option>
 
             </select>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>State</label>
+
+            <select [(ngModel)]="lead.stateId" [disabled]="!lead.countryId">
+
+              <option [ngValue]="null">Select state</option>
+
+              <option
+                *ngFor="let state of states"
+                [ngValue]="state.stateId">
+                {{ state.stateName }}
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>Postal Code</label>
+
+            <input
+              type="text"
+              [(ngModel)]="lead.postalCode"
+              placeholder="500001">
 
           </div>
 
@@ -356,9 +512,10 @@
               <span class="currency">₹</span>
 
               <input
-                type="text"
-                [(ngModel)]="lead.expectedValue"
-                placeholder="5,00,000">
+                type="number"
+                min="0"
+                [(ngModel)]="lead.estimatedDealValue"
+                placeholder="500000">
 
             </div>
 
@@ -371,7 +528,7 @@
 
             <input
               type="date"
-              [(ngModel)]="lead.expectedClose">
+              [(ngModel)]="lead.expectedCloseDate">
 
           </div>
 
@@ -502,7 +659,7 @@
 
           <span class="preview-status">
             <span></span>
-            {{ lead.status }}
+            {{ lead.leadStatus }}
           </span>
 
 
@@ -522,7 +679,7 @@
               <i class="bi bi-geo-alt"></i>
               <span>
                 {{ lead.city || 'City' }},
-                {{ lead.country || 'Country' }}
+                {{ countryName || 'Country' }}
               </span>
             </div>
 
@@ -576,13 +733,13 @@
 
   <div class="bottom-actions">
 
-    <button class="btn-secondary" (click)="cancel()">
+    <button class="btn-secondary" type="button" (click)="cancel()">
       Cancel
     </button>
 
-    <button class="btn-primary" (click)="createLead()">
+    <button class="btn-primary" type="button" [disabled]="isSaving" (click)="saveLead()">
       <i class="bi bi-check2"></i>
-      Create Lead
+      {{ isEdit ? 'Update Lead' : 'Create Lead' }}
     </button>
 
   </div>

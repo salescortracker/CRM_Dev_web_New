@@ -1,131 +1,95 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { CompanyInformationDto, CompanyService } from '../services/company.service';
+import { ContactDto, ContactService } from '../services/contact.service';
+import { Alertservice } from '../../../core/services/alertservice';
+
 @Component({
   selector: 'app-prospects',
-  imports: [CommonModule,FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './prospects.html',
   styleUrl: './prospects.css',
 })
-export class Prospects {
+export class Prospects implements OnInit {
+
   searchText = '';
 
   searchType = 'Company';
 
-  companies = [
-    {
-      id: 'CMP-1001',
-      name: 'TechNova Solutions',
-      industry: 'Technology',
-      city: 'Hyderabad',
-      country: 'India',
-      website: 'www.technova.com',
-      contacts: 12,
-      initials: 'TS',
-      color: 'blue'
-    },
-    {
-      id: 'CMP-1002',
-      name: 'CloudMatrix Pvt Ltd',
-      industry: 'IT Services',
-      city: 'Bengaluru',
-      country: 'India',
-      website: 'www.cloudmatrix.in',
-      contacts: 8,
-      initials: 'CM',
-      color: 'purple'
-    },
-    {
-      id: 'CMP-1003',
-      name: 'FinEdge Technologies',
-      industry: 'FinTech',
-      city: 'Hyderabad',
-      country: 'India',
-      website: 'www.finedge.com',
-      contacts: 5,
-      initials: 'FT',
-      color: 'green'
-    },
-    {
-      id: 'CMP-1004',
-      name: 'BrightWorks India',
-      industry: 'Manufacturing',
-      city: 'Chennai',
-      country: 'India',
-      website: 'www.brightworks.in',
-      contacts: 7,
-      initials: 'BI',
-      color: 'orange'
-    },
-    {
-      id: 'CMP-1005',
-      name: 'Vertex Global',
-      industry: 'Consulting',
-      city: 'Mumbai',
-      country: 'India',
-      website: 'www.vertexglobal.com',
-      contacts: 4,
-      initials: 'VG',
-      color: 'red'
-    }
-  ];
+  companies: CompanyInformationDto[] = [];
 
-  contacts = [
-    {
-      id: 'CON-2001',
-      name: 'Arjun Reddy',
-      designation: 'CTO',
-      company: 'TechNova Solutions',
-      email: 'arjun@technova.com',
-      phone: '+91 98765 43210',
-      city: 'Hyderabad',
-      initials: 'AR',
-      color: 'blue'
-    },
-    {
-      id: 'CON-2002',
-      name: 'Priya Sharma',
-      designation: 'HR Manager',
-      company: 'CloudMatrix Pvt Ltd',
-      email: 'priya@cloudmatrix.in',
-      phone: '+91 99887 66554',
-      city: 'Bengaluru',
-      initials: 'PS',
-      color: 'purple'
-    },
-    {
-      id: 'CON-2003',
-      name: 'Vikram Kumar',
-      designation: 'Procurement Manager',
-      company: 'FinEdge Technologies',
-      email: 'vikram@finedge.com',
-      phone: '+91 91234 56789',
-      city: 'Hyderabad',
-      initials: 'VK',
-      color: 'green'
-    },
-    {
-      id: 'CON-2004',
-      name: 'Neha Singh',
-      designation: 'Operations Head',
-      company: 'BrightWorks India',
-      email: 'neha@brightworks.in',
-      phone: '+91 90012 34567',
-      city: 'Chennai',
-      initials: 'NS',
-      color: 'orange'
-    }
-  ];
+  contacts: ContactDto[] = [];
 
-  constructor(private router: Router) {}
+  isLoading = false;
+
+  private readonly avatarColors = ['blue', 'purple', 'green', 'orange', 'red'];
+
+  constructor(
+    private router: Router,
+    private companyService: CompanyService,
+    private contactService: ContactService,
+    private alert: Alertservice,
+    private cd: ChangeDetectorRef
+  ) {}
+
+  ngOnInit(): void {
+    this.loadData();
+  }
+
+  // ================= LOAD =================
+
+  loadData(): void {
+
+    this.isLoading = true;
+
+    let pending = 2;
+
+    const done = () => {
+
+      if (--pending === 0) {
+        this.isLoading = false;
+      }
+
+      this.cd.detectChanges();
+    };
+
+    this.companyService.getCompanies().subscribe({
+
+      next: res => {
+        this.companies = res?.success && res.data ? res.data : [];
+        done();
+      },
+
+      error: err => {
+        this.alert.error(err?.error?.message || 'Failed to load companies.');
+        done();
+      }
+    });
+
+    this.contactService.getContacts().subscribe({
+
+      next: res => {
+        this.contacts = res?.success && res.data ? res.data : [];
+        done();
+      },
+
+      error: err => {
+        this.alert.error(err?.error?.message || 'Failed to load contacts.');
+        done();
+      }
+    });
+  }
 
   setSearchType(type: string): void {
     this.searchType = type;
     this.searchText = '';
   }
 
-  get filteredCompanies() {
+  // ================= FILTERS =================
+
+  get filteredCompanies(): CompanyInformationDto[] {
 
     const search = this.searchText.trim().toLowerCase();
 
@@ -134,13 +98,17 @@ export class Prospects {
     }
 
     return this.companies.filter(company =>
-      company.name.toLowerCase().includes(search) ||
-      company.industry.toLowerCase().includes(search) ||
-      company.city.toLowerCase().includes(search)
+      [
+        company.companyName,
+        company.legalCompanyName,
+        company.industryName,
+        company.city,
+        company.website
+      ].some(v => (v || '').toLowerCase().includes(search))
     );
   }
 
-  get filteredContacts() {
+  get filteredContacts(): ContactDto[] {
 
     const search = this.searchText.trim().toLowerCase();
 
@@ -149,38 +117,69 @@ export class Prospects {
     }
 
     return this.contacts.filter(contact =>
-      contact.name.toLowerCase().includes(search) ||
-      contact.company.toLowerCase().includes(search) ||
-      contact.email.toLowerCase().includes(search) ||
-      contact.phone.includes(search)
+      [
+        this.getContactName(contact),
+        contact.contactNumber,
+        contact.companyName,
+        contact.designation,
+        contact.businessEmail,
+        contact.phone
+      ].some(v => (v || '').toLowerCase().includes(search))
     );
   }
 
-  openCompany(company: any): void {
+  // ================= DISPLAY HELPERS =================
 
-    this.router.navigate(
-      ['/company-details', company.id]
-    );
+  getContactName(contact: ContactDto): string {
+    return `${contact.firstName || ''} ${contact.lastName || ''}`.trim();
   }
 
-  openContact(contact: any): void {
+  getContactCount(company: CompanyInformationDto): number {
+    return this.contacts.filter(
+      x => x.companyInformationId === company.companyInformationId
+    ).length;
+  }
 
-    this.router.navigate(
-      ['/contact-details', contact.id]
-    );
+  getInitials(value: string): string {
+
+    const words = (value || '').trim().split(/\s+/).filter(w => w.length > 0);
+
+    if (words.length === 0) {
+      return '';
+    }
+
+    if (words.length === 1) {
+      return words[0].substring(0, 2).toUpperCase();
+    }
+
+    return (words[0].charAt(0) + words[words.length - 1].charAt(0)).toUpperCase();
+  }
+
+  getColor(id: number): string {
+    return this.avatarColors[id % this.avatarColors.length];
+  }
+
+  // ================= NAVIGATION =================
+
+  openCompany(company: CompanyInformationDto): void {
+
+    this.router.navigate(['/company-details'], {
+      queryParams: { id: company.companyInformationId }
+    });
+  }
+
+  openContact(contact: ContactDto): void {
+
+    this.router.navigate(['/contact-details'], {
+      queryParams: { id: contact.contactInformationId }
+    });
   }
 
   createCompany(): void {
-
-    this.router.navigate(
-      ['/company-list']
-    );
+    this.router.navigate(['/company-create']);
   }
 
   createContact(): void {
-
-    this.router.navigate(
-      ['/contact-list']
-    );
+    this.router.navigate(['/contact-create']);
   }
 }
