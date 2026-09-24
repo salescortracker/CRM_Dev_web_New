@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, ElementRef, HostListener } from '@angular/core';
+import { CommonModule, NgClass } from '@angular/common';
 import { Router,RouterLinkActive, RouterLink ,RouterOutlet} from '@angular/router';
 import { AuthService } from '../../core/authentication/services/auth.service';
+import { AuthMenu } from '../../core/authentication/models/login-response.model';
 import { Sidebar } from './sidebar/sidebar';
 import { Header } from './header/header';
 
@@ -14,6 +15,15 @@ interface CrmMenuItem {
   children?: CrmMenuItem[];
 }
 
+// A module in the top nav, built from the menus assigned to the user's role.
+interface TopNavModule {
+  id: number;
+  label: string;
+  icon: string;
+  route?: string;
+  children: { label: string; icon: string; route: string }[];
+}
+
 interface CrmMenuGroup {
   heading: string;
   menus: CrmMenuItem[];
@@ -22,6 +32,7 @@ interface CrmMenuGroup {
 @Component({
   selector: 'app-admin-layout',
    imports: [
+    NgClass,
     RouterOutlet,
     RouterLink,
     RouterLinkActive,
@@ -64,14 +75,151 @@ export class AdminLayout {
 
 
   /* =========================================================
+     ROLE-BASED TOP NAV (User layout)
+
+     The login API sends the modules/screens assigned to the
+     user's role. When present they replace the default top
+     nav; otherwise the default nav is kept.
+  ========================================================= */
+
+  openModuleId: number | null = null;
+
+  get topNavModules(): TopNavModule[] | null {
+
+    const menus = this.authService.getCurrentUser()?.menus;
+
+    if (!Array.isArray(menus) || menus.length === 0) {
+
+      return null;
+
+    }
+
+    const toRoute = (url?: string | null): string | undefined =>
+      url ? (url.startsWith('/') ? url : '/' + url) : undefined;
+
+    const ids = new Set(menus.map((x: AuthMenu) => x.menuId));
+
+    return menus
+      .filter((x: AuthMenu) => !x.parentMenuId || !ids.has(x.parentMenuId))
+      .map((m: AuthMenu) => ({
+        id: m.menuId,
+        label: m.menuName,
+        icon: m.icon || 'fa-circle',
+        route: toRoute(m.url),
+        children: menus
+          .filter((c: AuthMenu) => c.parentMenuId === m.menuId)
+          .map((c: AuthMenu) => ({
+            label: c.menuName,
+            icon: c.icon || 'fa-circle',
+            route: toRoute(c.url) || ''
+          }))
+      }));
+
+  }
+
+  // Module whose screens the secondary bar shows: the one owning the
+  // current page, else the last one clicked, else the first with screens.
+  selectedModuleId: number | null = null;
+
+  get activeModule(): TopNavModule | null {
+
+    const modules = this.topNavModules;
+
+    if (!modules) {
+
+      return null;
+
+    }
+
+    const url = this.router.url.split('?')[0];
+
+    return (
+      modules.find(m => m.children.some(c => c.route && url.startsWith(c.route))) ||
+      modules.find(m => m.id === this.selectedModuleId) ||
+      modules.find(m => m.children.length > 0) ||
+      null
+    );
+
+  }
+
+  onModuleClick(module: TopNavModule): void {
+
+    this.selectedModuleId = module.id;
+
+    if (module.children.length > 0) {
+
+      this.openModuleId = this.openModuleId === module.id ? null : module.id;
+
+      return;
+
+    }
+
+    this.openModuleId = null;
+
+    if (module.route) {
+
+      this.router.navigateByUrl(module.route);
+
+    }
+
+  }
+
+  onSubModuleClick(route: string): void {
+
+    this.openModuleId = null;
+
+    if (route) {
+
+      this.router.navigateByUrl(route);
+
+    }
+
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event): void {
+
+    if (this.openModuleId !== null &&
+        !this.host.nativeElement.querySelector('.top-menu')?.contains(event.target as Node)) {
+
+      this.openModuleId = null;
+
+    }
+
+  }
+
+
+  /* =========================================================
      USER INFORMATION - STATIC
   ========================================================= */
 
-  userName = 'Dugra Prasad';
+  // Logged-in user, from the login response.
+  get userName(): string {
 
-  userRole = 'Sales Manager';
+    const user = this.authService.getCurrentUser();
 
-  initials = 'DP';
+    return user?.fullName || user?.userName || '';
+
+  }
+
+  get userRole(): string {
+
+    return this.authService.getCurrentUser()?.role || '';
+
+  }
+
+  get initials(): string {
+
+    const parts = this.userName
+      .split(/[\s@._-]+/)
+      .filter(part => part.length > 0);
+
+    return parts
+      .slice(0, 2)
+      .map(part => part.charAt(0).toUpperCase())
+      .join('');
+
+  }
 
 
   /* =========================================================
@@ -459,7 +607,8 @@ export class AdminLayout {
 
   constructor(
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private host: ElementRef
   ) {}
 
 

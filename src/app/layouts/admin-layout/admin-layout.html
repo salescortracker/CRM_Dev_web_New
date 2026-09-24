@@ -53,6 +53,48 @@
 
     <nav class="top-menu">
 
+      @if (topNavModules; as modules) {
+
+      <!-- ROLE-BASED MODULES (assigned to this user's role) -->
+
+      @for (module of modules; track module.id) {
+
+        <div class="top-module">
+
+          <button
+            type="button"
+            class="top-menu-item"
+            [class.active]="openModuleId === module.id"
+            (click)="onModuleClick(module)"
+          >
+            <i class="fa-solid" [ngClass]="module.icon"></i>
+            <span>{{ module.label }}</span>
+            @if (module.children.length > 0) {
+              <i class="fa-solid fa-chevron-down menu-arrow"></i>
+            }
+          </button>
+
+          @if (openModuleId === module.id && module.children.length > 0) {
+            <div class="top-submenu">
+              @for (sub of module.children; track sub.label) {
+                <button
+                  type="button"
+                  class="top-submenu-item"
+                  (click)="onSubModuleClick(sub.route)"
+                >
+                  <i class="fa-solid" [ngClass]="sub.icon"></i>
+                  <span>{{ sub.label }}</span>
+                </button>
+              }
+            </div>
+          }
+
+        </div>
+
+      }
+
+      } @else {
+
       <!-- DASHBOARD -->
 
       <a
@@ -115,6 +157,8 @@
         <i class="fa-solid fa-chart-line"></i>
         <span>Insights</span>
       </a>
+
+      }
 
     </nav>
 
@@ -254,6 +298,18 @@
 
       <div class="workspace-name">
 
+        @if (activeModule; as active) {
+
+        <strong>
+          {{ active.label }}
+        </strong>
+
+        <span>
+          Workspace
+        </span>
+
+        } @else {
+
         <strong>
           CRM Workspace
         </strong>
@@ -262,12 +318,42 @@
           Customer 360
         </span>
 
+        }
+
       </div>
 
     </div>
 
 
     <!-- SECONDARY MENU -->
+
+    @if (topNavModules) {
+
+    <!-- Screens assigned to the active module -->
+
+    <nav class="secondary-menu">
+
+      @for (sub of activeModule?.children ?? []; track sub.label) {
+
+        <a
+          class="secondary-item"
+          [routerLink]="sub.route"
+          routerLinkActive="active"
+        >
+
+          <i class="fa-solid" [ngClass]="sub.icon"></i>
+
+          <span>
+            {{ sub.label }}
+          </span>
+
+        </a>
+
+      }
+
+    </nav>
+
+    } @else {
 
     <nav class="secondary-menu">
 
@@ -403,6 +489,8 @@
       </a>
 
     </nav>
+
+    }
 
 
     <!-- SECONDARY ACTIONS -->

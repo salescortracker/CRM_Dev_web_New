@@ -1,0 +1,86 @@
+<aside class="ma-sidebar" [class.collapsed]="isCollapsed">
+
+  <div class="ma-brand">
+
+    <div class="ma-brand-mark">
+      <i class="fa-solid fa-layer-group"></i>
+    </div>
+
+    <div class="ma-brand-text" *ngIf="!isCollapsed">
+      <span class="ma-brand-name">MasterAdmin</span>
+      <span class="ma-brand-caption">CRM Console</span>
+    </div>
+
+    <button class="ma-collapse-btn" type="button" (click)="toggleSidebar()" aria-label="Toggle sidebar">
+      <i class="fa-solid" [ngClass]="isCollapsed ? 'fa-angles-right' : 'fa-angles-left'"></i>
+    </button>
+
+  </div>
+
+  <nav class="ma-nav">
+
+    <div *ngFor="let menu of menus" class="ma-nav-item">
+
+      <!-- LEVEL 1 -->
+      <a class="ma-nav-link"
+         [class.has-children]="menu.children?.length"
+         [routerLink]="menu.route ? menu.route : null"
+         routerLinkActive="active"
+         [routerLinkActiveOptions]="{ exact: false }"
+         (click)="onMenuClick(menu)">
+
+        <i class="fa-solid ma-nav-icon" [ngClass]="menu.icon"></i>
+
+        <span class="ma-nav-label" *ngIf="!isCollapsed">{{ menu.label }}</span>
+
+        <i *ngIf="menu.children?.length && !isCollapsed"
+           class="fa-solid ma-nav-caret"
+           [ngClass]="menu.expanded ? 'fa-chevron-down' : 'fa-chevron-right'"></i>
+
+      </a>
+
+      <!-- LEVEL 2 -->
+      <div class="ma-submenu" *ngIf="menu.expanded && menu.children && !isCollapsed">
+
+        <div *ngFor="let child of menu.children">
+
+          <a class="ma-submenu-link"
+             [class.has-children]="child.children?.length"
+             [routerLink]="child.route ? child.route : null"
+             routerLinkActive="active"
+             (click)="onMenuClick(child)">
+
+            <i class="fa-solid" [ngClass]="child.icon"></i>
+            <span>{{ child.label }}</span>
+
+            <i *ngIf="child.children?.length"
+               class="fa-solid ma-nav-caret"
+               [ngClass]="child.expanded ? 'fa-chevron-down' : 'fa-chevron-right'"></i>
+
+          </a>
+
+          <!-- LEVEL 3 -->
+          <div class="ma-submenu ma-submenu-level2" *ngIf="child.expanded && child.children">
+
+            <a class="ma-submenu-link"
+               *ngFor="let sub of child.children"
+               [routerLink]="sub.route ? sub.route : null"
+               routerLinkActive="active"
+               (click)="onChildClick(sub)">
+
+              <i class="fa-solid" [ngClass]="sub.icon"></i>
+              <span>{{ sub.label }}</span>
+
+            </a>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </nav>
+
+</aside>

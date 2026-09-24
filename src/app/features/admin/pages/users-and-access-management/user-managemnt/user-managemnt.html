@@ -1,0 +1,561 @@
+<div class="page-container">
+
+
+    <!-- ========================= -->
+    <!-- PAGE HEADER -->
+    <!-- ========================= -->
+
+
+    <div class="page-header">
+
+
+        <div>
+
+
+            <p class="page-subtitle">
+                USER & ACCESS MANAGEMENT
+            </p>
+
+
+            <h1>
+                User Management
+            </h1>
+
+
+            <p class="page-description">
+                Manage system users, their organizational details, role and reporting hierarchy across CRM.
+            </p>
+
+
+            <div class="org-info" *ngIf="currentUserOrgLoaded">
+
+                <span>
+                    <i class="fa-solid fa-building"></i>
+                    {{currentUserCompany || '-'}}
+                </span>
+
+                <span>
+                    <i class="fa-solid fa-map-location-dot"></i>
+                    {{currentUserRegion || '-'}}
+                </span>
+
+                <span>
+                    <i class="fa-solid fa-code-branch"></i>
+                    {{currentUserBranch || '-'}}
+                </span>
+
+            </div>
+
+
+        </div>
+
+
+
+        <div class="header-buttons">
+
+
+            <button class="btn btn-light" (click)="clearFilters()">
+
+                <i class="fa-solid fa-rotate"></i>
+                Refresh
+
+            </button>
+
+
+
+            <button class="btn btn-danger" (click)="openAddModal()">
+
+                <i class="fa-solid fa-user-plus"></i>
+                Add User
+
+            </button>
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+    <!-- ========================= -->
+    <!-- STATISTICS -->
+    <!-- ========================= -->
+
+
+    <div class="stats-grid">
+
+
+        <div class="stat-card">
+
+            <span>Total Users</span>
+
+            <h2>{{users.length}}</h2>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>Active Users</span>
+
+            <h2>{{activeUsers}}</h2>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>Inactive Users</span>
+
+            <h2>{{inactiveUsers}}</h2>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>Admin Users</span>
+
+            <h2>{{adminUsers}}</h2>
+
+        </div>
+
+
+    </div>
+
+
+
+
+    <!-- ========================= -->
+    <!-- SEARCH FILTER -->
+    <!-- ========================= -->
+
+
+    <div class="search-panel">
+
+
+        <div class="search-box">
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input type="text" placeholder="Search user..." [(ngModel)]="searchText">
+
+        </div>
+
+
+        <select class="form-control" [(ngModel)]="roleFilter">
+
+            <option value="">All Roles</option>
+
+            <option *ngFor="let roleName of roles" [value]="roleName">
+                {{roleName}}
+            </option>
+
+        </select>
+
+
+        <select class="form-control" [(ngModel)]="statusFilter">
+
+            <option value="">All Status</option>
+
+            <option value="Active">Active</option>
+
+            <option value="Inactive">Inactive</option>
+
+        </select>
+
+
+        <button class="btn btn-secondary" (click)="clearFilters()">
+            Clear
+        </button>
+
+
+    </div>
+
+
+
+
+    <!-- ========================= -->
+    <!-- USERS TABLE -->
+    <!-- ========================= -->
+
+
+    <div class="table-card">
+
+
+        <div class="table-header">
+
+            <h3>System Users</h3>
+
+            <span>{{filteredUsers.length}} Records</span>
+
+        </div>
+
+
+        <div class="table-scroll">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>User</th>
+
+                        <th>Email</th>
+
+                        <th>Mobile Number</th>
+
+                        <th>Company</th>
+
+                        <th>Region</th>
+
+                        <th>Branch</th>
+
+                        <th>Department</th>
+
+                        <th>Designation</th>
+
+                        <th>Role</th>
+
+                        <th>Reporting To</th>
+
+                        <th>Joining Date</th>
+
+                        <th>Status</th>
+
+                        <th width="170">Actions</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    <tr *ngFor="let item of filteredUsers">
+
+
+                        <!-- User -->
+                        <td>
+
+                            <div class="provider-info">
+
+                                <div class="provider-icon">
+                                    <i class="fa-solid fa-user"></i>
+                                </div>
+
+                                <div>
+                                    <strong>{{item.firstName}} {{item.lastName}}</strong>
+                                    <small>{{item.employeeCode || '-'}}</small>
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- Email -->
+                        <td>{{item.email}}</td>
+
+
+                        <!-- Mobile -->
+                        <td>{{item.mobile || '-'}}</td>
+
+
+                        <!-- Company -->
+                        <td>{{item.companyName || '-'}}</td>
+
+
+                        <!-- Region -->
+                        <td>{{item.regionName || '-'}}</td>
+
+
+                        <!-- Branch -->
+                        <td>{{item.branchName || '-'}}</td>
+
+
+                        <!-- Department -->
+                        <td>{{item.departmentName || '-'}}</td>
+
+
+                        <!-- Designation -->
+                        <td>{{item.designationName || '-'}}</td>
+
+
+                        <!-- Role -->
+                        <td>
+                            <span class="role-badge">{{item.role}}</span>
+                        </td>
+
+
+                        <!-- Reporting To -->
+                        <td>{{reportingToName(item.reportingTo)}}</td>
+
+
+                        <!-- Joining Date -->
+                        <td>{{item.joiningDate ? (item.joiningDate | date:'dd MMM yyyy') : '-'}}</td>
+
+
+                        <!-- Status -->
+                        <td>
+                            <span class="status" [ngClass]="item.status.toLowerCase()">
+                                {{item.status}}
+                            </span>
+                        </td>
+
+
+                        <!-- Actions -->
+                        <td>
+
+                            <button class="icon-btn" (click)="edit(item)">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+
+                            <button class="icon-btn danger" (click)="delete(item.id)">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+
+                        </td>
+
+
+                    </tr>
+
+
+                    <tr *ngIf="!filteredUsers.length">
+
+                        <td colspan="13" class="empty-row">
+                            No users match the current filters.
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+    </div>
+
+
+</div>
+<!-- ======================================= -->
+<!-- ADD / EDIT USER MODAL -->
+<!-- ======================================= -->
+
+
+<div class="modal-overlay" *ngIf="showModal">
+
+
+    <div class="modal-box">
+
+
+        <!-- MODAL HEADER -->
+        <div class="modal-header">
+
+            <h3>{{isEdit ? 'Edit User' : 'Add User'}}</h3>
+
+            <button class="close-btn" (click)="closeModal()">×</button>
+
+        </div>
+
+
+        <!-- MODAL BODY -->
+        <div class="modal-body">
+
+            <div class="form-grid">
+
+
+                <!-- First Name -->
+                <div>
+                    <label>First Name</label>
+                    <input type="text" placeholder="Enter first name" [(ngModel)]="model.firstName">
+                </div>
+
+
+                <!-- Last Name -->
+                <div>
+                    <label>Last Name</label>
+                    <input type="text" placeholder="Enter last name" [(ngModel)]="model.lastName">
+                </div>
+
+
+                <!-- Email -->
+                <div>
+                    <label>Email</label>
+                    <input type="email" placeholder="Enter email address" [(ngModel)]="model.email">
+                </div>
+
+
+                <!-- Mobile Number -->
+                <div>
+                    <label>Mobile Number</label>
+                    <input type="text" placeholder="Enter mobile number" [(ngModel)]="model.mobile">
+                </div>
+
+
+                <!-- Employee Code -->
+                <div>
+                    <label>Employee Code</label>
+                    <input type="text" placeholder="EMP001" [(ngModel)]="model.employeeCode">
+                </div>
+
+
+                <!-- Company -->
+                <div>
+                    <label>Company</label>
+                    <input type="text" [value]="currentUserCompany" readonly>
+                </div>
+
+
+                <!-- Region -->
+                <div>
+                    <label>Region</label>
+                    <input type="text" [value]="currentUserRegion" readonly>
+                </div>
+
+
+                <!-- Branch -->
+                <div>
+                    <label>Branch</label>
+                    <input type="text" [value]="currentUserBranch" readonly>
+                </div>
+
+
+                <!-- Password -->
+                <div>
+                    <label>Password</label>
+                    <div class="input-group">
+                        <input
+                            [type]="showPassword ? 'text' : 'password'"
+                            [placeholder]="isEdit ? 'Leave blank to keep current password' : 'Enter password'"
+                            [(ngModel)]="model.password">
+                        <button type="button" class="btn btn-outline-secondary" (click)="showPassword = !showPassword">
+                            {{showPassword ? 'Hide' : 'Show'}}
+                        </button>
+                    </div>
+                </div>
+
+
+                <!-- Department -->
+                <div>
+                    <label>Department</label>
+                    <select [(ngModel)]="model.departmentId" (ngModelChange)="onFormDepartmentChange()">
+
+                        <option value="">-- Select Department --</option>
+
+                        <option *ngFor="let item of formDepartments"[value]="item.departmentId">
+                            {{item.departmentName}}
+                        </option>
+
+                    </select>
+                </div>
+
+
+                <!-- Designation -->
+                <div>
+                    <label>Designation</label>
+                    <select [(ngModel)]="model.designationId">
+
+                        <option value="">-- Select Designation --</option>
+
+                        <option *ngFor="let item of formDesignations" [value]="item.designationId">
+                            {{item.designationName}}
+                        </option>
+
+                    </select>
+                </div>
+
+
+                <!-- Role -->
+                <div>
+                    <label>Role</label>
+                    <select [(ngModel)]="model.role">
+
+                        <option value="">-- Select Role --</option>
+
+                        <option *ngFor="let roleName of roles" [value]="roleName">
+                            {{roleName}}
+                        </option>
+
+                    </select>
+                </div>
+
+
+                <!-- Role Type -->
+                <div>
+                    <label>Role Type</label>
+                    <select [(ngModel)]="model.roleType">
+
+                        <option value="">-- Select Role Type --</option>
+
+                        <option *ngFor="let type of roleTypes" [value]="type">
+                            {{type}}
+                        </option>
+
+                    </select>
+                </div>
+
+
+                <!-- Reporting To -->
+                <div>
+                    <label>Reporting To</label>
+                    <select [(ngModel)]="model.reportingTo">
+
+                        <option value="">-- None --</option>
+
+                        <option *ngFor="let item of reportingToOptions" [value]="item.id">
+                            {{item.firstName}} {{item.lastName}}
+                        </option>
+
+                    </select>
+                </div>
+
+
+                <!-- Joining Date -->
+                <div>
+                    <label>Joining Date</label>
+                    <input type="date" [(ngModel)]="model.joiningDate">
+                </div>
+
+
+                <!-- Status -->
+                <div>
+                    <label>Status</label>
+                    <select [(ngModel)]="model.status">
+
+                        <option>Active</option>
+
+                        <option>Inactive</option>
+
+                    </select>
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+        <!-- FOOTER -->
+        <div class="modal-footer">
+
+            <button class="btn-secondary" (click)="closeModal()">
+                Cancel
+            </button>
+
+            <button class="btn-primary" (click)="saveUser()">
+                {{isEdit ? 'Update User' : 'Save User'}}
+            </button>
+
+        </div>
+
+
+    </div>
+
+
+</div>

@@ -29,7 +29,6 @@ export class CompanyAdministrators implements OnInit {
 
   submitted = false;
   isEdit = false;
-  showPassword = false;
 
   searchText = '';
   companyFilter = '';
@@ -80,8 +79,6 @@ export class CompanyAdministrators implements OnInit {
       employeeCode: '',
 
       username: '',
-
-      password: '',
 
       firstName: '',
 
@@ -752,8 +749,6 @@ export class CompanyAdministrators implements OnInit {
 
             username: data.username || '',
 
-            password: data.password || '',
-
             firstName: data.firstName || '',
 
             lastName: data.lastName || '',
@@ -781,8 +776,6 @@ export class CompanyAdministrators implements OnInit {
           };
 
           this.isEdit = true;
-
-          this.showPassword = false;
 
           this.submitted = false;
 
@@ -882,8 +875,6 @@ export class CompanyAdministrators implements OnInit {
     this.admin = this.getEmptyModel();
 
     this.isEdit = false;
-
-    this.showPassword = false;
 
     this.submitted = false;
 

@@ -28,7 +28,7 @@ export const routes: Routes = [
   {
     path: '',
     canActivate: [authGuard],
-    loadComponent: () => import('./layouts/admin-layout/admin-layout').then(m => m.AdminLayout),
+    loadComponent: () => import('./layouts/layout-switch/layout-switch').then(m => m.LayoutSwitch),
     children: [
       {
         path: 'dashboard',
@@ -426,10 +426,20 @@ export const routes: Routes = [
           .then(m => m.MenuAccess)
       },
       {
+        path: 'menu-master',
+        loadComponent: () => import('./features/super-admin/users-and-access-management/menu-master/menu-master')
+          .then(m => m.MenuMaster)
+      },
+      {
         path: 'roles-permissions',
         loadComponent: () => import('./features/super-admin/users-and-access-management/roles-permissions/roles-permissions')
           .then(m => m.RolesPermissions)
       },
+      // {
+      //   path: 'role-master',
+      //   loadComponent: () => import('./features/super-admin/users-and-access-management/role-master/role-master')
+      //     .then(m => m.RoleMaster)
+      // },
       {
         path: 'users',
         loadComponent: () => import('./features/super-admin/users/users')
@@ -551,12 +561,12 @@ export const routes: Routes = [
         loadComponent: () => import('./features/user/pages/crm/leads/leads')
           .then(m => m.Leads)
       },
-         {
+      {
         path: 'leads-create',
         loadComponent: () => import('./features/crm/leads-create/leads-create')
           .then(m => m.LeadsCreate)
       },
-       {
+      {
         path: 'leads-list',
         loadComponent: () => import('./features/crm/lead-list/lead-list')
           .then(m => m.LeadList)
@@ -566,7 +576,7 @@ export const routes: Routes = [
         loadComponent: () => import('./features/crm/leads-details/leads-details')
           .then(m => m.LeadsDetails)
       },
-       {
+      {
         path: 'pipeline',
         loadComponent: () => import('./features/crm/pipeline/pipeline')
           .then(m => m.Pipeline)
@@ -577,48 +587,48 @@ export const routes: Routes = [
           .then(m => m.SuperAdminLayout)
       },
 
- {
-  path: 'prospects',
-  loadComponent: () =>
-    import('./features/crm/prospects/prospects')
-      .then(m => m.Prospects)
-},
-{
-  path: 'company-details',
-  loadComponent: () =>
-    import('./features/crm/company-details/company-details')
-      .then(m => m.CompanyDetails)
-},
-{
-  path: 'company-list',
-  loadComponent: () =>
-    import('./features/crm/company-list/company-list')
-      .then(m => m.CompanyList)
-},
-{
-  path: 'company-create',
-  loadComponent: () =>
-    import('./features/crm/company-create/company-create')
-      .then(m => m.CompanyCreate)
-},
-{
-  path: 'contact-details',
-  loadComponent: () =>
-    import('./features/crm/contact-details/contact-details')
-      .then(m => m.ContactDetails)
-},
-{
-  path: 'contact-list',
-  loadComponent: () =>
-    import('./features/crm/contact-list/contact-list')
-      .then(m => m.ContactList)
-},
-{
-  path: 'contact-create',
-  loadComponent: () =>
-    import('./features/crm/contact-create/contact-create')
-      .then(m => m.ContactCreate)
-},
+      {
+        path: 'prospects',
+        loadComponent: () =>
+          import('./features/crm/prospects/prospects')
+            .then(m => m.Prospects)
+      },
+      {
+        path: 'company-details',
+        loadComponent: () =>
+          import('./features/crm/company-details/company-details')
+            .then(m => m.CompanyDetails)
+      },
+      {
+        path: 'company-list',
+        loadComponent: () =>
+          import('./features/crm/company-list/company-list')
+            .then(m => m.CompanyList)
+      },
+      {
+        path: 'company-create',
+        loadComponent: () =>
+          import('./features/crm/company-create/company-create')
+            .then(m => m.CompanyCreate)
+      },
+      {
+        path: 'contact-details',
+        loadComponent: () =>
+          import('./features/crm/contact-details/contact-details')
+            .then(m => m.ContactDetails)
+      },
+      {
+        path: 'contact-list',
+        loadComponent: () =>
+          import('./features/crm/contact-list/contact-list')
+            .then(m => m.ContactList)
+      },
+      {
+        path: 'contact-create',
+        loadComponent: () =>
+          import('./features/crm/contact-create/contact-create')
+            .then(m => m.ContactCreate)
+      },
       {
         path: 'accounts',
         loadComponent: () => import('./features/user/pages/accounts/accounts')
@@ -836,86 +846,99 @@ export const routes: Routes = [
         loadComponent: () => import('./features/admin/pages/crm-operations/price-books/price-books')
           .then(m => m.PriceBooks)
       },
-    {
-      path: 'contracts',
-      loadComponent: () => import('./features/admin/pages/crm-operations/contracts/contracts')
-        .then(m => m.Contracts)
-    },
-    {
-      path: 'marketing-lists',
-      loadComponent: () => import('./features/admin/pages/marketing/marketing-lists/marketing-lists')
-        .then(m => m.MarketingLists)
-    },
-   
-  {
-    path: 'ticket-categories',
-    loadComponent: () => import('./features/admin/pages/customer-service/ticket-categories/ticket-categories')
-      .then(m => m.TicketCategories)
-  },
-  {
-    path: 'faqs',
-    loadComponent: () => import('./features/admin/pages/customer-service/faqs/faqs')
-      .then(m => m.Faqs)
-  },
-{
-  path: 'timesheet',
-  loadComponent: () => import('./features/admin/pages/projects/timesheet/timesheet')
-    .then(m => m.Timesheet)
-},
-{
-  path: 'api-tokens',
-  loadComponent: () => import('./features/admin/pages/integrations/api-tokens/api-tokens')
-    .then(m => m.ApiTokens)
-},
-{
-  path: 'company-webhooks',
-  loadComponent:() => import('./features/admin/pages/integrations/company-webhooks/company-webhooks')
-  .then(m=>m.CompanyWebhooks)
-},
-{
-  path: 'gmail-integration',
-  loadComponent:() => import('./features/admin/pages/integrations/gmail-integration/gmail-integration')
-  .then(m=>m.GmailIntegration)
-},
-{
-  path:'outlook-integration',
-  loadComponent:() => import('./features/admin/pages/integrations/outlook-integration/outlook-integration')
-  .then(m=>m.OutlookIntegration)
-},
+      {
+        path: 'contracts',
+        loadComponent: () => import('./features/admin/pages/crm-operations/contracts/contracts')
+          .then(m => m.Contracts)
+      },
+      {
+        path: 'marketing-lists',
+        loadComponent: () => import('./features/admin/pages/marketing/marketing-lists/marketing-lists')
+          .then(m => m.MarketingLists)
+      },
 
-{
-  path: 'microsoft-teams',
-  loadComponent:() => import('./features/admin/pages/integrations/microsoft-teams/microsoft-teams')
-  .then(m=>m.MicrosoftTeams)
-},
-{
-  path: 'zoom',
-  loadComponent:() => import('./features/admin/pages/integrations/zoom/zoom')
-  .then(m=>m.Zoom)
-},
-{
-  path: 'api-usage-logs',
-  loadComponent:() => import('./features/admin/pages/api-usage-logs/api-usage-logs')
-  .then(m=>m.ApiUsageLogs)
-},
-{
-  path: 'file-upload-settings',
-  loadComponent:() => import('./features/admin/pages/file-management/file-upload-settings/file-upload-settings')
-  .then(m=>m.FileUploadSettings)
-  
-},
-{
-  path: 'document-categories',
-  loadComponent:() => import('./features/admin/pages/file-management/document-categories/document-categories')
-  .then(m=>m.DocumentCategories)
-},
-{
-  path:'storage-usage',
-  loadComponent:() => import('./features/admin/pages/file-management/storage-usage/storage-usage')
-  .then(m=>m.StorageUsage)
-},
+      {
+        path: 'ticket-categories',
+        loadComponent: () => import('./features/admin/pages/customer-service/ticket-categories/ticket-categories')
+          .then(m => m.TicketCategories)
+      },
+      {
+        path: 'faqs',
+        loadComponent: () => import('./features/admin/pages/customer-service/faqs/faqs')
+          .then(m => m.Faqs)
+      },
+      {
+        path: 'timesheet',
+        loadComponent: () => import('./features/admin/pages/projects/timesheet/timesheet')
+          .then(m => m.Timesheet)
+      },
+      {
+        path: 'api-tokens',
+        loadComponent: () => import('./features/admin/pages/integrations/api-tokens/api-tokens')
+          .then(m => m.ApiTokens)
+      },
+      {
+        path: 'company-webhooks',
+        loadComponent: () => import('./features/admin/pages/integrations/company-webhooks/company-webhooks')
+          .then(m => m.CompanyWebhooks)
+      },
+      {
+        path: 'gmail-integration',
+        loadComponent: () => import('./features/admin/pages/integrations/gmail-integration/gmail-integration')
+          .then(m => m.GmailIntegration)
+      },
+      {
+        path: 'outlook-integration',
+        loadComponent: () => import('./features/admin/pages/integrations/outlook-integration/outlook-integration')
+          .then(m => m.OutlookIntegration)
+      },
 
-  
+      {
+        path: 'microsoft-teams',
+        loadComponent: () => import('./features/admin/pages/integrations/microsoft-teams/microsoft-teams')
+          .then(m => m.MicrosoftTeams)
+      },
+      {
+        path: 'zoom',
+        loadComponent: () => import('./features/admin/pages/integrations/zoom/zoom')
+          .then(m => m.Zoom)
+      },
+      {
+        path: 'api-usage-logs',
+        loadComponent: () => import('./features/admin/pages/api-usage-logs/api-usage-logs')
+          .then(m => m.ApiUsageLogs)
+      },
+      {
+        path: 'file-upload-settings',
+        loadComponent: () => import('./features/admin/pages/file-management/file-upload-settings/file-upload-settings')
+          .then(m => m.FileUploadSettings)
+
+      },
+      {
+        path: 'document-categories',
+        loadComponent: () => import('./features/admin/pages/file-management/document-categories/document-categories')
+          .then(m => m.DocumentCategories)
+      },
+      {
+        path: 'storage-usage',
+        loadComponent: () => import('./features/admin/pages/file-management/storage-usage/storage-usage')
+          .then(m => m.StorageUsage)
+      },
+      {
+        path: 'user-managemnt',
+        loadComponent: () => import('./features/admin/pages/users-and-access-management/user-managemnt/user-managemnt')
+          .then(m => m.UserManagemnt)
+      },
+      {
+        path: 'menu-master',
+        loadComponent: () => import('./features/admin/pages/users-and-access-management/menu-master/menu-master')
+          .then(m => m.MenuMaster)
+      },
+      {
+        path: 'roles-master',
+        loadComponent: () => import('./features/admin/pages/users-and-access-management/roles-master/roles-master')
+          .then(m => m.RolesMaster)
+      },
       { path: '**', redirectTo: 'dashboard' }
     ]
   },

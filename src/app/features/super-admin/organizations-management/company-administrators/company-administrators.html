@@ -183,33 +183,6 @@
 
                 </div>
 
-                <!-- Password (generated automatically; view-only) -->
-
-                <div class="col-md-4 mb-3">
-
-                    <label class="form-label">
-
-                        Password
-
-                    </label>
-
-                    <div class="input-group">
-
-                        <input class="form-control" [type]="showPassword ? 'text' : 'password'"
-                            [value]="isEdit ? (admin.password || '') : ''" readonly autocomplete="off"
-                            [placeholder]="isEdit ? (admin.password ? '' : 'Not available') : 'Auto-generated'">
-
-                        <button type="button" class="btn btn-outline-secondary" [disabled]="!isEdit || !admin.password"
-                            (click)="showPassword = !showPassword">
-
-                            {{showPassword ? 'Hide' : 'Show'}}
-
-                        </button>
-
-                    </div>
-
-                </div>
-
                 <!-- First Name -->
 
                 <div class="col-md-4 mb-3">

@@ -955,6 +955,20 @@ getDesignations(): Observable<ApiResponse<any[]>> {
   );
 }
 
+// GET ACTIVE DEPARTMENTS OF THE LOGGED-IN USER'S COMPANY + REGION
+getDepartmentsByScope(): Observable<ApiResponse<any[]>> {
+  return this.http.get<ApiResponse<any[]>>(
+    `${this.baseUrl}/Master/getdepartmentsbyscope`
+  );
+}
+
+// GET ACTIVE DESIGNATIONS OF A DEPARTMENT (LOGGED-IN USER'S COMPANY + REGION)
+getDesignationsByScope(departmentId: number): Observable<ApiResponse<any[]>> {
+  return this.http.get<ApiResponse<any[]>>(
+    `${this.baseUrl}/Master/getdesignationsbyscope/${departmentId}`
+  );
+}
+
 // GET DESIGNATION BY ID
 getDesignationById(id: number): Observable<ApiResponse<any>> {
   return this.http.get<ApiResponse<any>>(
@@ -1324,6 +1338,165 @@ getCompanyAdministrators(): Observable<ApiResponse<any[]>> {
 getCompanyAdministratorById(id: number): Observable<ApiResponse<any>> {
   return this.http.get<ApiResponse<any>>(
     `${this.baseUrl}/SuperAdmin/getbycompanyadministrator/${id}`
+  );
+}
+
+// ================= USER =================
+
+// CREATE USER (User Management screen) - saves the user, emails the login
+// details and returns a token generated for the new user
+createAdminUser(data: any): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/Admin/createuser`,
+    data
+  );
+}
+
+// UPDATE USER (User Management screen)
+updateAdminUser(data: any): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/Admin/updateuser`,
+    data
+  );
+}
+
+// DELETE USER (User Management screen)
+deleteAdminUser(id: number): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/Admin/deleteuser/${id}`,
+    {}
+  );
+}
+
+// GET ALL USERS (User Management screen)
+getAdminUsers(): Observable<ApiResponse<any[]>> {
+  return this.http.get<ApiResponse<any[]>>(
+    `${this.baseUrl}/Admin/getalluser`
+  );
+}
+
+// GET USER BY ID (User Management screen)
+getAdminUserById(id: number): Observable<ApiResponse<any>> {
+  return this.http.get<ApiResponse<any>>(
+    `${this.baseUrl}/Admin/getbyiduser/${id}`
+  );
+}
+
+// CREATE USER
+createUser(data: any): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/SuperAdmin/createuser`,
+    data
+  );
+}
+
+// UPDATE USER
+updateUser(data: any): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/SuperAdmin/updateuser`,
+    data
+  );
+}
+
+// DELETE USER
+deleteUser(id: number): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/SuperAdmin/deleteuser/${id}`,
+    {}
+  );
+}
+
+// GET ALL USERS
+getUsers(): Observable<ApiResponse<any[]>> {
+  return this.http.get<ApiResponse<any[]>>(
+    `${this.baseUrl}/SuperAdmin/getalluser`
+  );
+}
+
+// GET USER BY ID
+getUserById(id: number): Observable<ApiResponse<any>> {
+  return this.http.get<ApiResponse<any>>(
+    `${this.baseUrl}/SuperAdmin/getbyiduser/${id}`
+  );
+}
+
+// ================= USER MENU (Menu Master) =================
+
+// CREATE USER MENU
+createUserMenu(data: any): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/UserMenu/create`,
+    data
+  );
+}
+
+// UPDATE USER MENU
+updateUserMenu(data: any): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/UserMenu/update`,
+    data
+  );
+}
+
+// DELETE USER MENU
+deleteUserMenu(id: number): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/UserMenu/delete/${id}`,
+    {}
+  );
+}
+
+// GET ALL USER MENUS
+getUserMenus(): Observable<ApiResponse<any[]>> {
+  return this.http.get<ApiResponse<any[]>>(
+    `${this.baseUrl}/UserMenu/get-all`
+  );
+}
+
+// GET USER MENU BY ID
+getUserMenuById(id: number): Observable<ApiResponse<any>> {
+  return this.http.get<ApiResponse<any>>(
+    `${this.baseUrl}/UserMenu/get-by-id/${id}`
+  );
+}
+
+// ================= USER ROLE (Role Master) =================
+
+// CREATE USER ROLE
+createUserRole(data: any): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/UserRole/create`,
+    data
+  );
+}
+
+// UPDATE USER ROLE
+updateUserRole(data: any): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/UserRole/update`,
+    data
+  );
+}
+
+// DELETE USER ROLE
+deleteUserRole(id: number): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(
+    `${this.baseUrl}/UserRole/delete/${id}`,
+    {}
+  );
+}
+
+// GET ALL USER ROLES
+getUserRoles(): Observable<ApiResponse<any[]>> {
+  return this.http.get<ApiResponse<any[]>>(
+    `${this.baseUrl}/UserRole/get-all`
+  );
+}
+
+// GET USER ROLE BY ID
+getUserRoleById(id: number): Observable<ApiResponse<any>> {
+  return this.http.get<ApiResponse<any>>(
+    `${this.baseUrl}/UserRole/get-by-id/${id}`
   );
 }
 }

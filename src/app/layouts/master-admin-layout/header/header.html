@@ -1,0 +1,90 @@
+<header class="ma-header">
+
+  <button class="ma-icon-btn ma-mobile-toggle" type="button" (click)="toggleSidebar()" aria-label="Toggle menu">
+    <i class="fa-solid fa-bars"></i>
+  </button>
+
+  <div class="ma-search">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input
+      type="search"
+      [(ngModel)]="searchText"
+      placeholder="Search modules, records, settings..."
+      aria-label="Search" />
+  </div>
+
+  <div class="ma-header-actions">
+
+    <button class="ma-icon-btn" type="button" title="Quick create" aria-label="Quick create">
+      <i class="fa-solid fa-plus"></i>
+    </button>
+
+    <div class="ma-dropdown-wrap">
+
+      <button class="ma-icon-btn" type="button" (click)="toggleNotifications()" aria-label="Notifications">
+        <i class="fa-solid fa-bell"></i>
+        <span class="ma-badge" *ngIf="notifications.length">{{ notifications.length }}</span>
+      </button>
+
+      <div class="ma-dropdown ma-dropdown-notifications" *ngIf="notificationsOpen">
+
+        <div class="ma-dropdown-header">Notifications</div>
+
+        <div class="ma-notification-item" *ngFor="let item of notifications">
+          <div class="ma-notification-icon">
+            <i class="fa-solid" [ngClass]="item.icon"></i>
+          </div>
+          <div class="ma-notification-body">
+            <div class="ma-notification-title">{{ item.title }}</div>
+            <div class="ma-notification-time">{{ item.time }}</div>
+          </div>
+        </div>
+
+        <div class="ma-notification-empty" *ngIf="!notifications.length">
+          You're all caught up.
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="ma-dropdown-wrap">
+
+      <button class="ma-profile-btn" type="button" (click)="toggleProfile()">
+        <span class="ma-avatar">{{ initials }}</span>
+        <span class="ma-profile-text d-none d-lg-flex">
+          <span class="ma-profile-name">{{ userName }}</span>
+          <span class="ma-profile-role">{{ userRole }}</span>
+        </span>
+        <i class="fa-solid fa-chevron-down ma-profile-caret"></i>
+      </button>
+
+      <div class="ma-dropdown ma-dropdown-profile" *ngIf="profileOpen">
+
+        <div class="ma-dropdown-user">
+          <span class="ma-avatar">{{ initials }}</span>
+          <div>
+            <div class="ma-profile-name">{{ userName }}</div>
+            <div class="ma-profile-role">{{ userRole }}</div>
+          </div>
+        </div>
+
+        <button class="ma-dropdown-item" type="button" (click)="goToProfile()">
+          <i class="fa-solid fa-user"></i> My Profile
+        </button>
+
+        <button class="ma-dropdown-item" type="button" (click)="changePassword()">
+          <i class="fa-solid fa-key"></i> Change Password
+        </button>
+
+        <button class="ma-dropdown-item ma-dropdown-item-danger" type="button" (click)="logout()">
+          <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</header>

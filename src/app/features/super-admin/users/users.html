@@ -596,7 +596,7 @@
 
                             class="icon-btn"
 
-                            (click)="edit(item)">
+                            (click)="edit(item.id)">
 
 
 
@@ -968,6 +968,95 @@
                 </div>
 
 
+
+
+                <!-- BRANCH -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Branch
+
+                    </label>
+
+
+
+                    <select
+
+                        [(ngModel)]="model.branchId">
+
+
+                        <option value="">
+
+                            -- Select Branch --
+
+                        </option>
+
+
+                        <option
+
+                            *ngFor="let item of formBranches"
+
+                            [value]="item.branchId">
+
+                            {{item.branchName}}
+
+                        </option>
+
+
+                    </select>
+
+
+
+                </div>
+
+
+
+
+                <!-- PASSWORD -->
+
+
+                <div>
+
+
+                    <label>
+
+                        Password
+
+                    </label>
+
+
+
+                    <div class="input-group">
+
+                        <input
+
+                            [type]="showPassword ? 'text' : 'password'"
+
+                            [placeholder]="isEdit ? 'Leave blank to keep current password' : 'Auto-generated if left blank'"
+
+                            [(ngModel)]="model.password">
+
+                        <button
+
+                            type="button"
+
+                            class="btn btn-outline-secondary"
+
+                            (click)="showPassword = !showPassword">
+
+                            {{showPassword ? 'Hide' : 'Show'}}
+
+                        </button>
+
+                    </div>
+
+
+
+                </div>
 
 
 

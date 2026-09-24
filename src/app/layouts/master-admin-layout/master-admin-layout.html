@@ -1,0 +1,21 @@
+<div class="ma-shell">
+
+  <div class="ma-sidebar-slot" [class.mobile-open]="mobileSidebarOpen">
+    <app-master-admin-sidebar (sidebarToggle)="onSidebarToggle($event)"></app-master-admin-sidebar>
+  </div>
+
+  <div class="ma-backdrop" *ngIf="mobileSidebarOpen" (click)="closeMobileSidebar()"></div>
+
+  <div class="ma-body" [class.collapsed]="sidebarCollapsed">
+
+    <app-master-admin-header (menuToggle)="onMobileMenuToggle()"></app-master-admin-header>
+
+    <main class="ma-content">
+      <router-outlet></router-outlet>
+    </main>
+
+    <app-master-admin-footer></app-master-admin-footer>
+
+  </div>
+
+</div>

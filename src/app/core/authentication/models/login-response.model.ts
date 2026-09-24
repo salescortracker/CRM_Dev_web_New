@@ -18,6 +18,9 @@ export interface LoginResponse {
   userName: string;
   role: string;
 
+  // Display name of the user (UserLogin.FullName).
+  fullName?: string | null;
+
   // Layout + dashboard for the user, decided by the server from the
   // assigned role: 'Super Admin' | 'Admin' | 'User'.
   layout?: string | null;

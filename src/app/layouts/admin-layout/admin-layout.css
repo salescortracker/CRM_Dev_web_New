@@ -257,6 +257,73 @@
 
 
 /* =========================================================
+   ROLE-BASED MODULES + SUBMODULE DROPDOWN
+========================================================= */
+
+.top-module {
+  position: relative;
+}
+
+button.top-menu-item {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.top-submenu {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+
+  min-width: 210px;
+  padding: 6px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  background: #ffffff;
+  border: 1px solid #f1d5d6;
+  border-radius: 10px;
+  box-shadow: 0 12px 28px rgba(90, 15, 20, 0.18);
+
+  z-index: 1100;
+}
+
+.top-submenu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  width: 100%;
+  padding: 9px 12px;
+
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+
+  color: #172033;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: left;
+
+  cursor: pointer;
+}
+
+.top-submenu-item i {
+  width: 14px;
+  font-size: 12px;
+  color: #b4232b;
+}
+
+.top-submenu-item:hover {
+  background: #fdecec;
+}
+
+
+/* =========================================================
    TOP ACTIONS
 ========================================================= */
 

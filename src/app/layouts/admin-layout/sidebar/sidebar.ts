@@ -263,12 +263,19 @@ export class Sidebar {
           route: '/menu-access',
           group: 'Administration'
         },
+        
         {
           label: 'Roles And Permissions',
           icon: 'fa-map-location-dot',
           route: '/roles-permissions',
           group: 'Administration'
         },
+        // {
+        //   label: 'Role Master',
+        //   icon: 'fa-user-shield',
+        //   route: '/role-master',
+        //   group: 'Administration'
+        // },
         {
           label: 'Users',
           icon: 'fa-map-location-dot',

@@ -1,0 +1,192 @@
+<div class="menu-access-container">
+
+  <!-- Header Card -->
+  <div class="header-card">
+    <div class="sub-title">MENU MASTER</div>
+    <h1>Menu Master</h1>
+    <p>
+      Control dynamic sidebar menus for the User role -
+      module visibility, order, and permissions.
+    </p>
+  </div>
+
+  <div class="content-wrapper">
+
+    <!-- LEFT PANEL -->
+    <div class="left-panel">
+
+      <div class="card">
+        <h2>Menu List</h2>
+
+        <div class="menu-item" *ngFor="let menu of menus" [class.active]="selectedMenu?.userMenuId === menu.userMenuId"
+          (click)="selectMenu(menu)">
+
+          <div class="menu-left">
+
+            <div class="icon-box">
+              <i class="fas {{menu.icon}}"></i>
+            </div>
+
+            <div>
+              <div class="menu-name">
+                {{menu.menuName}}
+              </div>
+
+              <div class="menu-url">
+                {{menu.url}}
+              </div>
+            </div>
+
+          </div>
+
+          <div class="status-pill" [class.on]="menu.isActive" [class.off]="!menu.isActive">
+            {{menu.isActive ? 'On' : 'Off'}}
+          </div>
+
+        </div>
+
+        <button class="add-menu-btn" (click)="addNewMenu()">
+          <i class="fas fa-plus"></i>
+          Add New Menu
+        </button>
+
+      </div>
+
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="right-panel">
+
+      <div class="card details-card" *ngIf="selectedMenu">
+
+        <!-- MENU DETAILS -->
+
+        <div class="section">
+
+          <h3>Menu Details</h3>
+
+          <div class="form-grid">
+
+            <div class="form-group">
+              <label>Menu Name *</label>
+
+              <input type="text" [(ngModel)]="selectedMenu.menuName" />
+            </div>
+
+            <div class="form-group">
+              <label>Parent Menu</label>
+
+              <select [(ngModel)]="selectedMenu.parentMenuId">
+                <option value="">
+                  -- No Parent --
+                </option>
+
+                <option *ngFor="let item of menus" [value]="item.userMenuId">
+                  {{item.menuName}}
+                </option>
+
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>URL</label>
+
+              <input type="text" [(ngModel)]="selectedMenu.url" />
+            </div>
+
+            <div class="form-group">
+              <label>Icon</label>
+
+              <input type="text" [(ngModel)]="selectedMenu.icon" />
+            </div>
+
+            <div class="form-group">
+              <label>Order No.</label>
+
+              <input type="number" [(ngModel)]="selectedMenu.orderNo" />
+            </div>
+
+          </div>
+
+          <div class="status-section">
+
+            <label class="toggle-label">
+              <input type="checkbox" [(ngModel)]="selectedMenu.isActive" />
+              Active
+            </label>
+
+          </div>
+
+          <div class="section">
+
+            <h3>Permissions</h3>
+
+            <div class="permissions">
+
+              <label>
+                <input type="checkbox" [(ngModel)]="selectedMenu.canView" />
+                View
+              </label>
+
+              <label>
+                <input type="checkbox" [(ngModel)]="selectedMenu.canAdd" />
+                Create
+              </label>
+
+              <label>
+                <input type="checkbox" [(ngModel)]="selectedMenu.canEdit" />
+                Edit
+              </label>
+
+              <label>
+                <input type="checkbox" [(ngModel)]="selectedMenu.canDelete" />
+                Delete
+              </label>
+
+              <label>
+                <input type="checkbox" [(ngModel)]="selectedMenu.canApprove" />
+                Approve
+              </label>
+
+              <label>
+                <input type="checkbox" [(ngModel)]="selectedMenu.canReject" />
+                Reject
+              </label>
+
+              <label>
+                <input type="checkbox" [(ngModel)]="selectedMenu.canDownload" />
+                Download
+              </label>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- ACTIONS -->
+
+        <div class="action-buttons">
+
+          <button class="reset-btn" (click)="resetForm()">
+            Reset
+          </button>
+
+          <button class="delete-btn" (click)="deleteMenu()" *ngIf="selectedMenu.userMenuId !== 0">
+            Delete
+          </button>
+
+          <button class="save-btn" (click)="saveMenu()">
+            <i class="fas fa-save"></i>
+            {{ selectedMenu.userMenuId === 0 ? 'Create Menu' : 'Update Menu' }}
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

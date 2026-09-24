@@ -40,6 +40,8 @@ ngOnInit(): void {
 
   this.loadDesignations();
 
+  this.loadBranches();
+
   this.loadRoles();
 
   this.loadUsers();
@@ -121,12 +123,16 @@ onFormCompanyChange(): void {
 
   this.model.regionId = '';
 
+  this.model.branchId = '';
+
   this.clearRoleIfNotAvailable();
 
 }
 
 
 onFormRegionChange(): void {
+
+  this.model.branchId = '';
 
   this.clearRoleIfNotAvailable();
 
@@ -263,6 +269,8 @@ departments: any[] = [];
 
 designations: any[] = [];
 
+branches: any[] = [];
+
 
 loadDepartments(): void {
 
@@ -343,6 +351,56 @@ onFormDepartmentChange(): void {
 }
 
 
+loadBranches(): void {
+
+  this.controlService
+    .getBranches()
+    .subscribe({
+
+      next: (res: any) => {
+
+        this.branches = (res?.data || []).filter(
+          (x: any) => x.status === true || x.status === 'Active'
+        );
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        console.error('Error loading branches:', err);
+
+        this.branches = [];
+
+      }
+
+    });
+
+}
+
+
+// Branches belonging to the selected company (and region, once one is
+// chosen), for the cascading dropdown.
+get formBranches(): any[] {
+
+  return this.branches.filter(b => {
+
+    const matchesCompany =
+      !this.model.companyId ||
+      b.companyId === Number(this.model.companyId);
+
+    const matchesRegion =
+      !this.model.regionId ||
+      b.regionId === Number(this.model.regionId);
+
+    return matchesCompany && matchesRegion;
+
+  });
+
+}
+
+
 
 
 // MODAL
@@ -352,6 +410,8 @@ showModal=false;
 isEdit=false;
 
 editId=0;
+
+showPassword=false;
 
 
 
@@ -378,7 +438,7 @@ loadUsers(): void {
   this.spinner.show();
 
   this.controlService
-    .getCompanyAdministrators()
+    .getUsers()
     .subscribe({
 
       next: (res: any) => {
@@ -388,23 +448,26 @@ loadUsers(): void {
         if (res?.success) {
 
           this.users = (res.data || []).map((x: any) => ({
-            id: x.administratorId,
+            id: x.userId,
             firstName: x.firstName,
             lastName: x.lastName || '',
             email: x.email,
             mobile: x.mobileNumber,
             employeeCode: x.employeeCode,
-            username: x.username,
             companyId: x.companyId,
             regionId: x.regionId,
+            branchId: x.branchId,
+            branch: x.branchName || '',
             departmentId: x.departmentId,
             department: x.departmentName || '',
             designationId: x.designationId,
             designation: x.designationName || '',
-            role: x.roleName || 'User',
-            status: x.status ? 'Active' : 'Inactive',
+            role: x.role || 'User',
+            status: x.isActive ? 'Active' : 'Inactive',
             loginAccess: true,
-            lastLogin: '-'
+            lastLogin: x.lastLoginDate
+              ? new Date(x.lastLoginDate).toLocaleString()
+              : '-'
           }));
 
         } else {
@@ -462,17 +525,19 @@ mobile:'',
 
 employeeCode:'',
 
-username:'',
-
 companyId:'',
 
 regionId:'',
+
+branchId:'',
 
 departmentId:'',
 
 designationId:'',
 
 role:'',
+
+password:'',
 
 status:'Active',
 
@@ -605,6 +670,8 @@ this.editId=0;
 
 this.model=this.emptyModel();
 
+this.showPassword=false;
+
 this.showModal=true;
 
 
@@ -626,6 +693,8 @@ this.model=this.emptyModel();
 this.isEdit=false;
 
 this.editId=0;
+
+this.showPassword=false;
 
 
 }
@@ -721,31 +790,21 @@ return;
 
 
 
-// Username is no longer collected from the UI. On create the backend
-// generates the real one; on edit keep the user's existing username -
-// the login uses it to find the user's role and sidebar menus.
-const derivedUsername =
-  (this.isEdit && this.model.username)
-    ? this.model.username
-    : (this.model.email.split('@')[0] || this.model.employeeCode)
-        .toLowerCase()
-        .trim();
-
 const data = {
 
-  administratorId: this.isEdit ? this.editId : 0,
+  userId: this.isEdit ? this.editId : 0,
 
   companyId: Number(this.model.companyId),
 
   regionId: this.model.regionId ? Number(this.model.regionId) : null,
+
+  branchId: this.model.branchId ? Number(this.model.branchId) : null,
 
   departmentId: this.model.departmentId ? Number(this.model.departmentId) : null,
 
   designationId: this.model.designationId ? Number(this.model.designationId) : null,
 
   employeeCode: this.model.employeeCode.trim(),
-
-  username: derivedUsername,
 
   firstName: this.model.firstName.trim(),
 
@@ -755,9 +814,13 @@ const data = {
 
   mobileNumber: this.model.mobile.trim(),
 
-  roleName: this.model.role.trim(),
+  role: this.model.role.trim(),
 
-  status: this.model.status === 'Active'
+  // Leave blank on edit to keep the current password; on create, a blank
+  // password lets the backend assign the default one.
+  password: this.model.password ? this.model.password.trim() : null,
+
+  isActive: this.model.status === 'Active'
 
 };
 
@@ -768,8 +831,8 @@ this.spinner.show();
 
 
 const request$ = this.isEdit
-  ? this.controlService.updateCompanyAdministrator(data)
-  : this.controlService.createCompanyAdministrator(data);
+  ? this.controlService.updateUser(data)
+  : this.controlService.createUser(data);
 
 request$.subscribe({
 
@@ -823,48 +886,94 @@ request$.subscribe({
 
 
 
-edit(item:any){
+edit(id:number){
 
 
-this.isEdit=true;
+this.spinner.show();
 
-this.editId=item.id;
+this.controlService
+  .getUserById(id)
+  .subscribe({
 
-this.model={
+    next: (res: any) => {
 
-  id: item.id,
+      this.spinner.hide();
 
-  firstName: item.firstName,
+      if (res?.success && res.data) {
 
-  lastName: item.lastName,
+        const data = res.data;
 
-  email: item.email,
+        this.isEdit = true;
 
-  mobile: item.mobile,
+        this.editId = id;
 
-  employeeCode: item.employeeCode,
+        this.model = {
 
-  username: item.username || '',
+          id: data.userId,
 
-  companyId: item.companyId || '',
+          firstName: data.firstName || '',
 
-  regionId: item.regionId || '',
+          lastName: data.lastName || '',
 
-  departmentId: item.departmentId || '',
+          email: data.email || '',
 
-  designationId: item.designationId || '',
+          mobile: data.mobileNumber || '',
 
-  role: item.role,
+          employeeCode: data.employeeCode || '',
 
-  status: item.status,
+          companyId: data.companyId || '',
 
-  loginAccess: item.loginAccess,
+          regionId: data.regionId || '',
 
-  lastLogin: item.lastLogin
+          branchId: data.branchId || '',
 
-};
+          departmentId: data.departmentId || '',
 
-this.showModal=true;
+          designationId: data.designationId || '',
+
+          role: data.role || '',
+
+          password: data.password || '',
+
+          status: data.isActive ? 'Active' : 'Inactive',
+
+          loginAccess: true,
+
+          lastLogin: data.lastLoginDate
+            ? new Date(data.lastLoginDate).toLocaleString()
+            : '-'
+
+        };
+
+        this.showPassword = false;
+
+        this.showModal = true;
+
+        this.cd.detectChanges();
+
+      } else {
+
+        this.alert.warning(
+          res?.message || 'User not found.'
+        );
+
+      }
+
+    },
+
+    error: (err) => {
+
+      this.spinner.hide();
+
+      console.error('Get user error:', err);
+
+      this.alert.error(
+        err?.error?.message || 'Failed to load user.'
+      );
+
+    }
+
+  });
 
 
 }
@@ -890,7 +999,7 @@ if(result.isConfirmed){
 this.spinner.show();
 
 this.controlService
-  .deleteCompanyAdministrator(id)
+  .deleteUser(id)
   .subscribe({
 
     next: (res: any) => {
